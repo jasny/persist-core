@@ -1,0 +1,882 @@
+<!DOCTYPE html><html xmlns:date="http://exslt.org/dates-and-times" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>DB » \DB</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">DB</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Packages</a></li>
+<li><a href="../packages/DB.html"><i class="icon-folder-open"></i> DB</a></li>
+<li><a href="../packages/Test.html"><i class="icon-folder-open"></i> Test</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">0</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">0</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<span class="btn-group visibility" data-toggle="buttons-checkbox"><button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button></span><div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-custom icon-method"></i> Methods</li>
+<li class="method public "><a href="#__construct" title="__construct :: Class constructor."><span class="description">Class constructor.</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#autocommit" title="autocommit :: "><span class="description">autocommit()
+        </span><pre>autocommit()</pre></a></li>
+<li class="method public "><a href="#backquote" title="backquote :: Quote a field, table or dbname so it can be savely used in a query."><span class="description">Quote a field, table or dbname so it can be savely used in a query.</span><pre>backquote()</pre></a></li>
+<li class="method public "><a href="#change_user" title="change_user :: "><span class="description">change_user()
+        </span><pre>change_user()</pre></a></li>
+<li class="method public "><a href="#character_set_name" title="character_set_name :: "><span class="description">character_set_name()
+        </span><pre>character_set_name()</pre></a></li>
+<li class="method public "><a href="#client_encoding" title="client_encoding :: "><span class="description">client_encoding()
+        </span><pre>client_encoding()</pre></a></li>
+<li class="method public "><a href="#close" title="close :: "><span class="description">close()
+        </span><pre>close()</pre></a></li>
+<li class="method public "><a href="#commit" title="commit :: "><span class="description">commit()
+        </span><pre>commit()</pre></a></li>
+<li class="method public "><a href="#conn" title="conn :: Get the DB connection."><span class="description">Get the DB connection.</span><pre>conn()</pre></a></li>
+<li class="method public "><a href="#connect" title="connect :: "><span class="description">connect()
+        </span><pre>connect()</pre></a></li>
+<li class="method public "><a href="#debug" title="debug :: "><span class="description">debug()
+        </span><pre>debug()</pre></a></li>
+<li class="method public "><a href="#dump_debug_info" title="dump_debug_info :: "><span class="description">dump_debug_info()
+        </span><pre>dump_debug_info()</pre></a></li>
+<li class="method public "><a href="#escape_string" title="escape_string :: "><span class="description">escape_string()
+        </span><pre>escape_string()</pre></a></li>
+<li class="method public "><a href="#get_charset" title="get_charset :: "><span class="description">get_charset()
+        </span><pre>get_charset()</pre></a></li>
+<li class="method public "><a href="#get_client_info" title="get_client_info :: "><span class="description">get_client_info()
+        </span><pre>get_client_info()</pre></a></li>
+<li class="method public "><a href="#get_server_info" title="get_server_info :: "><span class="description">get_server_info()
+        </span><pre>get_server_info()</pre></a></li>
+<li class="method public "><a href="#get_warnings" title="get_warnings :: "><span class="description">get_warnings()
+        </span><pre>get_warnings()</pre></a></li>
+<li class="method public "><a href="#init" title="init :: "><span class="description">init()
+        </span><pre>init()</pre></a></li>
+<li class="method public "><a href="#kill" title="kill :: "><span class="description">kill()
+        </span><pre>kill()</pre></a></li>
+<li class="method public "><a href="#more_results" title="more_results :: "><span class="description">more_results()
+        </span><pre>more_results()</pre></a></li>
+<li class="method public "><a href="#multi_query" title="multi_query :: "><span class="description">multi_query()
+        </span><pre>multi_query()</pre></a></li>
+<li class="method public "><a href="#mysqli" title="mysqli :: "><span class="description">mysqli()
+        </span><pre>mysqli()</pre></a></li>
+<li class="method public "><a href="#next_result" title="next_result :: "><span class="description">next_result()
+        </span><pre>next_result()</pre></a></li>
+<li class="method public "><a href="#options" title="options :: "><span class="description">options()
+        </span><pre>options()</pre></a></li>
+<li class="method public "><a href="#parse" title="parse :: Insert parameters into SQL query."><span class="description">Insert parameters into SQL query.</span><pre>parse()</pre></a></li>
+<li class="method public "><a href="#ping" title="ping :: "><span class="description">ping()
+        </span><pre>ping()</pre></a></li>
+<li class="method public "><a href="#prepare" title="prepare :: "><span class="description">prepare()
+        </span><pre>prepare()</pre></a></li>
+<li class="method public "><a href="#query" title="query :: Performs a query on the database."><span class="description">Performs a query on the database.</span><pre>query()</pre></a></li>
+<li class="method public "><a href="#quote" title="quote :: Quote a value so it can be savely used in a query."><span class="description">Quote a value so it can be savely used in a query.</span><pre>quote()</pre></a></li>
+<li class="method public "><a href="#real_connect" title="real_connect :: "><span class="description">real_connect()
+        </span><pre>real_connect()</pre></a></li>
+<li class="method public "><a href="#real_escape_string" title="real_escape_string :: "><span class="description">real_escape_string()
+        </span><pre>real_escape_string()</pre></a></li>
+<li class="method public "><a href="#real_query" title="real_query :: "><span class="description">real_query()
+        </span><pre>real_query()</pre></a></li>
+<li class="method public "><a href="#refresh" title="refresh :: "><span class="description">refresh()
+        </span><pre>refresh()</pre></a></li>
+<li class="method public "><a href="#rollback" title="rollback :: "><span class="description">rollback()
+        </span><pre>rollback()</pre></a></li>
+<li class="method public "><a href="#save" title="save :: Insert or update a record."><span class="description">Insert or update a record.</span><pre>save()</pre></a></li>
+<li class="method public "><a href="#select_db" title="select_db :: "><span class="description">select_db()
+        </span><pre>select_db()</pre></a></li>
+<li class="method public "><a href="#set_charset" title="set_charset :: "><span class="description">set_charset()
+        </span><pre>set_charset()</pre></a></li>
+<li class="method public "><a href="#set_local_infile_default" title="set_local_infile_default :: "><span class="description">set_local_infile_default()
+        </span><pre>set_local_infile_default()</pre></a></li>
+<li class="method public "><a href="#set_local_infile_handler" title="set_local_infile_handler :: "><span class="description">set_local_infile_handler()
+        </span><pre>set_local_infile_handler()</pre></a></li>
+<li class="method public "><a href="#set_opt" title="set_opt :: "><span class="description">set_opt()
+        </span><pre>set_opt()</pre></a></li>
+<li class="method public "><a href="#ssl_set" title="ssl_set :: "><span class="description">ssl_set()
+        </span><pre>ssl_set()</pre></a></li>
+<li class="method public "><a href="#stat" title="stat :: "><span class="description">stat()
+        </span><pre>stat()</pre></a></li>
+<li class="method public "><a href="#stmt_init" title="stmt_init :: "><span class="description">stmt_init()
+        </span><pre>stmt_init()</pre></a></li>
+<li class="method public "><a href="#store_result" title="store_result :: "><span class="description">store_result()
+        </span><pre>store_result()</pre></a></li>
+<li class="method public "><a href="#thread_safe" title="thread_safe :: "><span class="description">thread_safe()
+        </span><pre>thread_safe()</pre></a></li>
+<li class="method public "><a href="#use_result" title="use_result :: "><span class="description">use_result()
+        </span><pre>use_result()</pre></a></li>
+<li class="nav-header">
+<i class="icon-custom icon-property"></i> Properties</li>
+<li class="nav-header protected">» Protected</li>
+<li class="property protected "><a href="#%24connection" title="$connection :: Created DB connection"><span class="description">Created DB connection</span><pre>$connection</pre></a></li>
+<li class="nav-header">
+<i class="icon-custom icon-constant"></i> Constants</li>
+<li class="constant  "><a href="#SKIP_EXISTING" title="SKIP_EXISTING :: Don't update existing records when saving, but ignore them instead."><span class="description">Don't update existing records when saving, but ignore them instead.</span><pre>SKIP_EXISTING</pre></a></li>
+</ul>
+</div>
+<div class="span8">
+<a name="%5CDB" id="\DB"></a><div href="../classes/DB.html" class="element class">
+<p class="short_description">MySQL DB connection.</p>
+<div class="details">
+<p class="long_description"><p>{ @example
+  new DB($host, $user, $pwd, $dbname);
+  $result = DB::conn()->query("SELECT * FROM foo WHERE id = ?", $id);
+}}</p></p>
+<table class="table table-bordered"><tr>
+<th>package</th>
+<td><a href="..//packages/DB.html">DB</a></td>
+</tr></table>
+<h3>
+<i class="icon-custom icon-method"></i> Methods</h3>
+<a name="__construct" id="__construct"></a><div class="element clickable method public __construct" data-toggle="collapse" data-target=".__construct .collapse">
+<h2>Class constructor.</h2>
+<pre>__construct(string $host, string $username, string $passwd, string $dbname, int $port) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$host</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$username</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$passwd</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$dbname</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$port</h4>
+<code>int</code>
+</div>
+</div></div>
+</div>
+<a name="autocommit" id="autocommit"></a><div class="element clickable method public autocommit" data-toggle="collapse" data-target=".autocommit .collapse">
+<h2>autocommit()
+        </h2>
+<pre>autocommit() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::autocommit()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="backquote" id="backquote"></a><div class="element clickable method public backquote" data-toggle="collapse" data-target=".backquote .collapse">
+<h2>Quote a field, table or dbname so it can be savely used in a query.</h2>
+<pre>backquote(string $field) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$field</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="change_user" id="change_user"></a><div class="element clickable method public change_user" data-toggle="collapse" data-target=".change_user .collapse">
+<h2>change_user()
+        </h2>
+<pre>change_user() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::change_user()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="character_set_name" id="character_set_name"></a><div class="element clickable method public character_set_name" data-toggle="collapse" data-target=".character_set_name .collapse">
+<h2>character_set_name()
+        </h2>
+<pre>character_set_name() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::character_set_name()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="client_encoding" id="client_encoding"></a><div class="element clickable method public client_encoding" data-toggle="collapse" data-target=".client_encoding .collapse">
+<h2>client_encoding()
+        </h2>
+<pre>client_encoding() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::client_encoding()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="close" id="close"></a><div class="element clickable method public close" data-toggle="collapse" data-target=".close .collapse">
+<h2>close()
+        </h2>
+<pre>close() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::close()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="commit" id="commit"></a><div class="element clickable method public commit" data-toggle="collapse" data-target=".commit .collapse">
+<h2>commit()
+        </h2>
+<pre>commit() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::commit()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="conn" id="conn"></a><div class="element clickable method public conn" data-toggle="collapse" data-target=".conn .collapse">
+<h2>Get the DB connection.</h2>
+<pre>conn() : <a href="../classes/DB.html">\DB</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/DB.html">\DB</a></code></div>
+</div></div>
+</div>
+<a name="connect" id="connect"></a><div class="element clickable method public connect" data-toggle="collapse" data-target=".connect .collapse">
+<h2>connect()
+        </h2>
+<pre>connect() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::connect()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="debug" id="debug"></a><div class="element clickable method public debug" data-toggle="collapse" data-target=".debug .collapse">
+<h2>debug()
+        </h2>
+<pre>debug() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::debug()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="dump_debug_info" id="dump_debug_info"></a><div class="element clickable method public dump_debug_info" data-toggle="collapse" data-target=".dump_debug_info .collapse">
+<h2>dump_debug_info()
+        </h2>
+<pre>dump_debug_info() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::dump_debug_info()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="escape_string" id="escape_string"></a><div class="element clickable method public escape_string" data-toggle="collapse" data-target=".escape_string .collapse">
+<h2>escape_string()
+        </h2>
+<pre>escape_string() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::escape_string()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="get_charset" id="get_charset"></a><div class="element clickable method public get_charset" data-toggle="collapse" data-target=".get_charset .collapse">
+<h2>get_charset()
+        </h2>
+<pre>get_charset() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::get_charset()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="get_client_info" id="get_client_info"></a><div class="element clickable method public get_client_info" data-toggle="collapse" data-target=".get_client_info .collapse">
+<h2>get_client_info()
+        </h2>
+<pre>get_client_info() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::get_client_info()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="get_server_info" id="get_server_info"></a><div class="element clickable method public get_server_info" data-toggle="collapse" data-target=".get_server_info .collapse">
+<h2>get_server_info()
+        </h2>
+<pre>get_server_info() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::get_server_info()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="get_warnings" id="get_warnings"></a><div class="element clickable method public get_warnings" data-toggle="collapse" data-target=".get_warnings .collapse">
+<h2>get_warnings()
+        </h2>
+<pre>get_warnings() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::get_warnings()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="init" id="init"></a><div class="element clickable method public init" data-toggle="collapse" data-target=".init .collapse">
+<h2>init()
+        </h2>
+<pre>init() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::init()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="kill" id="kill"></a><div class="element clickable method public kill" data-toggle="collapse" data-target=".kill .collapse">
+<h2>kill()
+        </h2>
+<pre>kill() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::kill()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="more_results" id="more_results"></a><div class="element clickable method public more_results" data-toggle="collapse" data-target=".more_results .collapse">
+<h2>more_results()
+        </h2>
+<pre>more_results() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::more_results()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="multi_query" id="multi_query"></a><div class="element clickable method public multi_query" data-toggle="collapse" data-target=".multi_query .collapse">
+<h2>multi_query()
+        </h2>
+<pre>multi_query() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::multi_query()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="mysqli" id="mysqli"></a><div class="element clickable method public mysqli" data-toggle="collapse" data-target=".mysqli .collapse">
+<h2>mysqli()
+        </h2>
+<pre>mysqli() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::mysqli()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="next_result" id="next_result"></a><div class="element clickable method public next_result" data-toggle="collapse" data-target=".next_result .collapse">
+<h2>next_result()
+        </h2>
+<pre>next_result() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::next_result()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="options" id="options"></a><div class="element clickable method public options" data-toggle="collapse" data-target=".options .collapse">
+<h2>options()
+        </h2>
+<pre>options() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::options()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="parse" id="parse"></a><div class="element clickable method public parse" data-toggle="collapse" data-target=".parse .collapse">
+<h2>Insert parameters into SQL query.</h2>
+<pre>parse(string $query, mixed $params) : string</pre>
+<div class="labels"></div>
+<div class="row collapse">
+<div class="span4">
+<p class="long_description"><p>Don't mix both types ('?' and ':key') of placeholders.</p></p>
+<table class="table table-bordered">
+<tr>
+<th>example</th>
+<td>DB::parse("SELECT * FROM mytable WHERE id=?", $id);</td>
+</tr>
+<tr>
+<th>example</th>
+<td>DB::parse("SELECT * FROM mytable WHERE name=:name AND age&gt;:age AND status='A'", array('id'=&gt;$id, 'age'=&gt;$age));</td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$query</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$params</h4>
+<code>mixed</code><p>Parameters can be passed as indifidual arguments or as array</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div>
+<div class="span4">
+<h3>Examples</h3>
+<pre class="prettyprint linenums"></pre>
+<pre class="prettyprint linenums"></pre>
+</div>
+</div>
+</div>
+<a name="ping" id="ping"></a><div class="element clickable method public ping" data-toggle="collapse" data-target=".ping .collapse">
+<h2>ping()
+        </h2>
+<pre>ping() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::ping()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="prepare" id="prepare"></a><div class="element clickable method public prepare" data-toggle="collapse" data-target=".prepare .collapse">
+<h2>prepare()
+        </h2>
+<pre>prepare() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::prepare()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="query" id="query"></a><div class="element clickable method public query" data-toggle="collapse" data-target=".query .collapse">
+<h2>Performs a query on the database.</h2>
+<pre>query(string $query, mixed $params) : <a href="http://php.net/manual/en/class.mysqli_result.php">\mysqli_result</a></pre>
+<div class="labels"></div>
+<div class="row collapse">
+<div class="span4">
+<p class="long_description"><p>Don't mix both types ('?' and ':key') of placeholders.</p></p>
+<table class="table table-bordered">
+<tr>
+<th>example</th>
+<td>DB::conn()-&gt;query("SELECT * FROM mytable WHERE id=?", $id);</td>
+</tr>
+<tr>
+<th>example</th>
+<td>DB::conn()-&gt;query("SELECT * FROM mytable WHERE name=:name AND age&gt;:age AND status='A'", array('id'=&gt;$id, 'age'=&gt;$age));</td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$query</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$params</h4>
+<code>mixed</code><p>Parameters can be passed as indifidual arguments or as array</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="http://php.net/manual/en/class.mysqli_result.php">\mysqli_result</a></code></div>
+</div>
+<div class="span4">
+<h3>Examples</h3>
+<pre class="prettyprint linenums"></pre>
+<pre class="prettyprint linenums"></pre>
+</div>
+</div>
+</div>
+<a name="quote" id="quote"></a><div class="element clickable method public quote" data-toggle="collapse" data-target=".quote .collapse">
+<h2>Quote a value so it can be savely used in a query.</h2>
+<pre>quote(mixed $value, string $empty) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>mixed</code>
+</div>
+<div class="subelement argument">
+<h4>$empty</h4>
+<code>string</code><p>Return $empty if $value is null</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="real_connect" id="real_connect"></a><div class="element clickable method public real_connect" data-toggle="collapse" data-target=".real_connect .collapse">
+<h2>real_connect()
+        </h2>
+<pre>real_connect() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::real_connect()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="real_escape_string" id="real_escape_string"></a><div class="element clickable method public real_escape_string" data-toggle="collapse" data-target=".real_escape_string .collapse">
+<h2>real_escape_string()
+        </h2>
+<pre>real_escape_string() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::real_escape_string()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="real_query" id="real_query"></a><div class="element clickable method public real_query" data-toggle="collapse" data-target=".real_query .collapse">
+<h2>real_query()
+        </h2>
+<pre>real_query() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::real_query()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="refresh" id="refresh"></a><div class="element clickable method public refresh" data-toggle="collapse" data-target=".refresh .collapse">
+<h2>refresh()
+        </h2>
+<pre>refresh() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::refresh()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="rollback" id="rollback"></a><div class="element clickable method public rollback" data-toggle="collapse" data-target=".rollback .collapse">
+<h2>rollback()
+        </h2>
+<pre>rollback() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::rollback()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="save" id="save"></a><div class="element clickable method public save" data-toggle="collapse" data-target=".save .collapse">
+<h2>Insert or update a record.</h2>
+<pre>save(string $table, array $values, boolean $update) : int</pre>
+<div class="labels"></div>
+<div class="row collapse">
+<div class="span4">
+<p class="long_description"><p>All rows should have the same keys.</p></p>
+<table class="table table-bordered">
+<tr>
+<th>example</th>
+<td>$db-&gt;save('mytable', $row)</td>
+</tr>
+<tr>
+<th>example</th>
+<td>$db-&gt;save('mytable', array($row1, $row2, $row3))</td>
+</tr>
+</table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$table</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$values</h4>
+<code>array</code><p>One or multiple rows of values</p></div>
+<div class="subelement argument">
+<h4>$update</h4>
+<code>boolean</code><p>Update on duplicate key</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>int</code>Last insert ID</div>
+</div>
+<div class="span4">
+<h3>Examples</h3>
+<pre class="prettyprint linenums"></pre>
+<pre class="prettyprint linenums"></pre>
+</div>
+</div>
+</div>
+<a name="select_db" id="select_db"></a><div class="element clickable method public select_db" data-toggle="collapse" data-target=".select_db .collapse">
+<h2>select_db()
+        </h2>
+<pre>select_db() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::select_db()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="set_charset" id="set_charset"></a><div class="element clickable method public set_charset" data-toggle="collapse" data-target=".set_charset .collapse">
+<h2>set_charset()
+        </h2>
+<pre>set_charset() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::set_charset()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="set_local_infile_default" id="set_local_infile_default"></a><div class="element clickable method public set_local_infile_default" data-toggle="collapse" data-target=".set_local_infile_default .collapse">
+<h2>set_local_infile_default()
+        </h2>
+<pre>set_local_infile_default() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::set_local_infile_default()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="set_local_infile_handler" id="set_local_infile_handler"></a><div class="element clickable method public set_local_infile_handler" data-toggle="collapse" data-target=".set_local_infile_handler .collapse">
+<h2>set_local_infile_handler()
+        </h2>
+<pre>set_local_infile_handler() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::set_local_infile_handler()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="set_opt" id="set_opt"></a><div class="element clickable method public set_opt" data-toggle="collapse" data-target=".set_opt .collapse">
+<h2>set_opt()
+        </h2>
+<pre>set_opt() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::set_opt()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="ssl_set" id="ssl_set"></a><div class="element clickable method public ssl_set" data-toggle="collapse" data-target=".ssl_set .collapse">
+<h2>ssl_set()
+        </h2>
+<pre>ssl_set() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::ssl_set()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="stat" id="stat"></a><div class="element clickable method public stat" data-toggle="collapse" data-target=".stat .collapse">
+<h2>stat()
+        </h2>
+<pre>stat() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::stat()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="stmt_init" id="stmt_init"></a><div class="element clickable method public stmt_init" data-toggle="collapse" data-target=".stmt_init .collapse">
+<h2>stmt_init()
+        </h2>
+<pre>stmt_init() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::stmt_init()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="store_result" id="store_result"></a><div class="element clickable method public store_result" data-toggle="collapse" data-target=".store_result .collapse">
+<h2>store_result()
+        </h2>
+<pre>store_result() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::store_result()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="thread_safe" id="thread_safe"></a><div class="element clickable method public thread_safe" data-toggle="collapse" data-target=".thread_safe .collapse">
+<h2>thread_safe()
+        </h2>
+<pre>thread_safe() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::thread_safe()</td>
+</tr></table>
+</div></div>
+</div>
+<a name="use_result" id="use_result"></a><div class="element clickable method public use_result" data-toggle="collapse" data-target=".use_result .collapse">
+<h2>use_result()
+        </h2>
+<pre>use_result() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>inherited_from</th>
+<td>mysqli::use_result()</td>
+</tr></table>
+</div></div>
+</div>
+<h3>
+<i class="icon-custom icon-property"></i> Properties</h3>
+<a name="%24connection" id="$connection"> </a><div class="element clickable property protected $connection" data-toggle="collapse" data-target=".$connection .collapse">
+<h2>Created DB connection</h2>
+<pre>$connection </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8"><p class="long_description"></p></div></div>
+</div>
+<h3>
+<i class="icon-custom icon-constant"></i> Constants</h3>
+<a name="SKIP_EXISTING" id="SKIP_EXISTING"> </a><div class="element clickable constant  SKIP_EXISTING" data-toggle="collapse" data-target=".SKIP_EXISTING .collapse">
+<h2>Don't update existing records when saving, but ignore them instead.</h2>
+<pre>SKIP_EXISTING : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8"><p class="long_description"><p></p></p></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a2</a> and<br>
+            generated on 2012-04-20T00:46:37+02:00.<br></footer></div>
+</div>
+</body>
+</html>
