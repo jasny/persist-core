@@ -18,7 +18,7 @@ require_once __DIR__ . '/DB/Exception.php';
  * 
  * @package DB
  */
-class DB extends mysqli
+class DB extends \mysqli
 {
     /**
      * Don't update existing records when saving, but ignore them instead.
@@ -78,21 +78,101 @@ class DB extends mysqli
      * 
      * @param string $query
      * @param mixed  $params   Parameters can be passed as indifidual arguments or as array
-     * @return mysqli_result
+     * @return DB_Result
      */
     public function query($query, $params=array())
     {
-        if (!empty($params)) $query = call_user_func_array(array(__NAMESPACE__ . '\\DB', 'parse'), func_get_args());
+        if (!empty($params)) $query = call_user_func_array(array(get_class(), 'parse'), func_get_args());
         
         $result = parent::query($query);
         if (!$result) throw new DB_Exception($this->error, $this->errno, $query);
-
+        
         return $result;
     }
     
+    
+    /**
+     * Query and fetch all result rows as an associative array, a numeric array, or both.
+     * To use placeholders, please call DB::conn()->parse() explicitly.
+     * 
+     * @example DB::conn()->fetchAll("SELECT * FROM mytable", MYSQLI_NUM);
+     * @example DB::conn()->fetchAll(DB::conn()->parse("SELECT * FROM mytable WHERE group=?", $group), MYSQLI_NUM);
+     *
+     * @param string|mysqli_result $query       SQL Query or DB result
+     * @param int                  $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, or MYSQLI_BOTH
+     * @return array
+     */
+    public function fetchAll($query, $resulttype=MYSQLI_ASSOC)
+    {
+        $result = $query instanceof mysqli_result ? $query : $this->query($query);
+        
+        // Using mysqlnd :)
+        if (function_exists('mysqli_fetch_all')) {
+            return $result->fetch_all($resulttype);
+        }
+
+        // We don't have it :(
+        $rows = array();
+        if ($resulttype == MYSQLI_ASSOC) {
+            while ($row = $result->fetch_assoc()) $rows[] = $row;
+        } elseif ($resulttype == MYSQLI_BOTH) {
+            while ($row = $result->fetch_array()) $rows[] = $row;
+        } else {
+            while ($row = $result->fetch_row()) $rows[] = $row;
+        }
+        
+        return $rows;
+    }
+
+    /**
+     * Query and fetch a single column from all result rows.
+     * To use placeholders, please call DB::conn()->parse() explicitly.
+     * 
+     * @example DB::conn()->fetchColumn("SELECT name FROM mytable");
+     * @example DB::conn()->fetchColumn(DB::conn()->parse("SELECT name FROM mytable WHERE group=?", $group));
+     *
+     * @param string|mysqli_result $query   SQL Query or DB result
+     * @param string               $field   The field position or name to fetch
+     * @return array
+     */
+    public function fetchColumn($query, $field=0)
+    {
+        $result = $query instanceof mysqli_result ? $query : $this->query($query);
+        
+        $values = array();
+        while ($row = $result->fetch_array()) {
+            $values[] = $row[$field];
+        }
+        
+        return $values;
+    }
+    
+    /**
+     * Fetches all result rows and creates an associated array with the first column as key and the second as value.
+     * To use placeholders, please call DB::conn()->parse() explicitly.
+     * 
+     * @example DB::conn()->fetchPairs("SELECT id, name FROM mytable");
+     * @example DB::conn()->fetchPairs(DB::conn()->parse("SELECT id, name FROM mytable WHERE group=?", $group));
+     *
+     * @param string|mysqli_result $query   SQL Query or DB result
+     * @return array
+     */
+    public function fetchPairs($query)
+    {
+        $result = $query instanceof mysqli_result ? $query : $this->query($query);
+        
+        $values = array();
+        while (list($key, $value) = $result->fetch_row()) {
+            $values[$key] = $value;
+        }
+        
+        return $values;
+    }
+    
+    
     /**
      * Insert or update a record.
-     * All rows should have the same keys.
+     * All rows should have the same keys in the same order.
      * 
      * @example $db->save('mytable', $row)
      * @example $db->save('mytable', array($row1, $row2, $row3))

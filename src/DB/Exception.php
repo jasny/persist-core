@@ -9,7 +9,7 @@
  * Database exception.
  * @package DB
  */
-class DB_Exception extends Exception
+class DB_Exception extends \mysqli_sql_exception
 {
     /**
      * Failed query

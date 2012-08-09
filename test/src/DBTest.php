@@ -245,7 +245,7 @@ class DBTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * Test DB_MySQL::query() with named placeholders
+     * Test DB::query() with named placeholders
      * 
      * @depends testConn
      * @depends testParse_Named
@@ -259,7 +259,7 @@ class DBTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * Test DB_MySQL::query() with an update query
+     * Test DB::query() with an update query
      * 
      * @depends testConn
      */
@@ -300,9 +300,86 @@ class DBTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("Query has failed. Table 'dbtest.foobar' doesn't exist.\n$query", $e->getMessage());
     }
 
+    /**
+     * Test DB::fetchAll()
+     * 
+     * @depends testQuery
+     */
+    public function testFetchAll()
+    {
+        $rows = DB::conn()->fetchAll("SELECT id, name FROM foo ORDER BY id");
+        $this->assertEquals(array(array('id'=>1, 'name'=>'Foo'), array('id'=>2, 'name'=>'Bar'), array('id'=>3, 'name'=>'Zoo'), array('id'=>4, 'name'=>'Man'), array('id'=>5, 'name'=>'Ops')), $rows);
+
+        $rows = DB::conn()->fetchAll("SELECT id, name FROM foo ORDER BY id", MYSQLI_NUM);
+        $this->assertEquals(array(array(1, 'Foo'), array(2, 'Bar'), array(3, 'Zoo'), array(4, 'Man'), array(5, 'Ops')), $rows);
+
+        $rows = DB::conn()->fetchAll("SELECT id, name FROM foo ORDER BY id", MYSQLI_BOTH);
+        $this->assertEquals(array(array(1, 'Foo', 'id'=>1, 'name'=>'Foo'), array(2, 'Bar', 'id'=>2, 'name'=>'Bar'), array(3, 'Zoo', 'id'=>3, 'name'=>'Zoo'), array(4, 'Man', 'id'=>4, 'name'=>'Man'), array(5, 'Ops', 'id'=>5, 'name'=>'Ops')), $rows);
+    }
     
     /**
-     * Test DB_MySQL::save() with a single new row of data
+     * Test DB::fetchAll() with a result
+     * 
+     * @depends testQuery
+     */
+    public function testFetchAll_result()
+    {
+        $result = DB::conn()->query("SELECT id, name FROM foo ORDER BY id");
+        $rows = DB::conn()->fetchAll($result);
+        $this->assertEquals(array(array('id'=>1, 'name'=>'Foo'), array('id'=>2, 'name'=>'Bar'), array('id'=>3, 'name'=>'Zoo'), array('id'=>4, 'name'=>'Man'), array('id'=>5, 'name'=>'Ops')), $rows);
+    }
+
+    /**
+     * Test DB::fetchColumn()
+     * 
+     * @depends testQuery
+     */
+    public function testFetchColumn()
+    {
+        $rows = DB::conn()->fetchColumn("SELECT id, name FROM foo ORDER BY id");
+        $this->assertEquals(array(1, 2, 3, 4, 5), $rows);
+
+        $rows = DB::conn()->fetchColumn("SELECT id, name FROM foo ORDER BY id", 1);
+        $this->assertEquals(array('Foo', 'Bar', 'Zoo', 'Man', 'Ops'), $rows);
+    }
+    
+    /**
+     * Test DB::fetchColumn() with a result
+     * 
+     * @depends testQuery
+     */
+    public function testFetchColumn_result()
+    {
+        $result = DB::conn()->query("SELECT name FROM foo ORDER BY id");
+        $rows = DB::conn()->fetchColumn($result);
+        $this->assertEquals(array('Foo', 'Bar', 'Zoo', 'Man', 'Ops'), $rows);
+    }
+    
+    /**
+     * Test DB::FetchPairs()
+     * 
+     * @depends testQuery
+     */
+    public function testFetchPairs()
+    {
+        $rows = DB::conn()->fetchPairs("SELECT id, name FROM foo ORDER BY name");
+        $this->assertEquals(array(2=>'Bar', 1=>'Foo', 4=>'Man', 5=>'Ops', 3=>'Zoo'), $rows);
+    }
+    
+    /**
+     * Test DB::FetchPairs() with a result
+     * 
+     * @depends testQuery
+     */
+    public function testFetchPairs_result()
+    {
+        $result = DB::conn()->query("SELECT id, name FROM foo ORDER BY name");
+        $rows = DB::conn()->fetchPairs($result);
+        $this->assertEquals(array(2=>'Bar', 1=>'Foo', 4=>'Man', 5=>'Ops', 3=>'Zoo'), $rows);
+    }
+    
+    /**
+     * Test DB::save() with a single new row of data
      * 
      * @depends testQuote
      * @depends testBackquote
@@ -320,7 +397,7 @@ class DBTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * Test DB_MySQL::save() with multiple new rows of data
+     * Test DB::save() with multiple new rows of data
      * 
      * @depends testSave
      */
@@ -346,7 +423,7 @@ class DBTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test DB_MySQL::save() with updates and inserts
+     * Test DB::save() with updates and inserts
      * 
      * @depends testSave_Rows
      */
@@ -372,7 +449,7 @@ class DBTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test DB_MySQL::save() with ignoring existing records
+     * Test DB::save() with ignoring existing records
      * 
      * @depends testSave_Rows
      */
