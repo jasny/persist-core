@@ -2,13 +2,15 @@
 /**
  * Tests for DB.
  * 
+ * Please GRANT ALL PRIVILEGES ON dbtest.* TO dbtest@localhost IDENTIFIED BY "dbtest1";
+ * 
  * @author Arnold Daniels
  */
 
 /** */
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Framework/TestCase.php';
 
-require_once __DIR__ . '/../../src/DB.php';
+require_once __DIR__ . '/../src/DB.php';
 
 /**
  * Tests for DB.
@@ -34,7 +36,7 @@ class DBTest extends PHPUnit_Framework_TestCase
         $m = @new mysqli('localhost', 'dbtest', 'dbtest1');
         if ($m->connect_error) throw new PHPUnit_Framework_SkippedTestError("Failed to connect to mysql: " . $m->connect_error);
             
-        $sql = file_get_contents(__DIR__ . '/../support/db.sql');
+        $sql = file_get_contents(__DIR__ . '/support/db.sql');
         if (!$m->multi_query($sql)) throw new PHPUnit_Framework_SkippedTestError("Failed to initialise DBs: " . $m->error);
 
         // Make sure everything is executed
@@ -96,7 +98,7 @@ class DBTest extends PHPUnit_Framework_TestCase
     {
         // default
         $conn = DB::conn();
-        $this->assertType('DB', $conn);
+        $this->assertInstanceOf('DB', $conn);
         list($db) = mysqli_query($conn, "SELECT DATABASE()")->fetch_row();
         $this->assertEquals('dbtest', $db);
         $this->assertSame($conn, DB::conn());
@@ -222,23 +224,23 @@ class DBTest extends PHPUnit_Framework_TestCase
     public function testQuery()
     {
         $result = DB::conn()->query("SELECT id, name FROM foo ORDER BY id");
-        $this->assertType('mysqli_result', $result);
+        $this->assertInstanceOf('mysqli_result', $result);
         $this->assertEquals(5, $result->num_rows);
         $this->assertEquals(array('id' => 1, 'name' => 'Foo'), $result->fetch_assoc());
         // No need to check all rows
         
         $result = DB::conn()->query("SELECT id, name FROM foo WHERE id = ?", 4);
-        $this->assertType('mysqli_result', $result);
+        $this->assertInstanceOf('mysqli_result', $result);
         $this->assertEquals(1, $result->num_rows);
         $this->assertEquals(array('id' => 4, 'name' => 'Man'), $result->fetch_assoc());
 
         $result = DB::conn()->query("SELECT id, name FROM foo WHERE id > ? AND ext = ?", 1, 'tv');
-        $this->assertType('mysqli_result', $result);
+        $this->assertInstanceOf('mysqli_result', $result);
         $this->assertEquals(1, $result->num_rows);
         $this->assertEquals(array('id' => 3, 'name' => 'Zoo'), $result->fetch_assoc());
 
         $result = DB::conn()->query("SELECT id, name FROM foo WHERE id IN ?", array(1, 4));
-        $this->assertType('mysqli_result', $result);
+        $this->assertInstanceOf('mysqli_result', $result);
         $this->assertEquals(2, $result->num_rows);
         $this->assertEquals(array('id' => 1, 'name' => 'Foo'), $result->fetch_assoc());
         $this->assertEquals(array('id' => 4, 'name' => 'Man'), $result->fetch_assoc());
@@ -253,7 +255,7 @@ class DBTest extends PHPUnit_Framework_TestCase
     public function testQuery_Named()
     {
         $result = DB::conn()->query("SELECT id, name FROM foo WHERE id > :id AND ext = :ext", array('id' => 1, 'ext' => 'tv'));
-        $this->assertType('mysqli_result', $result);
+        $this->assertInstanceOf('mysqli_result', $result);
         $this->assertEquals(1, $result->num_rows);
         $this->assertEquals(array('id' => 3, 'name' => 'Zoo'), $result->fetch_assoc());
     }
@@ -272,7 +274,7 @@ class DBTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(2, DB::conn()->affected_rows);
         
         $result = DB::conn()->query("SELECT id, name FROM foo ORDER BY id");
-        $this->assertType('mysqli_result', $result);
+        $this->assertInstanceOf('mysqli_result', $result);
         $this->assertEquals(5, $result->num_rows);
         $this->assertEquals(array('id' => 1, 'name' => 'TEST'), $result->fetch_assoc());
         $this->assertEquals(array('id' => 2, 'name' => 'Bar'), $result->fetch_assoc());
@@ -293,7 +295,7 @@ class DBTest extends PHPUnit_Framework_TestCase
         } catch (DB_Exception $e) {
         }
         
-        $this->assertType('DB_Exception', $e);
+        $this->assertInstanceOf('DB_Exception', $e);
         $this->assertEquals($query, $e->getQuery());
         $this->assertEquals(1146, $e->getCode());
         $this->assertEquals("Table 'dbtest.foobar' doesn't exist", $e->getError());
