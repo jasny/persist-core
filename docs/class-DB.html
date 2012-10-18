@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class DB</title>
+
+	<script type="text/javascript" src="resources/combined.js?394153670"></script>
+	<script type="text/javascript" src="elementlist.js?1103833425"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Packages</h3>
+			<ul>
+				<li class="active"><a href="package-DB.html">DB</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li class="active"><a href="class-DB.html">DB</a></li>
+			</ul>
+
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-DB_Exception.html">DB_Exception</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="package-DB.html" title="Summary of DB"><span>Package</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class DB</h1>
+
+
+	<div class="description">
+	
+<p>MySQL DB connection.</p>
+
+<p>Optionally use Jasny's Config class by configuring Config::i()-&gt;db;</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+mysqli
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>DB</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		<b>Package:</b> <a href="package-DB.html">DB</a><br />
+
+				<b>Author:</b>
+				Arnold Daniels<br />
+				<b>Example:</b>
+				<br />
+new DB($host, $user, $pwd, $dbname);<br />
+$result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
+		<b>Located at</b> <a href="source-class-DB.html#11-293" title="Go to source code">DB.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="conn" id="_conn">
+
+		<td class="attributes"><code>
+			 public static
+			<code><a href="class-DB.html">DB</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_conn">#</a>
+		<code><a href="source-class-DB.html#36-50" title="Go to source code">conn</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get the DB connection.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the DB connection.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-DB.html">DB</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-DB.html#52-67" title="Go to source code">__construct</a>( <span>string <var>$host</var></span>, <span>string <var>$username</var></span>, <span>string <var>$passwd</var></span>, <span>string <var>$dbname</var></span>, <span>integer <var>$port</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Class constructor.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Class constructor.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$host</var></dt>
+					<dd><code>string</code><br>$host</dd>
+					<dt><var>$username</var></dt>
+					<dd><code>string</code><br>$username</dd>
+					<dt><var>$passwd</var></dt>
+					<dd><code>string</code><br>$passwd</dd>
+					<dt><var>$dbname</var></dt>
+					<dd><code>string</code><br>$dbname</dd>
+					<dt><var>$port</var></dt>
+					<dd><code>integer</code><br>$port</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="query" id="_query">
+
+		<td class="attributes"><code>
+			 public 
+			mysqli_result
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_query">#</a>
+		<code><a href="source-class-DB.html#70-89" title="Go to source code">query</a>( <span>string <var>$query</var></span>, <span>mixed <var>$params</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			
+<p>Performs a query on the database. Don't mix both types ('?' and ':key') of
+placeholders.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Performs a query on the database. Don't mix both types ('?' and ':key') of
+placeholders.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd><code>string</code><br>$query</dd>
+					<dt><var>$params</var></dt>
+					<dd><code>mixed</code><br>$params Parameters can be passed as indifidual arguments or as array</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mysqli_result</code><br />
+				</div>
+
+
+				<h4>Example</h4>
+				<div class="list">
+						DB::conn()-&gt;query("SELECT * FROM mytable WHERE id=?", $id);<br />
+						DB::conn()-&gt;query("SELECT * FROM mytable WHERE name=:name AND age&gt;:age AND
+status='A'", array('id'=&gt;$id, 'age'=&gt;$age));<br />
+				</div>
+
+				<h4>Overrides</h4>
+				<div class="list"><code>mysqli::query()</code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="fetchAll" id="_fetchAll">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_fetchAll">#</a>
+		<code><a href="source-class-DB.html#92-129" title="Go to source code">fetchAll</a>( <span>string|mysqli_result <var>$query</var></span>, <span>integer <var>$resulttype</var> = MYSQLI_ASSOC</span> )</code>
+
+		<div class="description short">
+			
+<p>Query and fetch all result rows as an associative array, a numeric array, or
+both.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Query and fetch all result rows as an associative array, a numeric array, or
+both.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd><code>string|mysqli_result</code><br>$query SQL Query or DB result</dd>
+					<dt><var>$resulttype</var></dt>
+					<dd><code>integer</code><br>$resulttype MYSQLI_ASSOC, MYSQLI_NUM, or MYSQLI_BOTH</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+				<h4>Example</h4>
+				<div class="list">
+						DB::conn()-&gt;fetchAll("SELECT * FROM mytable");<br />
+						DB::conn()-&gt;fetchAll("SELECT * FROM mytable", MYSQLI_NUM);<br />
+						DB::conn()-&gt;fetchAll("SELECT * FROM mytable WHERE group=?", MYSQLI_ASSOC,
+$group);<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="fetchColumn" id="_fetchColumn">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_fetchColumn">#</a>
+		<code><a href="source-class-DB.html#131-153" title="Go to source code">fetchColumn</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Query and fetch a single column from all result rows.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Query and fetch a single column from all result rows.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd><code>string|mysqli_result</code><br>$query SQL Query or DB result</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+				<h4>Example</h4>
+				<div class="list">
+						DB::conn()-&gt;fetchColumn("SELECT name FROM mytable");<br />
+						DB::conn()-&gt;fetchColumn("SELECT name FROM mytable WHERE group=?", $group);<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="fetchPairs" id="_fetchPairs">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_fetchPairs">#</a>
+		<code><a href="source-class-DB.html#155-176" title="Go to source code">fetchPairs</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Fetches all result rows and creates an associated array with the first column
+as key and the second as value.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Fetches all result rows and creates an associated array with the first column
+as key and the second as value.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd><code>string|mysqli_result</code><br>$query SQL Query or DB result</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+				<h4>Example</h4>
+				<div class="list">
+						DB::conn()-&gt;fetchPairs("SELECT id, name FROM mytable");<br />
+						DB::conn()-&gt;fetchPairs("SELECT id, name FROM mytable WHERE group=?", $group);<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="fetchValue" id="_fetchValue">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_fetchValue">#</a>
+		<code><a href="source-class-DB.html#178-196" title="Go to source code">fetchValue</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Query and fetch a single value.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Query and fetch a single value.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd><code>string|mysqli_result</code><br>$query SQL Query or DB result</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+				<h4>Example</h4>
+				<div class="list">
+						DB::conn()-&gt;fetchValue("SELECT SUM(foo) FROM mytable");<br />
+						DB::conn()-&gt;fetchValue("SELECT name FROM mytable WHERE id=?", $id);<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="save" id="_save">
+
+		<td class="attributes"><code>
+			 public 
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_save">#</a>
+		<code><a href="source-class-DB.html#199-239" title="Go to source code">save</a>( <span>string <var>$table</var></span>, <span>array <var>$values</var> = <span class="php-keyword1">array</span>()</span>, <span>boolean <var>$update</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Insert or update a record. All rows should have the same keys in the same
+order.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Insert or update a record. All rows should have the same keys in the same
+order.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$table</var></dt>
+					<dd><code>string</code><br>$table</dd>
+					<dt><var>$values</var></dt>
+					<dd><code>array</code><br>$values One or multiple rows of values</dd>
+					<dt><var>$update</var></dt>
+					<dd><code>boolean</code><br>$update Update on duplicate key</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>integer</code><br>Last insert ID<br />
+				</div>
+
+
+				<h4>Example</h4>
+				<div class="list">
+						$db-&gt;save('mytable', $row)<br />
+						$db-&gt;save('mytable', array($row1, $row2, $row3))<br />
+						$db-&gt;save('mytable', array($row1, $row2, $row3), DB::SKIP_EXISTING)<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="quote" id="_quote">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_quote">#</a>
+		<code><a href="source-class-DB.html#242-257" title="Go to source code">quote</a>( <span>mixed <var>$value</var></span>, <span>string <var>$empty</var> = <span class="php-quote">'NULL'</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Quote a value so it can be savely used in a query.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Quote a value so it can be savely used in a query.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$value</var></dt>
+					<dd><code>mixed</code><br>$value</dd>
+					<dt><var>$empty</var></dt>
+					<dd><code>string</code><br>$empty Return $empty if $value is null</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="backquote" id="_backquote">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_backquote">#</a>
+		<code><a href="source-class-DB.html#259-268" title="Go to source code">backquote</a>( <span>string <var>$field</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Quote a field, table or dbname so it can be savely used in a query.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Quote a field, table or dbname so it can be savely used in a query.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$field</var></dt>
+					<dd><code>string</code><br>$field</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="bind" id="_bind">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_bind">#</a>
+		<code><a href="source-class-DB.html#270-292" title="Go to source code">bind</a>( <span>string <var>$query</var></span>, <span>mixed <var>$params</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			
+<p>Insert parameters into SQL query. Don't mix both types ('?' and ':key') of
+placeholders.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Insert parameters into SQL query. Don't mix both types ('?' and ':key') of
+placeholders.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd><code>string</code><br>$query</dd>
+					<dt><var>$params</var></dt>
+					<dd><code>mixed</code><br>$params Parameters can be passed as indifidual arguments or as array</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+				<h4>Example</h4>
+				<div class="list">
+						DB::bind("SELECT * FROM mytable WHERE id=?", $id);<br />
+						DB::bind("SELECT * FROM mytable WHERE name=:name AND age&gt;:age AND
+status='A'", array('id'=&gt;$id, 'age'=&gt;$age));<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from mysqli</caption>
+	<tr>
+		<td><code>
+autocommit(), 
+change_user(), 
+character_set_name(), 
+client_encoding(), 
+close(), 
+commit(), 
+connect(), 
+debug(), 
+dump_debug_info(), 
+escape_string(), 
+get_charset(), 
+get_client_info(), 
+get_connection_stats(), 
+get_server_info(), 
+get_warnings(), 
+init(), 
+kill(), 
+more_results(), 
+multi_query(), 
+mysqli(), 
+next_result(), 
+options(), 
+ping(), 
+poll(), 
+prepare(), 
+real_connect(), 
+real_escape_string(), 
+real_query(), 
+reap_async_query(), 
+refresh(), 
+rollback(), 
+select_db(), 
+set_charset(), 
+set_opt(), 
+ssl_set(), 
+stat(), 
+stmt_init(), 
+store_result(), 
+thread_safe(), 
+use_result()
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+	<table class="summary" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="SKIP_EXISTING" id="SKIP_EXISTING">
+
+		<td class="attributes"><code>boolean</code></td>
+		<td class="name"><code>
+				<a href="source-class-DB.html#24-29" title="Go to source code"><b>SKIP_EXISTING</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#SKIP_EXISTING" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Don't update existing records when saving, but ignore them instead.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Don't update existing records when saving, but ignore them instead.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="connection" id="$connection">
+		<td class="attributes"><code>
+			protected static 
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-DB.html#31-34" title="Go to source code"><var>$connection</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$connection" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Created DB connection</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Created DB connection</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from mysqli</caption>
+	<tr>
+		<td><code>
+<var>$affected_rows</var>, 
+<var>$client_info</var>, 
+<var>$client_version</var>, 
+<var>$connect_errno</var>, 
+<var>$connect_error</var>, 
+<var>$errno</var>, 
+<var>$error</var>, 
+<var>$field_count</var>, 
+<var>$host_info</var>, 
+<var>$info</var>, 
+<var>$insert_id</var>, 
+<var>$protocol_version</var>, 
+<var>$server_info</var>, 
+<var>$server_version</var>, 
+<var>$sqlstate</var>, 
+<var>$stat</var>, 
+<var>$thread_id</var>, 
+<var>$warning_count</var>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

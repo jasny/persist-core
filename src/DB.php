@@ -11,10 +11,11 @@ require_once __DIR__ . '/DB/Exception.php';
 /**
  * MySQL DB connection.
  * 
- * { @example
- *   new DB($host, $user, $pwd, $dbname);
+ * Optionally use Jasny's Config class by configuring Config::i()->db;
+ * 
+ * @example <br/>
+ *   new DB($host, $user, $pwd, $dbname);<br/>
  *   $result = DB::conn()->query("SELECT * FROM foo WHERE id = ?", $id);
- * }}
  * 
  * @package DB
  */
@@ -75,7 +76,7 @@ class DB extends \mysqli
      * 
      * @param string $query
      * @param mixed  $params   Parameters can be passed as indifidual arguments or as array
-     * @return DB_Result
+     * @return mysqli_result
      */
     public function query($query, $params = array())
     {
