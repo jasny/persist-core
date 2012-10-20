@@ -1,6 +1,8 @@
 Jasny's DB layer (for MySQL)
 ============================
 
+[![Build Status](https://secure.travis-ci.org/jasny/DB-MySQL.png?branch=master)](http://travis-ci.org/jasny/DB-MySQL)
+
 A simple DB layer in PHP for using MySQL, featuring
 
 * Global connection (singleton)
