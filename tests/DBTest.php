@@ -370,6 +370,50 @@ class DBTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test DB::fetchOne()
+     * 
+     * @depends testQuery
+     */
+    public function testFetchOne()
+    {
+        $row = DB::conn()->fetchOne("SELECT id, name FROM foo WHERE id = 4");
+        $this->assertEquals(array('id' => 4, 'name' => 'Man'), $row);
+
+        $row = DB::conn()->fetchOne("SELECT id, name FROM foo ORDER BY id");
+        $this->assertEquals(array('id' => 1, 'name' => 'Foo'), $row);
+
+        $row = DB::conn()->fetchOne("SELECT id, name FROM foo WHERE id = 4", MYSQLI_NUM);
+        $this->assertEquals(array(4, 'Man'), $row);
+
+        $row = DB::conn()->fetchOne("SELECT id, name FROM foo WHERE id = 4", MYSQLI_BOTH);
+        $this->assertEquals(array(4, 'Man', 'id' => 4, 'name' => 'Man'), $row);
+
+        $row = DB::conn()->fetchOne("SELECT id FROM foo WHERE ext = 'n/a'");
+        $this->assertNull($row);
+
+        $row = DB::conn()->fetchOne("SELECT id, name FROM foo WHERE id = ?", MYSQLI_ASSOC, 4);
+        $this->assertEquals(array('id' => 4, 'name' => 'Man'), $row);
+
+        $row = DB::conn()->fetchOne("SELECT id, name FROM foo WHERE id > ? AND ext IN ?", MYSQLI_ASSOC, 1, array('tv', 'n/a'));
+        $this->assertEquals(array('id' => 3, 'name' => 'Zoo'), $row);
+
+        $row = DB::conn()->fetchOne("SELECT id, name FROM foo WHERE id = :id", MYSQLI_ASSOC, array('id' => 4));
+        $this->assertEquals(array('id' => 4, 'name' => 'Man'), $row);
+    }
+
+    /**
+     * Test DB::fetchOne() with a result
+     * 
+     * @depends testQuery
+     */
+    public function testFetchOne_result()
+    {
+        $result = DB::conn()->query("SELECT id, name FROM foo WHERE id = 4");
+        $row = DB::conn()->fetchOne($result);
+        $this->assertEquals(array('id' => 4, 'name' => 'Man'), $row);
+    }
+
+    /**
      * Test DB::fetchColumn()
      * 
      * @depends testQuery

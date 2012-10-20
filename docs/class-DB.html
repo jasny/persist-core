@@ -123,7 +123,7 @@ mysqli
 				<br />
 new DB($host, $user, $pwd, $dbname);<br />
 $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
-		<b>Located at</b> <a href="source-class-DB.html#11-293" title="Go to source code">DB.php</a><br />
+		<b>Located at</b> <a href="source-class-DB.html#11-317" title="Go to source code">DB.php</a><br />
 	</div>
 
 
@@ -320,6 +320,58 @@ $group);<br />
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="fetchOne" id="_fetchOne">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_fetchOne">#</a>
+		<code><a href="source-class-DB.html#131-153" title="Go to source code">fetchOne</a>( <span>string|mysqli_result <var>$query</var></span>, <span>integer <var>$resulttype</var> = MYSQLI_ASSOC</span> )</code>
+
+		<div class="description short">
+			
+<p>Query and fetch all result rows as an associative array, a numeric array, or
+both.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Query and fetch all result rows as an associative array, a numeric array, or
+both.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$query</var></dt>
+					<dd><code>string|mysqli_result</code><br>$query SQL Query or DB result</dd>
+					<dt><var>$resulttype</var></dt>
+					<dd><code>integer</code><br>$resulttype MYSQLI_ASSOC, MYSQLI_NUM, or MYSQLI_BOTH</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+				<h4>Example</h4>
+				<div class="list">
+						DB::conn()-&gt;fetchOne("SELECT * FROM mytable");<br />
+						DB::conn()-&gt;fetchOne("SELECT * FROM mytable", MYSQLI_NUM);<br />
+						DB::conn()-&gt;fetchOne("SELECT * FROM mytable WHERE id=?", MYSQLI_ASSOC, $id);<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="fetchColumn" id="_fetchColumn">
 
 		<td class="attributes"><code>
@@ -331,7 +383,7 @@ $group);<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchColumn">#</a>
-		<code><a href="source-class-DB.html#131-153" title="Go to source code">fetchColumn</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+		<code><a href="source-class-DB.html#155-177" title="Go to source code">fetchColumn</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
 
 		<div class="description short">
 			
@@ -378,7 +430,7 @@ $group);<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchPairs">#</a>
-		<code><a href="source-class-DB.html#155-176" title="Go to source code">fetchPairs</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+		<code><a href="source-class-DB.html#179-200" title="Go to source code">fetchPairs</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
 
 		<div class="description short">
 			
@@ -427,7 +479,7 @@ as key and the second as value.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchValue">#</a>
-		<code><a href="source-class-DB.html#178-196" title="Go to source code">fetchValue</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+		<code><a href="source-class-DB.html#202-220" title="Go to source code">fetchValue</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
 
 		<div class="description short">
 			
@@ -474,7 +526,7 @@ as key and the second as value.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_save">#</a>
-		<code><a href="source-class-DB.html#199-239" title="Go to source code">save</a>( <span>string <var>$table</var></span>, <span>array <var>$values</var> = <span class="php-keyword1">array</span>()</span>, <span>boolean <var>$update</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><a href="source-class-DB.html#223-263" title="Go to source code">save</a>( <span>string <var>$table</var></span>, <span>array <var>$values</var> = <span class="php-keyword1">array</span>()</span>, <span>boolean <var>$update</var> = <span class="php-keyword1">true</span></span> )</code>
 
 		<div class="description short">
 			
@@ -528,7 +580,7 @@ order.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_quote">#</a>
-		<code><a href="source-class-DB.html#242-257" title="Go to source code">quote</a>( <span>mixed <var>$value</var></span>, <span>string <var>$empty</var> = <span class="php-quote">'NULL'</span></span> )</code>
+		<code><a href="source-class-DB.html#266-281" title="Go to source code">quote</a>( <span>mixed <var>$value</var></span>, <span>string <var>$empty</var> = <span class="php-quote">'NULL'</span></span> )</code>
 
 		<div class="description short">
 			
@@ -572,7 +624,7 @@ order.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_backquote">#</a>
-		<code><a href="source-class-DB.html#259-268" title="Go to source code">backquote</a>( <span>string <var>$field</var></span> )</code>
+		<code><a href="source-class-DB.html#283-292" title="Go to source code">backquote</a>( <span>string <var>$field</var></span> )</code>
 
 		<div class="description short">
 			
@@ -614,7 +666,7 @@ order.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_bind">#</a>
-		<code><a href="source-class-DB.html#270-292" title="Go to source code">bind</a>( <span>string <var>$query</var></span>, <span>mixed <var>$params</var> = <span class="php-keyword1">array</span>()</span> )</code>
+		<code><a href="source-class-DB.html#294-316" title="Go to source code">bind</a>( <span>string <var>$query</var></span>, <span>mixed <var>$params</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 		<div class="description short">
 			

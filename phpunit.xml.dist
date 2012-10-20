@@ -2,7 +2,7 @@
 
 <phpunit colors="true">
     <testsuites>
-        <testsuite name="DBQuery (for MySQL) Test Suite">
+        <testsuite name="DB (for MySQL) Test Suite">
             <directory>tests/</directory>
         </testsuite>
     </testsuites>

@@ -18,6 +18,10 @@
     "require": {
         "php": ">=5.3.0"
     },
+    "suggest" : {
+        "jasny/config": "Configure your DB and make it work out of the box",
+        "jasny/dbquery-mysql": "Supports building, parsing and modifying MySQL queries"
+    },
     "autoload": {
         "psr-0": {
             "DB": "src/"

@@ -129,6 +129,30 @@ class DB extends \mysqli
     }
 
     /**
+     * Query and fetch all result rows as an associative array, a numeric array, or both.
+     * 
+     * @example DB::conn()->fetchOne("SELECT * FROM mytable");
+     * @example DB::conn()->fetchOne("SELECT * FROM mytable", MYSQLI_NUM);
+     * @example DB::conn()->fetchOne("SELECT * FROM mytable WHERE id=?", MYSQLI_ASSOC, $id);
+     *
+     * @param string|mysqli_result $query       SQL Query or DB result
+     * @param int                  $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, or MYSQLI_BOTH
+     * @return array
+     */
+    public function fetchOne($query, $resulttype = MYSQLI_ASSOC)
+    {
+        if (func_num_args() > 2) {
+            $args = func_get_args();
+            unset($args[1]);
+            $query = call_user_func_array(array(get_class(), 'bind'), array_values($args));
+        }
+
+        $result = $query instanceof mysqli_result ? $query : $this->query($query);
+
+        return $result->fetch_array($resulttype);
+    }
+
+    /**
      * Query and fetch a single column from all result rows.
      * 
      * @example DB::conn()->fetchColumn("SELECT name FROM mytable");
@@ -280,6 +304,8 @@ class DB extends \mysqli
      */
     public static function bind($query, $params = array())
     {
+        if ($query instanceof mysqli_result) trigger_error("Can only bind on a query not on a query result", E_USER_ERROR);
+        
         if (!is_array($params) || is_int(key($params))) $params = array_splice(func_get_args(), 1);
 
         $fn = function ($match) use (&$params) {
