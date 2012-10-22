@@ -28,3 +28,7 @@ A simple DB layer in PHP for using MySQL, featuring
 
         DB::conn()->save('foo', $values);
         DB::conn()->save('foo', array($values1, $values2, $values3));
+
+## API documentation (generated) ##
+
+http://jasny.github.com/DBQuery-MySQL/docs

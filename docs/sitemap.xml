@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+	<loc>http://jasny.github.com/DB-MySQL/docs/index.html</loc>
+</url>
+<url>
+	<loc>http://jasny.github.com/DB-MySQL/docs/namespace-Jasny.html</loc>
+</url>
+<url>
+	<loc>http://jasny.github.com/DB-MySQL/docs/namespace-Jasny.MySQL.html</loc>
+</url>
+
+
+<url>
+	<loc>http://jasny.github.com/DB-MySQL/docs/class-Jasny.MySQL.DB.html</loc>
+</url>
+<url>
+	<loc>http://jasny.github.com/DB-MySQL/docs/class-Jasny.MySQL.DB_Exception.html</loc>
+</url>
+</urlset>
