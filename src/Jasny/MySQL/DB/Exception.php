@@ -1,9 +1,6 @@
 <?php
-/**
- * Database exception.
- * 
- * @author Arnold Daniels
- */
+
+namespace Jasny\MySQL;
 
 /**
  * Database exception.

@@ -12,8 +12,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/jasny/DB/issues",
-        "source": "https://github.com/jasny/DB"
+        "issues": "https://github.com/jasny/DB-MySQL/issues",
+        "source": "https://github.com/jasny/DB-MySQL"
     },
     "require": {
         "php": ">=5.3.0"
@@ -24,7 +24,7 @@
     },
     "autoload": {
         "psr-0": {
-            "DB": "src/"
+            "Jasny\\MySQL\\DB": "src/"
         }
     }
 }

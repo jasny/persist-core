@@ -1,5 +1,7 @@
 <?php
 
+namespace Jasny\MySQL;
+
 /**
  * A very simple class for using MySQL.
  * 
@@ -30,9 +32,11 @@ class DB extends \mysqli
 
     /**
      * Created DB connection
+     * @var DB
      */
-    protected static $connection = array();
+    protected static $connection;
 
+    
     /**
      * Get the DB connection.
      * 
@@ -42,8 +46,10 @@ class DB extends \mysqli
     {
         // Auto connect using Jasny's Config class
         if (!isset(self::$connection)) {
-            if (class_exists('Config') && isset(Config::i()->db)) new static(Config::i()->db['host'], Config::i()->db['username'], Config::i()->db['password'], Config::i()->db['dbname'], isset(Config::i()->db['port']) ? Config::i()->db['port'] : null);
-            else throw new DB_Exception("Unable to create DB connection: not configured");
+            if (!class_exists('Jasny\Config') || !isset(\Jasny\Config::i()->db)) throw new DB_Exception("Unable to create DB connection: not configured");
+            
+            $cfg = Config::i()->db;
+            new static($cfg['host'], $cfg['username'], $cfg['password'], $cfg['dbname'], isset($cfg['port']) ? $cfg['port'] : null);
         }
 
         return self::$connection;
@@ -62,10 +68,18 @@ class DB extends \mysqli
     {
         parent::__construct($host, $username, $passwd, $dbname, $port);
         $this->set_charset('utf8');
-
-        self::$connection = $this;
+        
+        if (!isset(self::$connection)) self::$connection = $this;
     }
 
+    /**
+     * Closes a previously opened database connection
+     */
+    public function close()
+    {
+        if (self::$connection === $this) self::$connection = null;
+        parent::close();
+    }
     
     /**
      * Performs a query on the database.
@@ -82,7 +96,7 @@ class DB extends \mysqli
     {
         if (func_num_args() > 1) $query = call_user_func_array(array(get_class(), 'bind'), func_get_args());
 
-        $result = parent::query($query);
+        $result = parent::query((string)$query);
         if (!$result) throw new DB_Exception($this->error, $this->errno, $query);
 
         return $result;
@@ -108,7 +122,7 @@ class DB extends \mysqli
             $query = call_user_func_array(array(get_class(), 'bind'), array_values($args));
         }
 
-        $result = $query instanceof mysqli_result ? $query : $this->query($query);
+        $result = $query instanceof \mysqli_result ? $query : $this->query($query);
 
         // Using mysqlnd :)
         if (function_exists('mysqli_fetch_all')) {
@@ -147,7 +161,7 @@ class DB extends \mysqli
             $query = call_user_func_array(array(get_class(), 'bind'), array_values($args));
         }
 
-        $result = $query instanceof mysqli_result ? $query : $this->query($query);
+        $result = $query instanceof \mysqli_result ? $query : $this->query($query);
 
         return $result->fetch_array($resulttype);
     }
@@ -166,7 +180,7 @@ class DB extends \mysqli
     {
         if (func_num_args() > 1) $query = call_user_func_array(array(get_class(), 'bind'), func_get_args());
 
-        $result = $query instanceof mysqli_result ? $query : $this->query($query);
+        $result = $query instanceof \mysqli_result ? $query : $this->query($query);
 
         $values = array();
         while (list($value) = $result->fetch_row()) {
@@ -189,7 +203,7 @@ class DB extends \mysqli
     {
         if (func_num_args() > 1) $query = call_user_func_array(array(get_class(), 'bind'), func_get_args());
 
-        $result = $query instanceof mysqli_result ? $query : $this->query($query);
+        $result = $query instanceof \mysqli_result ? $query : $this->query($query);
 
         $values = array();
         while (list($key, $value) = $result->fetch_row()) {
@@ -213,7 +227,7 @@ class DB extends \mysqli
     {
         if (func_num_args() > 1) $query = call_user_func_array(array(get_class(), 'bind'), func_get_args());
 
-        $result = $query instanceof mysqli_result ? $query : $this->query($query);
+        $result = $query instanceof \mysqli_result ? $query : $this->query($query);
         list($value) = $result->fetch_row();
 
         return $value;
@@ -304,7 +318,7 @@ class DB extends \mysqli
      */
     public static function bind($query, $params = array())
     {
-        if ($query instanceof mysqli_result) trigger_error("Can only bind on a query not on a query result", E_USER_ERROR);
+        if ($query instanceof \mysqli_result) trigger_error("Can only bind on a query not on a query result", E_USER_ERROR);
         
         if (!is_array($params) || is_int(key($params))) $params = array_splice(func_get_args(), 1);
 

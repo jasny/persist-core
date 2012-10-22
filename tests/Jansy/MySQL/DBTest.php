@@ -1,5 +1,8 @@
 <?php
 
+use Jasny\MySQL\DB;
+use Jasny\MySQL\DB_Exception;
+
 /**
  * Tests for DB.
  * 
@@ -10,7 +13,7 @@
 /** */
 require_once 'PHPUnit/Framework/TestCase.php';
 
-require_once __DIR__ . '/../src/DB.php';
+require_once __DIR__ . '/../../../src/Jasny/MySQL/DB.php';
 
 /**
  * Tests for DB.
@@ -41,7 +44,7 @@ class DBTest extends PHPUnit_Framework_TestCase
         $m = @new mysqli('localhost', 'dbtest', 'dbtest1');
         if ($m->connect_error) throw new PHPUnit_Framework_SkippedTestError("Failed to connect to mysql: " . $m->connect_error);
 
-        $sql = file_get_contents(__DIR__ . '/support/db.sql');
+        $sql = file_get_contents(__DIR__ . '/../../support/db.sql');
         if (!$m->multi_query($sql)) throw new PHPUnit_Framework_SkippedTestError("Failed to initialise DBs: " . $m->error);
 
         // Make sure everything is executed
@@ -64,17 +67,14 @@ class DBTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Disconnect from the DB by unsetting the connection.
+     * Close the DB connection.
      */
     protected function disconnectDB()
     {
-        // Clear DB connection
-        $refl = new ReflectionClass('DB');
-        $prop = $refl->getProperty('connection');
-        $prop->setAccessible(true);
-        $prop->setValue(null, null);
-
-        $this->db = null;
+        if (isset($this->db)) {
+            $this->db->close();
+            $this->db = null;
+        }
     }
 
     /**
@@ -111,7 +111,7 @@ class DBTest extends PHPUnit_Framework_TestCase
     public function testConn()
     {
         $conn = DB::conn();
-        $this->assertInstanceOf('DB', $conn);
+        $this->assertInstanceOf('Jasny\MySQL\DB', $conn);
         $this->assertSame($this->db, $conn);
 
         list($db) = mysqli_query($conn, "SELECT DATABASE()")->fetch_row();
@@ -121,16 +121,16 @@ class DBTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test DB::conn() for an unexisting connection
+     * Test DB::close() + DB::conn() for an unexisting connection
      */
-    public function testConn_Fail()
+    public function testClose()
     {
-        $this->setExpectedException('DB_Exception', "Unable to create DB connection: not configured");
-
+        $this->setExpectedException('Jasny\MySQL\DB_Exception', "Unable to create DB connection: not configured");
+        
         $this->disconnectDB();
         DB::conn();
     }
-
+    
     /**
      * Test DB::quote()
      */
@@ -318,7 +318,7 @@ class DBTest extends PHPUnit_Framework_TestCase
             
         }
 
-        $this->assertInstanceOf('DB_Exception', $e);
+        $this->assertInstanceOf('Jasny\MySQL\DB_Exception', $e);
         $this->assertEquals($query, $e->getQuery());
         $this->assertEquals(1146, $e->getCode());
         $this->assertEquals("Table 'dbtest.foobar' doesn't exist", $e->getError());
