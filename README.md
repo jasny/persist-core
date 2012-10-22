@@ -31,4 +31,4 @@ A simple DB layer in PHP for using MySQL, featuring
 
 ## API documentation (generated) ##
 
-http://jasny.github.com/DBQuery-MySQL/docs
+http://jasny.github.com/DB-MySQL/docs
