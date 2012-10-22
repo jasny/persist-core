@@ -4,4 +4,10 @@ php:
   - 5.3
   - 5.4
 
-script: phpunit
+services:
+  - mysql
+  
+before_script:
+  - mysql -u root -e 'GRANT ALL PRIVILEGES ON *.* TO dbtest@localhost IDENTIFIED BY "dbtest1";'
+  
+script: phpunit --verbose
