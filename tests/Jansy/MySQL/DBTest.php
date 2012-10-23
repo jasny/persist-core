@@ -6,7 +6,10 @@ use Jasny\MySQL\DB_Exception;
 /**
  * Tests for DB.
  * 
- * Please GRANT ALL PRIVILEGES ON dbtest.* TO dbtest@localhost IDENTIFIED BY "dbtest1";
+ * The MySQL user needs to have full permissions for `dbtest`.*.
+ * 
+ * Please configure default mysqli settings in your php.ini.
+ * Alternatively run as `php -d mysqli.default_user=USER -d mysqli.default_pw=PASSWORD /usr/bin/phpunit`
  * 
  * @author Arnold Daniels
  */
@@ -41,7 +44,7 @@ class DBTest extends PHPUnit_Framework_TestCase
     protected static function createDB()
     {
         // Setup DB
-        $m = @new mysqli('localhost', 'dbtest', 'dbtest1');
+        $m = new mysqli(ini_get('mysqli.default_host'), ini_get('mysqli.default_user') ?: 'root', ini_get('mysqli.default_pw'));
         if ($m->connect_error) throw new PHPUnit_Framework_SkippedTestError("Failed to connect to mysql: " . $m->connect_error);
 
         $sql = file_get_contents(__DIR__ . '/../../support/db.sql');
@@ -50,7 +53,7 @@ class DBTest extends PHPUnit_Framework_TestCase
         // Make sure everything is executed
         do {
             $m->use_result();
-        } while ($m->next_result());
+        } while ($m->more_results() && $m->next_result());
 
         self::$reuse_db = true;
     }
@@ -61,7 +64,7 @@ class DBTest extends PHPUnit_Framework_TestCase
      */
     protected static function dropDB()
     {
-        $m = @new mysqli('localhost', 'dbtest', 'dbtest1');
+        $m = new mysqli(ini_get('mysqli.default_host'), ini_get('mysqli.default_user') ?: 'root', ini_get('mysqli.default_pw'));
         if (!$m->connect_error) $m->query("DROP DATABASE IF EXISTS `dbtest`");
         self::$reuse_db = false;
     }
@@ -85,7 +88,7 @@ class DBTest extends PHPUnit_Framework_TestCase
     {
         if (!self::$reuse_db) self::createDB();
 
-        $this->db = new DB('localhost', 'dbtest', 'dbtest1', 'dbtest');
+        $this->db = new DB(ini_get('mysqli.default_host'), ini_get('mysqli.default_user') ?: 'root', ini_get('mysqli.default_pw'), 'dbtest');
     }
 
     /**
