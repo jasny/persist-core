@@ -320,8 +320,11 @@ class DB extends \mysqli
     {
         if ($query instanceof \mysqli_result) trigger_error("Can only bind on a query not on a query result", E_USER_ERROR);
         
-        if (!is_array($params) || is_int(key($params))) $params = array_splice(func_get_args(), 1);
-
+        if (!is_array($params) || is_int(key($params))) {
+            $args = func_get_args();
+            $params = array_splice($args, 1);
+        }
+        
         $fn = function ($match) use (&$params) {
             if (!empty($match[1]) && !empty($params)) return DB::quote(array_shift($params));
             if (!empty($match[2]) && array_key_exists($match[2], $params)) return DB::quote($params[$match[2]]);
