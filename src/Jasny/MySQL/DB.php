@@ -89,10 +89,9 @@ class DB extends \mysqli
      * @example DB::conn()->query("SELECT * FROM mytable WHERE name=:name AND age>:age AND status='A'", array('id'=>$id, 'age'=>$age));
      * 
      * @param string $query
-     * @param mixed  $params   Parameters can be passed as indifidual arguments or as array
      * @return mysqli_result
      */
-    public function query($query, $params = array())
+    public function query($query)
     {
         if (func_num_args() > 1) $query = call_user_func_array(array(get_class(), 'bind'), func_get_args());
 
