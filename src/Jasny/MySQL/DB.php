@@ -1,13 +1,12 @@
 <?php
-
-namespace Jasny\MySQL;
-
 /**
  * A very simple class for using MySQL.
  * 
  * @author Arnold Daniels
  */
 /** */
+namespace Jasny\MySQL;
+
 require_once __DIR__ . '/DB/Exception.php';
 
 /**
@@ -48,8 +47,8 @@ class DB extends \mysqli
         if (!isset(self::$connection)) {
             if (!class_exists('Jasny\Config') || !isset(\Jasny\Config::i()->db)) throw new DB_Exception("Unable to create DB connection: not configured");
             
-            $cfg = Config::i()->db;
-            new static($cfg['host'], $cfg['username'], $cfg['password'], $cfg['dbname'], isset($cfg['port']) ? $cfg['port'] : null);
+            $cfg = \Jasny\Config::i()->db;
+            new static(isset($cfg->host) ? $cfg->host : 'localhost', $cfg->username, $cfg->password, isset($cfg->dbname) ? $cfg->dbname : null, isset($cfg->port) ? $cfg->port : null);
         }
 
         return self::$connection;

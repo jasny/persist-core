@@ -1,8 +1,4 @@
 <?php
-
-use Jasny\MySQL\DB;
-use Jasny\MySQL\DB_Exception;
-
 /**
  * Tests for DB.
  * 
@@ -14,6 +10,9 @@ use Jasny\MySQL\DB_Exception;
  * @author Arnold Daniels
  */
 /** */
+
+namespace Jasny\MySQL;
+
 require_once 'PHPUnit/Framework/TestCase.php';
 
 require_once __DIR__ . '/../../../src/Jasny/MySQL/DB.php';
@@ -24,7 +23,7 @@ require_once __DIR__ . '/../../../src/Jasny/MySQL/DB.php';
  * @package Test
  * @subpackage DB
  */
-class DBTest extends PHPUnit_Framework_TestCase
+class DBTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -44,11 +43,11 @@ class DBTest extends PHPUnit_Framework_TestCase
     protected static function createDB()
     {
         // Setup DB
-        $m = new mysqli(ini_get('mysqli.default_host'), ini_get('mysqli.default_user') ?: 'root', ini_get('mysqli.default_pw'));
-        if ($m->connect_error) throw new PHPUnit_Framework_SkippedTestError("Failed to connect to mysql: " . $m->connect_error);
+        $m = new \mysqli(ini_get('mysqli.default_host'), ini_get('mysqli.default_user') ?: 'root', ini_get('mysqli.default_pw'));
+        if ($m->connect_error) throw new \PHPUnit_Framework_SkippedTestError("Failed to connect to mysql: " . $m->connect_error);
 
         $sql = file_get_contents(__DIR__ . '/../../support/db.sql');
-        if (!$m->multi_query($sql)) throw new PHPUnit_Framework_SkippedTestError("Failed to initialise DBs: " . $m->error);
+        if (!$m->multi_query($sql)) throw new \PHPUnit_Framework_SkippedTestError("Failed to initialise DBs: " . $m->error);
 
         // Make sure everything is executed
         do {
@@ -64,7 +63,7 @@ class DBTest extends PHPUnit_Framework_TestCase
      */
     protected static function dropDB()
     {
-        $m = new mysqli(ini_get('mysqli.default_host'), ini_get('mysqli.default_user') ?: 'root', ini_get('mysqli.default_pw'));
+        $m = new \mysqli(ini_get('mysqli.default_host'), ini_get('mysqli.default_user') ?: 'root', ini_get('mysqli.default_pw'));
         if (!$m->connect_error) $m->query("DROP DATABASE IF EXISTS `dbtest`");
         self::$reuse_db = false;
     }
