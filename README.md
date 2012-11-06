@@ -12,6 +12,12 @@ A simple DB layer in PHP for using MySQL, featuring
 * Simple saving by passing associated arrays
 * Query exceptions (instead of returning false)
 
+## Installation ##
+
+Jasny DB-MySQL is registred at packagist as [jasny/db-mysql](https://packagist.org/packages/jasny/db-mysql) and can be
+easily installed using [composer](http://getcomposer.org/). Alternatively you can simply download the .zip and copy
+the file from the 'src' folder.
+
 ## Example ##
 
     <?php
