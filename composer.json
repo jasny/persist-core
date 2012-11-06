@@ -4,6 +4,7 @@
     "keywords": ["database", "db", "mysql"],
     "version": "v1.0.0",
     "license": "MIT",
+    "homepage": "http://jasny.github.com/DB-MySQL",
     "authors": [
         {
             "name": "Arnold Daniels",
