@@ -88,7 +88,7 @@ class DB extends \mysqli
      * @example DB::conn()->query("SELECT * FROM mytable WHERE name=:name AND age>:age AND status='A'", array('id'=>$id, 'age'=>$age));
      * 
      * @param string $query
-     * @return mysqli_result
+     * @return \mysqli_result
      */
     public function query($query)
     {
@@ -107,9 +107,10 @@ class DB extends \mysqli
      * @example DB::conn()->fetchAll("SELECT * FROM mytable");
      * @example DB::conn()->fetchAll("SELECT * FROM mytable", MYSQLI_NUM);
      * @example DB::conn()->fetchAll("SELECT * FROM mytable WHERE group=?", MYSQLI_ASSOC, $group);
+     * @example DB::conn()->fetchAll("SELECT * FROM foobar WHERE group=?", 'FooBar', $group)
      *
-     * @param string|mysqli_result $query       SQL Query or DB result
-     * @param int                  $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, or MYSQLI_BOTH
+     * @param string|\mysqli_result $query       SQL Query or DB result
+     * @param int|string            $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH or class name
      * @return array
      */
     public function fetchAll($query, $resulttype = MYSQLI_ASSOC)
@@ -123,18 +124,16 @@ class DB extends \mysqli
         $result = $query instanceof \mysqli_result ? $query : $this->query($query);
 
         // Using mysqlnd :)
-        if (function_exists('mysqli_fetch_all')) {
+        if (function_exists('mysqli_fetch_all') && is_int($resulttype)) {
             return $result->fetch_all($resulttype);
         }
 
-        // We don't have it :(
+        // We don't have it :( or we're fetching objects
         $rows = array();
-        if ($resulttype == MYSQLI_ASSOC) {
-            while ($row = $result->fetch_assoc()) $rows[] = $row;
-        } elseif ($resulttype == MYSQLI_BOTH) {
-            while ($row = $result->fetch_array()) $rows[] = $row;
+        if (is_string($resulttype)) {
+            while ($row = $result->fetch_object($resulttype)) $rows[] = $row;
         } else {
-            while ($row = $result->fetch_row()) $rows[] = $row;
+            while ($row = $result->fetch_array($resulttype)) $rows[] = $row;
         }
 
         return $rows;
@@ -146,9 +145,10 @@ class DB extends \mysqli
      * @example DB::conn()->fetchOne("SELECT * FROM mytable");
      * @example DB::conn()->fetchOne("SELECT * FROM mytable", MYSQLI_NUM);
      * @example DB::conn()->fetchOne("SELECT * FROM mytable WHERE id=?", MYSQLI_ASSOC, $id);
+     * @example DB::conn()->fetchOne("SELECT * FROM foobar WHERE id=?", 'FooBar', $id);
      *
-     * @param string|mysqli_result $query       SQL Query or DB result
-     * @param int                  $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, or MYSQLI_BOTH
+     * @param string|\mysqli_result $query       SQL Query or DB result
+     * @param int|string            $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH or class name
      * @return array
      */
     public function fetchOne($query, $resulttype = MYSQLI_ASSOC)
@@ -161,7 +161,7 @@ class DB extends \mysqli
 
         $result = $query instanceof \mysqli_result ? $query : $this->query($query);
 
-        return $result->fetch_array($resulttype);
+        return is_string($resulttype) ? $result->fetch_object($resulttype) : $result->fetch_array($resulttype);
     }
 
     /**
@@ -170,8 +170,8 @@ class DB extends \mysqli
      * @example DB::conn()->fetchColumn("SELECT name FROM mytable");
      * @example DB::conn()->fetchColumn("SELECT name FROM mytable WHERE group=?", $group);
      *
-     * @param string|mysqli_result $query   SQL Query or DB result
-     * @param string               $field   The field position or name to fetch
+     * @param string|\mysqli_result $query  SQL Query or DB result
+     * @param string                $field  The field position or name to fetch
      * @return array
      */
     public function fetchColumn($query)
@@ -194,7 +194,7 @@ class DB extends \mysqli
      * @example DB::conn()->fetchPairs("SELECT id, name FROM mytable");
      * @example DB::conn()->fetchPairs("SELECT id, name FROM mytable WHERE group=?", $group);
      *
-     * @param string|mysqli_result $query   SQL Query or DB result
+     * @param string|\mysqli_result $query  SQL Query or DB result
      * @return array
      */
     public function fetchPairs($query)
@@ -217,8 +217,8 @@ class DB extends \mysqli
      * @example DB::conn()->fetchValue("SELECT SUM(foo) FROM mytable");
      * @example DB::conn()->fetchValue("SELECT name FROM mytable WHERE id=?", $id);
      *
-     * @param string|mysqli_result $query   SQL Query or DB result
-     * @param string               $field   The field position or name to fetch
+     * @param string|\mysqli_result $query  SQL Query or DB result
+     * @param string                $field  The field position or name to fetch
      * @return array
      */
     public function fetchValue($query)
@@ -241,8 +241,8 @@ class DB extends \mysqli
      * @example $db->save('mytable', array($row1, $row2, $row3), DB::SKIP_EXISTING)
      * 
      * @param string  $table
-     * @param array   $values   One or multiple rows of values
-     * @param boolean $update   Update on duplicate key
+     * @param array   $values  One or multiple rows of values
+     * @param boolean $update  Update on duplicate key
      * @return int  Last insert ID
      */
     public function save($table, array $values = array(), $update = true)
@@ -254,7 +254,7 @@ class DB extends \mysqli
         $query_update = array();
 
         foreach (array_keys(reset($values)) as $key) {
-            $field = self::backquote($key);
+            $field = static::backquote($key);
             $fields[$key] = $field;
             $query_update[$key] = "$field=VALUES($field)";
         }
@@ -262,7 +262,7 @@ class DB extends \mysqli
         foreach ($values as &$row) {
             $vals = array();
             foreach (array_keys($fields) as $key) {
-                $vals[$key] = self::quote($row[$key], 'DEFAULT');
+                $vals[$key] = static::quote($row[$key], 'DEFAULT');
             }
             $query_values[] = '(' . join(', ', $vals) . ')';
         }
@@ -311,7 +311,7 @@ class DB extends \mysqli
      * @example DB::bind("SELECT * FROM mytable WHERE name=:name AND age>:age AND status='A'", array('id'=>$id, 'age'=>$age));
      * 
      * @param string $query
-     * @param mixed  $params    Parameters can be passed as indifidual arguments or as array
+     * @param mixed  $params  Parameters can be passed as indifidual arguments or as array
      * @return string
      */
     public static function bind($query, $params = array())

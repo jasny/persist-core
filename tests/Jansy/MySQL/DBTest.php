@@ -360,6 +360,27 @@ class DBTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test DB::fetchAll() fetching objects
+     * 
+     * @depends fetchAll
+     */
+    public function testFetchAll_object()
+    {
+        $class = get_class($this->getMock('stdClass'));
+        
+        $obj1 = new $class();
+        $obj1->id = 1;
+        $obj1->name = 'Foo';
+        
+        $obj2 = new $class();
+        $obj2->id = 3;
+        $obj2->name = 'Zoo';
+        
+        $rows = DB::conn()->fetchAll("SELECT id, name FROM foo WHERE ext = ?", $class, 'tv');
+        $this->assertEquals(array($obj1, $obj2), $rows);
+    }
+    
+    /**
      * Test DB::fetchAll() with a result
      * 
      * @depends testQuery
@@ -401,6 +422,23 @@ class DBTest extends \PHPUnit_Framework_TestCase
 
         $row = DB::conn()->fetchOne("SELECT id, name FROM foo WHERE id = :id", MYSQLI_ASSOC, array('id' => 4));
         $this->assertEquals(array('id' => 4, 'name' => 'Man'), $row);
+    }
+
+    /**
+     * Test DB::fetchOne() with an object
+     * 
+     * @depends testFetchOne
+     */
+    public function testFetchOne_object()
+    {
+        $class = get_class($this->getMock('stdClass'));
+        
+        $obj = new $class();
+        $obj->id = 4;
+        $obj->name = 'Man';
+        
+        $row = DB::conn()->fetchOne("SELECT id, name FROM foo WHERE id = 4", $class);
+        $this->assertEquals($obj, $row);
     }
 
     /**
