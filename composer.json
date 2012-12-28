@@ -2,7 +2,7 @@
     "name": "jasny/db-mysql",
     "description": "A simple DB layer in PHP for using MySQL",
     "keywords": ["database", "db", "mysql"],
-    "version": "v1.0.0",
+    "version": "v1.1.0",
     "license": "MIT",
     "homepage": "http://jasny.github.com/DB-MySQL",
     "authors": [

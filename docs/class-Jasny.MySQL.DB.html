@@ -131,11 +131,13 @@ mysqli
 		<b>Namespace:</b> <a href="namespace-Jasny.html">Jasny</a>\<a href="namespace-Jasny.MySQL.html">MySQL</a><br />
 		<b>Package:</b> DB<br />
 
+				<b>Author:</b>
+				Arnold Daniels<br />
 				<b>Example:</b>
 				<br />
 new DB($host, $user, $pwd, $dbname);<br />
 $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
-		<b>Located at</b> <a href="source-class-Jasny.MySQL.DB.html#13-333" title="Go to source code">Jasny/MySQL/DB.php</a><br />
+		<b>Located at</b> <a href="source-class-Jasny.MySQL.DB.html#12-334" title="Go to source code">Jasny/MySQL/DB.php</a><br />
 	</div>
 
 
@@ -153,7 +155,7 @@ $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_conn">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#40-56" title="Go to source code">conn</a>( )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#39-55" title="Go to source code">conn</a>( )</code>
 
 		<div class="description short">
 			
@@ -190,7 +192,7 @@ $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#58-73" title="Go to source code">__construct</a>( <span>string <var>$host</var></span>, <span>string <var>$username</var></span>, <span>string <var>$passwd</var></span>, <span>string <var>$dbname</var></span>, <span>integer <var>$port</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#57-72" title="Go to source code">__construct</a>( <span>string <var>$host</var></span>, <span>string <var>$username</var></span>, <span>string <var>$passwd</var></span>, <span>string <var>$dbname</var></span>, <span>integer <var>$port</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -236,7 +238,7 @@ $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_close">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#75-82" title="Go to source code">close</a>( )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#74-81" title="Go to source code">close</a>( )</code>
 
 		<div class="description short">
 			
@@ -271,7 +273,7 @@ $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_query">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#84-103" title="Go to source code">query</a>( <span>string <var>$query</var></span>, <span>mixed <var>$params</var> = <span class="php-keyword1">array</span>()</span> )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#83-101" title="Go to source code">query</a>( <span>string <var>$query</var></span> )</code>
 
 		<div class="description short">
 			
@@ -291,8 +293,6 @@ placeholders.</p>
 				<div class="list"><dl>
 					<dt><var>$query</var></dt>
 					<dd><code>string</code><br>$query</dd>
-					<dt><var>$params</var></dt>
-					<dd><code>mixed</code><br>$params Parameters can be passed as indifidual arguments or as array</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -325,7 +325,7 @@ status='A'", array('id'=&gt;$id, 'age'=&gt;$age));<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchAll">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#106-143" title="Go to source code">fetchAll</a>( <span>string|mysqli_result <var>$query</var></span>, <span>integer <var>$resulttype</var> = MYSQLI_ASSOC</span> )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#104-140" title="Go to source code">fetchAll</a>( <span>string|mysqli_result <var>$query</var></span>, <span>integer|string <var>$resulttype</var> = MYSQLI_ASSOC</span> )</code>
 
 		<div class="description short">
 			
@@ -346,7 +346,7 @@ both.</p>
 					<dt><var>$query</var></dt>
 					<dd><code>string|mysqli_result</code><br>$query SQL Query or DB result</dd>
 					<dt><var>$resulttype</var></dt>
-					<dd><code>integer</code><br>$resulttype MYSQLI_ASSOC, MYSQLI_NUM, or MYSQLI_BOTH</dd>
+					<dd><code>integer|string</code><br>$resulttype MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH or class name</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -361,6 +361,7 @@ both.</p>
 						DB::conn()-&gt;fetchAll("SELECT * FROM mytable", MYSQLI_NUM);<br />
 						DB::conn()-&gt;fetchAll("SELECT * FROM mytable WHERE group=?", MYSQLI_ASSOC,
 $group);<br />
+						DB::conn()-&gt;fetchAll("SELECT * FROM foobar WHERE group=?", 'FooBar', $group)<br />
 				</div>
 
 
@@ -378,7 +379,7 @@ $group);<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchOne">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#145-167" title="Go to source code">fetchOne</a>( <span>string|mysqli_result <var>$query</var></span>, <span>integer <var>$resulttype</var> = MYSQLI_ASSOC</span> )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#142-165" title="Go to source code">fetchOne</a>( <span>string|mysqli_result <var>$query</var></span>, <span>integer|string <var>$resulttype</var> = MYSQLI_ASSOC</span> )</code>
 
 		<div class="description short">
 			
@@ -399,7 +400,7 @@ both.</p>
 					<dt><var>$query</var></dt>
 					<dd><code>string|mysqli_result</code><br>$query SQL Query or DB result</dd>
 					<dt><var>$resulttype</var></dt>
-					<dd><code>integer</code><br>$resulttype MYSQLI_ASSOC, MYSQLI_NUM, or MYSQLI_BOTH</dd>
+					<dd><code>integer|string</code><br>$resulttype MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH or class name</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -413,6 +414,7 @@ both.</p>
 						DB::conn()-&gt;fetchOne("SELECT * FROM mytable");<br />
 						DB::conn()-&gt;fetchOne("SELECT * FROM mytable", MYSQLI_NUM);<br />
 						DB::conn()-&gt;fetchOne("SELECT * FROM mytable WHERE id=?", MYSQLI_ASSOC, $id);<br />
+						DB::conn()-&gt;fetchOne("SELECT * FROM foobar WHERE id=?", 'FooBar', $id);<br />
 				</div>
 
 
@@ -430,7 +432,7 @@ both.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchColumn">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#169-191" title="Go to source code">fetchColumn</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#167-189" title="Go to source code">fetchColumn</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
 
 		<div class="description short">
 			
@@ -477,7 +479,7 @@ both.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchPairs">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#193-214" title="Go to source code">fetchPairs</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#191-212" title="Go to source code">fetchPairs</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
 
 		<div class="description short">
 			
@@ -526,7 +528,7 @@ as key and the second as value.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchValue">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#216-234" title="Go to source code">fetchValue</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#214-232" title="Go to source code">fetchValue</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
 
 		<div class="description short">
 			
@@ -573,7 +575,7 @@ as key and the second as value.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_save">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#237-277" title="Go to source code">save</a>( <span>string <var>$table</var></span>, <span>array <var>$values</var> = <span class="php-keyword1">array</span>()</span>, <span>boolean <var>$update</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#235-275" title="Go to source code">save</a>( <span>string <var>$table</var></span>, <span>array <var>$values</var> = <span class="php-keyword1">array</span>()</span>, <span>boolean <var>$update</var> = <span class="php-keyword1">true</span></span> )</code>
 
 		<div class="description short">
 			
@@ -627,7 +629,7 @@ order.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_quote">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#280-295" title="Go to source code">quote</a>( <span>mixed <var>$value</var></span>, <span>string <var>$empty</var> = <span class="php-quote">'NULL'</span></span> )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#278-293" title="Go to source code">quote</a>( <span>mixed <var>$value</var></span>, <span>string <var>$empty</var> = <span class="php-quote">'NULL'</span></span> )</code>
 
 		<div class="description short">
 			
@@ -671,7 +673,7 @@ order.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_backquote">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#297-306" title="Go to source code">backquote</a>( <span>string <var>$field</var></span> )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#295-304" title="Go to source code">backquote</a>( <span>string <var>$field</var></span> )</code>
 
 		<div class="description short">
 			
@@ -713,7 +715,7 @@ order.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_bind">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB.html#308-332" title="Go to source code">bind</a>( <span>string <var>$query</var></span>, <span>mixed <var>$params</var> = <span class="php-keyword1">array</span>()</span> )</code>
+		<code><a href="source-class-Jasny.MySQL.DB.html#306-333" title="Go to source code">bind</a>( <span>string <var>$query</var></span>, <span>mixed <var>$params</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 		<div class="description short">
 			
@@ -763,7 +765,6 @@ status='A'", array('id'=&gt;$id, 'age'=&gt;$age));<br />
 autocommit(), 
 change_user(), 
 character_set_name(), 
-client_encoding(), 
 commit(), 
 connect(), 
 debug(), 
@@ -815,7 +816,7 @@ use_result()
 
 		<td class="attributes"><code>boolean</code></td>
 		<td class="name"><code>
-				<a href="source-class-Jasny.MySQL.DB.html#26-31" title="Go to source code"><b>SKIP_EXISTING</b></a>
+				<a href="source-class-Jasny.MySQL.DB.html#25-30" title="Go to source code"><b>SKIP_EXISTING</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-keyword1">false</span></code></td>
 		<td class="description"><div>
@@ -852,6 +853,7 @@ use_result()
 <var>$connect_error</var>, 
 <var>$errno</var>, 
 <var>$error</var>, 
+<var>$error_list</var>, 
 <var>$field_count</var>, 
 <var>$host_info</var>, 
 <var>$info</var>, 
