@@ -2,7 +2,12 @@
 /**
  * A very simple class for using MySQL.
  * 
- * @author Arnold Daniels
+ * PHP version 5.3+
+ * 
+ * @package Jasny/DB-MySQL
+ * @author  Arnold Daniels <arnold@jasny.net>
+ * @license https://raw.github.com/jasny/DB-MySQL/master/LICENSE MIT
+ * @link    https://jasny.github.com/DB-MySQL
  */
 /** */
 namespace Jasny\MySQL;
@@ -18,7 +23,7 @@ require_once __DIR__ . '/DB/Exception.php';
  *   new DB($host, $user, $pwd, $dbname);<br/>
  *   $result = DB::conn()->query("SELECT * FROM foo WHERE id = ?", $id);
  * 
- * @package DB
+ * @package DB-MySQL
  */
 class DB extends \mysqli
 {
@@ -57,11 +62,11 @@ class DB extends \mysqli
     /**
      * Class constructor.
      * 
-     * @param string $host
-     * @param string $username
-     * @param string $passwd
-     * @param string $dbname
-     * @param int    $port 
+     * @param string $host      MySQL hostname
+     * @param string $username  MySQL username
+     * @param string $passwd    User's password
+     * @param string $dbname    Database name
+     * @param int    $port      MySQL port
      */
     public function __construct($host, $username, $passwd, $dbname, $port = null)
     {
@@ -72,12 +77,14 @@ class DB extends \mysqli
     }
 
     /**
-     * Closes a previously opened database connection
+     * Closes a previously opened database connection.
+     * 
+     * @return boolean
      */
     public function close()
     {
         if (self::$connection === $this) self::$connection = null;
-        parent::close();
+        return parent::close();
     }
     
     /**
@@ -87,7 +94,7 @@ class DB extends \mysqli
      * @example DB::conn()->query("SELECT * FROM mytable WHERE id=?", $id);
      * @example DB::conn()->query("SELECT * FROM mytable WHERE name=:name AND age>:age AND status='A'", array('id'=>$id, 'age'=>$age));
      * 
-     * @param string $query
+     * @param string $query  SQL Query
      * @return \mysqli_result
      */
     public function query($query)
@@ -278,7 +285,7 @@ class DB extends \mysqli
     /**
      * Quote a value so it can be savely used in a query.
      * 
-     * @param mixed $value
+     * @param mixed  $value
      * @param string $empty  Return $empty if $value is null
      * @return string
      */
