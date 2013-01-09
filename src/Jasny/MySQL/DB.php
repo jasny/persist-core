@@ -51,9 +51,7 @@ class DB extends \mysqli
         // Auto connect using Jasny's Config class
         if (!isset(self::$connection)) {
             if (!class_exists('Jasny\Config') || !isset(\Jasny\Config::i()->db)) throw new DB_Exception("Unable to create DB connection: not configured");
-            
-            $cfg = \Jasny\Config::i()->db;
-            new static(isset($cfg->host) ? $cfg->host : 'localhost', $cfg->username, $cfg->password, isset($cfg->dbname) ? $cfg->dbname : null, isset($cfg->port) ? $cfg->port : null);
+            new static(\Jasny\Config::i()->db);
         }
 
         return self::$connection;
@@ -62,15 +60,19 @@ class DB extends \mysqli
     /**
      * Class constructor.
      * 
-     * @param string $host      MySQL hostname
-     * @param string $username  MySQL username
-     * @param string $passwd    User's password
-     * @param string $dbname    Database name
-     * @param int    $port      MySQL port
+     * @param string|array $host      Hostname or settings as assoc array
+     * @param string       $username
+     * @param string       $password
+     * @param string       $dbname
+     * @param int          $port 
      */
-    public function __construct($host, $username, $passwd, $dbname, $port = null)
+    public function __construct($host, $username = null, $password = null, $dbname = null, $port = null)
     {
-        parent::__construct($host, $username, $passwd, $dbname, $port);
+        if (!is_scalar($host)) {
+            extract((array)$host, EXTR_IF_EXISTS);
+        }
+        
+        parent::__construct($host, $username, $password, $dbname, $port);
         $this->set_charset('utf8');
         
         if (!isset(self::$connection)) self::$connection = $this;
