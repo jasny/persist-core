@@ -2,7 +2,6 @@
     "name": "jasny/db",
     "description": "A DB layer for the masses",
     "keywords": ["database", "db", "mysql"],
-    "version": "v1.0.0",
     "license": "MIT",
     "homepage": "http://jasny.github.com/db",
     "authors": [
