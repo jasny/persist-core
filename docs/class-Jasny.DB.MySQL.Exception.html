@@ -4,15 +4,15 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class Jasny\MySQL\DB_Exception | DB-MySQL · API documentation</title>
+	<title>Class Jasny\DB\MySQL\Exception | Jasny DB · API documentation</title>
 
 	<script type="text/javascript" src="resources/combined.js?394153670"></script>
-	<script type="text/javascript" src="elementlist.js?3469598177"></script>
+	<script type="text/javascript" src="elementlist.js?4160033289"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 	<script type="text/javascript">
 		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', "UA-32388850-3"]);
+		_gaq.push(['_setAccount', "UA-32388850-6"]);
 		_gaq.push(['_trackPageview']);
 
 		(function() {
@@ -34,9 +34,11 @@
 			<ul>
 				<li class="active"><a href="namespace-Jasny.html">Jasny<span></span></a>
 						<ul>
-				<li class="active"><a href="namespace-Jasny.MySQL.html">MySQL</a>
+				<li class="active main"><a href="namespace-Jasny.DB.html">DB<span></span></a>
+						<ul>
+				<li class="active main"><a href="namespace-Jasny.DB.MySQL.html">MySQL</a>
 						</li>
-							</ul></li>
+							</ul></li></ul></li>
 			</ul>
 		</div>
 
@@ -46,14 +48,15 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
-				<li><a href="class-Jasny.MySQL.DB.html">DB</a></li>
+				<li><a href="class-Jasny.DB.MySQL.Connection.html">Connection</a></li>
+				<li><a href="class-Jasny.DB.MySQL.Table.html">Table</a></li>
 			</ul>
 
 
 
 			<h3>Exceptions</h3>
 			<ul>
-				<li class="active"><a href="class-Jasny.MySQL.DB_Exception.html">DB_Exception</a></li>
+				<li class="active"><a href="class-Jasny.DB.MySQL.Exception.html">Exception</a></li>
 			</ul>
 
 
@@ -78,7 +81,7 @@
 				<a href="index.html" title="Overview"><span>Overview</span></a>
 			</li>
 			<li>
-				<a href="namespace-Jasny.MySQL.html" title="Summary of Jasny\MySQL"><span>Namespace</span></a>
+				<a href="namespace-Jasny.DB.MySQL.html" title="Summary of Jasny\DB\MySQL"><span>Namespace</span></a>
 			</li>
 			<li class="active">
 <span>Class</span>			</li>
@@ -93,7 +96,7 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class DB_Exception</h1>
+	<h1>Class Exception</h1>
 
 
 	<div class="description">
@@ -122,7 +125,9 @@ mysqli_sql_exception
 		</dd>
 		<dd style="padding-left:90px">
 			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>Jasny\MySQL\DB_Exception</span></b>			
+<b><span>Jasny\DB\MySQL\Exception</span></b>			
+			 implements 
+				<a href="class-Jasny.DB.Exception.html"><span>Jasny\DB\Exception</span></a>
 			
 			
 		</dd>
@@ -138,10 +143,10 @@ mysqli_sql_exception
 	<div class="info">
 		
 		
-		<b>Namespace:</b> <a href="namespace-Jasny.html">Jasny</a>\<a href="namespace-Jasny.MySQL.html">MySQL</a><br />
+		<b>Namespace:</b> <a href="namespace-Jasny.html">Jasny</a>\<a href="namespace-Jasny.DB.html">DB</a>\<a href="namespace-Jasny.DB.MySQL.html">MySQL</a><br />
 		<b>Package:</b> DB<br />
 
-		<b>Located at</b> <a href="source-class-Jasny.MySQL.DB_Exception.html#5-60" title="Go to source code">Jasny/MySQL/DB/Exception.php</a><br />
+		<b>Located at</b> <a href="source-class-Jasny.DB.MySQL.Exception.html#5-60" title="Go to source code">Jasny/DB/MySQL/Exception.php</a><br />
 	</div>
 
 
@@ -159,7 +164,7 @@ mysqli_sql_exception
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB_Exception.html#24-39" title="Go to source code">__construct</a>( <span>string <var>$error</var></span>, <span>integer <var>$code</var> = <span class="php-num">0</span></span>, <span>string <var>$query</var> = <span class="php-keyword1">null</span></span>, <span>Exception <var>$previous</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Exception.html#24-39" title="Go to source code">__construct</a>( <span>string <var>$error</var></span>, <span>integer <var>$code</var> = <span class="php-num">0</span></span>, <span>string <var>$query</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-Jasny.DB.MySQL.Exception.html">Jasny\DB\MySQL\Exception</a></code> <var>$previous</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -182,7 +187,7 @@ mysqli_sql_exception
 					<dt><var>$query</var></dt>
 					<dd><code>string</code><br>$query</dd>
 					<dt><var>$previous</var></dt>
-					<dd><code>Exception</code><br>$previous</dd>
+					<dd><code><code><a href="class-Jasny.DB.MySQL.Exception.html">Jasny\DB\MySQL\Exception</a></code></code><br>$previous</dd>
 				</dl></div>
 
 
@@ -205,7 +210,7 @@ mysqli_sql_exception
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getError">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB_Exception.html#41-49" title="Go to source code">getError</a>( )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Exception.html#41-49" title="Go to source code">getError</a>( )</code>
 
 		<div class="description short">
 			
@@ -228,6 +233,8 @@ mysqli_sql_exception
 
 
 
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-Jasny.DB.Exception.html#_getError">Jasny\DB\Exception::getError()</a></code></div>
 		</div>
 		</div></td>
 	</tr>
@@ -242,7 +249,7 @@ mysqli_sql_exception
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getQuery">#</a>
-		<code><a href="source-class-Jasny.MySQL.DB_Exception.html#51-59" title="Go to source code">getQuery</a>( )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Exception.html#51-59" title="Go to source code">getQuery</a>( )</code>
 
 		<div class="description short">
 			
@@ -265,6 +272,8 @@ mysqli_sql_exception
 
 
 
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-Jasny.DB.Exception.html#_getQuery">Jasny\DB\Exception::getQuery()</a></code></div>
 		</div>
 		</div></td>
 	</tr>
@@ -305,7 +314,7 @@ getTraceAsString()
 </div>
 
 	<div id="footer">
-		DB-MySQL · API documentation API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+		Jasny DB · API documentation API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
 	</div>
 </div>
 </div>

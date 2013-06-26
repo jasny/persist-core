@@ -1,10 +1,10 @@
 {
-    "name": "jasny/db-mysql",
-    "description": "A simple DB layer in PHP for using MySQL",
+    "name": "jasny/db",
+    "description": "A DB layer for the masses",
     "keywords": ["database", "db", "mysql"],
-    "version": "v1.1.1",
+    "version": "v1.0.0",
     "license": "MIT",
-    "homepage": "http://jasny.github.com/DB-MySQL",
+    "homepage": "http://jasny.github.com/db",
     "authors": [
         {
             "name": "Arnold Daniels",
@@ -13,19 +13,18 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/jasny/DB-MySQL/issues",
-        "source": "https://github.com/jasny/DB-MySQL"
+        "issues": "https://github.com/jasny/db/issues",
+        "source": "https://github.com/jasny/db"
     },
     "require": {
         "php": ">=5.3.0"
     },
     "suggest" : {
-        "jasny/config": "Configure your DB and make it work out of the box",
         "jasny/dbquery-mysql": "Supports building, parsing and modifying MySQL queries"
     },
     "autoload": {
         "psr-0": {
-            "Jasny\\MySQL\\DB": "src/"
+            "Jasny\\DB": "src/"
         }
     }
 }

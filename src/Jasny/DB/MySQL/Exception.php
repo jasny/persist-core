@@ -1,12 +1,12 @@
 <?php
 
-namespace Jasny\MySQL;
+namespace Jasny\DB\MySQL;
 
 /**
  * Database exception.
  * @package DB
  */
-class DB_Exception extends \mysqli_sql_exception
+class Exception extends \mysqli_sql_exception implements \Jasny\DB\Exception
 {
     /**
      * Failed query

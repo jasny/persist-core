@@ -1,31 +1,27 @@
 <?php
 /**
- * A very simple class for using MySQL.
+ * Jasny DB - A DB layer for the masses.
  * 
  * PHP version 5.3+
  * 
- * @package Jasny/DB-MySQL
  * @author  Arnold Daniels <arnold@jasny.net>
- * @license https://raw.github.com/jasny/DB-MySQL/master/LICENSE MIT
- * @link    https://jasny.github.com/DB-MySQL
+ * @license https://raw.github.com/jasny/db/master/LICENSE MIT
+ * @link    https://jasny.github.io/db
  */
 /** */
-namespace Jasny\MySQL;
-
-require_once __DIR__ . '/DB/Exception.php';
+namespace Jasny\DB\MySQL;
 
 /**
  * MySQL DB connection.
  * 
- * Optionally use Jasny's Config class by configuring Config::i()->db;
- * 
  * @example <br/>
+ *   use Jasny\DB\MySQL\Connection as DB;<br/>
  *   new DB($host, $user, $pwd, $dbname);<br/>
  *   $result = DB::conn()->query("SELECT * FROM foo WHERE id = ?", $id);
  * 
- * @package DB-MySQL
+ * @package MySQL
  */
-class DB extends \mysqli
+class Connection extends \mysqli implements \Jasny\DB\Connection
 {
     /**
      * Don't update existing records when saving, but ignore them instead.
@@ -40,20 +36,21 @@ class DB extends \mysqli
      */
     protected static $connection;
 
+    /**
+     * Namespace of the Record and Table classes.
+     * @var string
+     */
+    public $modelNamespace;
+
     
     /**
-     * Get the DB connection.
+     * Get the default DB connection.
      * 
      * @return DB
      */
     public static function conn()
     {
-        // Auto connect using Jasny's Config class
-        if (!isset(self::$connection)) {
-            if (!class_exists('Jasny\Config') || !isset(\Jasny\Config::i()->db)) throw new DB_Exception("Unable to create DB connection: not configured");
-            new static(\Jasny\Config::i()->db);
-        }
-
+        if (!isset(self::$connection)) self::$connection = new static();
         return self::$connection;
     }
 
@@ -66,18 +63,19 @@ class DB extends \mysqli
      * @param string       $dbname
      * @param int          $port 
      */
-    public function __construct($host, $username = null, $password = null, $dbname = null, $port = null)
+    public function __construct($host = 'localhost', $username = null, $password = null, $dbname = null, $port = null)
     {
-        if (!is_scalar($host)) {
-            extract((array)$host, EXTR_IF_EXISTS);
-        }
+        if (!is_scalar($host)) extract((array)$host, EXTR_IF_EXISTS);
         
         parent::__construct($host, $username, $password, $dbname, $port);
+        if ($this->connect_error) throw new \Exception("Failed to connect to the database: " . $this->connect_error);
+        
         $this->set_charset('utf8');
         
         if (!isset(self::$connection)) self::$connection = $this;
+        if (!isset(\Jasny\DB\Table::$defaultConnection)) \Jasny\DB\Table::$defaultConnection = $this;
     }
-
+    
     /**
      * Closes a previously opened database connection.
      * 
@@ -86,8 +84,20 @@ class DB extends \mysqli
     public function close()
     {
         if (self::$connection === $this) self::$connection = null;
+        if (\Jasny\DB\Table::$defaultConnection === $this) \Jasny\DB\Table::$defaultConnection = null;
+        
         return parent::close();
     }
+    
+    /**
+     * Use this connection as the default DB
+     */
+    public function asDefault()
+    {
+        self::$connection = $this;
+        \Jasny\DB\Table::$defaultConnection = $this;
+    }
+
     
     /**
      * Performs a query on the database.
@@ -104,7 +114,7 @@ class DB extends \mysqli
         if (func_num_args() > 1) $query = call_user_func_array(array(get_class(), 'bind'), func_get_args());
 
         $result = parent::query((string)$query);
-        if (!$result) throw new DB_Exception($this->error, $this->errno, $query);
+        if (!$result) throw new Exception($this->error, $this->errno, $query);
 
         return $result;
     }
@@ -245,9 +255,9 @@ class DB extends \mysqli
      * Insert or update a record.
      * All rows should have the same keys in the same order.
      * 
-     * @example $db->save('mytable', $row)
-     * @example $db->save('mytable', array($row1, $row2, $row3))
-     * @example $db->save('mytable', array($row1, $row2, $row3), DB::SKIP_EXISTING)
+     * @example DB::conn()->save('mytable', $row)
+     * @example DB::conn()->save('mytable', array($row1, $row2, $row3))
+     * @example DB::conn()->save('mytable', array($row1, $row2, $row3), DB::SKIP_EXISTING)
      * 
      * @param string  $table
      * @param array   $values  One or multiple rows of values
@@ -332,12 +342,47 @@ class DB extends \mysqli
             $params = array_splice($args, 1);
         }
         
-        $fn = function ($match) use (&$params) {
-            if (!empty($match[1]) && !empty($params)) return DB::quote(array_shift($params));
-            if (!empty($match[2]) && array_key_exists($match[2], $params)) return DB::quote($params[$match[2]]);
+        $quote = array(get_called_class(), 'quote'); // Callback
+        
+        $fn = function ($match) use (&$params, $quote) {
+            if (!empty($match[1]) && !empty($params)) return call_user_func($quote, array_shift($params));
+            if (!empty($match[2]) && array_key_exists($match[2], $params)) return call_user_func($quote, $params[$match[2]]);
             return $match[0];
         };
 
         return preg_replace_callback('/`[^`]*+`|"(?:[^"\\\\]++|\\\\.)*+"|\'(?:[^\'\\\\]++|\\\\.)*+\'|(\?)|:(\w++)/', $fn, $query);
+    }
+    
+
+    /**
+     * Get a table gateway.
+     * 
+     * @param string $name  Table name
+     * @return Table
+     */
+    public function table($name)
+    {
+        return Table::factory($name, $this);
+    }
+
+    
+    /**
+     * Set the model namespace.
+     * 
+     * @param string $ns
+     */
+    public function setModelNamespace($ns)
+    {
+        $this->modelNamespace = trim($ns, '\\');
+    }
+
+    /**
+     * Get the model namespace.
+     * 
+     * @return string
+     */
+    public function getModelNamespace()
+    {
+        return $this->modelNamespace;
     }
 }

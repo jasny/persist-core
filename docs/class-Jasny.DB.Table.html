@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class Jasny\DB\Table | Jasny DB · API documentation</title>
+
+	<script type="text/javascript" src="resources/combined.js?394153670"></script>
+	<script type="text/javascript" src="elementlist.js?4160033289"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', "UA-32388850-6"]);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-Jasny.html">Jasny<span></span></a>
+						<ul>
+				<li class="active main"><a href="namespace-Jasny.DB.html">DB<span></span></a>
+						<ul>
+				<li class="main"><a href="namespace-Jasny.DB.MySQL.html">MySQL</a>
+						</li>
+							</ul></li></ul></li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Jasny.DB.Record.html">Record</a></li>
+				<li class="active"><a href="class-Jasny.DB.Table.html">Table</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-Jasny.DB.Connection.html">Connection</a></li>
+				<li><a href="class-Jasny.DB.Exception.html">Exception</a></li>
+			</ul>
+
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-Jasny.DB.html" title="Summary of Jasny\DB"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Table</h1>
+
+
+	<div class="description">
+	
+<p>Default table gateways.</p>
+
+	</div>
+
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-Jasny.DB.MySQL.Table.html">Jasny\DB\MySQL\Table</a>
+	</div>
+
+
+
+
+
+
+	<div class="info">
+		<b>Abstract</b><br />
+		
+		<b>Namespace:</b> <a href="namespace-Jasny.html">Jasny</a>\<a href="namespace-Jasny.DB.html">DB</a><br />
+		
+
+				<b>License:</b>
+				<a href="https://raw.github.com/jasny/db/master/LICENSE">MIT</a><br />
+				<b>Author:</b>
+				Arnold Daniels &lt;<a
+href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
+		<b>Located at</b> <a href="source-class-Jasny.DB.Table.html#14-219" title="Go to source code">Jasny/DB/Table.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="getDefaultConnection" id="_getDefaultConnection">
+
+		<td class="attributes"><code>
+			 public static
+			<code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDefaultConnection">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#43-62" title="Go to source code">getDefaultConnection</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get the default database (with respect of the namespace).</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the default database (with respect of the namespace).</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDefaultClass" id="_getDefaultClass">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDefaultClass">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#64-82" title="Go to source code">getDefaultClass</a>( <span><code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code> <var>$db</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Get the default Table class (with respect of the namespace).</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the default Table class (with respect of the namespace).</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$db</var></dt>
+					<dd><code><code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code></code><br>$db</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="factory" id="_factory">
+
+		<td class="attributes"><code>
+			 public static
+			<code><a href="class-Jasny.DB.Table.html">Jasny\DB\Table</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_factory">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#85-111" title="Go to source code">factory</a>( <span>string <var>$name</var></span>, <span><code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code> <var>$db</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Get a table gateway.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get a table gateway.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name Table name or record class name</dd>
+					<dt><var>$db</var></dt>
+					<dd><code>DB</code><br>$db Database connection</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Table.html">Jasny\DB\Table</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDB" id="_getDB">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDB">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#127-135" title="Go to source code">getDB</a>( )</code>
+
+		<div class="description short">
+			
+<p>Return DB connection</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Return DB connection</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getName" id="_getName">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getName">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#137-145" title="Go to source code">getName</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get database name</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get database name</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getClass" id="_getClass">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getClass">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#147-156" title="Go to source code">getClass</a>( )</code>
+
+		<div class="description short">
+			
+<p>Return record class name</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Return record class name</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getDefaults" id="_getDefaults">
+
+		<td class="attributes"><code>
+			abstract public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDefaults">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#159-164" title="Go to source code">getDefaults</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get all the default values for this table.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get all the default values for this table.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getIdentifier" id="_getIdentifier">
+
+		<td class="attributes"><code>
+			abstract public 
+			string|array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getIdentifier">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#166-171" title="Go to source code">getIdentifier</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get the property (or properties) to uniquely identifies a record.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the property (or properties) to uniquely identifies a record.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string|array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="fetchAll" id="_fetchAll">
+
+		<td class="attributes"><code>
+			abstract public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_fetchAll">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#174-179" title="Go to source code">fetchAll</a>( )</code>
+
+		<div class="description short">
+			
+<p>Fetch all records of the table.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Fetch all records of the table.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="fetch" id="_fetch">
+
+		<td class="attributes"><code>
+			abstract public 
+			<code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_fetch">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#181-187" title="Go to source code">fetch</a>( <span>integer|array <var>$id</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Load a record from the DB</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Load a record from the DB</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$id</var></dt>
+					<dd><code>integer|array</code><br>$id ID or filter</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="save" id="_save">
+
+		<td class="attributes"><code>
+			abstract public 
+			<code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_save">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#189-195" title="Go to source code">save</a>( <span><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>|array <var>$record</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Save the record to the DB.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Save the record to the DB.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$record</var></dt>
+					<dd><code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>|array</code><br>$record Record or array with values</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="defaultConnection" id="$defaultConnection">
+		<td class="attributes"><code>
+			public static 
+			<code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code>
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Jasny.DB.Table.html#19-23" title="Go to source code"><var>$defaultConnection</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$defaultConnection" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Default database connection</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Default database connection</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Jasny DB · API documentation API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
