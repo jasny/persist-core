@@ -103,8 +103,9 @@ abstract class Table
             if (get_class($table) == $class) return $table;
         }
         
+        $table = new $class($db); // Create a new table
+        $table->name = $name;
         
-        $table = new $class($name, $db); // Create a new table
         self::$tables[spl_object_hash($db)][$name] = $table;
         
         return $table;
@@ -115,12 +116,10 @@ abstract class Table
      * Class constructor.
      * Protected because the factory method should be used.
      * 
-     * @param string      $name  Table name
-     * @param DConnection $db    Database connection
+     * @param Connection $db    Database connection
      */
-    protected function __construct($name, Connection $db=null)
+    protected function __construct(Connection $db=null)
     {
-        $this->name = $name;
         $this->db = $db ?: self::getDefaultConnection();
     }
     
@@ -141,6 +140,10 @@ abstract class Table
      */
     public function getName()
     {
+        if (!isset($this->name)) {
+            $this->name = static::uncamelcase(preg_replace('/^.+\\\\|Table$/i', '', get_class($this))); // Remove namespace and un-camelcase to get DB table name from record class
+        }
+        
         return $this->name;
     }
     
