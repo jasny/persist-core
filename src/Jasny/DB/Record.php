@@ -49,7 +49,7 @@ class Record
                 continue;
             }
             
-            if ($values instanceof DateTime) $value = $value->format('c');
+            if ($value instanceof \DateTime) $value = $value->format('c');
              elseif ($value instanceof static) $value = $value->id;
              elseif (is_object($value) && method_exists($value, '__toString')) $value = (string)$value;
              elseif (!is_scalar($value) && !is_null($value)) unset($values[$key]);
