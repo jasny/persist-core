@@ -58,6 +58,7 @@ abstract class Table
             $class = get_parent_class($class);
         };
         
+        if (!isset(self::$defaultConnection)) throw new \Exception("Default connection not set, please connect to a DB.");
         return self::$defaultConnection;
     }
     
