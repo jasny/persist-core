@@ -348,6 +348,12 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
         if (is_null($value)) return $empty;
         if (is_bool($value)) return $value ? 'TRUE' : 'FALSE';
         if (is_int($value) || is_float($value)) return (string)$value;
+        
+        if ($value instanceof \DateTime) {
+            $value->setTimezone(new \DateTimeZone(date_default_timezone_get())); // MySQL can't handle timezones
+            $value = $value->format('c');
+        }
+        
         return '"' . strtr((string)$value, array('\\' => '\\\\', "\0" => '\\0', "\r" => '\\r', "\n" => '\\n', '"' => '\\"')) . '"';
     }
 
