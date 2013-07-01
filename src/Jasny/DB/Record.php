@@ -86,6 +86,18 @@ class Record
     
     
     /**
+     * Cast a timestamp into a DateTime object with correct timezone.
+     * 
+     * @param string $date
+     * @return DateTime
+     */
+    public final function castTimestamp($date)
+    {
+        return $this->getDBTable()->getDB()->castTimestamp($date);
+    }
+
+    
+    /**
      * Set the table gateway.
      * @ignore
      * 

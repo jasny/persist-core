@@ -55,4 +55,13 @@ interface Connection
      * @return string
      */
     public function getModelNamespace();
+    
+    
+    /**
+     * Cast a timestamp into a DateTime object with correct timezone.
+     * 
+     * @param string $date
+     * @return DateTime
+     */
+    public function castTimestamp($date);
 }
