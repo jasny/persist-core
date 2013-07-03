@@ -24,13 +24,37 @@ class Record
     
     
     /**
-     * Set value for auto_increment field.
+     * Get the value of the identifier field.
+     * 
+     * @param int $id
+     */
+    public function getId()
+    {
+        $field = $this->getDBTable()->getIdentifier();
+        if (!$field) throw new \Exception("Table " . $this->getDBTable()->getName() . " does not have an identifier field");
+        
+        // Composite ID
+        if (is_array($field)) {
+            $id = array();
+            foreach ($field as $f) $id[$f] = $this->$f;
+            return $id;
+        }
+        
+        // Single ID field
+        return $this->$field;
+    }
+    
+    /**
+     * Set a value for the identifier field.
      * 
      * @param int $id
      */
     public function setId($id)
     {
         $field = $this->getDBTable()->getIdentifier();
+        if (!$field) throw new \Exception("Table " . $this->getDBTable()->getName() . " does not have an identifier field");
+        if (is_array($field)) throw new \Exception("Table " . $this->getDBTable()->getName() . " has a composite identifier field");
+        
         $this->$field = $id;
     }
     
@@ -78,12 +102,31 @@ class Record
     
     /**
      * Save the model to the DB.
+     * 
+     * @return Record $this
      */
     public function save()
     {
         $this->getDBTable()->save($this);
+        return $this;
     }
     
+    /**
+     * Reload all the properties of the record from the DB.
+     * Any unsaved changes are discarded.
+     * 
+     * @return Record $this
+     */
+    public function reload()
+    {
+        $record = $this->getDBTable()->fetch($record->getId());
+        
+        foreach ($new as $key=>$value) {
+            $this->$key = $value;
+        }
+        
+        return $this;
+    }
     
     /**
      * Cast a timestamp into a DateTime object with correct timezone.
@@ -116,6 +159,8 @@ class Record
     public function getDBTable()
     {
         if (!isset($this->_dbtable)) $this->_dbtable = Table::factory(get_class($this));
+         elseif (is_string($this->_dbtable)) $this->_dbtable = Table::factory($this->_dbtable);
+         
         return $this->_dbtable;
     }
     
@@ -131,5 +176,17 @@ class Record
     {
         $dbtable = Table::factory(get_called_class());
         return call_user_func_array(array($dbtable, $name), $arguments);
+    }
+    
+    
+    /**
+     * Forget dbtable when serialized.
+     * 
+     * @return array
+     */
+    public function __sleep()
+    {
+        if (isset($this->_dbtable)) $this->_dbtable = $this->_dbtable->getName();
+        return array_keys(get_object_vars($this));
     }
 }
