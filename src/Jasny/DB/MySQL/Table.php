@@ -43,6 +43,8 @@ class Table extends \Jasny\DB\Table
     {
         if (isset($this->defaults)) return $this->defaults;
         
+        $dopk = !isset($this->primarykey); // Determine the primary key if not statically set
+        
         $fields = $this->getDB()->fetchAll("DESCRIBE " . $this->db->backquote($this->getName()), MYSQLI_ASSOC);
         
         $defaults = array();
@@ -51,7 +53,7 @@ class Table extends \Jasny\DB\Table
             if (isset($value) && ($field['Type'] == 'date' || $field['Type'] == 'datetime' || $field['Type'] == 'timestamp')) $value = new \DateTime($value == 'CURRENT_TIMESTAMP' ? 'now' : $value);
             $defaults[$field['Field']] = $value;
             
-            if ($field['Key'] == 'PRI') {
+            if ($dopk && $field['Key'] == 'PRI') {
                 if (isset($this->primarykey)) {
                     $this->primarykey = (array)$this->primarykey;
                     $this->primarykey[] = $field['Field'];
@@ -104,7 +106,7 @@ class Table extends \Jasny\DB\Table
         
         if (is_array($id)) {
             $filter = array();
-            foreach ($id as $key=>$value) $filter[] = $db->backquote($key) . ' = ' . $db->quote($value);
+            foreach ($id as $key=>$value) $filter[] = $db->backquote($key) . (isset($value) ? ' = ' . $db->quote($value) : ' IS NULL');
             $where = join(' AND ', $filter);
         } elseif (!is_array($this->getIdentifier())) {
             $where = $db->backquote($this->getIdentifier()) . " = " . $db->quote($id);
