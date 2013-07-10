@@ -106,40 +106,6 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
 
     
     /**
-     * Use a fixed timezone like '00:00' instead of 'SYSTEM' or 'Europe/Amsterdam'.
-     * 
-     * This makes timestamp fields behave different than datetime fields, in that the time is
-     * modified based on the timezone (inc day light saving).
-     * 
-     * Use Connection::caseTimestamp() to use the correct timezone for timestamp fields.
-     */
-    public function fixTimezone()
-    {
-        $timediff = $this->fetchValue("SELECT timediff(now(),convert_tz(now(),@@session.time_zone,'+00:00'))");
-        list($h, $m) = explode(':', $timediff);
-        
-        $this->timezone = sprintf('%+03d:%02d', $h, $m);
-        $this->query("SET TIME_ZONE = ?", $this->timezone);
-    }
-    
-    /**
-     * Cast a timestamp date string into a DateTime object with correct timezone.
-     * 
-     * Use this in combintation with Connection::fixTimezone().
-     * Do not use this with datetime or date fields.
-     * 
-     * @param string $date
-     * @return DateTime
-     */
-    public function castTimestamp($date)
-    {
-        $date = new \DateTime($date . $this->timezone);
-        $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-        return $date;
-    }
-    
-    
-    /**
      * Performs a query on the database.
      * Don't mix both types ('?' and ':key') of placeholders.
      * 
