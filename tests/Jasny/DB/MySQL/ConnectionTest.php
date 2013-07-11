@@ -91,6 +91,15 @@ class ConnectionTest extends TestCase
 
         $this->assertSame('(10, 20, 99)', Connection::quote(array(10, 20, 99)));
         $this->assertSame('(10, NULL, "jan", TRUE)', Connection::quote(array(10, null, 'jan', true)));
+        
+        $this->assertSame('"1981-08-22 00:00:00"', Connection::quote(new \DateTime('22-08-1981')));
+        $this->assertSame('"2013-03-01 16:04:10"', Connection::quote(new \DateTime('01-03-2013 16:04:10')));
+        
+        if (date_default_timezone_get()) {
+            $datetime = new \DateTime('2013-03-01 16:04:10+00:00');
+            $datetime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $this->assertSame('"' . $datetime->format('Y-m-d H:i:s') . '"', Connection::quote(new \DateTime('2013-03-01 16:04:10+00:00')));
+        }
     }
 
     /**
