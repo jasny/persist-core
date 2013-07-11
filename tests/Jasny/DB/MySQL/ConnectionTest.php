@@ -102,7 +102,7 @@ class ConnectionTest extends TestCase
         }
     }
 
-    /**
+    /** 
      * Test Connection::backquote()
      */
     public function testBackquote()

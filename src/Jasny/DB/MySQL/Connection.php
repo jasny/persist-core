@@ -446,10 +446,10 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
         if (empty($this->logger)) return;
         
         if ($this->info) $info = " " . $this->info;
-         elseif ($this->affected_rows > 0) $info = " " . $this->affected_rows . (preg_match('/^\s*SELECT\b/i', $query) ? " rows in set" : " affected rows");
+         elseif ($this->affected_rows >= 0) $info = " " . $this->affected_rows . (preg_match('/^\s*SELECT\b/i', $query) ? " rows in set" : " affected rows");
          else $info = "";
         
-        if (isset($this->logger)) $this->logger->debug(rtrim($query, ';') . "; #$info (" . number_format($this->execution_time, 3) . " sec)");        
+        if (isset($this->logger)) $this->logger->debug(rtrim($query, ';') . "; #$info (" . number_format($this->execution_time, 4) . " sec)");
         if ($this->error) $this->logger->error($this->error);
     }
 }
