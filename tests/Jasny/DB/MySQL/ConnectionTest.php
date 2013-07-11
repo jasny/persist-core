@@ -614,7 +614,7 @@ class ConnectionTest extends TestCase
      */
     public function testLogConnection()
     {
-        $message = "MySQL connection {$this->db->host_info}; thread id = {$this->db->thread_id}; version {$this->db->server_version}";
+        $message = "MySQL connection {$this->db->host_info}; thread id = {$this->db->thread_id}; version {$this->db->server_info}";
         
         $logger = $this->getMock('Psr\Log\NullLogger', array('debug'));
         $logger->expects($this->once())->method('debug')->with($this->equalTo($message));

@@ -435,7 +435,7 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      */
     protected function logConnection()
     {
-        if (isset($this->logger)) $this->logger->debug("MySQL connection {$this->host_info}; thread id = {$this->thread_id}; version {$this->server_version}");
+        if (isset($this->logger)) $this->logger->debug("MySQL connection {$this->host_info}; thread id = {$this->thread_id}; version {$this->server_info}");
     }
     
     /**
