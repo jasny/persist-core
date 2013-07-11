@@ -87,8 +87,6 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
             throw new \Exception("Failed to connect to the database: " . $this->connect_error);
         }
         
-        $this->set_charset('utf8');
-        
         if (!isset(self::$connection)) self::$connection = $this;
         if (!isset(\Jasny\DB\Table::$defaultConnection)) \Jasny\DB\Table::$defaultConnection = $this;
     }
