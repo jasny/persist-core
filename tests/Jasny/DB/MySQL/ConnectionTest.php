@@ -607,4 +607,45 @@ class ConnectionTest extends TestCase
         $this->db->setModelNamespace('Test');
         $this->assertEquals('Test', $this->db->getModelNamespace());
     }
+    
+    
+    /**
+     * Test Connection::setLogger() and Connection::logConnection
+     */
+    public function testLogConnection()
+    {
+        $message = "MySQL connection {$this->db->host_info}; thread id = {$this->db->thread_id}; version {$this->db->server_version}";
+        
+        $logger = $this->getMock('Psr\Log\NullLogger', array('debug'));
+        $logger->expects($this->once())->method('debug')->with($this->equalTo($message));
+        
+        $this->db->setLogger($logger);
+    }
+    
+    /**
+     * Test Connection::setLogger() and Connection::logQuery
+     */
+    public function testLogQuery()
+    {
+        $logger = $this->getMock('Psr\Log\NullLogger', array('debug'));
+        $this->db->setLogger($logger);
+        
+        $logger->expects($this->once())->method('debug')->with($this->stringStartsWith("SELECT * FROM foo; # 5 rows in set ("));
+        $this->db->fetchAll("SELECT * FROM foo");
+    }
+    
+    /**
+     * Test Connection::setLogger() and Connection::logQuery
+     */
+    public function testLogQuery_Exception()
+    {
+        $logger = $this->getMock('Psr\Log\NullLogger', array('debug', 'error'));
+        $this->db->setLogger($logger);
+        
+        $this->setExpectedException('Jasny\DB\MySQL\Exception');
+        
+        $logger->expects($this->once())->method('debug')->with($this->stringStartsWith("SELECT * FROM foobar; # ("));
+        $logger->expects($this->once())->method('error')->with($this->equalTo("Table 'dbtest.foobar' doesn't exist"));
+        $this->db->fetchAll("SELECT * FROM foobar");
+    }
 }

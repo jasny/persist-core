@@ -43,10 +43,16 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
     public $modelNamespace;
 
     /**
-     * The fixed timezone
-     * @var type 
+     * The execution time of the last query
+     * @var float
      */
-    private $timezone = null;
+    public $execution_time;
+    
+    /**
+     * Logger to log queries, errors and more.
+     * @var Psr\Log\LoggerInterface
+     */
+    protected $logger;
     
 
     /**
@@ -74,7 +80,12 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
         if (!is_scalar($host)) extract((array)$host, EXTR_IF_EXISTS);
         
         parent::__construct($host, $username, $password, $dbname, $port);
-        if ($this->connect_error) throw new \Exception("Failed to connect to the database: " . $this->connect_error);
+        $this->logConnection();
+        
+        if ($this->connect_error) {
+            $this->log('error', $this->connect_error);
+            throw new \Exception("Failed to connect to the database: " . $this->connect_error);
+        }
         
         $this->set_charset('utf8');
         
@@ -119,9 +130,14 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
     {
         if (func_num_args() > 1) $query = call_user_func_array(array(get_class(), 'bind'), func_get_args());
 
+        $time = microtime(true); // We should use profiling to get the execution time, but this is easier
+        
         $result = parent::query((string)$query);
+        $this->execution_time = microtime(true) - $time;
+        
+        $this->logQuery((string)$query);
+        
         if (!$result) throw new Exception($this->error, $this->errno, $query);
-
         return $result;
     }
     
@@ -396,5 +412,46 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
     public function getModelNamespace()
     {
         return $this->modelNamespace;
+    }
+    
+    
+    /**
+     * Set logger interface to log queries.
+     * 
+     * Supports PSR-3 compatible loggers (like Monolog).
+     * @see https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md
+     * @see https://packagist.org/packages/monolog/monolog
+     * 
+     * @param Psr\Log\LoggerInterface $logger
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+        if (@$this->server_info) $this->logConnection();
+    }
+    
+    /**
+     * Log connection info
+     */
+    protected function logConnection()
+    {
+        if (isset($this->logger)) $this->logger->debug("MySQL connection {$this->host_info}; thread id = {$this->thread_id}; version {$this->server_version}");
+    }
+    
+    /**
+     * Log a query.
+     * 
+     * @param string $query
+     */
+    protected function logQuery($query)
+    {
+        if (empty($this->logger)) return;
+        
+        if ($this->info) $info = " " . $this->info;
+         elseif ($this->affected_rows > 0) $info = " " . $this->affected_rows . (preg_match('/^\s*SELECT\b/i', $query) ? " rows in set" : " affected rows");
+         else $info = "";
+        
+        if (isset($this->logger)) $this->logger->debug(rtrim($query, ';') . "; #$info (" . number_format($this->execution_time, 3) . " sec)");        
+        if ($this->error) $this->logger->error($this->error);
     }
 }
