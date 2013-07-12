@@ -439,14 +439,16 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
     /**
      * Log a query.
      * 
-     * @param string $query
+     * @param string        $query
+     * @param mysqli_result $result
      */
-    protected function logQuery($query)
+    protected function logQuery($query, $result)
     {
         if (empty($this->logger)) return;
         
         if ($this->info) $info = " " . $this->info;
-         elseif ($this->affected_rows >= 0) $info = " " . $this->affected_rows . (preg_match('/^\s*SELECT\b/i', $query) ? " rows in set" : " affected rows");
+         elseif ($result instanceof \mysqli_result) $info = " " . $this->affected_rows . ($this->affected_rows == 1 ? " row" : " rows") . " in set";
+         elseif ($this->affected_rows >= 0) $info = " " . $this->affected_rows . " affected". ($this->affected_rows == 1 ? " row" : " rows");
          else $info = "";
         
         if (isset($this->logger)) $this->logger->debug(rtrim($query, ';') . "; #$info (" . number_format($this->execution_time, 4) . " sec)");
