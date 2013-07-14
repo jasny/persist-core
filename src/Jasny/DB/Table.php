@@ -16,6 +16,10 @@ namespace Jasny\DB;
  */
 abstract class Table
 {
+    /** Option to skip check if class exists on Table::getClass() */
+    const SKIP_CLASS_EXISTS = 1;
+
+
     /**
      * Default database connection
      * @var Connection
@@ -65,21 +69,22 @@ abstract class Table
     /**
      * Get the default Table class (with respect of the namespace).
      * 
+     * @param string     $base  The classname we're looking for
      * @param Connection $db
      * @return string
      */
-    public static function getDefaultClass($db=null)
+    public static function getDefaultClass($base, $db=null)
     {
         $class = get_class($db ?: static::getDefaultConnection());
         
         do {
             $ns = preg_replace('/[^\\\\]+$/', '', $class);
-            if (class_exists($ns . 'Table') && is_a($ns . 'Table', __CLASS__, true)) return $ns . 'Table';
+            if (class_exists($ns . $base) && is_a($ns . $base, __NAMESPACE__ . '\\' . $base, true)) return $ns . $base;
             
             $class = get_parent_class($class);
         } while ($class);
         
-        trigger_error("Table gateways aren't supported for " . get_class($db ?: static::getDefaultConnection()), E_USER_ERROR);
+        return null;
     }
     
     
@@ -97,7 +102,8 @@ abstract class Table
         if (!isset($db)) $db = self::getDefaultConnection();
         
         $class = ltrim($db->getModelNamespace() . '\\', '\\') . static::camelcase($name) . 'Table';
-        if (!class_exists($class)) $class = static::getDefaultClass($db); // Use this standard table gateway if no specific gateway exists.
+        if (!class_exists($class)) $class = static::getDefaultClass('Table', $db); // Use this standard table gateway if no specific gateway exists.
+        if (!isset($class)) trigger_error("Table gateways aren't supported for " . get_class($db), E_USER_ERROR);
 
         if (isset(self::$tables[spl_object_hash($db)][$name])) { // Return cached gateway, only if the modelNamespace hasn't changed.
             $table = self::$tables[spl_object_hash($db)][$name];
@@ -151,12 +157,15 @@ abstract class Table
     /**
      * Return record class name
      * 
+     * @param int $options
      * @return string
      */
-    public function getClass()
+    public function getClass($options=0)
     {
         $class = ltrim($this->getDB()->getModelNamespace() . '\\', '\\') . static::camelcase($this->getName());
-        return class_exists($class) && is_a($class, 'Jasny\DB\Record', true) ? $class : 'Jasny\DB\Record';
+        
+        if (($options & self::SKIP_CLASS_EXISTS) || (class_exists($class) && is_a($class, __NAMESPACE__ . '\Record', true))) return $class; // Record class for this table exists
+        return self::getDefaultClass('Record', $this->getDB()) ?: __NAMESPACE__ . '\Record'; // Use default Record class
     }
     
     
@@ -166,6 +175,13 @@ abstract class Table
      * @return array
      */
     abstract public function getDefaults();
+    
+    /**
+     * Get the php type for each field of this table.
+     * 
+     * @return array
+     */
+    abstract public function getFieldTypes();
     
     /**
      * Get the property (or properties) to uniquely identifies a record.
@@ -219,5 +235,59 @@ abstract class Table
     protected static function uncamelcase($string)
     {
         return strtolower(preg_replace('/(?<=[a-z])([A-Z])(?![A-Z])/', '_$1', $string));
+    }
+    
+    
+    /**
+     * Cast table to table name.
+     * 
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName();
+    }
+    
+    
+    /**
+     * Cast the value to a type
+     * 
+     * @param string $value
+     * @param string $type
+     * @return mixed
+     */
+    public static function castValue($value, $type)
+    {
+        if (!is_string($value) || $type == 'string') return;
+        
+        switch ($type) {
+            case 'bool': case 'boolean':
+            case 'int':  case 'integer':
+            case 'float':
+                if (isset($type)) settype($value, $type);
+                break;
+                
+            case 'array':
+                $value = explode(',', $value);
+                break;
+            
+            default:
+                if (!class_exists($type)) throw new \Exception("Invalid type '$type'");
+                $value = new $type($value);
+                break;
+        }
+        
+        return $value;
+    }
+    
+    /**
+     * Get the PHP types for values in the result.
+     * Other types should be cast.
+     * 
+     * @return array
+     */
+    public static function resultValueTypes()
+    {
+        return array();
     }
 }

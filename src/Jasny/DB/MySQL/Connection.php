@@ -133,7 +133,7 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
         $result = parent::query((string)$query);
         $this->execution_time = microtime(true) - $time;
         
-        $this->logQuery((string)$query);
+        $this->logQuery((string)$query, $result);
         
         if (!$result) throw new Exception($this->error, $this->errno, $query);
         return $result;

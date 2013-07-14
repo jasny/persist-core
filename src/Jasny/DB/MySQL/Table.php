@@ -22,17 +22,87 @@ namespace Jasny\DB\MySQL;
 class Table extends \Jasny\DB\Table
 {
     /**
+     * PHP type for each MySQL field type.
+     * @var array
+     */
+    protected static $castTypes = array(
+        'tinyint' => 'int',
+        'smallint' => 'int',
+        'mediumint' => 'int',
+        'int' => 'string',      // Might be bigger that PHP signed integers on 32 bit
+        'integer' => 'string',  // "
+        'bigint' => 'string',   // "
+        'float' => 'float',
+        'double' => 'float',
+        'double precision' => 'float',
+        'real' => 'float',
+        'decimal' => 'float',
+        'numeric' => 'float',
+        'date' => 'DateTime',
+        'datetime' => 'DateTime',
+        'timestamp' => 'DateTime',
+        'time' => 'DateTime',
+        'year' => 'int',
+        'char' => 'string',
+        'varchar' => 'string',
+        'tinyblob' => 'string',
+        'tinytext' => 'string',
+        'blob ' => 'string',
+        'text' => 'string',
+        'mediumblob' => 'string',
+        'mediumtext' => 'string',
+        'longblob' => 'string',
+        'longtext' => 'string',
+        'enum' => 'string',
+        'set' => 'array'
+    );
+
+    
+    /**
      * Default values
      * @var array
      */
     protected $defaults;
     
     /**
+     * PHP type for each field
+     * @var array
+     */
+    protected $fieldTypes;
+    
+    /**
      * Primary key field name
      * @var string
      */
-    protected $primarykey;
+    protected $primarykey = false;
+
     
+    /**
+     * Determine default values, field types and indentifier.
+     */
+    protected function describe()
+    {
+        $fields = $this->getDB()->fetchAll("DESCRIBE " . $this->db->backquote($this->getName()), MYSQLI_ASSOC);
+        
+        $defaults = array();
+        $types = array();
+        
+        foreach ($fields as $field) {
+            if ($field['Type'] == 'tinyint(1)') $type = 'boolean';
+             else $type = self::$castTypes[preg_replace('/\(.+/', '', $field['Type'])];
+            
+            $value = $field['Default'];
+            if ($type == 'DateTime' && $value == 'CURRENT_TIMESTAMP') $value = 'now';
+            
+            $defaults[$field['Field']] = self::castValue($value, $type);
+            $types[$field['Field']] = $type;
+            if ($field['Key'] == 'PRI') $primarykey[] = $field['Field'];
+        }
+        
+        if (!isset($this->defaults)) $this->defaults = $defaults;
+        if (!isset($this->fieldTypes)) $this->fieldTypes = $types;
+        if ($this->primarykey === false && !isset($primarykey)) $this->primarykey = count($primarykey) == 1 ? reset($primarykey) : $primarykey;
+    }
     
     /**
      * Get all the default values for this table.
@@ -41,30 +111,19 @@ class Table extends \Jasny\DB\Table
      */
     public function getDefaults()
     {
-        if (isset($this->defaults)) return $this->defaults;
-        
-        $dopk = !isset($this->primarykey); // Determine the primary key if not statically set
-        
-        $fields = $this->getDB()->fetchAll("DESCRIBE " . $this->db->backquote($this->getName()), MYSQLI_ASSOC);
-        
-        $defaults = array();
-        foreach ($fields as $field) {
-            $value = $field['Default'];
-            if (isset($value) && ($field['Type'] == 'date' || $field['Type'] == 'datetime' || $field['Type'] == 'timestamp')) $value = new \DateTime($value == 'CURRENT_TIMESTAMP' ? 'now' : $value);
-            $defaults[$field['Field']] = $value;
-            
-            if ($dopk && $field['Key'] == 'PRI') {
-                if (isset($this->primarykey)) {
-                    $this->primarykey = (array)$this->primarykey;
-                    $this->primarykey[] = $field['Field'];
-                } else {
-                    $this->primarykey = $field['Field'];
-                }
-            }
-        }
-        
-        $this->defaults = $defaults;
-        return $defaults;
+        if (!isset($this->defaults)) $this->describe();
+        return $this->defaults;
+    }
+
+    /**
+     * Get the php type for each field of this table.
+     * 
+     * @return array
+     */
+    public function getFieldTypes()
+    {
+        if (!isset($this->fieldTypes)) $this->describe();
+        return $this->fieldTypes;
     }
     
     /**
@@ -74,7 +133,7 @@ class Table extends \Jasny\DB\Table
      */
     public function getIdentifier()
     {
-        if (!isset($this->defaults)) $this->getDefaults();
+        if ($this->primarykey === false) $this->describe();
         return $this->primarykey;
     }
     
@@ -163,5 +222,17 @@ class Table extends \Jasny\DB\Table
         }
         
         return $filter;
+    }
+    
+    
+    /**
+     * Get the PHP types for values in the result.
+     * Other types should be cast.
+     * 
+     * @return array
+     */
+    public static function resultValueTypes()
+    {
+        return array('string');
     }
 }
