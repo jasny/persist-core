@@ -16,6 +16,10 @@ namespace Jasny\DB;
  */
 abstract class Table
 {
+    /** Option to skip check if class exists on Table::getClass() */
+    const SKIP_CLASS_EXISTS = 1;
+
+
     /**
      * Default database connection
      * @var Connection
@@ -151,12 +155,13 @@ abstract class Table
     /**
      * Return record class name
      * 
+     * @param int $options
      * @return string
      */
-    public function getClass()
+    public function getClass($options=0)
     {
         $class = ltrim($this->getDB()->getModelNamespace() . '\\', '\\') . static::camelcase($this->getName());
-        return class_exists($class) && is_a($class, 'Jasny\DB\Record', true) ? $class : 'Jasny\DB\Record';
+        return ($options & self::SKIP_CLASS_EXISTS) || (class_exists($class) && is_a($class, 'Jasny\DB\Record', true)) ? $class : 'Jasny\DB\Record';
     }
     
     
@@ -219,5 +224,16 @@ abstract class Table
     protected static function uncamelcase($string)
     {
         return strtolower(preg_replace('/(?<=[a-z])([A-Z])(?![A-Z])/', '_$1', $string));
+    }
+    
+    
+    /**
+     * Cast table to table name.
+     * 
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName();
     }
 }
