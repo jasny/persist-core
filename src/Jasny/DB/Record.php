@@ -30,7 +30,7 @@ class Record
      */
     public function getId()
     {
-        $field = $this->getDBTable()->getIdentifier();
+        $field = $this->getDBTable()->getPrimarykey();
         if (!$field) throw new \Exception("Table " . $this->getDBTable()->getName() . " does not have an identifier field");
         
         // Composite ID
@@ -51,7 +51,7 @@ class Record
      */
     public function setId($id)
     {
-        $field = $this->getDBTable()->getIdentifier();
+        $field = $this->getDBTable()->getPrimarykey();
         if (!$field) throw new \Exception("Table " . $this->getDBTable()->getName() . " does not have an identifier field");
         if (is_array($field)) throw new \Exception("Table " . $this->getDBTable()->getName() . " has a composite identifier field");
         

@@ -158,17 +158,17 @@ class TableTest extends TestCase
     }
 
     /**
-     * Test Table::getIdentifier
+     * Test Table::getPrimarykey
      */
-    public function testGetIdentifier()
+    public function testgetPrimarykey()
     {
-        $this->assertSame('id', $this->table->getIdentifier());
+        $this->assertSame('id', $this->table->getPrimarykey());
     }
     
     /**
-     * Test Table::getIdentifier with combined primary keys
+     * Test Table::getPrimarykey with combined primary keys
      */
-    public function testGetIdentifier_Combined()
+    public function testgetPrimarykey_Combined()
     {
         $this->markTestIncomplete();
     }

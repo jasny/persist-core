@@ -57,12 +57,11 @@ class Table extends \Jasny\DB\Table
         'set' => 'array'
     );
 
-    
     /**
      * Default values
      * @var array
      */
-    protected $defaults;
+    protected $fieldDefaults;
     
     /**
      * PHP type for each field
@@ -75,7 +74,7 @@ class Table extends \Jasny\DB\Table
      * @var string
      */
     protected $primarykey;
-
+    
     
     /**
      * Return DB connection
@@ -94,7 +93,7 @@ class Table extends \Jasny\DB\Table
     {
         $fields = $this->getDB()->fetchAll("DESCRIBE " . $this->db->backquote($this->getName()), MYSQLI_ASSOC);
         
-        $defaults = array();
+        $fieldDefaults = array();
         $types = array();
         $primarykey = array();
         
@@ -105,25 +104,25 @@ class Table extends \Jasny\DB\Table
             $value = $field['Default'];
             if ($type == 'DateTime' && $value == 'CURRENT_TIMESTAMP') $value = 'now';
             
-            $defaults[$field['Field']] = self::castValue($value, $type);
+            $fieldDefaults[$field['Field']] = $value;
             $types[$field['Field']] = $type;
             if ($field['Key'] == 'PRI') $primarykey[] = $field['Field'];
         }
         
-        if (!isset($this->defaults)) $this->defaults = $defaults;
+        if (!isset($this->fieldDefaults)) $this->fieldDefaults = $fieldDefaults;
         if (!isset($this->fieldTypes)) $this->fieldTypes = $types;
         if (!isset($this->primarykey)) $this->primarykey = count($primarykey) <= 1 ? reset($primarykey) : $primarykey;
     }
     
     /**
-     * Get all the default values for this table.
+     * Get all the default value for each field for this table.
      * 
      * @return array
      */
-    public function getDefaults()
+    public function getFieldDefaults()
     {
-        if (!isset($this->defaults)) $this->describe();
-        return $this->defaults;
+        if (!isset($this->fieldDefaults)) $this->describe();        
+        return $this->fieldDefaults;
     }
 
     /**
@@ -142,7 +141,7 @@ class Table extends \Jasny\DB\Table
      * 
      * @return string
      */
-    public function getIdentifier()
+    public function getPrimarykey()
     {
         if (!isset($this->primarykey)) $this->describe();
         return $this->primarykey ?: null;
@@ -178,8 +177,8 @@ class Table extends \Jasny\DB\Table
             $filter = array();
             foreach ($id as $key=>$value) $filter[] = $db->backquote($key) . (isset($value) ? ' = ' . $db->quote($value) : ' IS NULL');
             $where = join(' AND ', $filter);
-        } elseif (!is_array($this->getIdentifier())) {
-            $where = $db->backquote($this->getIdentifier()) . " = " . $db->quote($id);
+        } elseif (!is_array($this->getPrimarykey())) {
+            $where = $db->backquote($this->getPrimarykey()) . " = " . $db->quote($id);
         } else {
             throw new \Exception("No or combined primary key. Please pass a filter as associated array.");
         }
@@ -218,7 +217,7 @@ class Table extends \Jasny\DB\Table
      */
     protected function getFilterForValues($values)
     {
-        $pk = $this->getIdentifier();
+        $pk = $this->getPrimarykey();
 
         // PK on one field
         if (!is_array($pk)) {

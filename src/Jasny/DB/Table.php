@@ -91,8 +91,8 @@ abstract class Table
     /**
      * Get a table gateway.
      * 
-     * @param string $name  Table name or record class name
-     * @param DB     $db    Database connection
+     * @param string $name   Table name or record class name
+     * @param DB     $db     Database connection
      * @return Table
      */
     public static function factory($name, Connection $db=null)
@@ -171,7 +171,25 @@ abstract class Table
      * 
      * @return array
      */
-    abstract public function getDefaults();
+    public function getDefaults()
+    {
+        $defaults = $this->getFieldDefaults();
+        $types = $this->getFieldTypes();
+        $values = array();
+        
+        foreach ($defaults as $field=>$value) {
+            $values[$field] = static::castValue($value, $types[$field]);
+        }
+        
+        return $values;
+    }
+    
+    /**
+     * Get all the default value for each field for this table.
+     * 
+     * @return array
+     */
+    abstract public function getFieldDefaults();
     
     /**
      * Get the php type for each field of this table.
@@ -185,7 +203,7 @@ abstract class Table
      * 
      * @return string|array
      */
-    abstract public function getIdentifier();
+    abstract public function getPrimarykey();
     
     
     /**
@@ -218,7 +236,7 @@ abstract class Table
      * @param string $string
      * @return string
      */
-    protected static function camelcase($string)
+    public static function camelcase($string)
     {
         return str_replace(' ', '', ucwords(str_replace('_', ' ', $string)));
     }
@@ -229,7 +247,7 @@ abstract class Table
      * @param string $string
      * @return string
      */
-    protected static function uncamelcase($string)
+    public static function uncamelcase($string)
     {
         return strtolower(preg_replace('/(?<=[a-z])([A-Z])(?![A-Z])/', '_$1', $string));
     }
@@ -257,35 +275,16 @@ abstract class Table
         return (bool)static::getDefaultConnection()->tableExists($name);
     }
 
-    /**
-     * Automatically create classes for table gateways and records
-     */
-    public static function autoGenerateModel($class)
-    {
-        if (preg_replace('/(^|\\\\)[^\\\\]+$/', '', $class) != self::getDefaultConnection()->getModelNamespace()) return;
-        
-        $name = static::uncamelcase(preg_replace('/^.+\\\\|Table$/i', '', $class));
-        if (!static::exists($name)) return;
-        
-        if (substr($class, -5) == 'Table') {
-            $base = self::getDefaultClass('Table');
-            if (!isset($base)) return;
-        } else {
-            $base = self::getDefaultClass('Record') ?: __NAMESPACE__ . '\\Record';
-        }
-        
-        eval("class $class extends $base {}");
-    }
-
     
     /**
      * Cast the value to a type
      * 
-     * @param string $value
-     * @param string $type
+     * @param string  $value
+     * @param string  $type
+     * @param boolean $obj    Create objects for non-internal types
      * @return mixed
      */
-    public static function castValue($value, $type)
+    public static function castValue($value, $type, $obj=true)
     {
         if (!is_string($value) || $type == 'string') return;
         
@@ -301,6 +300,8 @@ abstract class Table
                 break;
             
             default:
+                if (!$obj) break;
+                
                 if (!class_exists($type)) throw new \Exception("Invalid type '$type'");
                 $value = new $type($value);
                 break;
