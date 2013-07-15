@@ -74,7 +74,7 @@ class Table extends \Jasny\DB\Table
      * Primary key field name
      * @var string
      */
-    protected $primarykey = false;
+    protected $primarykey;
 
     
     /**
@@ -96,6 +96,7 @@ class Table extends \Jasny\DB\Table
         
         $defaults = array();
         $types = array();
+        $primarykey = array();
         
         foreach ($fields as $field) {
             if ($field['Type'] == 'tinyint(1)') $type = 'boolean';
@@ -111,7 +112,7 @@ class Table extends \Jasny\DB\Table
         
         if (!isset($this->defaults)) $this->defaults = $defaults;
         if (!isset($this->fieldTypes)) $this->fieldTypes = $types;
-        if ($this->primarykey === false && isset($primarykey)) $this->primarykey = count($primarykey) == 1 ? reset($primarykey) : $primarykey;
+        if (!isset($this->primarykey)) $this->primarykey = count($primarykey) <= 1 ? reset($primarykey) : $primarykey;
     }
     
     /**
@@ -143,8 +144,8 @@ class Table extends \Jasny\DB\Table
      */
     public function getIdentifier()
     {
-        if ($this->primarykey === false) $this->describe();
-        return $this->primarykey;
+        if (!isset($this->primarykey)) $this->describe();
+        return $this->primarykey ?: null;
     }
     
     

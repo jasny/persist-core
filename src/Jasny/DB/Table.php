@@ -262,12 +262,18 @@ abstract class Table
      */
     public static function autoGenerateModel($class)
     {
-        if (preg_replace('/\\[^\\\\]+$/', '', $class) != self::getDefaultConnection()->getModelNamespace()) return;
+        if (preg_replace('/(^|\\\\)[^\\\\]+$/', '', $class) != self::getDefaultConnection()->getModelNamespace()) return;
         
         $name = static::uncamelcase(preg_replace('/^.+\\\\|Table$/i', '', $class));
         if (!static::exists($name)) return;
         
-        $base = self::getDefaultClass(substr($class, -5) == 'Table' ? 'Table' : 'Record');
+        if (substr($class, -5) == 'Table') {
+            $base = self::getDefaultClass('Table');
+            if (!isset($base)) return;
+        } else {
+            $base = self::getDefaultClass('Record') ?: __NAMESPACE__ . '\\Record';
+        }
+        
         eval("class $class extends $base {}");
     }
 
