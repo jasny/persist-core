@@ -409,7 +409,7 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      */
     public function getAllTables()
     {
-        return (bool)$this->fetchValue("SHOW TABLES LIKE ?", $name);
+        return $this->fetchColumn("SHOW TABLES");
     }
     
     

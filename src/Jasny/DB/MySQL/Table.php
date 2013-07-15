@@ -111,7 +111,7 @@ class Table extends \Jasny\DB\Table
         
         if (!isset($this->defaults)) $this->defaults = $defaults;
         if (!isset($this->fieldTypes)) $this->fieldTypes = $types;
-        if ($this->primarykey === false && !isset($primarykey)) $this->primarykey = count($primarykey) == 1 ? reset($primarykey) : $primarykey;
+        if ($this->primarykey === false && isset($primarykey)) $this->primarykey = count($primarykey) == 1 ? reset($primarykey) : $primarykey;
     }
     
     /**
