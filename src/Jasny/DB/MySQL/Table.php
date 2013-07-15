@@ -78,6 +78,16 @@ class Table extends \Jasny\DB\Table
 
     
     /**
+     * Return DB connection
+     * 
+     * @return Connection
+     */
+    public function getDB()
+    {
+        return $this->db;
+    }
+    
+    /**
      * Determine default values, field types and indentifier.
      */
     protected function describe()

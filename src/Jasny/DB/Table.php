@@ -147,10 +147,7 @@ abstract class Table
      */
     public function getName()
     {
-        if (!isset($this->name)) {
-            $this->name = static::uncamelcase(preg_replace('/^.+\\\\|Table$/i', '', get_class($this))); // Remove namespace and un-camelcase to get DB table name from record class
-        }
-        
+        if (!isset($this->name)) $this->name = static::uncamelcase(preg_replace('/^.+\\\\|Table$/i', '', get_class($this)));
         return $this->name;
     }
     
@@ -248,6 +245,32 @@ abstract class Table
         return $this->getName();
     }
     
+    
+    /**
+     * Check if a table exists for the default connection.
+     * 
+     * @param string $name
+     * @return boolean
+     */
+    public static function exists($name)
+    {
+        return (bool)static::getDefaultConnection()->tableExists($name);
+    }
+
+    /**
+     * Automatically create classes for table gateways and records
+     */
+    public static function autoGenerateModel($class)
+    {
+        if (preg_replace('/\\[^\\\\]+$/', '', $class) != self::getDefaultConnection()->getModelNamespace()) return;
+        
+        $name = static::uncamelcase(preg_replace('/^.+\\\\|Table$/i', '', $class));
+        if (!static::exists($name)) return;
+        
+        $base = self::getDefaultClass(substr($class, -5) == 'Table' ? 'Table' : 'Record');
+        eval("class $class extends $base {}");
+    }
+
     
     /**
      * Cast the value to a type

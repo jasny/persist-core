@@ -43,6 +43,22 @@ interface Connection
     public function table($name);
     
     /**
+     * Check if table exsists.
+     * 
+     * @param string $name  Table name
+     * @return boolean
+     */
+    public function tableExists($name);
+
+    /**
+     * Get the names of all tables
+     * 
+     * @return array
+     */
+    public function getAllTables();
+    
+    
+    /**
      * Set the model namespace.
      * 
      * @param string $ns

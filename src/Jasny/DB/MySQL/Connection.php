@@ -391,6 +391,27 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
         return Table::factory($name, $this);
     }
 
+    /**
+     * Check if table exsists.
+     * 
+     * @param string $name  Table name
+     * @return boolean
+     */
+    public function tableExists($name)
+    {
+        return (bool)$this->fetchValue("SHOW TABLES LIKE ?", $name);
+    }
+    
+    /**
+     * Get the names of all tables
+     * 
+     * @return array
+     */
+    public function getAllTables()
+    {
+        return (bool)$this->fetchValue("SHOW TABLES LIKE ?", $name);
+    }
+    
     
     /**
      * Set the model namespace.
