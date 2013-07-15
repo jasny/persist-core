@@ -34,7 +34,7 @@ class Generator
         $nocast = $table->resultValueTypes();
         
         $filename = strtr($class, '\\_', '//') . '.php';
-        if (file_exists($filename)) throw new Exception("Model file '$filename' already exists");
+        if (file_exists(MODEL_PATH . '/' . $filename)) throw new \Exception("Model file '$filename' already exists");
 
         $namespace = "";
         if (strpos($class, '\\')) {
