@@ -65,10 +65,11 @@ class Generator
      */
     protected static function usesBase($class)
     {
-        $filename = strtr($class, '\\_', '//') . '.php';
-        include_once $filename;
+        $filename = MODEL_PATH . '/' . strtr($class, '\\_', '//') . '.php';
+        if (!file_exists($filename)) return false;
         
-        if (!class_exists($class, false)) return false;
+        include_once $filename;
+        if (!class_exists($class, false)) return false; // Shouldn't happen
         
         list($class, $ns) = self::splitClass($class);
         $base_class = ($ns ? $ns . '\\' : '') . 'Base\\' . $class;
@@ -93,9 +94,11 @@ class Generator
             $relative_filename = preg_replace('#^' . getcwd() . '/#', '', $filename);
             
             $source = file_get_contents($filename);
-            if (!preg_match('/^ * @genhash (\w{32})$/m', $source, $match)) throw new \Exception("Won't overwrite '$relative_filename': the file wasn't generated");
-            if (md5(preg_replace('/^ * @genhash \w{32}$/m', ' * @genhash {hash}', $source)) != $hash) throw new \Exception("Won't overwrite '$relative_filename': the file has been modified");
+            if (!preg_match('/^\s*\*\s*@genhash\s(\w{32})$/m', $source, $match)) throw new \Exception("Won't overwrite '$relative_filename', because the file wasn't generated");
+            if (md5(preg_replace('/^\s*\*\s*@genhash\s(\w{32})$/m', ' * @genhash {hash}', $source)) != $hash) throw new \Exception("Won't overwrite '$relative_filename', because the file has been modified");
         }
+        
+        $code = str_replace('@genhash {hash}', "@genhash $hash", $code);
         
         if (!file_exists(dirname($filename))) mkdir(dirname($filename));
         file_put_contents($filename, $code);
