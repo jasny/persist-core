@@ -97,6 +97,15 @@ abstract class Table
      */
     public static function factory($name, Connection $db=null)
     {
+        // If the current class can be instantiated, lets do so.
+        $refl = new \ReflectionClass(get_called_class());
+        if (!$refl->isAbstract()) {
+            $table = new static($db);
+            $table->name = $name;
+            return $table;
+        }
+        
+        // Find out which class to use (and possibly get the table gateway from cache)
         $name = static::uncamelcase(preg_replace('/^.+\\\\/', '', $name)); // Remove namespace and un-camelcase to get DB table name from record class
         
         if (!isset($db)) $db = self::getDefaultConnection();
@@ -110,9 +119,7 @@ abstract class Table
             if (get_class($table) == $class) return $table;
         }
         
-        $table = new $class($db); // Create a new table
-        $table->name = $name;
-        
+        $table = $class::factory($name, $db); // Create a new table
         self::$tables[spl_object_hash($db)][$name] = $table;
         
         return $table;
