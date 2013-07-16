@@ -286,20 +286,20 @@ abstract class Table
     /**
      * Cast the value to a type
      * 
-     * @param string  $value
+     * @param mixed   $value
      * @param string  $type
      * @param boolean $obj    Create objects for non-internal types
      * @return mixed
      */
     public static function castValue($value, $type, $obj=true)
     {
-        if (!is_string($value) || $type == 'string') return;
+        if (gettype($value) == $type) return $value;
         
         switch ($type) {
             case 'bool': case 'boolean':
             case 'int':  case 'integer':
             case 'float':
-                if (isset($type)) settype($value, $type);
+                settype($value, $type);
                 break;
                 
             case 'array':

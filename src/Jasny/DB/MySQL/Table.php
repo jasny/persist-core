@@ -26,15 +26,15 @@ class Table extends \Jasny\DB\Table
      * @var array
      */
     protected static $castTypes = array(
-        'bit' => 'int',
-        'bit(1)' => 'bool',
-        'bool' => 'bool',
-        'boolean' => 'bool',
-        'tinyint(1)' => 'bool',
-        'tinyint' => 'int',
-        'smallint' => 'int',
-        'mediumint' => 'int',
-        'int unsigned' => 'int',
+        'bit' => 'integer',
+        'bit(1)' => 'boolean',
+        'bool' => 'boolean',
+        'boolean' => 'boolean',
+        'tinyint(1)' => 'boolean',
+        'tinyint' => 'integer',
+        'smallint' => 'integer',
+        'mediumint' => 'integer',
+        'int unsigned' => 'integer',
         'int' => 'string',      // Might be bigger that PHP signed integers on 32 bit
         'integer' => 'string',  // "
         'bigint' => 'string',   // "
@@ -50,7 +50,7 @@ class Table extends \Jasny\DB\Table
         'datetime' => 'DateTime',
         'timestamp' => 'DateTime',
         'time' => 'DateTime',
-        'year' => 'int',
+        'year' => 'integer',
         'char' => 'string',
         'varchar' => 'string',
         'binary' => 'string',
