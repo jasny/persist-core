@@ -19,9 +19,10 @@ interface Connection
     /**
      * Get the default DB connection.
      * 
-     * @return DB
+     * @param string $name
+     * @return Connection
      */
-    public static function conn();
+    public static function conn($name='default');
 
     /**
      * Closes a previously opened database connection.
@@ -29,9 +30,21 @@ interface Connection
     public function close();
     
     /**
-     * Use this connection as the default DB
+     * Name the connection.
+     * 
+     * @param string $name
      */
-    public function asDefault();
+    public function useAs($name);
+    
+    /**
+     * Get the name of the connection.
+     * If the connection has multiple names, returns the first one.
+     * 
+     * @return string
+     */
+    public function getName();
+
+    
     
     
     /**
@@ -56,6 +69,15 @@ interface Connection
      * @return array
      */
     public function getAllTables();
+    
+    /**
+     * Load a record using the table gateway.
+     * 
+     * @param string $table  Table name
+     * @param mixed  $id
+     * @return Record
+     */
+    public function load($table, $id);
     
     
     /**

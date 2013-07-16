@@ -14,6 +14,8 @@ namespace Jasny\DB\MySQL;
 /**
  * MySQL DB connection.
  * 
+ * @todo Create an ArrayObject class `ConnectionPool` for $connections. With a connection pool you should be able to split up a difficult query and distribute it over all the connections.
+ * 
  * @example <br/>
  *   use Jasny\DB\MySQL\Connection as DB;<br/>
  *   new DB($host, $user, $pwd, $dbname);<br/>
@@ -25,17 +27,16 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
 {
     /**
      * Don't update existing records when saving, but ignore them instead.
-     * 
      * @var boolean
      */
     const SKIP_EXISTING = false;
 
     /**
-     * Created DB connection
-     * @var DB
+     * Named connections
+     * @var Connection[]
      */
-    protected static $connection;
-
+    protected static $connections = array();
+    
     /**
      * Namespace of the Record and Table classes.
      * @var string
@@ -50,20 +51,25 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
     
     /**
      * Logger to log queries, errors and more.
-     * @var Psr\Log\LoggerInterface
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
     
 
     /**
-     * Get the default DB connection.
+     * Get the default or named DB connection.
      * 
+     * @param string $name
      * @return DB
      */
-    public static function conn()
+    public static function conn($name='default')
     {
-        if (!isset(self::$connection)) self::$connection = new static();
-        return self::$connection;
+        if (!isset(self::$connections[$name])) {
+            if ($name != 'default') throw new \Exception("MySQL connection '$name' doesn't exist.");
+            self::$connections[$name] = new static();
+        }
+        
+        return self::$connections[$name];
     }
 
     /**
@@ -87,7 +93,7 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
             throw new \Exception("Failed to connect to the database: " . $this->connect_error);
         }
         
-        if (!isset(self::$connection)) self::$connection = $this;
+        if (!isset(self::$connections['default'])) self::$connections['default'] = $this;
         if (!isset(\Jasny\DB\Table::$defaultConnection)) \Jasny\DB\Table::$defaultConnection = $this;
     }
     
@@ -98,19 +104,32 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      */
     public function close()
     {
-        if (self::$connection === $this) self::$connection = null;
+        foreach (array_keys(self::$connections, $this, true) as $name) unset(self::$connections[$name]);
         if (\Jasny\DB\Table::$defaultConnection === $this) \Jasny\DB\Table::$defaultConnection = null;
         
         return parent::close();
     }
     
     /**
-     * Use this connection as the default DB
+     * Name the connection.
+     * 
+     * @param string $name
      */
-    public function asDefault()
+    public function useAs($name)
     {
-        self::$connection = $this;
-        \Jasny\DB\Table::$defaultConnection = $this;
+        self::$connections[$name] = $this;
+        if ($name === 'default') \Jasny\DB\Table::$defaultConnection = $this;
+    }
+    
+    /**
+     * Get the name of the connection.
+     * If the connection has multiple names, returns the first one.
+     * 
+     * @return string
+     */
+    public function getName()
+    {
+        array_search(self::$connections, $this, true) ?: null;
     }
 
     
@@ -412,6 +431,20 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
         return $this->fetchColumn("SHOW TABLES");
     }
     
+    /**
+     * Load a record using the table gateway.
+     * 
+     * Shortcut for `$db->table($table)->fetch($id)`.
+     * 
+     * @param string $table  Table name
+     * @param mixed  $id
+     * @return \Jasny\DB\Record
+     */
+    public function load($table, $id)
+    {
+        return $this->table($table)->fetch($id);
+    }
+    
     
     /**
      * Set the model namespace.
@@ -441,7 +474,7 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      * @see https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md
      * @see https://packagist.org/packages/monolog/monolog
      * 
-     * @param Psr\Log\LoggerInterface $logger
+     * @param \Psr\Log\LoggerInterface $logger
      */
     public function setLogger($logger)
     {
