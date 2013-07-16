@@ -26,18 +26,26 @@ class Table extends \Jasny\DB\Table
      * @var array
      */
     protected static $castTypes = array(
+        'bit' => 'int',
+        'bit(1)' => 'bool',
+        'bool' => 'bool',
+        'boolean' => 'bool',
+        'tinyint(1)' => 'bool',
         'tinyint' => 'int',
         'smallint' => 'int',
         'mediumint' => 'int',
+        'int unsigned' => 'int',
         'int' => 'string',      // Might be bigger that PHP signed integers on 32 bit
         'integer' => 'string',  // "
         'bigint' => 'string',   // "
+        'decimal' => 'float',
+        'dec' => 'float',
+        'numeric' => 'float',
+        'fixed' => 'float',
         'float' => 'float',
         'double' => 'float',
         'double precision' => 'float',
         'real' => 'float',
-        'decimal' => 'float',
-        'numeric' => 'float',
         'date' => 'DateTime',
         'datetime' => 'DateTime',
         'timestamp' => 'DateTime',
@@ -45,6 +53,8 @@ class Table extends \Jasny\DB\Table
         'year' => 'int',
         'char' => 'string',
         'varchar' => 'string',
+        'binary' => 'string',
+        'varbinary' => 'string',
         'tinyblob' => 'string',
         'tinytext' => 'string',
         'blob ' => 'string',
@@ -98,9 +108,7 @@ class Table extends \Jasny\DB\Table
         $primarykey = array();
         
         foreach ($fields as $field) {
-            if ($field['Type'] == 'tinyint(1)') $type = 'boolean';
-             else $type = self::$castTypes[preg_replace('/\(.+/', '', $field['Type'])];
-            
+            $type = self::castType($field['Type']);
             $value = $field['Default'];
             if ($type == 'DateTime' && $value == 'CURRENT_TIMESTAMP') $value = 'now';
             
@@ -234,6 +242,28 @@ class Table extends \Jasny\DB\Table
         return $filter;
     }
     
+    
+    /**
+     * Get PHP type for MySQL field type
+     * 
+     * @param string $fieldtype
+     * @return string
+     */
+    protected static function castType($fieldtype)
+    {
+        for ($i = 0; $i < 3; $i++) {
+            switch ($i) {
+                case 0: $key = $fieldtype; break;
+                case 1: $key = preg_replace('/\s*\(.+?\)/', '', $fieldtype); break;
+                case 2: $key = preg_replace('/\s*\(/', '', $fieldtype); break;
+            }
+
+            if (isset(self::$castTypes[$key])) return self::$castTypes[$key];
+        }
+        
+        trigger_error("Unknown field type '$fieldtype'", E_USER_NOTICE);
+        return 'string';
+    }
     
     /**
      * Get the PHP types for values in the result.
