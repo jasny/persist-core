@@ -17,10 +17,10 @@ namespace Jasny\DB;
 class Record
 {
     /**
-     * Table gateway
+     * Table gateway.
      * @var Table
      */
-    private $_dbtable;
+    protected $_dbtable;
     
     
     /**
