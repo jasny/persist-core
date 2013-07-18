@@ -13,6 +13,8 @@
 /** */
 namespace Jasny\DB\MySQL;
 
+use \Jasny\DB\Record;
+
 /**
  * DB table gateway.
  * 
@@ -245,10 +247,12 @@ class Table extends \Jasny\DB\Table
      */
     public function save($record)
     {
-        $values = $record instanceof \Jasny\DB\Record ? $record->getValues() : (array)$record;
+        $values = $record instanceof Record ? $record->getValues() : (array)$record;
+        $values = array_intersect_key($values, $this->getFieldDefaults());
+        
         $id = $this->getDB()->save($this->getName(), $values);
         
-        if (!$record instanceof \Jasny\DB\Record) {
+        if (!$record instanceof Record) {
             $filter = $id ?: $this->getFilterForValues($values);
             if ($filter) $record = $this->fetch($filter);
         }
