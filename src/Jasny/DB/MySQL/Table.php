@@ -170,6 +170,32 @@ class Table extends \Jasny\DB\Table
         
         return $records;
     }
+
+    /**
+     * Build a where expression for an id or filter
+     * 
+     * @param int|array $id  ID or filter
+     * @return string
+     */
+    protected function buildWhere($id)
+    {
+        $db = $this->getDB();
+        
+        if (is_array($id)) {
+            $filter = array();
+            foreach ($id as $key=>$value) {
+                $filter[] = $db->backquote($key) . (isset($value) ? ' = ' . $db->quote($value) : ' IS NULL');
+            }
+            
+            $where = join(' AND ', $filter);
+        } elseif (!is_array($this->getPrimarykey())) {
+            $where = $db->backquote($this->getPrimarykey()) . " = " . $db->quote($id);
+        } else {
+            throw new \Exception("No or combined primary key. Please pass a filter as associated array.");
+        }
+        
+        return $where;
+    }
     
     /**
      * Load a record from the DB
@@ -179,23 +205,38 @@ class Table extends \Jasny\DB\Table
      */
     public function fetch($id)
     {
-        $db = $this->getDB();
+        if (!isset($id)) return null;
         
-        if (is_array($id)) {
-            $filter = array();
-            foreach ($id as $key=>$value) $filter[] = $db->backquote($key) . (isset($value) ? ' = ' . $db->quote($value) : ' IS NULL');
-            $where = join(' AND ', $filter);
-        } elseif (!is_array($this->getPrimarykey())) {
-            $where = $db->backquote($this->getPrimarykey()) . " = " . $db->quote($id);
-        } else {
-            throw new \Exception("No or combined primary key. Please pass a filter as associated array.");
-        }
+        $query = "SELECT * FROM " . $this->getDB()->backquote($this->getName())
+                . " WHERE " . $this->buildWhere($id) . " LIMIT 1";
         
-        $record = $db->fetchOne("SELECT * FROM " . $db->backquote($this->getName()) . " WHERE $where LIMIT 1", $this->getClass());
-        if ($record) $record->_setDBTable($this);
+        $record = $this->getDB()->fetchOne($query, $this->getClass());
+        if (isset($record)) $record->_setDBTable($this);
         
         return $record;
     }
+    
+    /**
+     * Fetch a single value from the DB
+     * 
+     * @param string    $field  Field name
+     * @param int|array $id     ID or filter
+     * @return mixed
+     */
+    public function fetchValue($field, $id)
+    {
+        if (!isset($id)) return null;
+
+        $types = $this->getFieldTypes();
+        $type = self::$castTypes[$types[$field]];
+        
+        $query = "SELECT " . $this->getDB()->backquote($field) . " FROM " . $this->getDB()->backquote($this->getName())
+                . " WHERE " . $this->buildWhere($id) . " LIMIT 1";
+        
+        $value = $this->getDB()->fetchValue($query);
+        return static::castValue($value, $type);
+    }
+
     
     /**
      * Save the record to the DB.

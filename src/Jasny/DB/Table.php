@@ -229,6 +229,16 @@ abstract class Table
     abstract public function fetch($id);
     
     /**
+     * Fetch a single value from the DB
+     * 
+     * @param string    $field  Field name
+     * @param int|array $id     ID or filter
+     * @return mixed
+     */
+    abstract public function fetchValue($field, $id);
+    
+    
+    /**
      * Save the record to the DB.
      * 
      * @param Record|array $record  Record or array with values
