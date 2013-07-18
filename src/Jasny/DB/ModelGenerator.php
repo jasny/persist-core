@@ -55,7 +55,7 @@ class ModelGenerator
     protected static function getTable($name)
     {
         $class = Table::getDefaultClass('Table');
-        return $class::factory($name);
+        return $class::instantiate($name);
     }
     
     /**

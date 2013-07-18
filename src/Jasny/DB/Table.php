@@ -86,7 +86,22 @@ abstract class Table
         
         return null;
     }
+
     
+    /**
+     * Replacement for `new Table()`
+     * 
+     * @param string     $name
+     * @param Connection $db
+     * @return Table
+     */
+    public static function instantiate($name, Connection $db=null)
+    {
+        $table = new static($db);
+        $table->name = $name;
+        
+        return $table;
+    }
     
     /**
      * Get a table gateway.
@@ -97,14 +112,6 @@ abstract class Table
      */
     public static function factory($name, Connection $db=null)
     {
-        // If the current class can be instantiated, lets do so.
-        $refl = new \ReflectionClass(get_called_class());
-        if (!$refl->isAbstract()) {
-            $table = new static($db);
-            $table->name = $name;
-            return $table;
-        }
-        
         // Find out which class to use (and possibly get the table gateway from cache)
         $name = static::uncamelcase(preg_replace('/^.+\\\\/', '', $name));
         
