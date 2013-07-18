@@ -304,15 +304,4 @@ class Table extends \Jasny\DB\Table
         trigger_error("Unknown field type '$fieldtype'", E_USER_NOTICE);
         return 'string';
     }
-    
-    /**
-     * Get the PHP types for values in the result.
-     * Other types should be cast.
-     * 
-     * @return array
-     */
-    public static function resultValueTypes()
-    {
-        return array('string');
-    }
 }

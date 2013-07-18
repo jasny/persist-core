@@ -239,6 +239,24 @@ abstract class Table
     
     
     /**
+     * Cast values to their proper type.
+     * 
+     * @param Record|array $record  Record, value object or array with values
+     * @return Record|array
+     */
+    public function cast($record)
+    {
+        $types = $this->getFieldTypes();
+        
+        foreach ($record as $field=>&$value) {
+            if (!isset($types[$field])) continue;
+            $value = static::castValue($value, $type);
+        }
+
+        return $record;
+    }
+    
+    /**
      * Save the record to the DB.
      * 
      * @param Record|array $record  Record or array with values
@@ -325,16 +343,5 @@ abstract class Table
         }
         
         return $value;
-    }
-    
-    /**
-     * Get the PHP types for values in the result.
-     * Other types should be cast.
-     * 
-     * @return array
-     */
-    public static function resultValueTypes()
-    {
-        return array();
     }
 }

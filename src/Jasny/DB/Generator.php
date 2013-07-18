@@ -182,7 +182,6 @@ PHP;
         // Get information
         $defaults = $table->getFieldDefaults();
         $types = $table->getFieldTypes();
-        $nocast = $table->resultValueTypes();
         
         $tableHash = static::getTableHash($table);
         
@@ -200,24 +199,10 @@ PHP;
 
         $cast = "";
         foreach ($types as $field=>$type) {
-            if (in_array($type, $nocast)) continue;
-            
             $internal_type = in_array($type, array('bool', 'boolean', 'int', 'integer', 'float', 'string', 'array'));
             $cast .= "        if (isset(\$this->$field)) \$this->$field = " . ($internal_type ? "($type)\$this->$field" : "new \\$type(\$this->$field)") . ";\n";
         }
-        $cast = rtrim($cast);
-        
-        $constructor = "";
-        if ($cast) $constructor = <<<PHP
-    /**
-     * Class constructor
-     */
-    public function __construct()
-    {
-$cast
-    }
-PHP;
-        
+
         $code = <<<PHP
 $namespace 
 /**
@@ -229,7 +214,25 @@ $namespace
 class $classname extends $base
 {
 $properties
-$constructor
+    
+    /**
+     * Class constructor
+     */
+    public function __construct()
+    {
+        \$this->cast();
+    }
+                    
+    /**
+     * Cast all properties to a type based on the field types.
+     * 
+     * @return Record \$this
+     */
+    public function cast()
+    {
+$cast
+        return \$this;
+    }
 }
 
 PHP;

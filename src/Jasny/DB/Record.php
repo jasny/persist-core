@@ -59,7 +59,7 @@ class Record
     }
     
     /**
-     * Get the values of this model.
+     * Returns the values of all public properties of the Record.
      * 
      * @return array
      */
@@ -68,24 +68,16 @@ class Record
         $values = (array)$this;
         
         foreach ($values as $key=>&$value) {
-            if ($key[0] == "\0"){
-                unset($values[$key]);
-                continue;
-            }
-            
-            if ($value instanceof \DateTime) $value = $value->format('c');
-             elseif ($value instanceof static) $value = $value->id;
-             elseif (is_object($value) && method_exists($value, '__toString')) $value = (string)$value;
-             elseif (!is_scalar($value) && !is_null($value)) unset($values[$key]);
+            if ($key[0] == "\0") unset($values[$key]);
         }
         
         return $values;
     }
     
     /**
-     * Set the values of this model.
+     * Set the values of this Record.
      * 
-     * @param array $values  Array with values (or object with method 'getValues')
+     * @param array $values  Array with values or any object with method 'getValues'
      * @return Record  $this
      */
     public function setValues($values)
@@ -98,6 +90,16 @@ class Record
         }
         
         return $this;
+    }
+    
+    /**
+     * Cast all properties to a type based on the field types.
+     * 
+     * @return Record $this
+     */
+    public function cast()
+    {
+        return $this->getDBTable()->cast($this);
     }
     
     /**
