@@ -19,6 +19,25 @@ if (!defined('MODEL_PATH')) define('MODEL_PATH', (defined('BASE_PATH') ? BASE_PA
 class Generator
 {
     /**
+     * Path to cache
+     * @var string
+     */
+    static protected $cachePath;
+
+    /**
+     * TTL for cache
+     * @var int
+     */
+    static protected $cacheTTL = 0;
+
+    /**
+     * Verify that the table hasn't changed
+     * @var boolean
+     */
+    static protected $cacheVerify = true;
+    
+    
+    /**
      * Indent each line
      * 
      * @param string $code
@@ -42,6 +61,23 @@ class Generator
     }
     
     /**
+     * Get a hash to seen if the table has been modified.
+     * 
+     * @param string|Table $table
+     * @return string
+     */
+    protected static function getTableHash($table)
+    {
+        if (!$table instanceof Table) $table = static::getTable($table);
+        
+        $pk = $table->getPrimarykey();
+        $defaults = $table->getFieldDefaults();
+        $types = $table->getFieldTypes();
+        
+        return md5(serialize(compact('pk', 'defaults', 'types')));
+    }
+    
+    /**
      * Split full class in class name and namespase
      * 
      * @param string $class
@@ -56,6 +92,7 @@ class Generator
         if (!isset($ns)) $ns = join('\\', $parts);
         return array($classname, $ns, ($ns ? $ns . '\\' : '') . $class);
     }
+    
     
     /**
      * Check if we need to grate the base class instead
@@ -101,7 +138,7 @@ class Generator
         $code = str_replace('@genhash {hash}', "@genhash $hash", $code);
         
         if (!file_exists(dirname($filename))) mkdir(dirname($filename));
-        file_put_contents($filename, $code);
+        return (boolean)file_put_contents($filename, $code);
     }
 
 
@@ -112,7 +149,7 @@ class Generator
      * @param Table|string $table
      * @param string       $ns       Replace namespace
      * @param boolean      $return   Do not create a file but return the generated out
-     * @return string|null
+     * @return string|boolean
      */
     public static function generateTable($table, $ns=null, $return=false)
     {
@@ -126,6 +163,8 @@ class Generator
             $ns = ($ns ? $ns . '\\' : '') . 'Base';
             $class = $ns . '\\' . $classname;
         }
+        
+        $tableHash = static::getTableHash($table);
         
         // Generate code
         $namespace = $ns ? "namespace $ns;\n" : '';
@@ -142,6 +181,7 @@ $namespace
  * Table gateway for `$table`
  *
  * @genhash {hash}
+ * @tablehash $tableHash
  */
 class $classname extends $base
 {
@@ -178,7 +218,8 @@ $getPrimarykey
 PHP;
         
         if ($return) return $code;
-        static::save($class, "<?php\n" . $code);
+        
+        return static::save($class, "<?php\n" . $code);
     }
     
     /**
@@ -188,7 +229,7 @@ PHP;
      * @param Table|string $table
      * @param string       $ns       Replace namespace
      * @param boolean      $return   Do not create a file but return the generated out
-     * @return string|null
+     * @return string|boolean
      */
     public static function generateRecord($table, $ns=null, $return=false)
     {
@@ -207,6 +248,8 @@ PHP;
         $defaults = $table->getFieldDefaults();
         $types = $table->getFieldTypes();
         $nocast = $table->resultValueTypes();
+        
+        $tableHash = static::getTableHash($table);
         
         // Generate code
         $namespace = $ns ? "namespace $ns;\n" : '';
@@ -246,6 +289,7 @@ $namespace
  * Record of table `$table`.
  *
  * @genhash {hash}
+ * @tablehash $tableHash
  */
 class $classname extends $base
 {
@@ -256,22 +300,89 @@ $constructor
 PHP;
 
         if ($return) return $code;
-        static::save($class, "<?php\n" . $code);
+        
+        return static::save($class, "<?php\n" . $code);
     }
     
     
     /**
+     * See if there is a valid file in cache and include it.
+     * 
+     * @param string $class
+     * @return boolean
+     */
+    protected static function loadFromCache($class)
+    {
+        if (self::$cacheTTL == 0) return false;
+        
+        $filename = self::$cachePath . '/' . strtr($class, '\\_', '//') . '.php';
+        if (!file_exists($filename) || (self::$cacheTTL > 0 && filectime($filename) < time() - self::$cacheTTL)) return false;
+        
+        if (self::$cacheVerify) {
+            $name = Table::uncamelcase(preg_replace('/Table$/i', '', $class));
+            $hash = self::getTableHash($name);
+
+            $code = file_get_contents($filename);
+            if (!strpos($code, "@tablehash $hash")) return false;
+        }
+        
+        include $filename;
+        return true;
+    }
+    
+    /**
+     * Save the generated code to cache and include it
+     * 
+     * @param string $class
+     * @param string $code
+     * @return boolean
+     */
+    protected static function cacheAndLoad($class, $code)
+    {
+        if (self::$cacheTTL == 0) return;
+        
+        $filename = self::$cachePath . '/' . strtr($class, '\\_', '//') . '.php';
+
+        $hash = md5($code);
+        $code = str_replace('@genhash {hash}', "@genhash $hash", $code);
+        
+        if (!file_exists(dirname($filename))) mkdir(dirname($filename), 0777, true);
+        if (!file_put_contents($filename, $code)) return false;
+        
+        include $filename;
+        return true;
+    }
+    
+    /**
+     * Save the autogenerated classes in cache.
+     * 
+     * @param string $cache_path  Directory to save the cache files
+     * @param int    $cache_ttl   Time a cache file may be valid; -1 means always.
+     */
+    public static function autogenerate($cache_path=null, $cache_ttl=600, $cache_verify=true)
+    {
+        static::$cachePath = $cache_path;
+        static::$cacheTTL = $cache_path ? $cache_ttl : 0;
+        static::$cacheVerify = $cache_verify;
+        
+        spl_autoload_register(array(__CLASS__, 'autoload'));
+    }
+
+    /**
      * Automatically create classes for table gateways and records
      */
-    public static function autoload($class)
+    protected static function autoload($class)
     {
         list($class, $ns) = static::splitClass($class);
         if (preg_replace('/(^|\\\\)Base$/', '', $ns) != Table::getDefaultConnection()->getModelNamespace()) return;
+        
+        if (self::loadFromCache($class)) return;
         
         $name = Table::uncamelcase(preg_replace('/Table$/i', '', $class));
         if (empty($name) || !Table::exists($name)) return;
         
         $code = substr($class, -5) == 'Table' ? static::generateTable($name, $ns, true) : static::generateRecord($name, $ns, true);
-        eval($code);
+        
+        self::cacheAndLoad($class, "<?php\n" . $code) || eval($code);
     }
 }
