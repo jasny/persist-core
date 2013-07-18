@@ -226,12 +226,23 @@ $properties
     /**
      * Cast all properties to a type based on the field types.
      * 
-     * @return Record \$this
+     * @return $classname \$this
      */
     public function cast()
     {
 $cast
         return \$this;
+    }
+                
+    /**
+     * Set the table gateway.
+     * @ignore
+     * 
+     * @param {$classname}Table \$table
+     */
+    public function _setDBTable(\$table)
+    {
+        if (!isset(\$this->_dbtable)) \$this->_dbtable = \$table;
     }
 }
 

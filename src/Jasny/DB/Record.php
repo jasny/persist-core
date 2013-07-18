@@ -139,7 +139,10 @@ class Record
      */
     public function _setDBTable($table)
     {
-        if (!isset($this->_dbtable)) $this->_dbtable = $table;
+        if (!isset($this->_dbtable)) {
+            $this->_dbtable = $table;
+            $this->cast();
+         }
     }
     
     /**
