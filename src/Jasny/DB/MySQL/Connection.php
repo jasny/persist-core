@@ -127,7 +127,7 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      * 
      * @return string
      */
-    public function getName()
+    public function getConnectionName()
     {
         array_search(self::$connections, $this, true) ?: null;
     }

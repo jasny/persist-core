@@ -114,9 +114,10 @@ abstract class Table
         if (!class_exists($class)) $class = static::getDefaultClass('Table', $db);
         if (!isset($class)) trigger_error("Table gateways aren't supported for " . get_class($db), E_USER_ERROR);
 
-        if (isset(self::$tables[spl_object_hash($db)][$name])) {
+        $dbname = $db->getConnectionName();
+        if (isset($dbname) && isset(self::$tables[$dbname][$name])) {
             // Return cached gateway, only if the modelNamespace hasn't changed.
-            $table = self::$tables[spl_object_hash($db)][$name];
+            $table = self::$tables[$dbname][$name];
             if (get_class($table) == $class) return $table;
         }
         

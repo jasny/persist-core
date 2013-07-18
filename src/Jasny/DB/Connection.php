@@ -42,7 +42,7 @@ interface Connection
      * 
      * @return string
      */
-    public function getName();
+    public function getConnectionName();
 
     
     
