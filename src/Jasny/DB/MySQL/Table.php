@@ -228,13 +228,12 @@ class Table extends \Jasny\DB\Table
         if (!isset($id)) return null;
 
         $types = $this->getFieldTypes();
-        $type = self::$castTypes[$types[$field]];
         
         $query = "SELECT " . $this->getDB()->backquote($field) . " FROM " . $this->getDB()->backquote($this->getName())
                 . " WHERE " . $this->buildWhere($id) . " LIMIT 1";
         
         $value = $this->getDB()->fetchValue($query);
-        return static::castValue($value, $type);
+        return static::castValue($value, $types[$field]);
     }
 
     

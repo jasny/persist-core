@@ -252,7 +252,8 @@ PHP;
         if (!file_exists($filename) || (self::$cacheTTL > 0 && filectime($filename) < time() - self::$cacheTTL)) return false;
         
         if (self::$cacheVerify) {
-            $name = Table::uncamelcase(preg_replace('/Table$/i', '', $class));
+            list($classname) = self::splitClass($class);
+            $name = Table::uncamelcase(preg_replace('/Table$/i', '', $classname));
             $hash = self::getTableHash($name);
 
             $code = file_get_contents($filename);
