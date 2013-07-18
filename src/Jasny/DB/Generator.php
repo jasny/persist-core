@@ -97,7 +97,6 @@ class Generator
      * 
      * @param Table|string $table
      * @param string       $ns       Replace namespace
-     * @param boolean      $return   Do not create a file but return the generated out
      * @return string
      */
     public static function generateTable($table, $ns=null)
@@ -170,10 +169,9 @@ PHP;
      * 
      * @param Table|string $table
      * @param string       $ns       Replace namespace
-     * @param boolean      $return   Do not create a file but return the generated out
      * @return string|boolean
      */
-    public static function generateRecord($table, $ns=null, $return=false)
+    public static function generateRecord($table, $ns=null)
     {
         // Init and check
         if (!$table instanceof Table) $table = static::getTable($table);
@@ -302,18 +300,20 @@ PHP;
 
     /**
      * Automatically create classes for table gateways and records
+     * 
+     * @param string $class
      */
     protected static function autoload($class)
     {
-        list($class, $ns) = static::splitClass($class);
+        list($classname, $ns) = static::splitClass($class);
         if (preg_replace('/(^|\\\\)Base$/', '', $ns) != Table::getDefaultConnection()->getModelNamespace()) return;
         
         if (self::loadFromCache($class)) return;
         
-        $name = Table::uncamelcase(preg_replace('/Table$/i', '', $class));
+        $name = Table::uncamelcase(preg_replace('/Table$/i', '', $classname));
         if (empty($name) || !Table::exists($name)) return;
         
-        $code = substr($class, -5) == 'Table' ? static::generateTable($name, $ns, true) : static::generateRecord($name, $ns, true);
+        $code = substr($classname, -5) == 'Table' ? static::generateTable($name, $ns) : static::generateRecord($name, $ns);
         
         self::cacheAndLoad($class, "<?php\n" . $code) || eval($code);
     }
