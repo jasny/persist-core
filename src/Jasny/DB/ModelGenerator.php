@@ -199,8 +199,11 @@ PHP;
 
         $cast = "";
         foreach ($types as $field=>$type) {
-            $internal_type = in_array($type, array('bool', 'boolean', 'int', 'integer', 'float', 'string', 'array'));
-            $cast .= "        if (isset(\$this->$field)) \$this->$field = " . ($internal_type ? "($type)\$this->$field" : "new \\$type(\$this->$field)") . ";\n";
+            if (in_array($type, array('bool', 'boolean', 'int', 'integer', 'float', 'string', 'array'))) {
+                $cast .= "        if (isset(\$this->$field)) \$this->$field = ($type)\$this->$field;\n";
+            } else {
+                $cast .= "        if (isset(\$this->$field) && !\$this->$field instanceof \\$type) \$this->$field = new \\$type(\$this->$field);\n";
+            }
         }
 
         $code = <<<PHP

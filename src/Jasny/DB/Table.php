@@ -106,20 +106,21 @@ abstract class Table
         }
         
         // Find out which class to use (and possibly get the table gateway from cache)
-        $name = static::uncamelcase(preg_replace('/^.+\\\\/', '', $name)); // Remove namespace and un-camelcase to get DB table name from record class
+        $name = static::uncamelcase(preg_replace('/^.+\\\\/', '', $name));
         
         if (!isset($db)) $db = self::getDefaultConnection();
         
         $class = ltrim($db->getModelNamespace() . '\\', '\\') . static::camelcase($name) . 'Table';
-        if (!class_exists($class)) $class = static::getDefaultClass('Table', $db); // Use this standard table gateway if no specific gateway exists.
+        if (!class_exists($class)) $class = static::getDefaultClass('Table', $db);
         if (!isset($class)) trigger_error("Table gateways aren't supported for " . get_class($db), E_USER_ERROR);
 
-        if (isset(self::$tables[spl_object_hash($db)][$name])) { // Return cached gateway, only if the modelNamespace hasn't changed.
+        if (isset(self::$tables[spl_object_hash($db)][$name])) {
+            // Return cached gateway, only if the modelNamespace hasn't changed.
             $table = self::$tables[spl_object_hash($db)][$name];
             if (get_class($table) == $class) return $table;
         }
         
-        $table = $class::factory($name, $db); // Create a new table
+        $table = $class::instantiate($name, $db);
         self::$tables[spl_object_hash($db)][$name] = $table;
         
         return $table;
@@ -154,7 +155,10 @@ abstract class Table
      */
     public function getName()
     {
-        if (!isset($this->name)) $this->name = static::uncamelcase(preg_replace('/^.+\\\\|Table$/i', '', get_class($this)));
+        if (!isset($this->name)) {
+            $this->name = static::uncamelcase(preg_replace('/^.+\\\\|Table$/i', '', get_class($this)));
+        }
+        
         return $this->name;
     }
     
@@ -168,8 +172,11 @@ abstract class Table
     {
         $class = ltrim($this->getDB()->getModelNamespace() . '\\', '\\') . static::camelcase($this->getName());
         
-        if (($options & self::SKIP_CLASS_EXISTS) || (class_exists($class) && is_a($class, __NAMESPACE__ . '\Record', true))) return $class; // Record class for this table exists
-        return self::getDefaultClass('Record', $this->getDB()) ?: __NAMESPACE__ . '\Record'; // Use default Record class
+        if ($options & self::SKIP_CLASS_EXISTS) return $class;
+        
+        return class_exists($class) && is_a($class, __NAMESPACE__ . '\Record', true)
+            ? $class
+            : self::getDefaultClass('Record', $this->getDB()) ?: __NAMESPACE__ . '\Record';
     }
     
     
@@ -321,7 +328,7 @@ abstract class Table
      */
     public static function castValue($value, $type, $obj=true)
     {
-        if (gettype($value) == $type) return $value;
+        if ((is_object($value) && is_a($value, $type)) || gettype($value) == $type) return $value; // No casting needed
         
         switch ($type) {
             case 'bool': case 'boolean':
