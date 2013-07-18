@@ -291,7 +291,7 @@ PHP;
      * @param string $cache_path  Directory to save the cache files
      * @param int    $cache_ttl   Time a cache file may be valid; -1 means always.
      */
-    public static function autogenerate($cache_path=null, $cache_ttl=600, $cache_verify=true)
+    public static function enable($cache_path=null, $cache_ttl=600, $cache_verify=true)
     {
         static::$cachePath = $cache_path;
         static::$cacheTTL = $cache_path ? $cache_ttl : 0;
