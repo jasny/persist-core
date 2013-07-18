@@ -14,7 +14,7 @@ namespace Jasny\DB;
 /**
  * Generate DB model classes.
  */
-class Generator
+class ModelGenerator
 {
     /**
      * Path to cache
