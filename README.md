@@ -1,7 +1,7 @@
 Jasny's DB layer
 ================
 
-[![Build Status](https://secure.travis-ci.org/jasny/DB-MySQL.png?branch=master)](http://travis-ci.org/jasny/DB-MySQL)
+[![Build Status](https://secure.travis-ci.org/jasny/db.png?branch=master)](http://travis-ci.org/jasny/db)
 
 A full featured and easy to use DB layer in PHP, featuring
 
