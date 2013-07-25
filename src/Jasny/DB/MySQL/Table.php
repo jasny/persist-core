@@ -299,7 +299,7 @@ class Table extends \Jasny\DB\Table
             switch ($i) {
                 case 0: $key = $fieldtype; break;
                 case 1: $key = preg_replace('/\s*\(.+?\)/', '', $fieldtype); break;
-                case 2: $key = preg_replace('/\s*\(/', '', $fieldtype); break;
+                case 2: $key = preg_replace('/\s*\(.+$/', '', $fieldtype); break;
             }
 
             if (isset(self::$castTypes[$key])) return self::$castTypes[$key];
