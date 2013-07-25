@@ -342,6 +342,7 @@ abstract class Table
             case 'bool': case 'boolean':
             case 'int':  case 'integer':
             case 'float':
+            case 'string':
                 settype($value, $type);
                 break;
                 
