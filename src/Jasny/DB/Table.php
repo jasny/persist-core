@@ -265,7 +265,7 @@ abstract class Table
         
         foreach ($record as $field=>&$value) {
             if (!isset($types[$field])) continue;
-            $value = static::castValue($value, $type);
+            $value = static::castValue($value, $types[$field]);
         }
 
         return $record;
