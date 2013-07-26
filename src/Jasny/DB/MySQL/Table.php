@@ -186,8 +186,6 @@ class Table extends \Jasny\DB\Table
     protected function getQuery()
     {
         $tbl = Query::backquote($this->getName());
-        $orderby = $this->getOrderBy();
-        
         return new Query("SELECT $tbl.* FROM $tbl ORDER BY " . Query::backquote($this->getPrimarykey()));
     }
     
