@@ -16,13 +16,13 @@
         "source": "https://github.com/jasny/db"
     },
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "jasny/dbquery": "dev-master"
     },
     "require-dev": {
         "psr/log": "1.x"
     },
     "suggest" : {
-        "jasny/dbquery-mysql": "Supports building, parsing and modifying MySQL queries",
         "monolog/monolog": "Log queries and error from Jasny/DB"
     },
     "autoload": {

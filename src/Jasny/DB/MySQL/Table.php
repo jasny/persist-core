@@ -99,6 +99,26 @@ class Table extends \Jasny\DB\Table
     }
     
     /**
+     * Set the DB table to this table for all records
+     * 
+     * @param Record|Record[] $records
+     * @return Record|Record[]
+     */
+    protected function setDBTable($records)
+    {
+        if (!isset($records)) return null;
+        
+        if (is_array($records)) {
+            foreach ($records as $record) $record->_setDBTable($this);
+        } else {
+            $records->_setDBTable($this);
+        }
+        
+        return $records;
+    }
+
+    
+    /**
      * Determine default values, field types and indentifier.
      */
     protected function describe()
@@ -110,7 +130,7 @@ class Table extends \Jasny\DB\Table
         $primarykey = array();
         
         foreach ($fields as $field) {
-            $type = self::castType($field['Type']);
+            $type = self::getCastType($field['Type']);
             $value = $field['Default'];
             if ($type == 'DateTime' && $value == 'CURRENT_TIMESTAMP') $value = 'now';
             
@@ -157,59 +177,61 @@ class Table extends \Jasny\DB\Table
         return $this->primarykey ?: null;
     }
     
+    /**
+     * Get the default order by statement.
+     * 
+     * @return string
+     */
+    protected function getOrderBy()
+    {
+        return $this->getPrimarykey();
+    }
+
+    
+    /**
+     * Get the query to return all records of this table.
+     * 
+     * @return Query
+     */
+    protected function getQuery()
+    {
+        $tbl = Query::backquote($this->getName());
+        $orderby = $this->getOrderBy();
+        
+        return new Query("SELECT $tbl.* FROM $tbl" . ($orderby ? " ORDER BY $orderby" : ''));
+    }
+    
+    /**
+     * Build a filter for an id
+     * 
+     * @param int|array $id  ID or filter
+     * @return string
+     */
+    protected function buildFilter($id)
+    {
+        if (is_array($id)) return $id; // Already a filter
+        
+        if (is_array($this->getPrimarykey())) {
+            throw new \Exception("No or combined primary key. Please pass a filter as associated array.");
+        }
+        
+        return array($this->getPrimarykey() => $id);
+    }
     
     /**
      * Fetch all records of the table.
-     * @todo use save quoting from DB\MySQL\Query.
      * 
      * @param array $filter  Filter as [ expression, field => value, ... ]
      * @return array
      */
     public function fetchAll(array $filter=array())
     {
-        $db = $this->getDB();
+        $query = $this->getQuery()->where($filter);
+        $records = $this->getDB()->fetchAll($query, $this->getClass());
         
-        $parts = array();
-        foreach ($filter as $key=>$value) {
-            $parts[] = is_int($key) ? $value : $db->backquote($key) . (isset($value) ? ' = ' . $db->quote($value) : ' IS NULL');
-        }
-        if ($parts) $where = " WHERE " . join(' AND ', $parts);
-        
-        $records = $db->fetchAll("SELECT * FROM " . $db->backquote($this->getName()) . $where, $this->getClass());
-        
-        foreach ($records as $record) {
-            $record->_setDBTable($this);
-        }
-        
-        return $records;
+        return $this->setDBTable($records);
     }
 
-    /**
-     * Build a where expression for an id or filter
-     * 
-     * @param int|array $id  ID or filter
-     * @return string
-     */
-    protected function buildWhere($id)
-    {
-        $db = $this->getDB();
-        
-        if (is_array($id)) {
-            $parts = array();
-            foreach ($id as $key=>$value) {
-                $parts[] = $db->backquote($key) . (isset($value) ? ' = ' . $db->quote($value) : ' IS NULL');
-            }
-            
-            $where = join(' AND ', $parts);
-        } elseif (!is_array($this->getPrimarykey())) {
-            $where = $db->backquote($this->getPrimarykey()) . " = " . $db->quote($id);
-        } else {
-            throw new \Exception("No or combined primary key. Please pass a filter as associated array.");
-        }
-        
-        return $where;
-    }
-    
     /**
      * Load a record from the DB
      * 
@@ -218,15 +240,10 @@ class Table extends \Jasny\DB\Table
      */
     public function fetch($id)
     {
-        if (!isset($id)) return null;
-        
-        $query = "SELECT * FROM " . $this->getDB()->backquote($this->getName())
-                . " WHERE " . $this->buildWhere($id) . " LIMIT 1";
-        
+        $query = $this->getQuery()->where($this->buildFilter($id))->limit(1);
         $record = $this->getDB()->fetchOne($query, $this->getClass());
-        if (isset($record)) $record->_setDBTable($this);
         
-        return $record;
+        return $this->setDBTable($record);
     }
     
     /**
@@ -238,39 +255,13 @@ class Table extends \Jasny\DB\Table
      */
     public function fetchValue($field, $id)
     {
-        if (!isset($id)) return null;
-
-        $types = $this->getFieldTypes();
-        
-        $query = "SELECT " . $this->getDB()->backquote($field) . " FROM " . $this->getDB()->backquote($this->getName())
-                . " WHERE " . $this->buildWhere($id) . " LIMIT 1";
-        
+        $query = $this->getQuery()->columns($field, Query::REPLACE)->where($this->buildFilter($id))->limit(1);
         $value = $this->getDB()->fetchValue($query);
-        return static::castValue($value, $types[$field]);
+        
+        $types = $this->getFieldTypes();
+        return isset($types[$field]) ? static::castValue($value, $types[$field]) : $value;
     }
 
-    
-    /**
-     * Save the record to the DB.
-     * 
-     * @param Record|array $record  Record or array with values
-     * @return Record
-     */
-    public function save($record)
-    {
-        $values = $record instanceof Record ? $record->getValues() : (array)$record;
-        $values = array_intersect_key($values, $this->getFieldDefaults());
-        
-        $id = $this->getDB()->save($this->getName(), $values);
-        
-        if (!$record instanceof Record) {
-            $filter = $id ?: $this->getFilterForValues($values);
-            if ($filter) $record = $this->fetch($filter);
-        }
-        
-        if ($id && $record) $record->setId($id);
-        return $record;
-    }
     
     /**
      * Get a filter to fetch a record based on values.
@@ -297,6 +288,28 @@ class Table extends \Jasny\DB\Table
         return $filter;
     }
     
+    /**
+     * Save the record to the DB.
+     * 
+     * @param Record|array $record  Record or array with values
+     * @return Record
+     */
+    public function save($record)
+    {
+        $values = $record instanceof Record ? $record->getValues() : (array)$record;
+        $values = array_intersect_key($values, $this->getFieldDefaults());
+        
+        $id = $this->getDB()->save($this->getName(), $values);
+        
+        if (!$record instanceof Record) {
+            $filter = $id ?: $this->getFilterForValues($values);
+            if ($filter) $record = $this->fetch($filter);
+        }
+        
+        if ($id && $record) $record->setId($id);
+        return $record;
+    }
+    
     
     /**
      * Get PHP type for MySQL field type
@@ -304,7 +317,7 @@ class Table extends \Jasny\DB\Table
      * @param string $fieldtype
      * @return string
      */
-    protected static function castType($fieldtype)
+    protected static function getCastType($fieldtype)
     {
         for ($i = 0; $i < 3; $i++) {
             switch ($i) {
