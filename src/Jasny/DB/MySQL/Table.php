@@ -202,31 +202,58 @@ class Table extends \Jasny\DB\Table
     }
     
     /**
-     * Build a filter for an id
+     * Build a filter for an id or insert table name for filter fields.
      * 
-     * @param int|array $id  ID or filter
-     * @return string
+     * @param int|array $filter  ID or filter
+     * @return array
      */
-    protected function buildFilter($id)
+    protected function buildFilter($filter)
     {
-        if (is_array($id)) return $id; // Already a filter
-        
-        if (is_array($this->getPrimarykey())) {
-            throw new \Exception("No or combined primary key. Please pass a filter as associated array.");
+        if (is_array($filter)) {
+            if (is_array($this->getPrimarykey())) {
+                throw new \Exception("No or combined primary key. Please pass a filter as associated array.");
+            }
+
+            return array(Query::backquote($this->getName() . '.' . $this->getPrimarykey()) => $filter);
         }
         
-        return array($this->getPrimarykey() => $id);
+        $where = array();
+        $tbl = Query::backquote($this->getName());
+        $regex = '#(?<!\.)`(' . join('|', array_map('preg_quote', array_keys($this->getFieldDefaults()))) . ')`#';
+
+        foreach ($filter as $key=>$value) {
+            if (is_int($key)) $value = preg_replace($regex, "{$tbl}.$1", Query::backquote($value));
+             else $key = preg_replace($regex, "{$tbl}.$1", Query::backquote($key));
+            
+            $where[$key] = $value;
+        }
+
+        return $where;
     }
     
     /**
      * Fetch all records of the table.
      * 
-     * @param array $filter  Filter as [ expression, field => value, ... ]
+     * @param array $filter
      * @return array
      */
     public function fetchAll(array $filter=array())
     {
-        $query = $this->getQuery()->where($filter);
+        $query = $this->getQuery()->where($this->buildFilter($filter));
+        $records = $this->getDB()->fetchAll($query, $this->getClass());
+        
+        return $this->setDBTable($records);
+    }
+
+    /**
+     * Count all records of the table.
+     * 
+     * @param array $filter
+     * @return int
+     */
+    public function count(array $filter=array())
+    {
+        $query = $this->getQuery()->where($this->buildFilter($filter));
         $records = $this->getDB()->fetchAll($query, $this->getClass());
         
         return $this->setDBTable($records);
