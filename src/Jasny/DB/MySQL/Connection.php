@@ -342,29 +342,22 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      */
     public static function quote($value, $empty = 'NULL')
     {
-        if (is_array($value)) return '(' . join(', ', array_map(array(get_class(), 'quote'), $value)) . ')';
-
-        if (is_null($value)) return $empty;
-        if (is_bool($value)) return $value ? 'TRUE' : 'FALSE';
-        if (is_int($value) || is_float($value)) return (string)$value;
-        
-        if ($value instanceof \DateTime) {
-            if (date_default_timezone_get()) $value->setTimezone(new \DateTimeZone(date_default_timezone_get())); // MySQL can't handle timezones
-            $value = $value->format('Y-m-d H:i:s');
-        }
-        
-        return '"' . strtr((string)$value, array('\\' => '\\\\', "\0" => '\\0', "\r" => '\\r', "\n" => '\\n', '"' => '\\"')) . '"';
+        return QuerySplitter::backquote($identifier, $flags);
     }
 
     /**
-     * Quote a field, table or dbname so it can be savely used in a query.
+     * Quotes a string so it can be used as a table or column name.
+     * Dots are seen as seperator and are kept out of quotes.
      * 
-     * @param string $field
+     * Doesn't quote expressions without Query::BACKQUOTE_STRICT. This means it is not secure without this option. 
+     * 
+     * @param string   $identifier
+     * @param int      $flags       Query::BACKQUOTE_%
      * @return string
      */
-    public static function backquote($field)
+    public static function backquote($identifier, $flags = Query::BACKQUOTE_STRICT)
     {
-        return '`' . str_replace('`', '', $field) . '`';
+        return QuerySplitter::backquote($identifier, $flags);
     }
 
     /**
@@ -387,15 +380,7 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
             $params = array_splice($args, 1);
         }
         
-        $quote = array(get_called_class(), 'quote'); // Callback
-        
-        $fn = function ($match) use (&$params, $quote) {
-            if (!empty($match[1]) && !empty($params)) return call_user_func($quote, array_shift($params));
-            if (!empty($match[2]) && array_key_exists($match[2], $params)) return call_user_func($quote, $params[$match[2]]);
-            return $match[0];
-        };
-
-        return preg_replace_callback('/`[^`]*+`|"(?:[^"\\\\]++|\\\\.)*+"|\'(?:[^\'\\\\]++|\\\\.)*+\'|(\?)|:(\w++)/', $fn, $query);
+        return QuerySplitter::bind($query, $params);
     }
     
 

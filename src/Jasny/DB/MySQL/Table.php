@@ -177,16 +177,6 @@ class Table extends \Jasny\DB\Table
         return $this->primarykey ?: null;
     }
     
-    /**
-     * Get the default order by statement.
-     * 
-     * @return string
-     */
-    protected function getOrderBy()
-    {
-        return $this->getPrimarykey();
-    }
-
     
     /**
      * Get the query to return all records of this table.
@@ -198,7 +188,7 @@ class Table extends \Jasny\DB\Table
         $tbl = Query::backquote($this->getName());
         $orderby = $this->getOrderBy();
         
-        return new Query("SELECT $tbl.* FROM $tbl" . ($orderby ? " ORDER BY $orderby" : ''));
+        return new Query("SELECT $tbl.* FROM $tbl ORDER BY " . Query::backquote($this->getPrimarykey()));
     }
     
     /**
@@ -209,7 +199,7 @@ class Table extends \Jasny\DB\Table
      */
     protected function buildFilter($filter)
     {
-        if (is_array($filter)) {
+        if (!is_array($filter)) {
             if (is_array($this->getPrimarykey())) {
                 throw new \Exception("No or combined primary key. Please pass a filter as associated array.");
             }
