@@ -231,9 +231,10 @@ abstract class Table
     /**
      * Fetch all records of the table.
      * 
+     * @param array $filter  Filter as [ expression, field => value, ... ]
      * @return array
      */
-    abstract public function fetchAll();
+    abstract public function fetchAll(array $filter=array());
     
     /**
      * Load a record from the DB

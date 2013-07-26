@@ -160,15 +160,26 @@ class Table extends \Jasny\DB\Table
     
     /**
      * Fetch all records of the table.
+     * @todo use save quoting from DB\MySQL\Query.
      * 
+     * @param array $filter  Filter as [ expression, field => value, ... ]
      * @return array
      */
-    public function fetchAll()
+    public function fetchAll(array $filter=array())
     {
         $db = $this->getDB();
-        $records = $db->fetchAll("SELECT * FROM " . $db->backquote($this->getName()), $this->getClass());
         
-        foreach ($records as $record) $record->_setDBTable($this);
+        $parts = array();
+        foreach ($filter as $key=>$value) {
+            $parts[] = is_int($key) ? $value : $db->backquote($key) . (isset($value) ? ' = ' . $db->quote($value) : ' IS NULL');
+        }
+        if ($parts) $where = " WHERE " . join(' AND ', $parts);
+        
+        $records = $db->fetchAll("SELECT * FROM " . $db->backquote($this->getName()) . $where, $this->getClass());
+        
+        foreach ($records as $record) {
+            $record->_setDBTable($this);
+        }
         
         return $records;
     }
@@ -184,12 +195,12 @@ class Table extends \Jasny\DB\Table
         $db = $this->getDB();
         
         if (is_array($id)) {
-            $filter = array();
+            $parts = array();
             foreach ($id as $key=>$value) {
-                $filter[] = $db->backquote($key) . (isset($value) ? ' = ' . $db->quote($value) : ' IS NULL');
+                $parts[] = $db->backquote($key) . (isset($value) ? ' = ' . $db->quote($value) : ' IS NULL');
             }
             
-            $where = join(' AND ', $filter);
+            $where = join(' AND ', $parts);
         } elseif (!is_array($this->getPrimarykey())) {
             $where = $db->backquote($this->getPrimarykey()) . " = " . $db->quote($id);
         } else {
