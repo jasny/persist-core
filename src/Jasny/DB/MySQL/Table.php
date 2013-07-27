@@ -210,8 +210,8 @@ class Table extends \Jasny\DB\Table
         $regex = '#(?<!\.)`(' . join('|', array_map('preg_quote', array_keys($this->getFieldDefaults()))) . ')`#';
 
         foreach ($filter as $key=>$value) {
-            if (is_int($key)) $value = preg_replace($regex, "{$tbl}.$1", Query::backquote($value));
-             else $key = preg_replace($regex, "{$tbl}.$1", Query::backquote($key));
+            if (is_int($key)) $value = preg_replace($regex, "{$tbl}.$1", Query::backquote($value, Query::BACKQUOTE_SMART));
+             else $key = preg_replace($regex, "{$tbl}.$1", Query::backquote($key, Query::BACKQUOTE_SMART));
             
             $where[$key] = $value;
         }
@@ -241,10 +241,8 @@ class Table extends \Jasny\DB\Table
      */
     public function count(array $filter=array())
     {
-        $query = $this->getQuery()->where($this->buildFilter($filter));
-        $records = $this->getDB()->fetchAll($query, $this->getClass());
-        
-        return $this->setDBTable($records);
+        $query = $this->getQuery()->count()->where($this->buildFilter($filter));
+        return $this->getDB()->fetchValue($query);
     }
 
     /**
