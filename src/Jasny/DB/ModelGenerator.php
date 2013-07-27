@@ -36,6 +36,17 @@ class ModelGenerator
     
     
     /**
+     * Check if type is a PHP internal type.
+     * 
+     * @param string $type
+     * @return boolean
+     */
+    protected static function isInternalType($type)
+    {
+        return in_array($type, array('bool', 'boolean', 'int', 'integer', 'float', 'string', 'array'));
+    }
+
+    /**
      * Indent each line
      * 
      * @param string $code
@@ -192,17 +203,20 @@ PHP;
         if ($namespace) $base = '\\' . $base;
 
         $properties = "";
+        $cast = "";
         foreach ($defaults as $field=>$value) {
             if (preg_match('/\W/', $field)) throw new \Exception("Can't create a property for field '$field'");
-            $properties .= "    public \$$field" . (isset($value) ? " = " . var_export($table->castValue($value, $types[$field], false), true) : '') . ";\n";
-        }
-
-        $cast = "";
-        foreach ($types as $field=>$type) {
-            if (in_array($type, array('bool', 'boolean', 'int', 'integer', 'float', 'string', 'array'))) {
+            
+            $type = (static::isInternalType($types[$field]) ? '' : '\\') . $types[$field];
+            $val = var_export($table->castValue($value, $types[$field], false), true);
+                
+            $properties .= "    /** @var $type */\n    public \$$field = $val;\n\n";
+            
+            if (static::isInternalType($type)) {
                 $cast .= "        if (isset(\$this->$field)) \$this->$field = ($type)\$this->$field;\n";
             } else {
-                $cast .= "        if (isset(\$this->$field) && !\$this->$field instanceof \\$type) \$this->$field = new \\$type(\$this->$field);\n";
+                $cast .= "        if (isset(\$this->$field) && !\$this->$field instanceof $type)"
+                    ." \$this->$field = new $type(\$this->$field);\n";
             }
         }
 
