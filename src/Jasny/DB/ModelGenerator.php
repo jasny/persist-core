@@ -208,9 +208,9 @@ PHP;
             if (preg_match('/\W/', $field)) throw new \Exception("Can't create a property for field '$field'");
             
             $type = (static::isInternalType($types[$field]) ? '' : '\\') . $types[$field];
-            $val = var_export($table->castValue($value, $types[$field], false), true);
-                
-            $properties .= "    /** @var $type */\n    public \$$field = $val;\n\n";
+            $isVal = isset($value) ? ' = ' . var_export($table->castValue($value, $types[$field], false), true) : '';
+            
+            $properties .= "    /** @var $type */\n    public \${$field}{$isVal};\n\n";
             
             if (static::isInternalType($type)) {
                 $cast .= "        if (isset(\$this->$field)) \$this->$field = ($type)\$this->$field;\n";
