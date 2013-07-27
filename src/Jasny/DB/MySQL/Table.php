@@ -202,7 +202,7 @@ class Table extends \Jasny\DB\Table
                 throw new \Exception("No or combined primary key. Please pass a filter as associated array.");
             }
 
-            return array(Query::backquote($this->getName() . '.' . $this->getPrimarykey()) => $filter);
+            return array(Query::backquote($this->getName() . '.' . $this->getPrimarykey()) => $filter, Query::BACKQUOTE_SMART);
         }
         
         $where = array();
