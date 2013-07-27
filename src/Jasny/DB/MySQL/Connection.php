@@ -342,7 +342,7 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      */
     public static function quote($value, $empty = 'NULL')
     {
-        return QuerySplitter::backquote($identifier, $flags);
+        return QuerySplitter::quote($value, $empty);
     }
 
     /**

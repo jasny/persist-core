@@ -45,8 +45,6 @@ interface Connection
     public function getConnectionName();
 
     
-    
-    
     /**
      * Get a table gateway.
      * 
@@ -102,7 +100,7 @@ interface Connection
      * @see https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md
      * @see https://packagist.org/packages/monolog/monolog
      * 
-     * @param Psr\Log\LoggerInterface $logger
+     * @param \Psr\Log\LoggerInterface $logger
      */
     public function setLogger($logger);
 }
