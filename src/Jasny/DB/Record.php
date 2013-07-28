@@ -86,7 +86,7 @@ class Record
         
         foreach (array_keys((array)$this) as $key) {
             if ($key[0] == "\0") continue; // Skip private and protected properties
-            if (isset($values[$key])) $this->$key = $values[$key];
+            if (array_key_exists($key, $values)) $this->$key = $values[$key];
         }
         
         return $this;
