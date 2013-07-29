@@ -337,7 +337,7 @@ abstract class Table
      */
     public static function castValue($value, $type, $obj=true)
     {
-        if ((is_object($value) && is_a($value, $type)) || gettype($value) == $type) return $value; // No casting needed
+        if (is_null($value) || (is_object($value) && is_a($value, $type)) || gettype($value) == $type) return $value; // No casting needed
         
         switch ($type) {
             case 'bool': case 'boolean':
