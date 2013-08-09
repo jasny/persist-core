@@ -60,7 +60,7 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      * Get the default or named DB connection.
      * 
      * @param string $name
-     * @return DB
+     * @return Connection
      */
     public static function conn($name='default')
     {
