@@ -89,7 +89,10 @@ abstract class Table
 
     
     /**
-     * Replacement for `new Table()`
+     * Replacement for `new Table()`.
+     * @ignore
+     * 
+     * {@internal Setting the name is only required if no specific table gateway exists for a table}}
      * 
      * @param string     $name
      * @param Connection $db
@@ -269,6 +272,29 @@ abstract class Table
             $value = static::castValue($value, $types[$field]);
         }
 
+        return $record;
+    }
+    
+    
+    /**
+     * Create a new record.
+     * {@internal You can't overwrite this function. Put the code in the contructor of the table's Record class}}
+     * 
+     * @return Record
+     */
+    public final function newRecord()
+    {
+        $class = $this->getClass();
+        $record = new $class();
+        
+        // Add fields for a generic record object
+        if (preg_replace('/^.*\\\\/', $class) != self::camelcase($this->getName())) {
+            foreach ($this->getDefaults() as $key=>$value) {
+                $record->$key = $value;
+            }
+        }
+        
+        $record->_setDBTable($this);
         return $record;
     }
     

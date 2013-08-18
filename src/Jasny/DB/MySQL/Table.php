@@ -99,12 +99,12 @@ class Table extends \Jasny\DB\Table
     }
     
     /**
-     * Set the DB table to this table for all records
+     * Set the DB table to this table for all records.
      * 
      * @param Record|Record[] $records
      * @return Record|Record[]
      */
-    protected function setDBTable($records)
+    protected final function setDBTable($records)
     {
         if (!isset($records)) return null;
         

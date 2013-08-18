@@ -21,26 +21,26 @@ class Record
      * @var Table
      */
     protected $_dbtable;
-    
+
     
     /**
      * Get the value of the identifier field.
      * 
-     * @param int $id
+     * @return mixed
      */
     public function getId()
     {
         $field = $this->getDBTable()->getPrimarykey();
-        if (!$field) throw new \Exception("Table " . $this->getDBTable()->getName() . " does not have an identifier field");
+        if (!$field) throw new \Exception("Table " . $this->getDBTable() . " doesn't have a primary key");
         
-        // Composite ID
+        // Composite primary key
         if (is_array($field)) {
             $id = array();
             foreach ($field as $f) $id[$f] = $this->$f;
             return $id;
         }
         
-        // Single ID field
+        // Single field
         return $this->$field;
     }
     
