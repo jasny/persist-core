@@ -7,7 +7,7 @@
 	<title>Class Jasny\DB\Record | Jasny DB · API documentation</title>
 
 	<script type="text/javascript" src="resources/combined.js?394153670"></script>
-	<script type="text/javascript" src="elementlist.js?4160033289"></script>
+	<script type="text/javascript" src="elementlist.js?3027144816"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 	<script type="text/javascript">
@@ -48,6 +48,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-Jasny.DB.ModelGenerator.html">ModelGenerator</a></li>
 				<li class="active"><a href="class-Jasny.DB.Record.html">Record</a></li>
 				<li><a href="class-Jasny.DB.Table.html">Table</a></li>
 			</ul>
@@ -102,7 +103,7 @@
 
 	<div class="description">
 	
-<p>DB Record</p>
+<p>Acive Record for a DB table</p>
 
 	</div>
 
@@ -125,13 +126,50 @@
 				<b>Author:</b>
 				Arnold Daniels &lt;<a
 href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
-		<b>Located at</b> <a href="source-class-Jasny.DB.Record.html#14-123" title="Go to source code">Jasny/DB/Record.php</a><br />
+		<b>Located at</b> <a href="source-class-Jasny.DB.Record.html#12-184" title="Go to source code">Jasny/DB/Record.php</a><br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
+	<tr data-order="getId" id="_getId">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getId">#</a>
+		<code><a href="source-class-Jasny.DB.Record.html#24-43" title="Go to source code">getId</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get the value of the identifier field.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the value of the identifier field.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="setId" id="_setId">
 
 		<td class="attributes"><code>
@@ -143,17 +181,17 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setId">#</a>
-		<code><a href="source-class-Jasny.DB.Record.html#26-35" title="Go to source code">setId</a>( <span>integer <var>$id</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.Record.html#45-57" title="Go to source code">setId</a>( <span>integer <var>$id</var></span> )</code>
 
 		<div class="description short">
 			
-<p>Set value for auto_increment field.</p>
+<p>Set a value for the identifier field.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Set value for auto_increment field.</p>
+<p>Set a value for the identifier field.</p>
 
 
 
@@ -181,17 +219,17 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getValues">#</a>
-		<code><a href="source-class-Jasny.DB.Record.html#37-59" title="Go to source code">getValues</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Record.html#59-73" title="Go to source code">getValues</a>( )</code>
 
 		<div class="description short">
 			
-<p>Get the values of this model.</p>
+<p>Returns the values of all public properties of the Record.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Get the values of this model.</p>
+<p>Returns the values of all public properties of the Record.</p>
 
 
 
@@ -218,25 +256,62 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setValues">#</a>
-		<code><a href="source-class-Jasny.DB.Record.html#61-77" title="Go to source code">setValues</a>( <span>array <var>$values</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.Record.html#75-91" title="Go to source code">setValues</a>( <span>array <var>$values</var></span> )</code>
 
 		<div class="description short">
 			
-<p>Set the values of this model.</p>
+<p>Set the values of this Record.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Set the values of this model.</p>
+<p>Set the values of this Record.</p>
 
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$values</var></dt>
-					<dd><code>array</code><br>$values Array with values (or object with method 'getValues')</dd>
+					<dd><code>array</code><br>$values Array with values or any object with method 'getValues'</dd>
 				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code></code><br>$this<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="cast" id="_cast">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_cast">#</a>
+		<code><a href="source-class-Jasny.DB.Record.html#93-101" title="Go to source code">cast</a>( )</code>
+
+		<div class="description short">
+			
+<p>Cast all properties to a type based on the field types.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Cast all properties to a type based on the field types.</p>
+
+
+
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -253,14 +328,14 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="attributes"><code>
 			 public 
-			
+			<code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_save">#</a>
-		<code><a href="source-class-Jasny.DB.Record.html#79-85" title="Go to source code">save</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Record.html#103-112" title="Go to source code">save</a>( )</code>
 
 		<div class="description short">
 			
@@ -275,6 +350,49 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code></code><br>$this<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="reload" id="_reload">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_reload">#</a>
+		<code><a href="source-class-Jasny.DB.Record.html#114-129" title="Go to source code">reload</a>( )</code>
+
+		<div class="description short">
+			
+<p>Reload all the properties of the record from the DB. Any unsaved changes are
+discarded.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Reload all the properties of the record from the DB. Any unsaved changes are
+discarded.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code></code><br>$this<br />
+				</div>
 
 
 
@@ -293,7 +411,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getDBTable">#</a>
-		<code><a href="source-class-Jasny.DB.Record.html#99-108" title="Go to source code">getDBTable</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Record.html#146-157" title="Go to source code">getDBTable</a>( )</code>
 
 		<div class="description short">
 			
@@ -330,7 +448,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#___callStatic">#</a>
-		<code><a href="source-class-Jasny.DB.Record.html#111-122" title="Go to source code">__callStatic</a>( <span>string <var>$name</var></span>, <span>array <var>$arguments</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.Record.html#160-171" title="Go to source code">__callStatic</a>( <span>string <var>$name</var></span>, <span>array <var>$arguments</var></span> )</code>
 
 		<div class="description short">
 			
@@ -355,6 +473,43 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__sleep" id="___sleep">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___sleep">#</a>
+		<code><a href="source-class-Jasny.DB.Record.html#174-183" title="Go to source code">__sleep</a>( )</code>
+
+		<div class="description short">
+			
+<p>Forget dbtable when serialized.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Forget dbtable when serialized.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
 				</div>
 
 

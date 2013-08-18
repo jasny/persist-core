@@ -2,8 +2,6 @@
 /**
  * Jasny DB - A DB layer for the masses.
  *
- * @package Jasny/DB
- * @subpackage MySQL
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/DB-MySQL/master/LICENSE MIT
  * @link    https://jasny.github.com/DB-MySQL

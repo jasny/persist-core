@@ -2,8 +2,6 @@
 /**
  * Jasny DB - A DB layer for the masses.
  * 
- * PHP version 5.3+
- * 
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.io/db
@@ -13,6 +11,8 @@ namespace Jasny\DB;
 
 /**
  * Generate DB model classes.
+ * 
+ * @example Jasny\DB\ModelGenerator::enable('../cache/model', -1, APPLICATION_ENV != 'prod');
  */
 class ModelGenerator
 {
@@ -322,7 +322,7 @@ PHP;
      * @param int     $ttl         Time a cache file may be valid; -1 means always.
      * @param boolean $verify      Verify if the table hasn't changed.
      */
-    public static function enable($cache_path=null, $ttl=600, $verify=true)
+    public static function enable($cache_path=null, $ttl=-1, $verify=true)
     {
         static::$cachePath = $cache_path;
         static::$cacheTTL = $cache_path ? $ttl : 0;

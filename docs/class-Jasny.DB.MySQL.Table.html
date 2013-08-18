@@ -7,7 +7,7 @@
 	<title>Class Jasny\DB\MySQL\Table | Jasny DB · API documentation</title>
 
 	<script type="text/javascript" src="resources/combined.js?394153670"></script>
-	<script type="text/javascript" src="elementlist.js?4160033289"></script>
+	<script type="text/javascript" src="elementlist.js?3027144816"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 	<script type="text/javascript">
@@ -131,21 +131,60 @@
 		
 		
 		<b>Namespace:</b> <a href="namespace-Jasny.html">Jasny</a>\<a href="namespace-Jasny.DB.html">DB</a>\<a href="namespace-Jasny.DB.MySQL.html">MySQL</a><br />
-		<b>Package:</b> Jasny\DB\MySQL<br />
+		<b>Package:</b> MySQL<br />
 
 				<b>License:</b>
 				<a href="https://raw.github.com/jasny/DB-MySQL/master/LICENSE">MIT</a><br />
 				<b>Author:</b>
 				Arnold Daniels &lt;<a
 href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
-		<b>Located at</b> <a href="source-class-Jasny.DB.MySQL.Table.html#16-165" title="Go to source code">Jasny/DB/MySQL/Table.php</a><br />
+		<b>Located at</b> <a href="source-class-Jasny.DB.MySQL.Table.html#16-354" title="Go to source code">Jasny/DB/MySQL/Table.php</a><br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="getDefaults" id="_getDefaults">
+	<tr data-order="getDB" id="_getDB">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Jasny.DB.MySQL.Connection.html">Jasny\DB\MySQL\Connection</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getDB">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Table.html#97-105" title="Go to source code">getDB</a>( )</code>
+
+		<div class="description short">
+			
+<p>Return DB connection</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Return DB connection</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.MySQL.Connection.html">Jasny\DB\MySQL\Connection</a></code></code><br />
+				</div>
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Jasny.DB.Table.html#_getDB">Jasny\DB\Table::getDB()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getFieldDefaults" id="_getFieldDefaults">
 
 		<td class="attributes"><code>
 			 public 
@@ -155,18 +194,18 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_getDefaults">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Table.html#37-66" title="Go to source code">getDefaults</a>( )</code>
+		<a class="anchor" href="#_getFieldDefaults">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Table.html#153-162" title="Go to source code">getFieldDefaults</a>( )</code>
 
 		<div class="description short">
 			
-<p>Get all the default values for this table.</p>
+<p>Get all the default value for each field for this table.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Get all the default values for this table.</p>
+<p>Get all the default value for each field for this table.</p>
 
 
 
@@ -182,7 +221,44 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="getIdentifier" id="_getIdentifier">
+	<tr data-order="getFieldTypes" id="_getFieldTypes">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getFieldTypes">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Table.html#164-173" title="Go to source code">getFieldTypes</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get the php type for each field of this table.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the php type for each field of this table.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getPrimarykey" id="_getPrimarykey">
 
 		<td class="attributes"><code>
 			 public 
@@ -192,8 +268,8 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_getIdentifier">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Table.html#68-77" title="Go to source code">getIdentifier</a>( )</code>
+		<a class="anchor" href="#_getPrimarykey">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Table.html#175-184" title="Go to source code">getPrimarykey</a>( )</code>
 
 		<div class="description short">
 			
@@ -230,7 +306,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchAll">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Table.html#80-93" title="Go to source code">fetchAll</a>( )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Table.html#228-240" title="Go to source code">fetchAll</a>( <span>array <var>$filter</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 		<div class="description short">
 			
@@ -244,6 +320,11 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$filter</var></dt>
+					<dd><code>array</code><br>$filter</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -256,18 +337,60 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="count" id="_count">
+
+		<td class="attributes"><code>
+			 public 
+			integer
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_count">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Table.html#242-252" title="Go to source code">count</a>( <span>array <var>$filter</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			
+<p>Count all records of the table.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Count all records of the table.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$filter</var></dt>
+					<dd><code>array</code><br>$filter</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>integer</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="fetch" id="_fetch">
 
 		<td class="attributes"><code>
 			 public 
-			Record
+			<code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetch">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Table.html#95-119" title="Go to source code">fetch</a>( <span>integer|array <var>$id</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Table.html#254-266" title="Go to source code">fetch</a>( <span>integer|array <var>$id</var></span> )</code>
 
 		<div class="description short">
 			
@@ -289,7 +412,51 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>Record</code><br />
+					<code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="fetchValue" id="_fetchValue">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_fetchValue">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Table.html#268-282" title="Go to source code">fetchValue</a>( <span>string <var>$field</var></span>, <span>integer|array <var>$id</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Fetch a single value from the DB</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Fetch a single value from the DB</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$field</var></dt>
+					<dd><code>string</code><br>$field Field name</dd>
+					<dt><var>$id</var></dt>
+					<dd><code>integer|array</code><br>$id ID or filter</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br />
 				</div>
 
 
@@ -302,14 +469,14 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="attributes"><code>
 			 public 
-			Record
+			<code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_save">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Table.html#121-139" title="Go to source code">save</a>( <span>Record|array <var>$record</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Table.html#310-330" title="Go to source code">save</a>( <span><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>|array <var>$record</var></span> )</code>
 
 		<div class="description short">
 			
@@ -326,12 +493,12 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$record</var></dt>
-					<dd><code>Record|array</code><br>$record Record or array with values</dd>
+					<dd><code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>|array</code><br>$record Record or array with values</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>Record</code><br />
+					<code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code></code><br />
 				</div>
 
 
@@ -346,12 +513,19 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 	<caption>Methods inherited from <a href="class-Jasny.DB.Table.html#methods">Jasny\DB\Table</a></caption>
 	<tr>
 		<td><code>
+			<a href="class-Jasny.DB.Table.html#___toString">__toString()</a>, 
+			<a href="class-Jasny.DB.Table.html#_camelcase">camelcase()</a>, 
+			<a href="class-Jasny.DB.Table.html#_cast">cast()</a>, 
+			<a href="class-Jasny.DB.Table.html#_castValue">castValue()</a>, 
+			<a href="class-Jasny.DB.Table.html#_exists">exists()</a>, 
 			<a href="class-Jasny.DB.Table.html#_factory">factory()</a>, 
 			<a href="class-Jasny.DB.Table.html#_getClass">getClass()</a>, 
-			<a href="class-Jasny.DB.Table.html#_getDB">getDB()</a>, 
 			<a href="class-Jasny.DB.Table.html#_getDefaultClass">getDefaultClass()</a>, 
 			<a href="class-Jasny.DB.Table.html#_getDefaultConnection">getDefaultConnection()</a>, 
-			<a href="class-Jasny.DB.Table.html#_getName">getName()</a>
+			<a href="class-Jasny.DB.Table.html#_getDefaults">getDefaults()</a>, 
+			<a href="class-Jasny.DB.Table.html#_getName">getName()</a>, 
+			<a href="class-Jasny.DB.Table.html#_newRecord">newRecord()</a>, 
+			<a href="class-Jasny.DB.Table.html#_uncamelcase">uncamelcase()</a>
 		</code></td>
 	</tr>
 	</table>
@@ -363,9 +537,96 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 
 
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-Jasny.DB.Table.html#constants">Jasny\DB\Table</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Jasny.DB.Table.html#SKIP_CLASS_EXISTS"><b>SKIP_CLASS_EXISTS</b></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="castTypes" id="$castTypes">
+		<td class="attributes"><code>
+			public static 
+			array
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Jasny.DB.MySQL.Table.html#23-76" title="Go to source code"><var>$castTypes</var></a>
+		</td>
+		<td class="value"><code><span class="php-keyword1">array</span>(
+    <span class="php-quote">'bit'</span> =&gt; <span class="php-quote">'integer'</span>,
+    <span class="php-quote">'bit(1)'</span> =&gt; <span class="php-quote">'boolean'</span>,
+    <span class="php-quote">'bool'</span> =&gt; <span class="php-quote">'boolean'</span>,
+    <span class="php-quote">'boolean'</span> =&gt; <span class="php-quote">'boolean'</span>,
+    <span class="php-quote">'tinyint(1)'</span> =&gt; <span class="php-quote">'boolean'</span>,
+    <span class="php-quote">'tinyint'</span> =&gt; <span class="php-quote">'integer'</span>,
+    <span class="php-quote">'smallint'</span> =&gt; <span class="php-quote">'integer'</span>,
+    <span class="php-quote">'mediumint'</span> =&gt; <span class="php-quote">'integer'</span>,
+    <span class="php-quote">'int unsigned'</span> =&gt; <span class="php-quote">'integer'</span>,
+    <span class="php-quote">'int'</span> =&gt; <span class="php-quote">'string'</span>,      <span class="php-comment">// Might be bigger that PHP signed integers on 32 bit</span>
+    <span class="php-quote">'integer'</span> =&gt; <span class="php-quote">'string'</span>,  <span class="php-comment">// &quot;</span>
+    <span class="php-quote">'bigint'</span> =&gt; <span class="php-quote">'string'</span>,   <span class="php-comment">// &quot;</span>
+    <span class="php-quote">'decimal'</span> =&gt; <span class="php-quote">'float'</span>,
+    <span class="php-quote">'dec'</span> =&gt; <span class="php-quote">'float'</span>,
+    <span class="php-quote">'numeric'</span> =&gt; <span class="php-quote">'float'</span>,
+    <span class="php-quote">'fixed'</span> =&gt; <span class="php-quote">'float'</span>,
+    <span class="php-quote">'float'</span> =&gt; <span class="php-quote">'float'</span>,
+    <span class="php-quote">'double'</span> =&gt; <span class="php-quote">'float'</span>,
+    <span class="php-quote">'double precision'</span> =&gt; <span class="php-quote">'float'</span>,
+    <span class="php-quote">'real'</span> =&gt; <span class="php-quote">'float'</span>,
+    <span class="php-quote">'date'</span> =&gt; <span class="php-quote">'DateTime'</span>,
+    <span class="php-quote">'datetime'</span> =&gt; <span class="php-quote">'DateTime'</span>,
+    <span class="php-quote">'timestamp'</span> =&gt; <span class="php-quote">'DateTime'</span>,
+    <span class="php-quote">'time'</span> =&gt; <span class="php-quote">'DateTime'</span>,
+    <span class="php-quote">'year'</span> =&gt; <span class="php-quote">'integer'</span>,
+    <span class="php-quote">'char'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'varchar'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'binary'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'varbinary'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'tinyblob'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'tinytext'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'blob '</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'text'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'mediumblob'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'mediumtext'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'longblob'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'longtext'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'enum'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'set'</span> =&gt; <span class="php-quote">'array'</span>,
+
+    <span class="php-quote">'geometry'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'point'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'linestring'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'polygon'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'multipoint'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'multilinestring'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'multipolygon'</span> =&gt; <span class="php-quote">'string'</span>,
+    <span class="php-quote">'geometrycollection'</span> =&gt; <span class="php-quote">'string'</span>
+)</code></td>
+		<td class="description"><div>
+			<a href="#$castTypes" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>PHP type for each MySQL field type.</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>PHP type for each MySQL field type.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
 
 	<table class="summary inherited">
 	<caption>Properties inherited from <a href="class-Jasny.DB.Table.html#properties">Jasny\DB\Table</a></caption>

@@ -7,7 +7,7 @@
 	<title>Class Jasny\DB\Table | Jasny DB · API documentation</title>
 
 	<script type="text/javascript" src="resources/combined.js?394153670"></script>
-	<script type="text/javascript" src="elementlist.js?4160033289"></script>
+	<script type="text/javascript" src="elementlist.js?3027144816"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 	<script type="text/javascript">
@@ -48,6 +48,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-Jasny.DB.ModelGenerator.html">ModelGenerator</a></li>
 				<li><a href="class-Jasny.DB.Record.html">Record</a></li>
 				<li class="active"><a href="class-Jasny.DB.Table.html">Table</a></li>
 			</ul>
@@ -102,7 +103,7 @@
 
 	<div class="description">
 	
-<p>Default table gateways.</p>
+<p>Base class for table gateways.</p>
 
 	</div>
 
@@ -129,7 +130,7 @@
 				<b>Author:</b>
 				Arnold Daniels &lt;<a
 href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
-		<b>Located at</b> <a href="source-class-Jasny.DB.Table.html#14-219" title="Go to source code">Jasny/DB/Table.php</a><br />
+		<b>Located at</b> <a href="source-class-Jasny.DB.Table.html#12-388" title="Go to source code">Jasny/DB/Table.php</a><br />
 	</div>
 
 
@@ -147,7 +148,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getDefaultConnection">#</a>
-		<code><a href="source-class-Jasny.DB.Table.html#43-62" title="Go to source code">getDefaultConnection</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Table.html#45-65" title="Go to source code">getDefaultConnection</a>( )</code>
 
 		<div class="description short">
 			
@@ -184,7 +185,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getDefaultClass">#</a>
-		<code><a href="source-class-Jasny.DB.Table.html#64-82" title="Go to source code">getDefaultClass</a>( <span><code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code> <var>$db</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Jasny.DB.Table.html#67-86" title="Go to source code">getDefaultClass</a>( <span>string <var>$base</var></span>, <span><code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code> <var>$db</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -200,6 +201,8 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
+					<dt><var>$base</var></dt>
+					<dd><code>string</code><br>$base The classname we're looking for</dd>
 					<dt><var>$db</var></dt>
 					<dd><code><code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code></code><br>$db</dd>
 				</dl></div>
@@ -226,7 +229,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_factory">#</a>
-		<code><a href="source-class-Jasny.DB.Table.html#85-111" title="Go to source code">factory</a>( <span>string <var>$name</var></span>, <span><code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code> <var>$db</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Jasny.DB.Table.html#107-136" title="Go to source code">factory</a>( <span>string <var>$name</var></span>, <span><code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code> <var>$db</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -270,7 +273,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getDB">#</a>
-		<code><a href="source-class-Jasny.DB.Table.html#127-135" title="Go to source code">getDB</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Table.html#150-158" title="Go to source code">getDB</a>( )</code>
 
 		<div class="description short">
 			
@@ -307,7 +310,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getName">#</a>
-		<code><a href="source-class-Jasny.DB.Table.html#137-145" title="Go to source code">getName</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Table.html#160-172" title="Go to source code">getName</a>( )</code>
 
 		<div class="description short">
 			
@@ -344,7 +347,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getClass">#</a>
-		<code><a href="source-class-Jasny.DB.Table.html#147-156" title="Go to source code">getClass</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Table.html#174-189" title="Go to source code">getClass</a>( <span>integer <var>$options</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			
@@ -358,6 +361,11 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$options</var></dt>
+					<dd><code>integer</code><br>$options</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -373,7 +381,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 	<tr data-order="getDefaults" id="_getDefaults">
 
 		<td class="attributes"><code>
-			abstract public 
+			 public 
 			array
 			
 			</code>
@@ -381,7 +389,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getDefaults">#</a>
-		<code><a href="source-class-Jasny.DB.Table.html#159-164" title="Go to source code">getDefaults</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Table.html#192-208" title="Go to source code">getDefaults</a>( )</code>
 
 		<div class="description short">
 			
@@ -407,7 +415,81 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="getIdentifier" id="_getIdentifier">
+	<tr data-order="getFieldDefaults" id="_getFieldDefaults">
+
+		<td class="attributes"><code>
+			abstract public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getFieldDefaults">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#210-215" title="Go to source code">getFieldDefaults</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get all the default value for each field for this table.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get all the default value for each field for this table.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getFieldTypes" id="_getFieldTypes">
+
+		<td class="attributes"><code>
+			abstract public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getFieldTypes">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#217-222" title="Go to source code">getFieldTypes</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get the php type for each field of this table.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the php type for each field of this table.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getPrimarykey" id="_getPrimarykey">
 
 		<td class="attributes"><code>
 			abstract public 
@@ -417,8 +499,8 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_getIdentifier">#</a>
-		<code><a href="source-class-Jasny.DB.Table.html#166-171" title="Go to source code">getIdentifier</a>( )</code>
+		<a class="anchor" href="#_getPrimarykey">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#224-229" title="Go to source code">getPrimarykey</a>( )</code>
 
 		<div class="description short">
 			
@@ -455,7 +537,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchAll">#</a>
-		<code><a href="source-class-Jasny.DB.Table.html#174-179" title="Go to source code">fetchAll</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Table.html#232-238" title="Go to source code">fetchAll</a>( <span>array <var>$filter</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 		<div class="description short">
 			
@@ -469,6 +551,11 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$filter</var></dt>
+					<dd><code>array</code><br>$filter Filter as [ expression, field =&gt; value, ... ]</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
@@ -492,7 +579,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetch">#</a>
-		<code><a href="source-class-Jasny.DB.Table.html#181-187" title="Go to source code">fetch</a>( <span>integer|array <var>$id</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.Table.html#240-246" title="Go to source code">fetch</a>( <span>integer|array <var>$id</var></span> )</code>
 
 		<div class="description short">
 			
@@ -523,6 +610,129 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="fetchValue" id="_fetchValue">
+
+		<td class="attributes"><code>
+			abstract public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_fetchValue">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#248-255" title="Go to source code">fetchValue</a>( <span>string <var>$field</var></span>, <span>integer|array <var>$id</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Fetch a single value from the DB</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Fetch a single value from the DB</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$field</var></dt>
+					<dd><code>string</code><br>$field Field name</dd>
+					<dt><var>$id</var></dt>
+					<dd><code>integer|array</code><br>$id ID or filter</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="cast" id="_cast">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>|array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_cast">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#258-274" title="Go to source code">cast</a>( <span><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>|array <var>$record</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Cast values to their proper type.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Cast values to their proper type.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$record</var></dt>
+					<dd><code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>|array</code><br>$record Record, value object or array with values</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>|array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="newRecord" id="_newRecord">
+
+		<td class="attributes"><code>
+			final public 
+			<code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_newRecord">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#277-297" title="Go to source code">newRecord</a>( )</code>
+
+		<div class="description short">
+			
+<p>Create a new record. }</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Create a new record. }</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="save" id="_save">
 
 		<td class="attributes"><code>
@@ -534,7 +744,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_save">#</a>
-		<code><a href="source-class-Jasny.DB.Table.html#189-195" title="Go to source code">save</a>( <span><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>|array <var>$record</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.Table.html#299-305" title="Go to source code">save</a>( <span><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>|array <var>$record</var></span> )</code>
 
 		<div class="description short">
 			
@@ -565,6 +775,215 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="camelcase" id="_camelcase">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_camelcase">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#308-317" title="Go to source code">camelcase</a>( <span>string <var>$string</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Turn a string using underscores in a camelcase string.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Turn a string using underscores in a camelcase string.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$string</var></dt>
+					<dd><code>string</code><br>$string</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="uncamelcase" id="_uncamelcase">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_uncamelcase">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#319-328" title="Go to source code">uncamelcase</a>( <span>string <var>$string</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Turn a camelcase string in a string using underscores.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Turn a camelcase string in a string using underscores.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$string</var></dt>
+					<dd><code>string</code><br>$string</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__toString" id="___toString">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___toString">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#331-339" title="Go to source code">__toString</a>( )</code>
+
+		<div class="description short">
+			
+<p>Cast table to table name.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Cast table to table name.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="exists" id="_exists">
+
+		<td class="attributes"><code>
+			 public static
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_exists">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#342-351" title="Go to source code">exists</a>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Check if a table exists for the default connection.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Check if a table exists for the default connection.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="castValue" id="_castValue">
+
+		<td class="attributes"><code>
+			 public static
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_castValue">#</a>
+		<code><a href="source-class-Jasny.DB.Table.html#354-387" title="Go to source code">castValue</a>( <span>mixed <var>$value</var></span>, <span>string <var>$type</var></span>, <span>boolean <var>$obj</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Cast the value to a type</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Cast the value to a type</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$value</var></dt>
+					<dd><code>mixed</code><br>$value</dd>
+					<dt><var>$type</var></dt>
+					<dd><code>string</code><br>$type</dd>
+					<dt><var>$obj</var></dt>
+					<dd><code>boolean</code><br>$obj Create objects for non-internal types</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	</table>
 
 
@@ -574,6 +993,33 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 
 
+	<table class="summary" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="SKIP_CLASS_EXISTS" id="SKIP_CLASS_EXISTS">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+				<a href="source-class-Jasny.DB.Table.html#17-18" title="Go to source code"><b>SKIP_CLASS_EXISTS</b></a>
+		</code></td>
+		<td class="value"><code><span class="php-num">1</span></code></td>
+		<td class="description"><div>
+			<a href="#SKIP_CLASS_EXISTS" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>Option to skip check if class exists on Table::getClass()</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>Option to skip check if class exists on Table::getClass()</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
 
 
 
@@ -587,7 +1033,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Jasny.DB.Table.html#19-23" title="Go to source code"><var>$defaultConnection</var></a>
+				<a href="source-class-Jasny.DB.Table.html#21-25" title="Go to source code"><var>$defaultConnection</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>

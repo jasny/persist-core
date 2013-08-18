@@ -1,8 +1,6 @@
 <?php
 /**
- * A basic DB layer for using MySQL.
- * 
- * PHP version 5.3+
+ * Jasny DB - A DB layer for the masses.
  * 
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/DB-MySQL/master/LICENSE MIT
@@ -12,7 +10,7 @@
 namespace Jasny\DB;
 
 /**
- * DB Record
+ * Acive Record for a DB table
  */
 class Record
 {

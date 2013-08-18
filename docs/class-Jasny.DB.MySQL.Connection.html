@@ -7,7 +7,7 @@
 	<title>Class Jasny\DB\MySQL\Connection | Jasny DB · API documentation</title>
 
 	<script type="text/javascript" src="resources/combined.js?394153670"></script>
-	<script type="text/javascript" src="elementlist.js?4160033289"></script>
+	<script type="text/javascript" src="elementlist.js?3027144816"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 	<script type="text/javascript">
@@ -144,7 +144,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 use Jasny\DB\MySQL\Connection as DB;<br />
 new DB($host, $user, $pwd, $dbname);<br />
 $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
-		<b>Located at</b> <a href="source-class-Jasny.DB.MySQL.Connection.html#14-388" title="Go to source code">Jasny/DB/MySQL/Connection.php</a><br />
+		<b>Located at</b> <a href="source-class-Jasny.DB.MySQL.Connection.html#12-494" title="Go to source code">Jasny/DB/MySQL/Connection.php</a><br />
 	</div>
 
 
@@ -155,31 +155,36 @@ $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
 
 		<td class="attributes"><code>
 			 public static
-			DB
+			<code><a href="class-Jasny.DB.MySQL.Connection.html">Jasny\DB\MySQL\Connection</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_conn">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#46-55" title="Go to source code">conn</a>( )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#57-71" title="Go to source code">conn</a>( <span>string <var>$name</var> = <span class="php-quote">'default'</span></span> )</code>
 
 		<div class="description short">
 			
-<p>Get the default DB connection.</p>
+<p>Get the default or named DB connection.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Get the default DB connection.</p>
+<p>Get the default or named DB connection.</p>
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>DB</code><br />
+					<code><code><a href="class-Jasny.DB.MySQL.Connection.html">Jasny\DB\MySQL\Connection</a></code></code><br />
 				</div>
 
 
@@ -201,7 +206,7 @@ $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#57-77" title="Go to source code">__construct</a>( <span>string|array <var>$host</var> = <span class="php-quote">'localhost'</span></span>, <span>string <var>$username</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$password</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$dbname</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$port</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#73-96" title="Go to source code">__construct</a>( <span>string|array <var>$host</var> = <span class="php-quote">'localhost'</span></span>, <span>string <var>$username</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$password</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$dbname</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$port</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -247,7 +252,7 @@ $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_close">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#79-90" title="Go to source code">close</a>( )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#98-109" title="Go to source code">close</a>( )</code>
 
 		<div class="description short">
 			
@@ -277,7 +282,7 @@ $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="asDefault" id="_asDefault">
+	<tr data-order="useAs" id="_useAs">
 
 		<td class="attributes"><code>
 			 public 
@@ -287,28 +292,74 @@ $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_asDefault">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#92-99" title="Go to source code">asDefault</a>( )</code>
+		<a class="anchor" href="#_useAs">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#111-120" title="Go to source code">useAs</a>( <span>string <var>$name</var></span> )</code>
 
 		<div class="description short">
 			
-<p>Use this connection as the default DB</p>
+<p>Name the connection.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Use this connection as the default DB</p>
+<p>Name the connection.</p>
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+				</dl></div>
 
 
 
 
 
 				<h4>Implementation of</h4>
-				<div class="list"><code><a href="class-Jasny.DB.Connection.html#_asDefault">Jasny\DB\Connection::asDefault()</a></code></div>
+				<div class="list"><code><a href="class-Jasny.DB.Connection.html#_useAs">Jasny\DB\Connection::useAs()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getConnectionName" id="_getConnectionName">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getConnectionName">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#122-131" title="Go to source code">getConnectionName</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get the name of the connection. If the connection has multiple names, returns
+the first one.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the name of the connection. If the connection has multiple names, returns
+the first one.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-Jasny.DB.Connection.html#_getConnectionName">Jasny\DB\Connection::getConnectionName()</a></code></div>
 		</div>
 		</div></td>
 	</tr>
@@ -323,7 +374,7 @@ $result = DB::conn()-&gt;query("SELECT * FROM foo WHERE id = ?", $id);<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_query">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#102-120" title="Go to source code">query</a>( <span>string <var>$query</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#134-157" title="Go to source code">query</a>( <span>string <var>$query</var></span> )</code>
 
 		<div class="description short">
 			
@@ -375,7 +426,7 @@ status='A'", array('id'=&gt;$id, 'age'=&gt;$age));<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchAll">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#123-159" title="Go to source code">fetchAll</a>( <span>string|mysqli_result <var>$query</var></span>, <span>integer|string <var>$resulttype</var> = MYSQLI_ASSOC</span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#160-196" title="Go to source code">fetchAll</a>( <span>string|mysqli_result <var>$query</var></span>, <span>integer|string <var>$resulttype</var> = MYSQLI_ASSOC</span> )</code>
 
 		<div class="description short">
 			
@@ -429,7 +480,7 @@ $group);<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchOne">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#161-184" title="Go to source code">fetchOne</a>( <span>string|mysqli_result <var>$query</var></span>, <span>integer|string <var>$resulttype</var> = MYSQLI_ASSOC</span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#198-221" title="Go to source code">fetchOne</a>( <span>string|mysqli_result <var>$query</var></span>, <span>integer|string <var>$resulttype</var> = MYSQLI_ASSOC</span> )</code>
 
 		<div class="description short">
 			
@@ -482,7 +533,7 @@ both.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchColumn">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#186-208" title="Go to source code">fetchColumn</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#223-245" title="Go to source code">fetchColumn</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
 
 		<div class="description short">
 			
@@ -529,7 +580,7 @@ both.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchPairs">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#210-231" title="Go to source code">fetchPairs</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#247-268" title="Go to source code">fetchPairs</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
 
 		<div class="description short">
 			
@@ -578,7 +629,7 @@ as key and the second as value.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_fetchValue">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#233-251" title="Go to source code">fetchValue</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#270-288" title="Go to source code">fetchValue</a>( <span>string|mysqli_result <var>$query</var></span> )</code>
 
 		<div class="description short">
 			
@@ -625,7 +676,7 @@ as key and the second as value.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_save">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#254-294" title="Go to source code">save</a>( <span>string <var>$table</var></span>, <span>array <var>$values</var> = <span class="php-keyword1">array</span>()</span>, <span>boolean <var>$update</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#291-331" title="Go to source code">save</a>( <span>string <var>$table</var></span>, <span>array <var>$values</var> = <span class="php-keyword1">array</span>()</span>, <span>boolean <var>$update</var> = <span class="php-keyword1">true</span></span> )</code>
 
 		<div class="description short">
 			
@@ -679,7 +730,7 @@ order.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_quote">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#297-312" title="Go to source code">quote</a>( <span>mixed <var>$value</var></span>, <span>string <var>$empty</var> = <span class="php-quote">'NULL'</span></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#334-344" title="Go to source code">quote</a>( <span>mixed <var>$value</var></span>, <span>string <var>$empty</var> = <span class="php-quote">'NULL'</span></span> )</code>
 
 		<div class="description short">
 			
@@ -723,24 +774,31 @@ order.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_backquote">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#314-323" title="Go to source code">backquote</a>( <span>string <var>$field</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#346-359" title="Go to source code">backquote</a>( <span>string <var>$identifier</var></span>, <span>integer <var>$flags</var> = Query::BACKQUOTE_STRICT</span> )</code>
 
 		<div class="description short">
 			
-<p>Quote a field, table or dbname so it can be savely used in a query.</p>
+<p>Quotes a string so it can be used as a table or column name. Dots are seen as
+seperator and are kept out of quotes.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Quote a field, table or dbname so it can be savely used in a query.</p>
+<p>Quotes a string so it can be used as a table or column name. Dots are seen as
+seperator and are kept out of quotes.</p>
+
+<p>Doesn't quote expressions without Query::BACKQUOTE_STRICT. This means it is
+not secure without this option.</p>
 
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$field</var></dt>
-					<dd><code>string</code><br>$field</dd>
+					<dt><var>$identifier</var></dt>
+					<dd><code>string</code><br>$identifier</dd>
+					<dt><var>$flags</var></dt>
+					<dd><code>integer</code><br>$flags Query::BACKQUOTE_%</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -765,7 +823,7 @@ order.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_bind">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#325-354" title="Go to source code">bind</a>( <span>string <var>$query</var></span>, <span>mixed <var>$params</var> = <span class="php-keyword1">array</span>()</span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#361-382" title="Go to source code">bind</a>( <span>string <var>$query</var></span>, <span>mixed <var>$params</var> = <span class="php-keyword1">array</span>()</span> )</code>
 
 		<div class="description short">
 			
@@ -817,7 +875,7 @@ status='A'", array('id'=&gt;$id, 'age'=&gt;$age));<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_table">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#357-366" title="Go to source code">table</a>( <span>string <var>$name</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#385-394" title="Go to source code">table</a>( <span>string <var>$name</var></span> )</code>
 
 		<div class="description short">
 			
@@ -850,6 +908,137 @@ status='A'", array('id'=&gt;$id, 'age'=&gt;$age));<br />
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="tableExists" id="_tableExists">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_tableExists">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#396-405" title="Go to source code">tableExists</a>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Check if table exsists.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Check if table exsists.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name Table name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-Jasny.DB.Connection.html#_tableExists">Jasny\DB\Connection::tableExists()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getAllTables" id="_getAllTables">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getAllTables">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#407-415" title="Go to source code">getAllTables</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get the names of all tables</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the names of all tables</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-Jasny.DB.Connection.html#_getAllTables">Jasny\DB\Connection::getAllTables()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load" id="_load">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#417-429" title="Go to source code">load</a>( <span>string <var>$table</var></span>, <span>mixed <var>$id</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Load a record using the table gateway.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Load a record using the table gateway.</p>
+
+<p>Shortcut for <code>$db-&gt;table($table)-&gt;fetch($id)</code>.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$table</var></dt>
+					<dd><code>string</code><br>$table Table name</dd>
+					<dt><var>$id</var></dt>
+					<dd><code>mixed</code><br>$id</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code></code><br />
+				</div>
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-Jasny.DB.Connection.html#_load">Jasny\DB\Connection::load()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="setModelNamespace" id="_setModelNamespace">
 
 		<td class="attributes"><code>
@@ -861,7 +1050,7 @@ status='A'", array('id'=&gt;$id, 'age'=&gt;$age));<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setModelNamespace">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#369-377" title="Go to source code">setModelNamespace</a>( <span>string <var>$ns</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#432-440" title="Go to source code">setModelNamespace</a>( <span>string <var>$ns</var></span> )</code>
 
 		<div class="description short">
 			
@@ -901,7 +1090,7 @@ status='A'", array('id'=&gt;$id, 'age'=&gt;$age));<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getModelNamespace">#</a>
-		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#379-387" title="Go to source code">getModelNamespace</a>( )</code>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#442-450" title="Go to source code">getModelNamespace</a>( )</code>
 
 		<div class="description short">
 			
@@ -926,6 +1115,55 @@ status='A'", array('id'=&gt;$id, 'age'=&gt;$age));<br />
 
 				<h4>Implementation of</h4>
 				<div class="list"><code><a href="class-Jasny.DB.Connection.html#_getModelNamespace">Jasny\DB\Connection::getModelNamespace()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setLogger" id="_setLogger">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setLogger">#</a>
+		<code><a href="source-class-Jasny.DB.MySQL.Connection.html#453-466" title="Go to source code">setLogger</a>( <span>Psr\Log\LoggerInterface <var>$logger</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Set logger interface to log queries.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Set logger interface to log queries.</p>
+
+<p>Supports PSR-3 compatible loggers (like Monolog).</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$logger</var></dt>
+					<dd><code>Psr\Log\LoggerInterface</code><br>$logger</dd>
+				</dl></div>
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						<a
+href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md">https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md</a><br />
+						<a
+href="https://packagist.org/packages/monolog/monolog">https://packagist.org/packages/monolog/monolog</a><br />
+				</div>
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-Jasny.DB.Connection.html#_setLogger">Jasny\DB\Connection::setLogger()</a></code></div>
 		</div>
 		</div></td>
 	</tr>
@@ -989,7 +1227,7 @@ use_result()
 
 		<td class="attributes"><code>boolean</code></td>
 		<td class="name"><code>
-				<a href="source-class-Jasny.DB.MySQL.Connection.html#26-31" title="Go to source code"><b>SKIP_EXISTING</b></a>
+				<a href="source-class-Jasny.DB.MySQL.Connection.html#26-30" title="Go to source code"><b>SKIP_EXISTING</b></a>
 		</code></td>
 		<td class="value"><code><span class="php-keyword1">false</span></code></td>
 		<td class="description"><div>
@@ -1023,7 +1261,7 @@ use_result()
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-Jasny.DB.MySQL.Connection.html#39-43" title="Go to source code"><var>$modelNamespace</var></a>
+				<a href="source-class-Jasny.DB.MySQL.Connection.html#38-42" title="Go to source code"><var>$modelNamespace</var></a>
 		</td>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
@@ -1038,6 +1276,33 @@ use_result()
 			<div class="description detailed hidden">
 				
 <p>Namespace of the Record and Table classes.</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="execution_time" id="$execution_time">
+		<td class="attributes"><code>
+			public  
+			float
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-Jasny.DB.MySQL.Connection.html#44-48" title="Go to source code"><var>$execution_time</var></a>
+		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$execution_time" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>The execution time of the last query</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>The execution time of the last query</p>
 
 
 			</div>

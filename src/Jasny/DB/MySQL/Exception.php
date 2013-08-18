@@ -1,10 +1,18 @@
 <?php
-
+/**
+ * Jasny DB - A DB layer for the masses.
+ * 
+ * @author  Arnold Daniels <arnold@jasny.net>
+ * @license https://raw.github.com/jasny/db/master/LICENSE MIT
+ * @link    https://jasny.github.io/db
+ */
+/** */
 namespace Jasny\DB\MySQL;
 
 /**
- * Database exception.
- * @package DB
+ * MySQL query exception.
+ * 
+ * @package MySQL
  */
 class Exception extends \mysqli_sql_exception implements \Jasny\DB\Exception
 {

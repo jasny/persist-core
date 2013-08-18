@@ -7,7 +7,7 @@
 	<title>Interface Jasny\DB\Connection | Jasny DB · API documentation</title>
 
 	<script type="text/javascript" src="resources/combined.js?394153670"></script>
-	<script type="text/javascript" src="elementlist.js?4160033289"></script>
+	<script type="text/javascript" src="elementlist.js?3027144816"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 	<script type="text/javascript">
@@ -48,6 +48,7 @@
 		<div id="elements">
 			<h3>Classes</h3>
 			<ul>
+				<li><a href="class-Jasny.DB.ModelGenerator.html">ModelGenerator</a></li>
 				<li><a href="class-Jasny.DB.Record.html">Record</a></li>
 				<li><a href="class-Jasny.DB.Table.html">Table</a></li>
 			</ul>
@@ -129,7 +130,7 @@
 				<b>Author:</b>
 				Arnold Daniels &lt;<a
 href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
-		<b>Located at</b> <a href="source-class-Jasny.DB.Connection.html#14-58" title="Go to source code">Jasny/DB/Connection.php</a><br />
+		<b>Located at</b> <a href="source-class-Jasny.DB.Connection.html#12-104" title="Go to source code">Jasny/DB/Connection.php</a><br />
 	</div>
 
 
@@ -140,14 +141,14 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="attributes"><code>
 			 public static
-			DB
+			<code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_conn">#</a>
-		<code><a href="source-class-Jasny.DB.Connection.html#19-24" title="Go to source code">conn</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Connection.html#17-23" title="Go to source code">conn</a>( <span>string <var>$name</var> = <span class="php-quote">'default'</span></span> )</code>
 
 		<div class="description short">
 			
@@ -161,10 +162,15 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>DB</code><br />
+					<code><code><a href="class-Jasny.DB.Connection.html">Jasny\DB\Connection</a></code></code><br />
 				</div>
 
 
@@ -184,7 +190,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_close">#</a>
-		<code><a href="source-class-Jasny.DB.Connection.html#26-29" title="Go to source code">close</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Connection.html#25-28" title="Go to source code">close</a>( )</code>
 
 		<div class="description short">
 			
@@ -206,7 +212,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="asDefault" id="_asDefault">
+	<tr data-order="useAs" id="_useAs">
 
 		<td class="attributes"><code>
 			 public 
@@ -216,22 +222,66 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_asDefault">#</a>
-		<code><a href="source-class-Jasny.DB.Connection.html#31-34" title="Go to source code">asDefault</a>( )</code>
+		<a class="anchor" href="#_useAs">#</a>
+		<code><a href="source-class-Jasny.DB.Connection.html#30-35" title="Go to source code">useAs</a>( <span>string <var>$name</var></span> )</code>
 
 		<div class="description short">
 			
-<p>Use this connection as the default DB</p>
+<p>Name the connection.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Use this connection as the default DB</p>
+<p>Name the connection.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+				</dl></div>
 
 
 
 
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getConnectionName" id="_getConnectionName">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getConnectionName">#</a>
+		<code><a href="source-class-Jasny.DB.Connection.html#37-43" title="Go to source code">getConnectionName</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get the name of the connection. If the connection has multiple names, returns
+the first one.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the name of the connection. If the connection has multiple names, returns
+the first one.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
 
 
 
@@ -250,7 +300,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_table">#</a>
-		<code><a href="source-class-Jasny.DB.Connection.html#37-43" title="Go to source code">table</a>( <span>string <var>$name</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.Connection.html#46-52" title="Go to source code">table</a>( <span>string <var>$name</var></span> )</code>
 
 		<div class="description short">
 			
@@ -281,6 +331,129 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="tableExists" id="_tableExists">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_tableExists">#</a>
+		<code><a href="source-class-Jasny.DB.Connection.html#54-60" title="Go to source code">tableExists</a>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Check if table exsists.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Check if table exsists.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name Table name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getAllTables" id="_getAllTables">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getAllTables">#</a>
+		<code><a href="source-class-Jasny.DB.Connection.html#62-67" title="Go to source code">getAllTables</a>( )</code>
+
+		<div class="description short">
+			
+<p>Get the names of all tables</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Get the names of all tables</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load" id="_load">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load">#</a>
+		<code><a href="source-class-Jasny.DB.Connection.html#69-76" title="Go to source code">load</a>( <span>string <var>$table</var></span>, <span>mixed <var>$id</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Load a record using the table gateway.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Load a record using the table gateway.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$table</var></dt>
+					<dd><code>string</code><br>$table Table name</dd>
+					<dt><var>$id</var></dt>
+					<dd><code>mixed</code><br>$id</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Jasny.DB.Record.html">Jasny\DB\Record</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="setModelNamespace" id="_setModelNamespace">
 
 		<td class="attributes"><code>
@@ -292,7 +465,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setModelNamespace">#</a>
-		<code><a href="source-class-Jasny.DB.Connection.html#45-50" title="Go to source code">setModelNamespace</a>( <span>string <var>$ns</var></span> )</code>
+		<code><a href="source-class-Jasny.DB.Connection.html#79-84" title="Go to source code">setModelNamespace</a>( <span>string <var>$ns</var></span> )</code>
 
 		<div class="description short">
 			
@@ -330,7 +503,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getModelNamespace">#</a>
-		<code><a href="source-class-Jasny.DB.Connection.html#52-57" title="Go to source code">getModelNamespace</a>( )</code>
+		<code><a href="source-class-Jasny.DB.Connection.html#86-91" title="Go to source code">getModelNamespace</a>( )</code>
 
 		<div class="description short">
 			
@@ -351,6 +524,53 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 				</div>
 
 
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setLogger" id="_setLogger">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setLogger">#</a>
+		<code><a href="source-class-Jasny.DB.Connection.html#94-103" title="Go to source code">setLogger</a>( <span>Psr\Log\LoggerInterface <var>$logger</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Set logger interface to log queries, errors and more.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Set logger interface to log queries, errors and more.</p>
+
+<p>Supports PSR-3 compatible loggers (like Monolog).</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$logger</var></dt>
+					<dd><code>Psr\Log\LoggerInterface</code><br>$logger</dd>
+				</dl></div>
+
+
+
+				<h4>See</h4>
+				<div class="list">
+						<a
+href="https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md">https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md</a><br />
+						<a
+href="https://packagist.org/packages/monolog/monolog">https://packagist.org/packages/monolog/monolog</a><br />
+				</div>
 
 
 		</div>
