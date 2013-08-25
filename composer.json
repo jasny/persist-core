@@ -16,7 +16,7 @@
         "source": "https://github.com/jasny/db"
     },
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.4.0",
         "jasny/dbquery": "dev-master"
     },
     "require-dev": {

@@ -55,15 +55,15 @@ class ConnectionTest extends TestCase
     }    
 
     /**
-     * Test Connection::asDefault()
+     * Test Connection::useAs()
      */
-    public function testAsDefault()
+    public function testuseAs()
     {
         $olddb = $this->db;
         $this->db = new Connection(ini_get('mysqli.default_host'), ini_get('mysqli.default_user') ?: 'root', ini_get('mysqli.default_pw'), 'dbtest');
         $olddb->close();
 
-        $this->db->asDefault();
+        $this->db->useAs('default');
         $this->assertSame($this->db, Connection::conn());
         $this->assertSame($this->db, \Jasny\DB\Table::$defaultConnection);
     }
