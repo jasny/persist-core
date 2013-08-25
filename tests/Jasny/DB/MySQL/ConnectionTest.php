@@ -57,7 +57,16 @@ class ConnectionTest extends TestCase
     /**
      * Test Connection::useAs()
      */
-    public function testuseAs()
+    public function testUseAs()
+    {
+        $this->db->useAs('test');
+        $this->assertSame($this->db, Connection::conn('test'));
+    }
+    
+    /**
+     * Test Connection::useAs('default')
+     */
+    public function testuseAsDefault()
     {
         $olddb = $this->db;
         $this->db = new Connection(ini_get('mysqli.default_host'), ini_get('mysqli.default_user') ?: 'root', ini_get('mysqli.default_pw'), 'dbtest');
@@ -66,6 +75,14 @@ class ConnectionTest extends TestCase
         $this->db->useAs('default');
         $this->assertSame($this->db, Connection::conn());
         $this->assertSame($this->db, \Jasny\DB\Table::$defaultConnection);
+    }
+    
+    /**
+     * Test Connection::getConnectionName()
+     */
+    public function testGetConnectionName()
+    {
+        $this->assertSame('default', $this->db->getConnectionName());
     }
     
             
@@ -103,13 +120,13 @@ class ConnectionTest extends TestCase
     }
 
     /** 
-     * Test Connection::backquote()
+     * Test Connection::backquote
+     * More tests are done in jasny/dbquery
      */
     public function testBackquote()
     {
         $this->assertSame('`name`', Connection::backquote('name'));
         $this->assertSame('`name with spaces`', Connection::backquote('name with spaces'));
-        $this->assertSame('`name, password`', Connection::backquote('name`, `password'));
     }
 
     /**

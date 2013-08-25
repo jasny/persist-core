@@ -130,7 +130,7 @@ abstract class Table
         }
         
         $table = $class::instantiate($name, $db);
-        self::$tables[spl_object_hash($db)][$name] = $table;
+        self::$tables[$dbname][$name] = $table;
         
         return $table;
     }

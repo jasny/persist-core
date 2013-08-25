@@ -26,7 +26,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     public function testGetValues()
     {
         $record = new \Bar();
-        $this->assertEquals(array('id'=>null, 'description'=>'BAR'), $record->getValues());
+        $this->assertEquals(array('id'=>null, 'description'=>'BAR', 'children'=>[]), $record->getValues());
     }
     
     /**
