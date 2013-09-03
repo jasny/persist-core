@@ -300,7 +300,7 @@ abstract class Table
      * Save the record to the DB.
      * 
      * @param Record|array $record  Record or array with values
-     * @return Record
+     * @return mixed  id
      */
     abstract public function save($record);
 

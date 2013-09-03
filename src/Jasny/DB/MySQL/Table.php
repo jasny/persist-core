@@ -309,7 +309,7 @@ class Table extends \Jasny\DB\Table
      * Save the record to the DB.
      *
      * @param Record|array $record  Record or array with values
-     * @return Record
+     * @return int  id
      */
     public function save($record)
     {
@@ -318,13 +318,8 @@ class Table extends \Jasny\DB\Table
 
         $id = $this->getDB()->save($this->getName(), $values);
 
-        if (!$record instanceof Record) {
-            $filter = $id ?: $this->getFilterForValues($values);
-            if ($filter) $record = $this->fetch($filter);
-        }
-
-        if ($id && $record) $record->setId($id);
-        return $record;
+        if ($id && $record instanceof Record) $record->setId($id);
+        return $id;
     }
 
 

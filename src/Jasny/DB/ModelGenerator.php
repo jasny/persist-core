@@ -175,8 +175,7 @@ PHP;
     }
     
     /**
-     * Generate a skeleton Record class for a table.
-     * Define the constant MODEL_PATH to select the default directory.
+     * Generate a Record class for a table.
      * 
      * @param Table|string $table
      * @param string       $ns       Replace namespace
