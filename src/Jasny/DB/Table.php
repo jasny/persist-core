@@ -56,6 +56,9 @@ abstract class Table
             if (class_exists($ns . 'Connection') && is_a($ns . 'Connection', 'Jasny\DB\Connection', true)) {
                 return call_user_func(array($ns . 'Connection', 'conn'));
             }
+            if (class_exists($ns . 'DB') && is_a($ns . 'DB', 'Jasny\DB\Connection', true)) {
+                return call_user_func(array($ns . 'DB', 'conn'));
+            }
             
             $class = get_parent_class($class);
         };
