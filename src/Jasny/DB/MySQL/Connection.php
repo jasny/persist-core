@@ -9,17 +9,23 @@
 /** */
 namespace Jasny\DB\MySQL;
 
+// Constant to fetch data as value object
+if (!defined('MYSQLI_OBJ')) define('MYSQLI_OBJ', 3);
+
 /**
  * MySQL DB connection.
  * 
- * @todo Create an ArrayObject class `ConnectionPool` for $connections. With a connection pool you should be able to split up a difficult query and distribute it over all the connections.
- * 
- * @example <br/>
- *   use Jasny\DB\MySQL\Connection as DB;<br/>
- *   new DB($host, $user, $pwd, $dbname);<br/>
- *   $result = DB::conn()->query("SELECT * FROM foo WHERE id = ?", $id);
+ * Example:
+ * <code>
+ * use Jasny\DB\MySQL\Connection as DB;
+ * new DB($host, $user, $pwd, $dbname);
+ * $result = DB::conn()->query("SELECT * FROM foo WHERE id = ?", $id);
+ * </code>
  * 
  * @package MySQL
+ * 
+ * @todo Create an ArrayObject class `ConnectionPool` for $connections. With a connection pool you should be able to
+ *       split up a difficult query and distribute it over all the connections.
  */
 class Connection extends \mysqli implements \Jasny\DB\Connection
 {
@@ -135,8 +141,11 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      * Performs a query on the database.
      * Don't mix both types ('?' and ':key') of placeholders.
      * 
-     * @example DB::conn()->query("SELECT * FROM mytable WHERE id=?", $id);
-     * @example DB::conn()->query("SELECT * FROM mytable WHERE name=:name AND age>:age AND status='A'", array('id'=>$id, 'age'=>$age));
+     * Example:
+     * <code>
+     *   DB::conn()->query("SELECT * FROM mytable WHERE id=?", $id);
+     *   DB::conn()->query("SELECT * FROM mytable WHERE name=:name AND age>:age AND status='A'", array('id'=>$id, 'age'=>$age));
+     * </code>
      * 
      * @param string $query  SQL Query
      * @return \mysqli_result
@@ -160,17 +169,22 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
     /**
      * Query and fetch all result rows as an associative array, a numeric array, or both.
      * 
-     * @example DB::conn()->fetchAll("SELECT * FROM mytable");
-     * @example DB::conn()->fetchAll("SELECT * FROM mytable", MYSQLI_NUM);
-     * @example DB::conn()->fetchAll("SELECT * FROM mytable WHERE group=?", MYSQLI_ASSOC, $group);
-     * @example DB::conn()->fetchAll("SELECT * FROM foobar WHERE group=?", 'FooBar', $group)
+     * Example:
+     * <code>
+     *   DB::conn()->fetchAll("SELECT * FROM mytable");
+     *   DB::conn()->fetchAll("SELECT * FROM mytable", MYSQLI_NUM);
+     *   DB::conn()->fetchAll("SELECT * FROM mytable WHERE group=?", MYSQLI_ASSOC, $group);
+     *   DB::conn()->fetchAll("SELECT * FROM foobar WHERE group=?", 'FooBar', $group);
+     * </code>
      *
      * @param string|\mysqli_result $query       SQL Query or DB result
-     * @param int|string            $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH or class name
+     * @param int|string            $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH, MYSQLI_OBJ or class name
      * @return array
      */
     public function fetchAll($query, $resulttype = MYSQLI_ASSOC)
     {
+        if ($resulttype === MYSQLI_OBJ) $resulttype = 'stdClass';
+        
         if (func_num_args() > 2) {
             $args = func_get_args();
             unset($args[1]);
@@ -198,13 +212,16 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
     /**
      * Query and fetch all result rows as an associative array, a numeric array, or both.
      * 
-     * @example DB::conn()->fetchOne("SELECT * FROM mytable");
-     * @example DB::conn()->fetchOne("SELECT * FROM mytable", MYSQLI_NUM);
-     * @example DB::conn()->fetchOne("SELECT * FROM mytable WHERE id=?", MYSQLI_ASSOC, $id);
-     * @example DB::conn()->fetchOne("SELECT * FROM foobar WHERE id=?", 'FooBar', $id);
+     * Example:
+     * <code>
+     *   DB::conn()->fetchOne("SELECT * FROM mytable");
+     *   DB::conn()->fetchOne("SELECT * FROM mytable", MYSQLI_NUM);
+     *   DB::conn()->fetchOne("SELECT * FROM mytable WHERE id=?", MYSQLI_ASSOC, $id);
+     *   DB::conn()->fetchOne("SELECT * FROM foobar WHERE id=?", 'FooBar', $id);
+     * </code>
      *
      * @param string|\mysqli_result $query       SQL Query or DB result
-     * @param int|string            $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH or class name
+     * @param int|string            $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH, MYSQLI_OBJ or class name
      * @return array
      */
     public function fetchOne($query, $resulttype = MYSQLI_ASSOC)
@@ -223,9 +240,12 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
     /**
      * Query and fetch a single column from all result rows.
      * 
-     * @example DB::conn()->fetchColumn("SELECT name FROM mytable");
-     * @example DB::conn()->fetchColumn("SELECT name FROM mytable WHERE group=?", $group);
-     *
+     * Example:
+     * <code>
+     *   DB::conn()->fetchColumn("SELECT name FROM mytable");
+     *   DB::conn()->fetchColumn("SELECT name FROM mytable WHERE group=?", $group);
+     * </code>
+     * 
      * @param string|\mysqli_result $query  SQL Query or DB result
      * @param string                $field  The field position or name to fetch
      * @return array
@@ -247,9 +267,12 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
     /**
      * Fetches all result rows and creates an associated array with the first column as key and the second as value.
      * 
-     * @example DB::conn()->fetchPairs("SELECT id, name FROM mytable");
-     * @example DB::conn()->fetchPairs("SELECT id, name FROM mytable WHERE group=?", $group);
-     *
+     * Example:
+     * <code>
+     *   DB::conn()->fetchPairs("SELECT id, name FROM mytable");
+     *   DB::conn()->fetchPairs("SELECT id, name FROM mytable WHERE group=?", $group);
+     * </code>
+     * 
      * @param string|\mysqli_result $query  SQL Query or DB result
      * @return array
      */
@@ -270,9 +293,12 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
     /**
      * Query and fetch a single value.
      * 
-     * @example DB::conn()->fetchValue("SELECT SUM(foo) FROM mytable");
-     * @example DB::conn()->fetchValue("SELECT name FROM mytable WHERE id=?", $id);
-     *
+     * Example:
+     * <code>
+     *   DB::conn()->fetchValue("SELECT SUM(foo) FROM mytable");
+     *   DB::conn()->fetchValue("SELECT name FROM mytable WHERE id=?", $id);
+     * </code>
+     * 
      * @param string|\mysqli_result $query  SQL Query or DB result
      * @param string                $field  The field position or name to fetch
      * @return array
@@ -292,9 +318,12 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      * Insert or update a record.
      * All rows should have the same keys in the same order.
      * 
-     * @example DB::conn()->save('mytable', $row)
-     * @example DB::conn()->save('mytable', array($row1, $row2, $row3))
-     * @example DB::conn()->save('mytable', array($row1, $row2, $row3), DB::SKIP_EXISTING)
+     * Example:
+     * <code>
+     *   DB::conn()->save('mytable', $row)
+     *   DB::conn()->save('mytable', array($row1, $row2, $row3))
+     *   DB::conn()->save('mytable', array($row1, $row2, $row3), DB::SKIP_EXISTING)
+     * </code>
      * 
      * @param string  $table
      * @param array   $values  One or multiple rows of values
@@ -362,8 +391,11 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      * Insert parameters into SQL query.
      * Don't mix both types ('?' and ':key') of placeholders.
      * 
-     * @example DB::bind("SELECT * FROM mytable WHERE id=?", $id);
-     * @example DB::bind("SELECT * FROM mytable WHERE name=:name AND age>:age AND status='A'", array('id'=>$id, 'age'=>$age));
+     * Example:
+     * <code>
+     *   DB::bind("SELECT * FROM mytable WHERE id=?", $id);
+     *   DB::bind("SELECT * FROM mytable WHERE name=:name AND age>:age AND status='A'", array('id'=>$id, 'age'=>$age));
+     * </code>
      * 
      * @param string $query
      * @param mixed  $params  Parameters can be passed as indifidual arguments or as array
@@ -470,7 +502,10 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      */
     protected function logConnection()
     {
-        if (isset($this->logger)) $this->logger->debug("MySQL connection {$this->host_info}; thread id = {$this->thread_id}; version {$this->server_info}");
+        if (!isset($this->logger)) return;
+        
+        $msg = "MySQL connection {$this->host_info}; thread id = {$this->thread_id}; version {$this->server_info}";
+        $this->logger->debug($msg);
     }
     
     /**
@@ -483,12 +518,16 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
     {
         if (empty($this->logger)) return;
         
+        $rows = ($this->affected_rows == 1 ? " row" : " rows");
+        
         if ($this->info) $info = " " . $this->info;
-         elseif ($result instanceof \mysqli_result) $info = " " . $this->affected_rows . ($this->affected_rows == 1 ? " row" : " rows") . " in set";
-         elseif ($this->affected_rows >= 0) $info = " " . $this->affected_rows . " affected". ($this->affected_rows == 1 ? " row" : " rows");
+         elseif ($result instanceof \mysqli_result) $info = " " . $this->affected_rows . "$rows in set";
+         elseif ($this->affected_rows >= 0) $info = " " . $this->affected_rows . " affected $rows";
          else $info = "";
         
-        if (isset($this->logger)) $this->logger->debug(rtrim($query, ';') . "; #$info (" . number_format($this->execution_time, 4) . " sec)");
-        if ($this->error) $this->logger->error($this->error);
+        if (isset($this->logger)) {
+            $this->logger->debug(rtrim($query, ';') . "; #$info (" . number_format($this->execution_time, 4) . " sec)");
+            if ($this->error) $this->logger->error($this->error);
+        }
     }
 }

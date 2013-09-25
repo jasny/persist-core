@@ -28,7 +28,7 @@ googleAnalytics: UA-32388850-6
 # Grouping of classes
 groups: auto
 # List of allowed HTML tags in documentation
-allowedHtml: [b, i, a, ul, ol, li, p, br, var, samp, kbd, tt]
+allowedHtml: [code]
 # Element types for search input autocomplete
 autocomplete: [classes, constants, functions]
 

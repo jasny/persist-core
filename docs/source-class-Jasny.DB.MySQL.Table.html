@@ -408,7 +408,7 @@
 </span></span><span id="309" class="l"><a class="l" href="#309">309: </a><span class="php-comment">     * Save the record to the DB.
 </span></span><span id="310" class="l"><a class="l" href="#310">310: </a><span class="php-comment">     *
 </span></span><span id="311" class="l"><a class="l" href="#311">311: </a><span class="php-comment">     * @param Record|array $record  Record or array with values
-</span></span><span id="312" class="l"><a class="l" href="#312">312: </a><span class="php-comment">     * @return Record
+</span></span><span id="312" class="l"><a class="l" href="#312">312: </a><span class="php-comment">     * @return int  id
 </span></span><span id="313" class="l"><a class="l" href="#313">313: </a><span class="php-comment">     */</span>
 </span><span id="314" class="l"><a class="l" href="#314">314: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_save" href="#_save">save</a>(<span class="php-var">$record</span>)
 </span><span id="315" class="l"><a class="l" href="#315">315: </a>    {
@@ -417,39 +417,34 @@
 </span><span id="318" class="l"><a class="l" href="#318">318: </a>
 </span><span id="319" class="l"><a class="l" href="#319">319: </a>        <span class="php-var">$id</span> = <span class="php-var">$this</span>-&gt;getDB()-&gt;save(<span class="php-var">$this</span>-&gt;getName(), <span class="php-var">$values</span>);
 </span><span id="320" class="l"><a class="l" href="#320">320: </a>
-</span><span id="321" class="l"><a class="l" href="#321">321: </a>        <span class="php-keyword1">if</span> (!<span class="php-var">$record</span> <span class="php-keyword1">instanceof</span> Record) {
-</span><span id="322" class="l"><a class="l" href="#322">322: </a>            <span class="php-var">$filter</span> = <span class="php-var">$id</span> ?: <span class="php-var">$this</span>-&gt;getFilterForValues(<span class="php-var">$values</span>);
-</span><span id="323" class="l"><a class="l" href="#323">323: </a>            <span class="php-keyword1">if</span> (<span class="php-var">$filter</span>) <span class="php-var">$record</span> = <span class="php-var">$this</span>-&gt;fetch(<span class="php-var">$filter</span>);
-</span><span id="324" class="l"><a class="l" href="#324">324: </a>        }
+</span><span id="321" class="l"><a class="l" href="#321">321: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$id</span> &amp;&amp; <span class="php-var">$record</span> <span class="php-keyword1">instanceof</span> Record) <span class="php-var">$record</span>-&gt;setId(<span class="php-var">$id</span>);
+</span><span id="322" class="l"><a class="l" href="#322">322: </a>        <span class="php-keyword1">return</span> <span class="php-var">$id</span>;
+</span><span id="323" class="l"><a class="l" href="#323">323: </a>    }
+</span><span id="324" class="l"><a class="l" href="#324">324: </a>
 </span><span id="325" class="l"><a class="l" href="#325">325: </a>
-</span><span id="326" class="l"><a class="l" href="#326">326: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$id</span> &amp;&amp; <span class="php-var">$record</span>) <span class="php-var">$record</span>-&gt;setId(<span class="php-var">$id</span>);
-</span><span id="327" class="l"><a class="l" href="#327">327: </a>        <span class="php-keyword1">return</span> <span class="php-var">$record</span>;
-</span><span id="328" class="l"><a class="l" href="#328">328: </a>    }
-</span><span id="329" class="l"><a class="l" href="#329">329: </a>
-</span><span id="330" class="l"><a class="l" href="#330">330: </a>
-</span><span id="331" class="l"><a class="l" href="#331">331: </a>    <span class="php-comment">/**
-</span></span><span id="332" class="l"><a class="l" href="#332">332: </a><span class="php-comment">     * Get PHP type for MySQL field type
-</span></span><span id="333" class="l"><a class="l" href="#333">333: </a><span class="php-comment">     *
-</span></span><span id="334" class="l"><a class="l" href="#334">334: </a><span class="php-comment">     * @param string $fieldtype
-</span></span><span id="335" class="l"><a class="l" href="#335">335: </a><span class="php-comment">     * @return string
-</span></span><span id="336" class="l"><a class="l" href="#336">336: </a><span class="php-comment">     */</span>
-</span><span id="337" class="l"><a class="l" href="#337">337: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_getCastType" href="#_getCastType">getCastType</a>(<span class="php-var">$fieldtype</span>)
-</span><span id="338" class="l"><a class="l" href="#338">338: </a>    {
-</span><span id="339" class="l"><a class="l" href="#339">339: </a>        <span class="php-keyword1">for</span> (<span class="php-var">$i</span> = <span class="php-num">0</span>; <span class="php-var">$i</span> &lt; <span class="php-num">3</span>; <span class="php-var">$i</span>++) {
-</span><span id="340" class="l"><a class="l" href="#340">340: </a>            <span class="php-keyword1">switch</span> (<span class="php-var">$i</span>) {
-</span><span id="341" class="l"><a class="l" href="#341">341: </a>                <span class="php-keyword1">case</span> <span class="php-num">0</span>: <span class="php-var">$key</span> = <span class="php-var">$fieldtype</span>; <span class="php-keyword1">break</span>;
-</span><span id="342" class="l"><a class="l" href="#342">342: </a>                <span class="php-keyword1">case</span> <span class="php-num">1</span>: <span class="php-var">$key</span> = <span class="php-keyword2">preg_replace</span>(<span class="php-quote">'/\s*\(.+?\)/'</span>, <span class="php-quote">''</span>, <span class="php-var">$fieldtype</span>); <span class="php-keyword1">break</span>;
-</span><span id="343" class="l"><a class="l" href="#343">343: </a>                <span class="php-keyword1">case</span> <span class="php-num">2</span>: <span class="php-var">$key</span> = <span class="php-keyword2">preg_replace</span>(<span class="php-quote">'/\s*\(.+$/'</span>, <span class="php-quote">''</span>, <span class="php-var">$fieldtype</span>); <span class="php-keyword1">break</span>;
-</span><span id="344" class="l"><a class="l" href="#344">344: </a>            }
-</span><span id="345" class="l"><a class="l" href="#345">345: </a>
-</span><span id="346" class="l"><a class="l" href="#346">346: </a>            <span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(self::<span class="php-var">$castTypes</span>[<span class="php-var">$key</span>])) <span class="php-keyword1">return</span> self::<span class="php-var">$castTypes</span>[<span class="php-var">$key</span>];
-</span><span id="347" class="l"><a class="l" href="#347">347: </a>        }
-</span><span id="348" class="l"><a class="l" href="#348">348: </a>
-</span><span id="349" class="l"><a class="l" href="#349">349: </a>        <span class="php-keyword2">trigger_error</span>(<span class="php-quote">&quot;Unknown field type '</span><span class="php-var">$fieldtype</span><span class="php-quote">'&quot;</span>, E_USER_NOTICE);
-</span><span id="350" class="l"><a class="l" href="#350">350: </a>        <span class="php-keyword1">return</span> <span class="php-quote">'string'</span>;
-</span><span id="351" class="l"><a class="l" href="#351">351: </a>    }
-</span><span id="352" class="l"><a class="l" href="#352">352: </a>}
-</span><span id="353" class="l"><a class="l" href="#353">353: </a></span></code></pre>
+</span><span id="326" class="l"><a class="l" href="#326">326: </a>    <span class="php-comment">/**
+</span></span><span id="327" class="l"><a class="l" href="#327">327: </a><span class="php-comment">     * Get PHP type for MySQL field type
+</span></span><span id="328" class="l"><a class="l" href="#328">328: </a><span class="php-comment">     *
+</span></span><span id="329" class="l"><a class="l" href="#329">329: </a><span class="php-comment">     * @param string $fieldtype
+</span></span><span id="330" class="l"><a class="l" href="#330">330: </a><span class="php-comment">     * @return string
+</span></span><span id="331" class="l"><a class="l" href="#331">331: </a><span class="php-comment">     */</span>
+</span><span id="332" class="l"><a class="l" href="#332">332: </a>    <span class="php-keyword1">protected</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_getCastType" href="#_getCastType">getCastType</a>(<span class="php-var">$fieldtype</span>)
+</span><span id="333" class="l"><a class="l" href="#333">333: </a>    {
+</span><span id="334" class="l"><a class="l" href="#334">334: </a>        <span class="php-keyword1">for</span> (<span class="php-var">$i</span> = <span class="php-num">0</span>; <span class="php-var">$i</span> &lt; <span class="php-num">3</span>; <span class="php-var">$i</span>++) {
+</span><span id="335" class="l"><a class="l" href="#335">335: </a>            <span class="php-keyword1">switch</span> (<span class="php-var">$i</span>) {
+</span><span id="336" class="l"><a class="l" href="#336">336: </a>                <span class="php-keyword1">case</span> <span class="php-num">0</span>: <span class="php-var">$key</span> = <span class="php-var">$fieldtype</span>; <span class="php-keyword1">break</span>;
+</span><span id="337" class="l"><a class="l" href="#337">337: </a>                <span class="php-keyword1">case</span> <span class="php-num">1</span>: <span class="php-var">$key</span> = <span class="php-keyword2">preg_replace</span>(<span class="php-quote">'/\s*\(.+?\)/'</span>, <span class="php-quote">''</span>, <span class="php-var">$fieldtype</span>); <span class="php-keyword1">break</span>;
+</span><span id="338" class="l"><a class="l" href="#338">338: </a>                <span class="php-keyword1">case</span> <span class="php-num">2</span>: <span class="php-var">$key</span> = <span class="php-keyword2">preg_replace</span>(<span class="php-quote">'/\s*\(.+$/'</span>, <span class="php-quote">''</span>, <span class="php-var">$fieldtype</span>); <span class="php-keyword1">break</span>;
+</span><span id="339" class="l"><a class="l" href="#339">339: </a>            }
+</span><span id="340" class="l"><a class="l" href="#340">340: </a>
+</span><span id="341" class="l"><a class="l" href="#341">341: </a>            <span class="php-keyword1">if</span> (<span class="php-keyword1">isset</span>(self::<span class="php-var">$castTypes</span>[<span class="php-var">$key</span>])) <span class="php-keyword1">return</span> self::<span class="php-var">$castTypes</span>[<span class="php-var">$key</span>];
+</span><span id="342" class="l"><a class="l" href="#342">342: </a>        }
+</span><span id="343" class="l"><a class="l" href="#343">343: </a>
+</span><span id="344" class="l"><a class="l" href="#344">344: </a>        <span class="php-keyword2">trigger_error</span>(<span class="php-quote">&quot;Unknown field type '</span><span class="php-var">$fieldtype</span><span class="php-quote">'&quot;</span>, E_USER_NOTICE);
+</span><span id="345" class="l"><a class="l" href="#345">345: </a>        <span class="php-keyword1">return</span> <span class="php-quote">'string'</span>;
+</span><span id="346" class="l"><a class="l" href="#346">346: </a>    }
+</span><span id="347" class="l"><a class="l" href="#347">347: </a>}
+</span><span id="348" class="l"><a class="l" href="#348">348: </a></span></code></pre>
 
 	<div id="footer">
 		Jasny DB · API documentation API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>

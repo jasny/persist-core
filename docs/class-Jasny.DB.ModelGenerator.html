@@ -105,6 +105,18 @@
 	
 <p>Generate DB model classes.</p>
 
+<pre>
+<span class="php-keyword1">if</span> (<span
+class="php-keyword2">getenv</span>(<span
+class="php-quote">'APPLICATION_ENV'</span>) != <span
+class="php-quote">'prod'</span>) <span
+class="php-keyword2">set_include_path</span>(<span
+class="php-keyword2">get_include_path</span>() . <span
+class="php-quote">':../cache/model'</span>);
+Jasny\DB\ModelGenerator::enable(<span
+class="php-quote">'../cache/model'</span>);
+</pre>
+
 	</div>
 
 
@@ -126,10 +138,7 @@
 				<b>Author:</b>
 				Arnold Daniels &lt;<a
 href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
-				<b>Example:</b>
-				Jasny\DB\ModelGenerator::enable('../cache/model', -1, APPLICATION_ENV !=
-'prod');<br />
-		<b>Located at</b> <a href="source-class-Jasny.DB.ModelGenerator.html#12-371" title="Go to source code">Jasny/DB/ModelGenerator.php</a><br />
+		<b>Located at</b> <a href="source-class-Jasny.DB.ModelGenerator.html#12-364" title="Go to source code">Jasny/DB/ModelGenerator.php</a><br />
 	</div>
 
 
@@ -147,7 +156,7 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_generateTable">#</a>
-		<code><a href="source-class-Jasny.DB.ModelGenerator.html#106-175" title="Go to source code">generateTable</a>( <span><code><a href="class-Jasny.DB.Table.html">Jasny\DB\Table</a></code>|string <var>$table</var></span>, <span>string <var>$ns</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Jasny.DB.ModelGenerator.html#103-172" title="Go to source code">generateTable</a>( <span><code><a href="class-Jasny.DB.Table.html">Jasny\DB\Table</a></code>|string <var>$table</var></span>, <span>string <var>$ns</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -191,19 +200,17 @@ href="mailto:arnold&#64;jasny.net">arnold&#64;<!---->jasny.net</a>&gt;<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_generateRecord">#</a>
-		<code><a href="source-class-Jasny.DB.ModelGenerator.html#177-269" title="Go to source code">generateRecord</a>( <span><code><a href="class-Jasny.DB.Table.html">Jasny\DB\Table</a></code>|string <var>$table</var></span>, <span>string <var>$ns</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Jasny.DB.ModelGenerator.html#174-265" title="Go to source code">generateRecord</a>( <span><code><a href="class-Jasny.DB.Table.html">Jasny\DB\Table</a></code>|string <var>$table</var></span>, <span>string <var>$ns</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
-<p>Generate a skeleton Record class for a table. Define the constant MODEL_PATH
-to select the default directory.</p>
+<p>Generate a Record class for a table.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Generate a skeleton Record class for a table. Define the constant MODEL_PATH
-to select the default directory.</p>
+<p>Generate a Record class for a table.</p>
 
 
 
@@ -237,7 +244,7 @@ to select the default directory.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_enable">#</a>
-		<code><a href="source-class-Jasny.DB.ModelGenerator.html#318-332" title="Go to source code">enable</a>( <span>string <var>$cache_path</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$ttl</var> = -<span class="php-num">1</span></span>, <span>boolean <var>$verify</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><a href="source-class-Jasny.DB.ModelGenerator.html#313-325" title="Go to source code">enable</a>( <span>string <var>$cache_path</var> = <span class="php-keyword1">null</span></span>, <span>integer <var>$ttl</var> = -<span class="php-num">1</span></span> )</code>
 
 		<div class="description short">
 			
@@ -257,8 +264,6 @@ to select the default directory.</p>
 					<dd><code>string</code><br>$cache_path Directory to save the cache files</dd>
 					<dt><var>$ttl</var></dt>
 					<dd><code>integer</code><br>$ttl Time a cache file may be valid; -1 means always.</dd>
-					<dt><var>$verify</var></dt>
-					<dd><code>boolean</code><br>$verify Verify if the table hasn't changed.</dd>
 				</dl></div>
 
 
@@ -279,7 +284,7 @@ to select the default directory.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_warmCache">#</a>
-		<code><a href="source-class-Jasny.DB.ModelGenerator.html#355-370" title="Go to source code">warmCache</a>( )</code>
+		<code><a href="source-class-Jasny.DB.ModelGenerator.html#348-363" title="Go to source code">warmCache</a>( )</code>
 
 		<div class="description short">
 			
