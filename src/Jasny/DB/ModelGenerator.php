@@ -12,7 +12,10 @@ namespace Jasny\DB;
 /**
  * Generate DB model classes.
  * 
- * @example Jasny\DB\ModelGenerator::enable('../cache/model', -1, APPLICATION_ENV != 'prod');
+ * <code>
+ *   if (getenv('APPLICATION_ENV') != 'prod') set_include_path(get_include_path() . ':../cache/model');
+ *   Jasny\DB\ModelGenerator::enable('../cache/model');
+ * </code>
  */
 class ModelGenerator
 {
@@ -28,12 +31,6 @@ class ModelGenerator
      */
     static protected $cacheTTL = 0;
 
-    /**
-     * Verify that the table hasn't changed
-     * @var boolean
-     */
-    static protected $cacheVerify = true;
-    
     
     /**
      * Check if type is a PHP internal type.
@@ -281,14 +278,13 @@ PHP;
         $filename = self::$cachePath . '/' . strtr($class, '\\_', '//') . '.php';
         if (!file_exists($filename) || (self::$cacheTTL > 0 && filectime($filename) < time() - self::$cacheTTL)) return false;
         
-        if (self::$cacheVerify) {
-            list($classname) = self::splitClass($class);
-            $name = Table::uncamelcase(preg_replace('/Table$/i', '', $classname));
-            $hash = self::getTableHash($name);
+        // Check if table definition hasn't changed
+        list($classname) = self::splitClass($class);
+        $name = Table::uncamelcase(preg_replace('/Table$/i', '', $classname));
+        $hash = self::getTableHash($name);
 
-            $code = file_get_contents($filename);
-            if (!strpos($code, "@tablehash $hash")) return false;
-        }
+        $code = file_get_contents($filename);
+        if (!strpos($code, "@tablehash $hash")) return false;
         
         include $filename;
         return true;
@@ -319,13 +315,11 @@ PHP;
      * 
      * @param string  $cache_path  Directory to save the cache files
      * @param int     $ttl         Time a cache file may be valid; -1 means always.
-     * @param boolean $verify      Verify if the table hasn't changed.
      */
-    public static function enable($cache_path=null, $ttl=-1, $verify=true)
+    public static function enable($cache_path=null, $ttl=-1)
     {
         static::$cachePath = $cache_path;
         static::$cacheTTL = $cache_path ? $ttl : 0;
-        static::$cacheVerify = $verify;
         
         spl_autoload_register(array(__CLASS__, 'autoload'));
     }
