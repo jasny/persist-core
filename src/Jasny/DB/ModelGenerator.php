@@ -20,6 +20,12 @@ namespace Jasny\DB;
 class ModelGenerator
 {
     /**
+     * Namespace for base classes
+     * @var string
+     */
+    public static $baseNamespace = 'DB';
+    
+    /**
      * Path to cache
      * @var string
      */
@@ -332,14 +338,17 @@ PHP;
     protected static function autoload($class)
     {
         list($classname, $ns) = static::splitClass($class);
-        if (preg_replace('/(^|\\\\)Base$/', '', $ns) != Table::getDefaultConnection()->getModelNamespace()) return;
+        $model_ns = Table::getDefaultConnection()->getModelNamespace();
+        if (preg_replace('/(^|\\\\)' . static::$baseNamespace . '$/', '', $ns) != $model_ns) return;
         
         if (self::loadFromCache($class)) return;
         
         $name = Table::uncamelcase(preg_replace('/Table$/i', '', $classname));
         if (empty($name) || !Table::exists($name)) return;
         
-        $code = substr($classname, -5) == 'Table' ? static::generateTable($name, $ns) : static::generateRecord($name, $ns);
+        $code = substr($classname, -5) == 'Table' ?
+            static::generateTable($name, $ns) :
+            static::generateRecord($name, $ns);
         
         self::cacheAndLoad($class, "<?php\n" . $code) or eval($code);
     }
