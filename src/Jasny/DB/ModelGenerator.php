@@ -195,7 +195,7 @@ PHP;
         // Generate code
         $namespace = $ns ? "namespace $ns;\n" : '';
 
-        $base = Table::getDefaultClass('Record', $table->getDB()) ?: __NAMESPACE__ . '\\Record';
+        $base = Table::getDefaultClass('Record', $table->db()) ?: __NAMESPACE__ . '\\Record';
         if ($namespace) $base = '\\' . $base;
 
         $properties = "";

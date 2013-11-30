@@ -155,7 +155,7 @@ abstract class Table
      * 
      * @return Connection
      */
-    public function getDB()
+    public function db()
     {
         return $this->db;
     }
@@ -182,13 +182,13 @@ abstract class Table
      */
     public function getClass($options=0)
     {
-        $class = ltrim($this->getDB()->getModelNamespace() . '\\', '\\') . static::camelcase($this->getName());
+        $class = ltrim($this->db()->getModelNamespace() . '\\', '\\') . static::camelcase($this->getName());
         
         if ($options & self::SKIP_CLASS_EXISTS) return $class;
         
         return class_exists($class) && is_a($class, __NAMESPACE__ . '\Record', true)
             ? $class
-            : self::getDefaultClass('Record', $this->getDB()) ?: __NAMESPACE__ . '\Record';
+            : self::getDefaultClass('Record', $this->db()) ?: __NAMESPACE__ . '\Record';
     }
     
     

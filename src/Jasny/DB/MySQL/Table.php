@@ -97,7 +97,7 @@ class Table extends \Jasny\DB\Table
      *
      * @return Connection
      */
-    public function getDB()
+    public function db()
     {
         return $this->db;
     }
@@ -127,7 +127,7 @@ class Table extends \Jasny\DB\Table
      */
     protected function describe()
     {
-        $fields = $this->getDB()->fetchAll("DESCRIBE " . $this->db->backquote($this->getName()), MYSQLI_ASSOC);
+        $fields = $this->db()->fetchAll("DESCRIBE " . $this->db->backquote($this->getName()), MYSQLI_ASSOC);
 
         $fieldDefaults = array();
         $types = array();
@@ -232,7 +232,7 @@ class Table extends \Jasny\DB\Table
     public function fetchAll(array $filter=array())
     {
         $query = $this->getQuery()->where($this->buildFilter($filter));
-        $records = $this->getDB()->fetchAll($query, $this->getClass());
+        $records = $this->db()->fetchAll($query, $this->getClass());
 
         return $this->setDBTable($records);
     }
@@ -246,7 +246,7 @@ class Table extends \Jasny\DB\Table
     public function count(array $filter=array())
     {
         $query = $this->getQuery()->count()->where($this->buildFilter($filter));
-        return $this->getDB()->fetchValue($query);
+        return $this->db()->fetchValue($query);
     }
 
     /**
@@ -258,7 +258,7 @@ class Table extends \Jasny\DB\Table
     public function fetch($id)
     {
         $query = $this->getQuery()->where($this->buildFilter($id))->limit(1);
-        $record = $this->getDB()->fetchOne($query, $this->getClass());
+        $record = $this->db()->fetchOne($query, $this->getClass());
 
         return $this->setDBTable($record);
     }
@@ -273,7 +273,7 @@ class Table extends \Jasny\DB\Table
     public function fetchValue($field, $id)
     {
         $query = $this->getQuery()->columns($field, Query::REPLACE)->where($this->buildFilter($id))->limit(1);
-        $value = $this->getDB()->fetchValue($query);
+        $value = $this->db()->fetchValue($query);
 
         $types = $this->getFieldTypes();
         return isset($types[$field]) ? static::castValue($value, $types[$field]) : $value;
@@ -316,7 +316,7 @@ class Table extends \Jasny\DB\Table
         $values = $record instanceof Record ? $record->getValues() : (array)$record;
         $values = array_intersect_key($values, $this->getFieldDefaults());
 
-        $id = $this->getDB()->save($this->getName(), $values);
+        $id = $this->db()->save($this->getName(), $values);
 
         if ($id && $record instanceof Record) $record->setId($id);
         return $id;
