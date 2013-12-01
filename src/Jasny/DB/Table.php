@@ -163,7 +163,17 @@ abstract class Table
     }
 
     /**
-     * Get database name
+     * Get table gateway
+     * 
+     * @return Table $this
+     */
+    public function table()
+    {
+        return $this;
+    }
+    
+    /**
+     * Get database table name
      * 
      * @return string
      */
