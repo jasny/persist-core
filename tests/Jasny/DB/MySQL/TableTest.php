@@ -57,12 +57,12 @@ class TableTest extends TestCase
     {
         $foo = Table::factory('foo', $this->db);
         $this->assertInstanceOf('Jasny\DB\MySQL\Table', $foo);
-        $this->assertSame($this->db, $foo->getDB());
-        $this->assertSame('foo', $foo->getName());
+        $this->assertSame($this->db, $foo->db());
+        $this->assertSame('foo', $foo->getTableName());
         
         $foo_bar = Table::factory('foo_bar', $this->db);
         $this->assertInstanceOf('FooBarTable', $foo_bar);
-        $this->assertSame('foo_bar', $foo_bar->getName());
+        $this->assertSame('foo_bar', $foo_bar->getTableName());
 
         $this->assertSame($foo, $this->db->table('foo'));
     }
@@ -76,7 +76,7 @@ class TableTest extends TestCase
         
         $table = Table::factory('foo', $this->db);
         $this->assertInstanceOf('Test\FooTable', $table);
-        $this->assertSame('foo', $table->getName());
+        $this->assertSame('foo', $table->getTableName());
     }
 
     /**
@@ -86,7 +86,7 @@ class TableTest extends TestCase
     {
         $foo = Table::factory('foo');
         $this->assertInstanceOf('Jasny\DB\MySQL\Table', $foo);
-        $this->assertSame($this->db, $foo->getDB());
+        $this->assertSame($this->db, $foo->db());
     }
     
     /**
@@ -96,12 +96,12 @@ class TableTest extends TestCase
     {
         $foo = Table::factory('Foo', $this->db);
         $this->assertInstanceOf('Jasny\DB\MySQL\Table', $foo);
-        $this->assertSame($this->db, $foo->getDB());
-        $this->assertSame('foo', $foo->getName());
+        $this->assertSame($this->db, $foo->db());
+        $this->assertSame('foo', $foo->getTableName());
         
         $foo_bar = Table::factory('FooBar', $this->db);
         $this->assertInstanceOf('FooBarTable', $foo_bar);
-        $this->assertSame('foo_bar', $foo_bar->getName());
+        $this->assertSame('foo_bar', $foo_bar->getTableName());
     }
 
     /**
@@ -113,32 +113,32 @@ class TableTest extends TestCase
         
         $foo = Table::factory('Test\Foo', $this->db);
         $this->assertInstanceOf('Jasny\DB\MySQL\Table', $foo);
-        $this->assertSame($this->db, $foo->getDB());
-        $this->assertSame('foo', $foo->getName());
+        $this->assertSame($this->db, $foo->db());
+        $this->assertSame('foo', $foo->getTableName());
     }
 
     
     /**
-     * Test Table::getClass
+     * Test Table::getRecordClass
      */
     public function testGetClass()
     {
         $foo = Table::factory('foo', $this->db);
-        $this->assertSame('Foo', $foo->getClass());
+        $this->assertSame('Foo', $foo->getRecordClass());
 
         $foo_bar = Table::factory('foo_bar', $this->db);
-        $this->assertSame('Jasny\DB\Record', $foo_bar->getClass());
+        $this->assertSame('Jasny\DB\Record', $foo_bar->getRecordClass());
     }
     
     /**
-     * Test Table::getClass with a model namespace
+     * Test Table::getRecordClass with a model namespace
      */
     public function testGetClass_Ns()
     {
         $this->db->setModelNamespace('Test');
         
         $table = Table::factory('foo', $this->db);
-        $this->assertSame('Test\Foo', $table->getClass());
+        $this->assertSame('Test\Foo', $table->getRecordClass());
     }
     
     /**

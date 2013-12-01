@@ -50,8 +50,8 @@ class Record
     public function setId($id)
     {
         $field = $this->getDBTable()->getPrimarykey();
-        if (!$field) throw new \Exception("Table " . $this->getDBTable()->getName() . " does not have an identifier field");
-        if (is_array($field)) throw new \Exception("Table " . $this->getDBTable()->getName() . " has a composite identifier field");
+        if (!$field) throw new \Exception("Table " . $this->getDBTable()->getTableName() . " does not have an identifier field");
+        if (is_array($field)) throw new \Exception("Table " . $this->getDBTable()->getTableName() . " has a composite identifier field");
         
         $this->$field = $id;
     }
@@ -178,7 +178,7 @@ class Record
      */
     public function __sleep()
     {
-        if (isset($this->_dbtable)) $this->_dbtable = $this->_dbtable->getName();
+        if (isset($this->_dbtable)) $this->_dbtable = $this->_dbtable->getTableName();
         return array_keys(get_object_vars($this));
     }
 }

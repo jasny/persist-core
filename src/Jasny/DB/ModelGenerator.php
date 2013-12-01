@@ -117,7 +117,7 @@ class ModelGenerator
     {
         // Init and check
         if (!$table instanceof Table) $table = static::getTable($table);
-        $class = $table->getClass(Table::SKIP_CLASS_EXISTS) . 'Table';
+        $class = $table->getRecordClass(Table::SKIP_CLASS_EXISTS) . 'Table';
 
         list($classname, $ns, $class) = static::splitClass($class, $ns);
         
@@ -188,7 +188,7 @@ PHP;
     {
         // Init and check
         if (!$table instanceof Table) $table = static::getTable($table);
-        $class = $table->getClass(Table::SKIP_CLASS_EXISTS);
+        $class = $table->getRecordClass(Table::SKIP_CLASS_EXISTS);
 
         list($classname, $ns, $class) = static::splitClass($class, $ns);
         
@@ -344,7 +344,7 @@ PHP;
         if (self::loadFromCache($class)) return;
         
         $name = Table::uncamelcase(preg_replace('/Table$/i', '', $classname));
-        if (empty($name) || !Table::exists($name)) return;
+        if (empty($name) || !Table::getDefaultConnection()->tableExists($name)) return;
         
         $code = substr($classname, -5) == 'Table' ?
             static::generateTable($name, $ns) :

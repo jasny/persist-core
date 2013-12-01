@@ -127,7 +127,7 @@ class Table extends \Jasny\DB\Table
      */
     protected function describe()
     {
-        $fields = $this->db()->fetchAll("DESCRIBE " . $this->db->backquote($this->getName()), MYSQLI_ASSOC);
+        $fields = $this->db()->fetchAll("DESCRIBE " . $this->db->backquote($this->getTableName()), MYSQLI_ASSOC);
 
         $fieldDefaults = array();
         $types = array();
@@ -189,7 +189,7 @@ class Table extends \Jasny\DB\Table
      */
     protected function getQuery()
     {
-        $tbl = Query::backquote($this->getName());
+        $tbl = Query::backquote($this->getTableName());
         return new Query("SELECT $tbl.* FROM $tbl ORDER BY " . Query::backquote($this->getPrimarykey()));
     }
 
@@ -206,11 +206,11 @@ class Table extends \Jasny\DB\Table
                 throw new \Exception("No or combined primary key. Please pass a filter as associated array.");
             }
 
-            return array(Query::backquote($this->getName() . '.' . $this->getPrimarykey()) => $filter, Query::BACKQUOTE_SMART);
+            return array(Query::backquote($this->getTableName() . '.' . $this->getPrimarykey()) => $filter, Query::BACKQUOTE_SMART);
         }
 
         $where = array();
-        $tbl = Query::backquote($this->getName());
+        $tbl = Query::backquote($this->getTableName());
         $regex = '#(?<!\.)`(' . join('|', array_map('preg_quote', array_keys($this->getFieldDefaults()))) . ')`#';
 
         foreach ($filter as $key=>$value) {
@@ -232,7 +232,7 @@ class Table extends \Jasny\DB\Table
     public function fetchAll(array $filter=array())
     {
         $query = $this->getQuery()->where($this->buildFilter($filter));
-        $records = $this->db()->fetchAll($query, $this->getClass());
+        $records = $this->db()->fetchAll($query, $this->getRecordClass());
 
         return $this->setDBTable($records);
     }
@@ -258,7 +258,7 @@ class Table extends \Jasny\DB\Table
     public function fetch($id)
     {
         $query = $this->getQuery()->where($this->buildFilter($id))->limit(1);
-        $record = $this->db()->fetchOne($query, $this->getClass());
+        $record = $this->db()->fetchOne($query, $this->getRecordClass());
 
         return $this->setDBTable($record);
     }
@@ -316,7 +316,7 @@ class Table extends \Jasny\DB\Table
         $values = $record instanceof Record ? $record->getValues() : (array)$record;
         $values = array_intersect_key($values, $this->getFieldDefaults());
 
-        $id = $this->db()->save($this->getName(), $values);
+        $id = $this->db()->save($this->getTableName(), $values);
 
         if ($id && $record instanceof Record) $record->setId($id);
         return $id;

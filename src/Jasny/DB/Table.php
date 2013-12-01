@@ -14,7 +14,7 @@ namespace Jasny\DB;
  */
 abstract class Table
 {
-    /** Option to skip check if class exists on Table::getClass() */
+    /** Option to skip check if class exists on Table::getRecordClass() */
     const SKIP_CLASS_EXISTS = 1;
 
 
@@ -63,7 +63,9 @@ abstract class Table
             $class = get_parent_class($class);
         };
         
-        if (!isset(self::$defaultConnection)) throw new \Exception("Default connection not set, please connect to a DB.");
+        if (!isset(self::$defaultConnection))
+            throw new \Exception("Default connection not set, please connect to a DB.");
+        
         return self::$defaultConnection;
     }
     
@@ -165,7 +167,7 @@ abstract class Table
      * 
      * @return string
      */
-    public function getName()
+    public function getTableName()
     {
         if (!isset($this->name)) {
             $this->name = static::uncamelcase(preg_replace('/^.+\\\\|Table$/i', '', get_class($this)));
@@ -180,9 +182,9 @@ abstract class Table
      * @param int $options
      * @return string
      */
-    public function getClass($options=0)
+    public function getRecordClass($options=0)
     {
-        $class = ltrim($this->db()->getModelNamespace() . '\\', '\\') . static::camelcase($this->getName());
+        $class = ltrim($this->db()->getModelNamespace() . '\\', '\\') . static::camelcase($this->getTableName());
         
         if ($options & self::SKIP_CLASS_EXISTS) return $class;
         
@@ -285,11 +287,11 @@ abstract class Table
      */
     public final function newRecord()
     {
-        $class = $this->getClass();
+        $class = $this->getRecordClass();
         $record = new $class();
         
         // Add fields for a generic record object
-        if (preg_replace('/^.*\\\\/', $class) != self::camelcase($this->getName())) {
+        if (preg_replace('/^.*\\\\/', $class) != self::camelcase($this->getTableName())) {
             foreach ($this->getDefaults() as $key=>$value) {
                 $record->$key = $value;
             }
@@ -336,23 +338,11 @@ abstract class Table
      * 
      * @return string
      */
-    public function __toString()
+    final public function __toString()
     {
-        return $this->getName();
+        return $this->getTableName();
     }
     
-    
-    /**
-     * Check if a table exists for the default connection.
-     * 
-     * @param string $name
-     * @return boolean
-     */
-    public static function exists($name)
-    {
-        return (bool)static::getDefaultConnection()->tableExists($name);
-    }
-
     
     /**
      * Cast the value to a type
@@ -364,8 +354,10 @@ abstract class Table
      */
     public static function castValue($value, $type, $obj=true)
     {
-        if (is_null($value) || (is_object($value) && is_a($value, $type)) || gettype($value) == $type) return $value; // No casting needed
+        // No casting needed
+        if (is_null($value) || (is_object($value) && is_a($value, $type)) || gettype($value) == $type) return $value;
         
+        // Cast
         switch ($type) {
             case 'bool': case 'boolean':
             case 'int':  case 'integer':
