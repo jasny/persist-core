@@ -190,7 +190,11 @@ class Table extends \Jasny\DB\Table
     protected function getQuery()
     {
         $tbl = Query::backquote($this->getTableName());
-        return new Query("SELECT $tbl.* FROM $tbl ORDER BY " . Query::backquote($this->getPrimarykey()));
+        
+        if ($this->getPrimarykey()) $orderby = "ORDER BY "
+            . join(', ', array_map([__NAMESPACE__ . '\Query', 'backquote'], (array)$this->getPrimarykey()));
+        
+        return new Query("SELECT $tbl.* FROM $tbl $orderby");
     }
 
     /**
