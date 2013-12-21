@@ -12,7 +12,7 @@ namespace Jasny\DB;
 /**
  * Acive Record for a DB table
  */
-class Record
+class Record implements \JsonSerializable
 {
     /**
      * Table gateway.
@@ -180,5 +180,21 @@ class Record
     {
         if (isset($this->_dbtable)) $this->_dbtable = $this->_dbtable->getTableName();
         return array_keys(get_object_vars($this));
+    }
+    
+    /**
+     * Prepare result when casting object to JSON
+     * 
+     * @return object
+     */
+    public function jsonSerialize()
+    {
+        $result = (object)$this->getValues();
+        
+        foreach ($result as &$value) {
+            if ($value instanceof \DateTime) $value = $value->format(\DateTime::ISO8601);
+        }
+        
+        return $result;
     }
 }
