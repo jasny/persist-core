@@ -9,9 +9,6 @@
 /** */
 namespace Jasny\DB\MySQL;
 
-// Constant to fetch data as value object
-if (!defined('MYSQLI_OBJ')) define('MYSQLI_OBJ', 3);
-
 /**
  * MySQL DB connection.
  * 
@@ -178,13 +175,11 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      * </code>
      *
      * @param string|\mysqli_result $query       SQL Query or DB result
-     * @param int|string            $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH, MYSQLI_OBJ or class name
+     * @param int|string            $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH or class name
      * @return array
      */
     public function fetchAll($query, $resulttype = MYSQLI_ASSOC)
     {
-        if ($resulttype === MYSQLI_OBJ) $resulttype = 'stdClass';
-        
         if (func_num_args() > 2) {
             $args = func_get_args();
             unset($args[1]);
@@ -221,7 +216,7 @@ class Connection extends \mysqli implements \Jasny\DB\Connection
      * </code>
      *
      * @param string|\mysqli_result $query       SQL Query or DB result
-     * @param int|string            $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH, MYSQLI_OBJ or class name
+     * @param int|string            $resulttype  MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH or class name
      * @return array
      */
     public function fetchOne($query, $resulttype = MYSQLI_ASSOC)
