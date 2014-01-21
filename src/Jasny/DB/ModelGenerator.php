@@ -13,7 +13,7 @@ namespace Jasny\DB;
  * Generate DB model classes.
  * 
  * <code>
- *   if (getenv('APPLICATION_ENV') != 'prod') set_include_path(get_include_path() . ':../cache/model');
+ *   if (getenv('APPLICATION_ENV') == 'prod') set_include_path(get_include_path() . ':../cache/model');
  *   Jasny\DB\ModelGenerator::enable('../cache/model');
  * </code>
  */
