@@ -273,6 +273,8 @@ PHP;
      */
     protected static function loadFromCache($class)
     {
+        if (!isset(self::$cachePath)) return false;
+        
         $filename = self::$cachePath . '/' . strtr($class, '\\_', '//') . '.php';
         if (!file_exists($filename)) return false;
         
