@@ -22,8 +22,8 @@ A full featured and easy to use DB layer in PHP, featuring
 Jasny DB is registred at packagist as [jasny/db](https://packagist.org/packages/jasny/db) and can be
 easily installed using [composer](http://getcomposer.org/). _(recommended)_
 
-Alternatively you can download the .zip and copy the files from the 'src' folder. To use active records and table
-gateways, you also need to download [jasny/dbquery](https://github.com/jasny/dbquery).
+Alternatively you can download the .zip and copy the files from the 'src' folder. In this case you also
+need to download [jasny/dbquery](https://github.com/jasny/dbquery).
 
 __Jasny DB requires at least php 5.4__
 
@@ -36,7 +36,7 @@ __Jasny DB requires at least php 5.4__
 
     $result = DB::conn()->query("SELECT * FROM foo");
     $result = DB::conn()->query("SELECT * FROM foo WHERE type = ?", $type);
-    $result = DB::conn()->query("SELECT * FROM foo WHERE type = ? AND cat IN ?", $type, array(1, 7));
+    $result = DB::conn()->query("SELECT * FROM foo WHERE type = ? AND cat IN ?", $type, [1, 7]);
 
     $items = DB::conn()->fetchAll("SELECT id, name, description FROM foo WHERE type = ?", MYSQLI_ASSOC, $type);
     $item  = DB::conn()->fetchOne("SELECT * FROM foo WHERE id = ?", MYSQLI_ASSOC, $id);
@@ -58,7 +58,7 @@ Jasny DB supports the [table data gateway](http://martinfowler.com/eaaCatalog/ta
 
     new DB($host, $user, $pwd, $dbname);
 
-    $foo = DB::conn()->table('foo')->load(1);
+    $foo = DB::conn()->table('foo')->fetch(1);
     $foo->description = "Lorum Ipsum";
     $foo->save();
 
@@ -75,11 +75,11 @@ method.
     Jasny\DB\ModelGenerator::enable();
     new DB($host, $user, $pwd, $dbname);
 
-    $foo = Foo::load(1);
+    $foo = Foo::fetch(1);
     $foo->description = "Lorum Ipsum";
     $foo->save();
 
-Methods called statically on record class (eg `Foo::load()`) are redirected to the table gateway.
+Methods called statically on record class (eg `Foo::fetch()`) are redirected to the table gateway.
 
 
 ## Custom Table and Record ##
@@ -94,13 +94,13 @@ namespace instead.
     Jasny\DB\ModelGenerator::enable();
     new DB($host, $user, $pwd, $dbname);
 
-    class Foo extends Base\Foo {
+    class Foo extends DB\Foo {
         public $id;
         public $reference;
         public $description;
     }
 
-    class FooTable extends Base\FooTable {
+    class FooTable extends DB\FooTable {
         public function save($record) {
             $record = (object)$record;
             if (!isset($record->reference)) $record->reference = uniqid();
