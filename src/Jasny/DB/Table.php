@@ -103,8 +103,11 @@ abstract class Table
      */
     public static function instantiate($name, Connection $db=null)
     {
-        $table = new static($db);
+        $refl = new \ReflectionClass(get_called_class());
+        $table = $refl->newInstanceWithoutConstructor();
+        
         $table->name = $name;
+        $table->__construct($db);
         
         return $table;
     }

@@ -7,5 +7,7 @@ php:
 services:
   - mysql
   
+script: phpunit --coverage-text
+ 
 before_script:
   - composer install

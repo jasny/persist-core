@@ -254,9 +254,9 @@ class TableTest extends TestCase
         
         $record = $this->table->fetch(1);
         $record->name = 'KLM';
-        $ret = $this->table->save($record);
+        $id = $this->table->save($record);
 
-        $this->assertSame($record, $ret);
+        $this->assertSame(1, $id);
         $this->assertEquals(1, $record->id);
         
         $result = $this->db->query("SELECT * FROM foo WHERE id = 1");
@@ -270,10 +270,8 @@ class TableTest extends TestCase
     {
         self::$reuse_db = false;
         
-        $record = $this->table->save(array('id'=>1, 'name'=>'KLM'));
-        $this->assertEquals(1, $record->id);
-        $this->assertEquals('KLM', $record->name);
-        $this->assertEquals('tv', $record->ext);
+        $id = $this->table->save(array('id'=>1, 'name'=>'KLM'));
+        $this->assertEquals(1, $id);
 
         $result = $this->db->query("SELECT * FROM foo WHERE id = 1");
         $this->assertEquals(array('id'=>1, 'name'=>'KLM', 'ext'=>'tv'), $result->fetch_assoc());
