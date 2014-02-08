@@ -264,6 +264,16 @@ PHP;
         return $code;
     }
     
+
+    /**
+     * Wrapper for include.
+     * 
+     * @param string $filename
+     */
+    protected static function load($filename)
+    {
+        include $filename;
+    }
     
     /**
      * See if there is a valid file in cache and include it.
@@ -273,20 +283,20 @@ PHP;
      */
     protected static function loadFromCache($class)
     {
-        if (!isset(self::$cachePath)) return false;
+        if (!isset(static::$cachePath)) return false;
         
-        $filename = self::$cachePath . '/' . strtr($class, '\\_', '//') . '.php';
+        $filename = static::$cachePath . '/' . strtr($class, '\\_', '//') . '.php';
         if (!file_exists($filename)) return false;
         
         // Check if table definition hasn't changed
-        list($classname) = self::splitClass($class);
+        list($classname) = static::splitClass($class);
         $name = Table::uncamelcase(preg_replace('/Table$/i', '', $classname));
-        $hash = self::getChecksum($name);
+        $hash = static::getChecksum($name);
 
         $code = file_get_contents($filename);
         if (!strpos($code, "@checksum $hash")) return false;
         
-        include $filename;
+        static::load($filename);
         return true;
     }
     
@@ -299,14 +309,14 @@ PHP;
      */
     protected static function cacheAndLoad($class, $code)
     {
-        if (!isset(self::$cachePath)) return false;
+        if (!isset(static::$cachePath)) return false;
         
-        $filename = self::$cachePath . '/' . strtr($class, '\\_', '//') . '.php';
+        $filename = static::$cachePath . '/' . strtr($class, '\\_', '//') . '.php';
 
         if (!file_exists(dirname($filename))) mkdir(dirname($filename), 0777, true);
         if (!file_put_contents($filename, $code)) return false;
         
-        include $filename;
+        static::load($filename);
         return true;
     }
     
@@ -318,7 +328,7 @@ PHP;
     public static function enable($cache_path=null)
     {
         static::$cachePath = $cache_path;
-        spl_autoload_register(array(__CLASS__, 'autoload'));
+        spl_autoload_register(array(get_called_class(), 'autoload'));
     }
 
     /**
@@ -332,7 +342,7 @@ PHP;
         $model_ns = Table::getDefaultConnection()->getModelNamespace();
         if (preg_replace('/(^|\\\\)' . static::$baseNamespace . '$/', '', $ns) != $model_ns) return;
         
-        if (self::loadFromCache($class)) return;
+        if (static::loadFromCache($class)) return;
         
         $name = Table::uncamelcase(preg_replace('/Table$/i', '', $classname));
         if (empty($name) || !Table::getDefaultConnection()->tableExists($name)) return;
@@ -341,7 +351,7 @@ PHP;
             static::generateTable($name, $ns) :
             static::generateRecord($name, $ns);
         
-        self::cacheAndLoad($class, "<?php\n" . $code) or eval($code);
+        static::cacheAndLoad($class, "<?php\n" . $code) or eval($code);
     }
     
     
@@ -357,8 +367,8 @@ PHP;
         foreach ($tables as $table) {
             $class = Table::camelcase($table);
             
-            self::autoload($ns . $class);
-            self::autoload($ns . $class . 'Table');
+            static::autoload($ns . $class);
+            static::autoload($ns . $class . 'Table');
         }
     }
 }

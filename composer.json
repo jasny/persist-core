@@ -20,7 +20,9 @@
         "jasny/dbquery": "dev-master"
     },
     "require-dev": {
-        "psr/log": "1.x"
+        "psr/log": "1.x",
+        "phpunit/phpunit": "3.x",
+        "mikey179/vfsStream": "1.x"
     },
     "suggest" : {
         "monolog/monolog": "Log queries and error from Jasny/DB"
