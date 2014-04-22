@@ -17,7 +17,7 @@
     },
     "require": {
         "php": ">=5.4.0",
-        "jasny/dbquery": "dev-master"
+        "jasny/dbquery": "~1.0.0"
     },
     "require-dev": {
         "psr/log": "1.x",
