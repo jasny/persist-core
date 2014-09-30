@@ -103,8 +103,8 @@ Operator | Description
 >=       | More than or equals
 <        | Less than
 <=       | Less than or equals
-@        | In
-!@       | Not in
+@        | Contains
+!@       | Does not contain
 
 The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method
 and not overload the basic fetch methods.
