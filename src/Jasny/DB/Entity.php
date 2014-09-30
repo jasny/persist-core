@@ -94,7 +94,7 @@ abstract class Entity implements Meta\Introspection
         $values = [];
         
         foreach ($this as $key=>$value) {
-            if ($key[0] === "\0") continue; // Private or protected property
+            if ($key[0] === "\0") continue; // Ignore private and protected properties
             
             if ($value instanceof \DateTime) $value = $value->format(\DateTime::ISO8601);
             
