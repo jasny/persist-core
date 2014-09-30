@@ -44,39 +44,6 @@ interface Connection
 
     
     /**
-     * Get a table gateway.
-     * 
-     * @param string $name  Table name
-     * @return Table
-     */
-    public function table($name);
-    
-    /**
-     * Check if table exsists.
-     * 
-     * @param string $name  Table name
-     * @return boolean
-     */
-    public function tableExists($name);
-
-    /**
-     * Get the names of all tables
-     * 
-     * @return array
-     */
-    public function getAllTables();
-    
-    /**
-     * Load a record using the table gateway.
-     * 
-     * @param string $table  Table name
-     * @param mixed  $id
-     * @return Record
-     */
-    public function load($table, $id);
-    
-    
-    /**
      * Set the model namespace.
      * 
      * @param string $ns

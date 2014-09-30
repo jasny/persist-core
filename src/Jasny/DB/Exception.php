@@ -13,18 +13,4 @@ namespace Jasny\DB;
  * Interface for DB exceptions
  */
 interface Exception
-{
-    /**
-     * Get DB error message
-     * 
-     * @return string
-     */
-    public function getError();
-    
-    /**
-     * Get failed query
-     * 
-     * @return string 
-     */
-    public function getQuery();
-}
+{}
