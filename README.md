@@ -5,18 +5,19 @@ Jasny DB
 
 Jasny DB adds OOP design patterns to PHP's database extensions.
 
-* [Named connections](#named-connections) (multiton)
-* Active Record
-* Metadata
-* Validation and type casting
-* Data Mapping
-* Lazy load
-* Resultset
-* Separation of concerns (through [traits](http://php.net/traits))
-* Code generation
+* [Named connections](#named-connections)
+* [Active record](#active-record)
+* [Metadata](#metadata)
+* [Type casting](#type-casting)
+* [Validation](#validation)
+* [Data mapping](#data-mapping)
+* [Lazy loading](#lazy-loading)
+* [Resultset](#resultset)
+* [SOLID code](#solid-code)
+* [Code generation](#code-generation)
 
-Jasny DB is *not* a DB abstraction layer. It does allow you to separate business logic from database logic to create a
-[SOLID](http://en.wikipedia.org/wiki/SOLID_(object-oriented_design) code base.
+Jasny DB is *not* a DB abstraction layer. It does allow you properly structure your model, while still using PHP's
+native database extensions.
 
 ### Installation
 The Jasny\DB library serves as an abstract base for concrete libraries implementing Jasny DB for specific
@@ -24,8 +25,8 @@ PHP extensions like mysqli and mongo. It isn't intended to be installed directly
 
 ### Implementations
 
-* [Jasny\DB-MySQL](http://github.com/jasny/db-mysql)
-* [Jasny\DB-Mongo](http://github.com/jasny/db-mongo)
+* [Jasny\DB-MySQL](http://github.com/jasny/db-mysql) extends [mysqli](http://php.net/mysqli)
+* [Jasny\DB-Mongo](http://github.com/jasny/db-mongo) extends [mongo](http://php.net/mongo)
 
 
 Named connections
@@ -143,14 +144,30 @@ coding through metadata. This tends to lead to code that's hard to read and main
 Only use the metadata to abstract widely use functionality and use overloading to implement special cases.
 
 
-Validation and type casting
+Type casting
+---
+
+Entities support type casting. This is done based on the metadata. Type casting is implemented by the
+[Jasny\Meta](http://www.github.com/jasny/meta) library.
+
+### Internal types
+For [php internal types](http://php.net/types) normal [type juggling](http://php.net/type-juggling) is used. Values
+aren't blindly casted. For instance casting `"foo"` to an integer would trigger a warning and skip the casting.
+
+### Objects
+Casting a value to a model entity that supports [lazy loading](#lazy-loading), creates a ghost object. Entities that
+implement the active record pattern, but do not support lazy loading are fetched from the database.
+
+Casting to any other type of object will create a new object normally. For instance casting "bar" to `Foo` would result
+in `new Foo("bar")`.
+
+
+Validation
 ---
 
 Entities implementing the Validatable interface, can do some basic validation prior to saving them. This includes
 checking that all required properties have values, checking the variable type matches and checking if values are
 uniquely present in the database.
-
-Entities support type casting. This is done based on the metadata.
 
 
 Data mapping
@@ -229,10 +246,45 @@ clas Foo
 ```
 
 
-Query object
+Lazy loading
 ---
 
+Jasny DB supports [lazy loading](http://en.wikipedia.org/wiki/Lazy_loading) of entities by allowing them to be created
+as ghost. A ghost only hold a limited set of the entity's data, usually only the identifier. When other properties are
+accessed it will load the rest of the data.
 
+When a value is [casted](#type-casting) to an entity that supports lazy loading, a ghost of that entity is created.
+
+
+Resultset
+---
+_Not implemented yet_
+
+
+SOLID code
+---
+[SOLID](http://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) embodies 5 principles principles that, when used
+together, will make a code base more maintainable over time. While not forcing you to, Jasny DB supports building a
+SOLID code base.
+
+Methods are kept small and each method is expected to be [overloaded](http://en.wikipedia.org/wiki/Function_overloading)
+by extending the class.
+
+Functionality of Jasny DB is defined in interfaces and defined in traits around a single piece of functionality or
+design pattern. The use an a specific interface will trigger behaviour. The trait may or may not be used to implement
+the interface without consequence.
+
+To create maintainable code you SHOULD uphold the following rules:
+
+* Don't access the database outside your model classes.
+* Use traits or multiple classes to separate database logic (eg queries) from business.
+* Keep the number of `if`s limited. Implement special cases by overloading.
+
+
+Code generation
+---
+
+_Present in version 1, but not yet available for version 2_
 
 
 API documentation (generated)
