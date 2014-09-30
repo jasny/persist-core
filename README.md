@@ -32,8 +32,8 @@ PHP extensions like mysqli and mongo. It isn't intended to be installed directly
 Named connections
 ---
 
-By implementing the [multiton pattern](http://en.wikipedia.org/wiki/Multiton_pattern), Jasny DB enables global use of
-one or more database connections.
+By implementing the [multiton pattern](http://en.wikipedia.org/wiki/Multiton_pattern), Jasny DB enables global use 
+of one or more database connections.
 
 Register connections with the `useAs($name)` method and retrieve them with the `conn($name)` method.
 
@@ -76,12 +76,11 @@ $foo->setValues($data)->save();
 
 
 ### Fetch
-Active Record implementations have static methods for loading entities or data from the database. The follow MUST be
-implemented
+Active Record implementations have static methods for loading entities or data from the database.
 
-`fetch($id|$filter)` | Loads a single entity from the database
-`fetchAll($filter)`  | Loads all entities from the database (optionally matching the filter)
-`fetchList($filter)` | Loads a list the id and description as key/value pairs (optionally matching the filter)
+* `fetch($id|$filter)` loads a single entity from the database
+* `fetchAll($filter)` loads all entities from the database (optionally matching the filter)
+* `fetchList($filter)` loads a list the id and description as key/value pairs (optionally matching the filter)
 
 The `$filter` is an associated array with field name and corresponding value.
 
@@ -94,27 +93,29 @@ $list = Foo::fetchList(['status' => 'enabled']);
 
 Optinally the keys may include an operator (eg `['date <' => date('c')]`). The following operators are supported:
 
-=  | Equals
-== | Equals (alt)
-!= | Not equals
-<> | Not equals (alt)
->  | More than
->= | More than or equals
-<  | Less than
-<= | Less than or equals
-@  | In
-!@ | Not in
+Operator | Description
+-------- | -------------------
+=        | Equals
+==       | Equals (alt)
+!=       | Not equals
+<>       | Not equals (alt)
+>        | More than
+>=       | More than or equals
+<        | Less than
+<=       | Less than or equals
+@        | In
+!@       | Not in
 
-The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method and not
-overload the basic fetch methods.
+The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method
+and not overload the basic fetch methods.
 
 
 Metadata
 ---
 
-An entity represents an element in the model. The [metadata](http://en.wikipedia.org/wiki/Metadata) holds information
-about the structure of the entity. Metadata should be considered static as it describes all the entities of a certain
-type.
+An entity represents an element in the model. The [metadata](http://en.wikipedia.org/wiki/Metadata) holds 
+information about the structure of the entity. Metadata should be considered static as it describes all the
+entities of a certain type.
 
 Metadata for a class might contain the table name where data should be stored. Metadata for a property might contain
 the data type, whether or not it is required and the property description.
@@ -158,8 +159,8 @@ aren't blindly casted. For instance casting `"foo"` to an integer would trigger 
 Casting a value to a model entity that supports [lazy loading](#lazy-loading), creates a ghost object. Entities that
 implement the active record pattern, but do not support lazy loading are fetched from the database.
 
-Casting to any other type of object will create a new object normally. For instance casting "bar" to `Foo` would result
-in `new Foo("bar")`.
+Casting to any other type of object will create a new object normally. For instance casting "bar" to `Foo` would 
+result in `new Foo("bar")`.
 
 
 Validation
@@ -177,8 +178,8 @@ By default entity properties are mapped to fields of a single table/collection u
 possible to create alernative mapping.
 
 ### Field mapping
-Set the `field` in the meta data of an entity property to specify an alternative fieldname in the database. This can be
-done using annotations.
+Set the `field` in the meta data of an entity property to specify an alternative fieldname in the database. This
+can be done using annotations.
 
 ```php
 class Foo
@@ -192,11 +193,11 @@ class Foo
 ```
 
 ### Table mapping
-You may save the data of a single entity across tables/collections. This allows you to further decouple the model from
-the database schema.
+You may save the data of a single entity across tables/collections. This allows you to further decouple the model 
+from the database schema.
 
-To do this overload the `getDBValues()` method. This method return an associated array, with the table/collection name
-as key and an array of rows (assoc arrays) that should be saved.
+To do this overload the `getDBValues()` method. This method return an associated array, with the table/collection 
+name as key and an array of rows (assoc arrays) that should be saved.
 
 With no customization `Foo::getDBValues()` might return the following:
 
@@ -249,9 +250,9 @@ clas Foo
 Lazy loading
 ---
 
-Jasny DB supports [lazy loading](http://en.wikipedia.org/wiki/Lazy_loading) of entities by allowing them to be created
-as ghost. A ghost only hold a limited set of the entity's data, usually only the identifier. When other properties are
-accessed it will load the rest of the data.
+Jasny DB supports [lazy loading](http://en.wikipedia.org/wiki/Lazy_loading) of entities by allowing them to be 
+created as ghost. A ghost only hold a limited set of the entity's data, usually only the identifier. When other 
+properties are accessed it will load the rest of the data.
 
 When a value is [casted](#type-casting) to an entity that supports lazy loading, a ghost of that entity is created.
 
@@ -263,16 +264,16 @@ _Not implemented yet_
 
 SOLID code
 ---
-[SOLID](http://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) embodies 5 principles principles that, when used
-together, will make a code base more maintainable over time. While not forcing you to, Jasny DB supports building a
-SOLID code base.
+[SOLID](http://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) embodies 5 principles principles that, when 
+used together, will make a code base more maintainable over time. While not forcing you to, Jasny DB supports 
+building a SOLID code base.
 
-Methods are kept small and each method is expected to be [overloaded](http://en.wikipedia.org/wiki/Function_overloading)
-by extending the class.
+Methods are kept small and each method is expected to be 
+[overloaded](http://en.wikipedia.org/wiki/Function_overloading) by extending the class.
 
 Functionality of Jasny DB is defined in interfaces and defined in traits around a single piece of functionality or
-design pattern. The use an a specific interface will trigger behaviour. The trait may or may not be used to implement
-the interface without consequence.
+design pattern. The use an a specific interface will trigger behaviour. The trait may or may not be used to 
+implement the interface without consequence.
 
 To create maintainable code you SHOULD uphold the following rules:
 
