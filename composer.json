@@ -1,8 +1,8 @@
 {
     "name": "jasny/db",
     "type": "library",
-    "description": "A DB layer for the masses",
-    "keywords": ["database", "db", "mysql"],
+    "description": "Adds modern OOP DB patterns by extending PHP extensions",
+    "keywords": ["database", "db"],
     "license": "MIT",
     "homepage": "http://jasny.github.com/db",
     "authors": [
@@ -18,15 +18,11 @@
     },
     "require": {
         "php": ">=5.4.0",
-        "jasny/dbquery": "1.*"
+        "jasny/meta": "~1.1"
     },
     "require-dev": {
         "psr/log": "1.*",
-        "phpunit/phpunit": "3.*",
-        "mikey179/vfsStream": "1.*"
-    },
-    "suggest" : {
-        "monolog/monolog": "Log queries and error from Jasny/DB"
+        "phpunit/phpunit": "3.*"
     },
     "autoload": {
         "psr-0": {

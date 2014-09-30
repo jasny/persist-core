@@ -1,145 +1,241 @@
-Jasny DB layer
-==============
+Jasny DB
+========
 
 [![Build Status](https://secure.travis-ci.org/jasny/db.png?branch=master)](http://travis-ci.org/jasny/db)
 
-A full featured and easy to use DB layer in PHP, featuring
+Jasny DB adds OOP design patterns to PHP's database extensions.
 
-* MySQL support only (for now)
-* Global connection (singleton)
-* Parameter binding
-* Quoting tables/fields and values
-* Fetch all rows, column, key/value pair and single value
-* Simple saving by passing associated arrays
-* Query exceptions (instead of returning false)
-* Table Gateway
+* [Named connections](#named-connections) (multiton)
 * Active Record
-* Model generator
+* Metadata
+* Validation and type casting
+* Data Mapping
+* Lazy load
+* Resultset
+* Separation of concerns (through [traits](http://php.net/traits))
+* Code generation
+
+Jasny DB is *not* a DB abstraction layer. It does allow you to separate business logic from database logic to create a
+[SOLID](http://en.wikipedia.org/wiki/SOLID_(object-oriented_design) code base.
+
+### Installation
+The Jasny\DB library serves as an abstract base for concrete libraries implementing Jasny DB for specific
+PHP extensions like mysqli and mongo. It isn't intended to be installed directly.
+
+### Implementations
+
+* [Jasny\DB-MySQL](http://github.com/jasny/db-mysql)
+* [Jasny\DB-Mongo](http://github.com/jasny/db-mongo)
 
 
-## Installation ##
+Named connections
+---
 
-Jasny DB is registred at packagist as [jasny/db](https://packagist.org/packages/jasny/db) and can be
-easily installed using [composer](http://getcomposer.org/). _(recommended)_
+By implementing the [multiton pattern](http://en.wikipedia.org/wiki/Multiton_pattern), Jasny DB enables global use of
+one or more database connections.
 
-Alternatively you can download the .zip and copy the files from the 'src' folder. In this case you also
-need to download [jasny/dbquery](https://github.com/jasny/dbquery).
+Register connections with the `useAs($name)` method and retrieve them with the `conn($name)` method.
 
-__Jasny DB requires at least php 5.4__
+```php
+$db = new DB();
+$db->useAs('foo');
 
-## Basic examples ##
+...
 
-    <?php
-    use Jasny\DB\MySQL\Connection as DB;
+DB::conn('foo')->query();
+```
 
-    new DB($host, $user, $pwd, $dbname);
+If you only have one DB connection name it 'default', since `$name` defaults to 'default'.
 
-    $result = DB::conn()->query("SELECT * FROM foo");
-    $result = DB::conn()->query("SELECT * FROM foo WHERE type = ?", $type);
-    $result = DB::conn()->query("SELECT * FROM foo WHERE type = ? AND cat IN ?", $type, [1, 7]);
+```php
+$db = new DB();
+$db->useAs('default');
 
-    $items = DB::conn()->fetchAll("SELECT id, name, description FROM foo WHERE type = ?", MYSQLI_ASSOC, $type);
-    $item  = DB::conn()->fetchOne("SELECT * FROM foo WHERE id = ?", MYSQLI_ASSOC, $id);
-    $names = DB::conn()->fetchColumn("SELECT name FROM foo WHERE type = ?", $type);
-    $list  = DB::conn()->fetchPairs("SELECT id, name FROM foo WHERE type = ?", $type);
-    $name  = DB::conn()->fetchValue("SELECT name FROM foo WHERE id = ?", $id);
+...
 
-    DB::conn()->save('foo', $values);
-    DB::conn()->save('foo', array($values1, $values2, $values3));
+DB::conn()->query();
+```
 
 
-## Table Gateway and Active Record ##
+Active Record
+---
 
-Jasny DB supports the [table data gateway](http://martinfowler.com/eaaCatalog/tableDataGateway.html) and
-[active record](http://martinfowler.com/eaaCatalog/activeRecord.html) patterns.
+[Enities](http://en.wikipedia.org/wiki/Entity) may be implement the
+[Active Record pattern](http://en.wikipedia.org/wiki/Active_record_pattern).
 
-    <?php
-    use Jasny\DB\MySQL\Connection as DB;
+### Save
+Objects that implement the ActiveRecord
+interface have a `save()` method for storing the entity in the database. The `setValues()` methods is a a helper
+function for setting all the properties from an array and works like a
+[fluent interface](http://en.wikipedia.org/wiki/Fluent_interface).
 
-    new DB($host, $user, $pwd, $dbname);
-
-    $foo = DB::conn()->table('foo')->fetch(1);
-    $foo->description = "Lorum Ipsum";
-    $foo->save();
-
-
-## Model generator ##
-
-The model generator automatically generates a table gateway and active record class for each table. It does this on
-demand by using the autoloader. With the model generator enabled, it's generally not needed to use the `DB->table()`
-method.
-
-    <?php
-    use Jasny\DB\MySQL\Connection as DB;
-
-    Jasny\DB\ModelGenerator::enable();
-    new DB($host, $user, $pwd, $dbname);
-
-    $foo = Foo::fetch(1);
-    $foo->description = "Lorum Ipsum";
-    $foo->save();
-
-Methods called statically on record class (eg `Foo::fetch()`) are redirected to the table gateway.
+```php
+$foo->setValues($data)->save();
+```
 
 
-## Custom Table and Record ##
+### Fetch
+Active Record implementations have static methods for loading entities or data from the database. The follow MUST be
+implemented
 
-To add custom methods to model classes, just create a class with the proper name (camelcase table name) and make it
-extends the same class in the `Base` namespace. The model generator will create the table's class in the `Base`
-namespace instead.
+`fetch($id|$filter)` | Loads a single entity from the database
+`fetchAll($filter)`  | Loads all entities from the database (optionally matching the filter)
+`fetchList($filter)` | Loads a list the id and description as key/value pairs (optionally matching the filter)
 
-    <?php
-    use Jasny\DB\MySQL\Connection as DB;
+The `$filter` is an associated array with field name and corresponding value.
 
-    Jasny\DB\ModelGenerator::enable();
-    new DB($host, $user, $pwd, $dbname);
+```php
+$foo = Foo::fetch(10); // id = 10
+$foo = Foo::fetch(['reference' => 'myfoo']);
+$foos = Foo::fetchAll(['status' => 'enabled']);
+$list = Foo::fetchList(['status' => 'enabled']);
+```
 
-    class Foo extends DB\Foo {
-        public $id;
-        public $reference;
-        public $description;
-    }
+Optinally the keys may include an operator (eg `['date <' => date('c')]`). The following operators are supported:
 
-    class FooTable extends DB\FooTable {
-        public function save($record) {
-            $record = (object)$record;
-            if (!isset($record->reference)) $record->reference = uniqid();
-            return parent::save($record);
+=  | Equals
+== | Equals (alt)
+!= | Not equals
+<> | Not equals (alt)
+>  | More than
+>= | More than or equals
+<  | Less than
+<= | Less than or equals
+@  | In
+!@ | Not in
+
+The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method and not
+overload the basic fetch methods.
+
+
+Metadata
+---
+
+An entity represents an element in the model. The [metadata](http://en.wikipedia.org/wiki/Metadata) holds information
+about the structure of the entity. Metadata should be considered static as it describes all the entities of a certain
+type.
+
+Metadata for a class might contain the table name where data should be stored. Metadata for a property might contain
+the data type, whether or not it is required and the property description.
+
+Jasn DB support defining metadata through annotations by using [Jasny\Meta](http://www.github.com/jasny/meta).
+
+```php
+/**
+ * Foo entity
+ *
+ * @collection foos
+ */
+class Foo
+{
+   /**
+    * @var string
+    * @required
+    */
+   public $color;
+}
+```
+
+### Caveat
+Metadata can be really powerfull in generalizing and abstracting code. However you can quickly fall into the trap of
+coding through metadata. This tends to lead to code that's hard to read and maintain.
+
+Only use the metadata to abstract widely use functionality and use overloading to implement special cases.
+
+
+Validation and type casting
+---
+
+Entities implementing the Validatable interface, can do some basic validation prior to saving them. This includes
+checking that all required properties have values, checking the variable type matches and checking if values are
+uniquely present in the database.
+
+Entities support type casting. This is done based on the metadata.
+
+
+Data mapping
+---
+
+By default entity properties are mapped to fields of a single table/collection using the exact name. However it is
+possible to create alernative mapping.
+
+### Field mapping
+Set the `field` in the meta data of an entity property to specify an alternative fieldname in the database. This can be
+done using annotations.
+
+```php
+class Foo
+{
+   /**
+    * @var Bar
+    * @field bar_id
+    */
+   public $bar;
+}
+```
+
+### Table mapping
+You may save the data of a single entity across tables/collections. This allows you to further decouple the model from
+the database schema.
+
+To do this overload the `getDBValues()` method. This method return an associated array, with the table/collection name
+as key and an array of rows (assoc arrays) that should be saved.
+
+With no customization `Foo::getDBValues()` might return the following:
+
+```php
+[
+  'foo' => [
+    [
+      'id' => null,
+      'bar_id' => 20,
+      'status' => 'active'
+      'subs' => [
+        [ 'desc' => 'red' ],
+        [ 'desc' => 'green' ],
+        [ 'desc' => 'blue' ]
+      ];
+    ]
+  ]
+]
+```
+
+Example of save 'subs' in a seperate table:
+
+```php
+clas Foo
+{
+    /**
+     * Get the values to write to the database
+     *
+     * @return array
+     */
+    protected function getDBValues()
+    {
+        $values = parent::getDBValues();
+
+        $subs = $values['foo'][0]['sub'];
+        unset($values['foo'][0]['sub']);
+
+        foreach ($subs as &$sub) {
+            // Even if 'id' is null now, it will be set prior to saving `foo_sub`
+            $sub['foo_id'] =& $values['foo'][0]['id'];
         }
+        $values['foo_sub'] = $subs;
 
-        public function fetchList() {
-            return DB::fetchPairs("SELECT id, description FROM foo");
-        }
+        return $values;
     }
-
-    $foo = new Foo();
-    $foo->description = "Lorum Ipsum";
-    $foo->save();
-
-    $foo_list = Foo::fetchList();
+}
+```
 
 
-## Query Builder ##
-
-The query builder [jasny/dbquery](http://github.com/jasny/dbquery) is automatically included when jasny/db is installed
-through composer.
-
-    <?php
-    use Jasny\DB\MySQL\Query;
-
-    $query = Query::select()->columns(['id', 'description'])->where(['active'=>1])->limit(10);
-
-Unlike other query builders, the Jasny DB query builder can also modify existing SQL.
-
-    <?php
-    use Jasny\DB\MySQL\Query;
-
-    $query = new Query("SELECT * FROM foo LEFT JOIN bar ON foo.bar_id = bar.id WHERE active = 1 LIMIT 25");
-    if (isset($_GET['page'])) $query->page(3);
-
-    $query->where($_GET['filter']); // Smart quoting prevents SQL injection
+Query object
+---
 
 
-## API documentation (generated) ##
+
+
+API documentation (generated)
+---
 
 http://jasny.github.com/db/docs
