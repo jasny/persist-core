@@ -12,6 +12,7 @@ Jasny DB adds OOP design patterns to PHP's database extensions.
 * [Validation](#validation)
 * [Data mapping](#data-mapping)
 * [Lazy loading](#lazy-loading)
+* [Soft deletion](#soft-deletion)
 * [Resultset](#resultset)
 * [SOLID code](#solid-code)
 * [Code generation](#code-generation)
@@ -65,30 +66,40 @@ Active Record
 [Active Record pattern](http://en.wikipedia.org/wiki/Active_record_pattern).
 
 ### Save
-Objects that implement the ActiveRecord
-interface have a `save()` method for storing the entity in the database. The `setValues()` methods is a a helper
-function for setting all the properties from an array and works like a
+Objects that implement the ActiveRecord interface have a `save()` method for storing the entity in the database.
+The `setValues()` methods is a a helper function for setting all the properties from an array and works like a
 [fluent interface](http://en.wikipedia.org/wiki/Fluent_interface).
 
 ```php
 $foo->setValues($data)->save();
 ```
 
-
 ### Fetch
-Active Record implementations have static methods for loading entities or data from the database.
-
-* `fetch($id|$filter)` loads a single entity from the database
-* `fetchAll($filter)` loads all entities from the database (optionally matching the filter)
-* `fetchList($filter)` loads a list the id and description as key/value pairs (optionally matching the filter)
-
-The `$filter` is an associated array with field name and corresponding value.
+An entity can be loaded from the database using the `fetch($id|$filter)`. Pass either the entity's unique identifier
+or an associated array as `[ field => value ]`.
 
 ```php
 $foo = Foo::fetch(10); // id = 10
 $foo = Foo::fetch(['reference' => 'myfoo']);
-$foos = Foo::fetchAll(['status' => 'enabled']);
-$list = Foo::fetchList(['status' => 'enabled']);
+```
+
+### Delete
+Entities that implement the `Deletable` interface can be removed from the database. Optionally
+[soft deletion](#soft-deletion) can be implemented incase it's important that entities can be restored.
+
+
+Recordset member
+---
+
+An entity may define that it's part of a recordset by implementing the `RecordsetMember` interface. These entities
+have the `fetchAll()` method, which returns multiple records. Additionally the `fetchList($filter)` loads a list with
+the id and description as key/value pairs (optionally matching the filter)
+
+The `$filter` is an associated array with field name and corresponding value.
+
+```php
+$foos = Foo::fetchAll(['bar' => 10]);
+$list = Foo::fetchList(['bar' => 10]);
 ```
 
 Optinally the keys may include an operator (eg `['date <' => date('c')]`). The following operators are supported:
@@ -255,6 +266,20 @@ created as ghost. A ghost only hold a limited set of the entity's data, usually 
 properties are accessed it will load the rest of the data.
 
 When a value is [casted](#type-casting) to an entity that supports lazy loading, a ghost of that entity is created.
+
+
+Soft deletion
+---
+
+Entities that support soft deletion are deleted in such a way that they can restored.
+
+Deleted entities may restored using `undelete()` or they can be permanently removed using `purge()`.
+
+The `isDeleted()` method check whether this document has been deleted.
+
+Fetch methods do not return deleted entities. Instead use `fetchDeleted($filter)` to load a deleted entity. Use
+`fetchAllDeleted($filter)` to fetch all deleted entities from the database.
+
 
 
 Resultset
