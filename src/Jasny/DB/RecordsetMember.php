@@ -10,10 +10,18 @@ interface RecordsetMember
     /**
      * Fetch a single entity.
      * 
-     * @param string|array $filter  ID or filter
+     * @param mixed|array $filter  ID or filter
      * @return static
      */
     public static function fetch($filter);
+    
+    /**
+     * Check if a record exists in the set.
+     * 
+     * @param mixed|array $filter  ID or filter
+     * @return boolean
+     */
+    public static function exists($filter);
     
     /**
      * Fetch all entities from the set.
