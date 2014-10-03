@@ -11,7 +11,7 @@ namespace Jasny\DB;
 interface ActiveRecord
 {
     /**
-     * Fetch an entity.
+     * Fetch a single entity.
      * 
      * @param string|array $filter  ID or filter
      * @return static
@@ -25,24 +25,6 @@ interface ActiveRecord
      * @return boolean
      */
     public static function exists($filter);
-    
-    /**
-     * Fetch all entities
-     * 
-     * @param array $filter
-     * @param array $sort
-     * @return static[]
-     */
-    public static function fetchAll(array $filter=[], $sort=null);
-
-    /**
-     * Fetch all descriptions.
-     * 
-     * @param array $filter
-     * @param array $sort
-     * @return static[]
-     */
-    public static function fetchList(array $filter=[], $sort=null);
     
     /**
      * Set the values.
