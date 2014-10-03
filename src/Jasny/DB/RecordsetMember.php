@@ -41,4 +41,11 @@ interface RecordsetMember
      */
     public static function fetchList(array $filter=[], $sort=null);
     
+    /**
+     * Fetch the number of entities in the set.
+     * 
+     * @param array $filter
+     * @return static[]
+     */
+    public static function count(array $filter);
 }
