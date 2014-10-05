@@ -32,11 +32,31 @@ trait EntityBasics
         
         return $set($this);
     }
+
+    /**
+     * Get the values.
+     * {@interal Using Entity::setValues() shouldn't be any different than getting the properties one by one }}
+     * 
+     * @param array|object $values
+     * @return $this
+     */
+    final public function getValues()
+    {
+        $values = [];
+        
+        foreach ((array)$this as $key=>$value) {
+            if ($key[0] === "\0") continue; // Ignore private and protected properties
+            $values[$key] = $value;
+        }
+        
+        return $values;
+    }
+    
     
     
     /**
-     * Convert values to an entity.
-     * Calls the construtor after setting the properties.
+     * Convert loaded values to an entity.
+     * Calls the construtor *after* setting the properties.
      * 
      * @param object $values
      * @return static
@@ -58,20 +78,16 @@ trait EntityBasics
     
     
     /**
-     * Cast object to JSON
+     * Prepare entity for JSON encoding
      * 
      * @return object
      */
     public function jsonSerialize()
     {
-        $values = [];
+        $values = $this->getValues();
         
-        foreach ((array)$this as $key=>$value) {
-            if ($key[0] === "\0") continue; // Ignore private and protected properties
-            
+        foreach ($values as &$value) {
             if ($value instanceof \DateTime) $value = $value->format(\DateTime::ISO8601);
-            
-            $values[$key] = $value;
         }
         
         return (object)$values;
