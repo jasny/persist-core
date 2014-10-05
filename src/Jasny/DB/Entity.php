@@ -3,7 +3,7 @@
 namespace Jasny\DB;
 
 /**
- * An entity is a "thing" you want to represent in a database or other data storages.
+ * An entity is a "thing" you want to represent in the database.
  * 
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
@@ -19,9 +19,19 @@ interface Entity extends \JsonSerializable
      * @return $this
      */
     public function setValues($values);
+
+    /**
+     * Get the values.
+     * {@interal Using Entity::getValues() shouldn't be any different than getting the properties one by one }}
+     * 
+     * @param array|object $values
+     * @return $this
+     */
+    public function getValues();
+    
     
     /**
-     * Convert values to an entity.
+     * Convert loaded values to an entity.
      * 
      * @param object $values
      * @return static
