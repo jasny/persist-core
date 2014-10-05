@@ -3,9 +3,9 @@
 namespace Jasny\DB;
 
 /**
- * Indicates that an entity is part of a recordset, like a table or collection.
+ * Indicates that an entity is part of a set, like a table or collection.
  */
-interface RecordsetMember
+interface Recordset
 {
     /**
      * Fetch a single entity.
@@ -14,14 +14,6 @@ interface RecordsetMember
      * @return static
      */
     public static function fetch($filter);
-    
-    /**
-     * Check if a record exists in the set.
-     * 
-     * @param mixed|array $filter  ID or filter
-     * @return boolean
-     */
-    public static function exists($filter);
     
     /**
      * Fetch all entities from the set.
@@ -45,7 +37,7 @@ interface RecordsetMember
      * Fetch the number of entities in the set.
      * 
      * @param array $filter
-     * @return static[]
+     * @return int
      */
     public static function count(array $filter);
 }

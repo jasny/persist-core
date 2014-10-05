@@ -1,20 +1,21 @@
 <?php
+
 namespace Jasny\DB;
 
 /**
- * Interface for the active record design pattern
+ * A Data Mapper is a bridge between the entity and the database
  * 
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-interface ActiveRecord extends Deletable
+interface DataMapper
 {
     /**
      * Fetch a single entity.
      * 
      * @param string|array $filter  ID or filter
-     * @return static
+     * @return Entity
      */
     public static function fetch($filter);
     
@@ -25,11 +26,18 @@ interface ActiveRecord extends Deletable
      * @return boolean
      */
     public static function exists($filter);
-
+    
     /**
      * Save the entity
      * 
-     * @return $this
+     * @param Entity $entity
      */
-    public function save();
+    public static function save(Entity $entity);
+
+    /**
+     * Delete the entity
+     * 
+     * @param Entity $entity
+     */
+    public static function delete();
 }
