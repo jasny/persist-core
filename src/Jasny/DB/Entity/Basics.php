@@ -1,6 +1,6 @@
 <?php
 
-namespace Jasny\DB;
+namespace Jasny\DB\Entity;
 
 /**
  * Basic implementation for an entity
@@ -9,7 +9,7 @@ namespace Jasny\DB;
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-trait EntityBasics
+trait Basics
 {
     /**
      * Set the values.

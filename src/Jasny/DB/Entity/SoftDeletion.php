@@ -1,6 +1,6 @@
 <?php
 
-namespace Jasny\DB;
+namespace Jasny\DB\Entity;
 
 /**
  * Entity can be restored after deletion.
@@ -9,7 +9,7 @@ namespace Jasny\DB;
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-interface ActiveRecordSoftDeletion extends ActiveRecord, SoftDeletion
+interface SoftDeletion extends \Jasny\DB\ActiveRecord, \Jasny\DB\SoftDeletion
 {
     /**
      * Checks if entity has been deleted

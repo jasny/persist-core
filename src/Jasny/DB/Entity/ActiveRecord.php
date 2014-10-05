@@ -1,5 +1,5 @@
 <?php
-namespace Jasny\DB;
+namespace Jasny\DB\Entity;
 
 /**
  * Interface for the active record design pattern

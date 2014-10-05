@@ -1,6 +1,6 @@
 <?php
 
-namespace Jasny\DB;
+namespace Jasny\DB\Connection;
 
 /**
  * Interface for named connections
@@ -9,7 +9,7 @@ namespace Jasny\DB;
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.io/db
  */
-interface NamableConnection
+interface Namable
 {
     /**
      * Get a named DB connection.

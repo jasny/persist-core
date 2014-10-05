@@ -1,6 +1,6 @@
 <?php
 
-namespace Jasny\DB;
+namespace Jasny\DB\Entity;
 
 /**
  * Interface for entities that support lazy loading through ghost objects.

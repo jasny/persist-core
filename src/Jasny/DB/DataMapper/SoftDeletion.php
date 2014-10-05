@@ -1,6 +1,6 @@
 <?php
 
-namespace Jasny\DB;
+namespace Jasny\DB\DataMapper;
 
 /**
  * Data Mapper interface when entities that can be restored after deletion.
@@ -9,7 +9,7 @@ namespace Jasny\DB;
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-interface DataMapperSoftDeletion extends DataMapper, SoftDeletion
+interface SoftDeletion extends \Jasny\DB\DataMapper, \Jasny\DB\SoftDeletion
 {
     /**
      * Checks if entity has been deleted
