@@ -4,6 +4,10 @@ namespace Jasny\DB;
 
 /**
  * Indicates that an entity is part of a set, like a table or collection.
+ * 
+ * @author  Arnold Daniels <arnold@jasny.net>
+ * @license https://raw.github.com/jasny/db/master/LICENSE MIT
+ * @link    https://jasny.github.com/db
  */
 interface Recordset
 {

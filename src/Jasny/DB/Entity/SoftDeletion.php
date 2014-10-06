@@ -25,4 +25,12 @@ interface SoftDeletion extends \Jasny\DB\ActiveRecord, \Jasny\DB\SoftDeletion
      * @return $this
      */
     public function undelete();
+    
+    /**
+     * Purge deleted entity.
+     * 
+     * @return $this
+     * @throws \Exception if entity ism't deleted
+     */
+    public function purge();
 }

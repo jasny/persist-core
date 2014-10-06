@@ -14,15 +14,24 @@ interface SoftDeletion extends \Jasny\DB\DataMapper, \Jasny\DB\SoftDeletion
     /**
      * Checks if entity has been deleted
      * 
+     * @param Entity $entity
      * @return boolean
      */
-    public static function isDeleted($entity);
+    public static function isDeleted(Entity $entity);
     
     /**
      * Restore deleted entity.
      * Does nothing is entity isn't deleted.
      * 
-     * @param 
+     * @param Entity $entity
      */
-    public static function undelete($entity);
+    public static function undelete(Entity $entity);
+    
+    /**
+     * Purge deleted entity.
+     * 
+     * @param Entity $entity
+     * @throws \Exception if entity ism't deleted
+     */
+    public static function purge(Entity $entity);
 }
