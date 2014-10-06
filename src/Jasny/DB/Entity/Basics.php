@@ -20,7 +20,7 @@ trait Basics
      * @param array|object $values
      * @return $this
      */
-    final public function setValues($values)
+    public function setValues($values)
     {
         // Using closure to prevent setting protected methods
         $set = function($entity) use ($values) {
@@ -37,13 +37,15 @@ trait Basics
 
     /**
      * Get the values.
-     * {@interal Using Entity::setValues() shouldn't be any different than getting the properties one by one }}
+     * {@interal Using Entity::getValues() shouldn't be any different than getting the properties one by one }}
      * 
      * @param array|object $values
      * @return $this
      */
-    final public function getValues()
+    public function getValues()
     {
+        if ($this instanceof LazyLoadable && $this->isGhost()) $this->expand();
+        
         $values = [];
         
         foreach ((array)$this as $key=>$value) {
@@ -53,7 +55,6 @@ trait Basics
         
         return $values;
     }
-    
     
     
     /**

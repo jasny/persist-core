@@ -9,7 +9,7 @@ namespace Jasny\DB\Entity;
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-interface LazyLoadable
+interface LazyLoadable extends Identifiable
 {
     /**
      * Create a ghost object.

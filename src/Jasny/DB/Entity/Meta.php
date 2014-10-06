@@ -47,14 +47,13 @@ trait Meta
     {
         if (!class_exists($type)) throw new \Exception("Invalid type '$type'");
         
-        if (is_array($value) || is_object($value)) {
+        if (is_array($value) || $value instanceof \stdClass) {
             if (is_a($type, '\Jasny\DB\Entity')) {
                 return $type::__set_state($value);
             }
         } else {
-            if (is_a($type, '\Jasny\DB\Entity\LazyLoadable', true)) return $class::ghost($value);
-            
-            if (is_a($type, '\Jasny\DB\Entity\ActiveRecord')) return $class::fetch($value);
+            if (is_a($type, '\Jasny\DB\Entity\LazyLoadable', true)) return $type::ghost($value);
+            if (is_a($type, '\Jasny\DB\Entity\ActiveRecord')) return $type::fetch($value);
             
             if (class_exists($type . 'Mapper')) {
                 $mapper = $type . 'Mapper';
