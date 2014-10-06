@@ -26,7 +26,7 @@ trait Named
      */
     public static function conn($name='default')
     {
-        if (!isset(self::$connections[$name])) throw new Exception("DB connection named '$name' doesn't exist");
+        if (!isset(self::$connections[$name])) throw new \Exception("DB connection named '$name' doesn't exist");
         return self::$connections[$name];
     }
 

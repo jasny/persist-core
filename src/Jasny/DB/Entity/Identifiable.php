@@ -16,5 +16,5 @@ interface Identifiable
      * 
      * @return mixed
      */
-    abstract public function getId();
+    public function getId();
 }
