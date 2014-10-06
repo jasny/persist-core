@@ -2,6 +2,8 @@
 
 namespace Jasny\DB\Entity;
 
+use \Jasny\Meta\TypedObject;
+
 /**
  * Basic implementation for an entity
  * 
@@ -71,6 +73,7 @@ trait Basics
             $entity->$key = $value;
         }
         
+        if ($entity instanceof TypedObject) $entity->cast();
         $entity->__construct();
         
         return $entity;

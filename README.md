@@ -198,6 +198,60 @@ The fetch methods are intended to support only simple cases. For specific cases 
 and not overload the basic fetch methods.
 
 
+Metadata
+---
+
+An entity represents an element in the model. The [metadata](http://en.wikipedia.org/wiki/Metadata) holds 
+information about the structure of the entity. Metadata should be considered static as it describes all the
+entities of a certain type.
+
+Metadata for a class might contain the table name where data should be stored. Metadata for a property might contain
+the data type, whether or not it is required and the property description.
+
+Jasn DB support defining metadata through annotations by using [Jasny\Meta](http://www.github.com/jasny/meta).
+
+```php
+/**
+ * Foo entity
+ *
+ * @supportive yes
+ */
+class Foo
+{
+   /**
+    * @var string
+    * @required
+    */
+   public $color;
+}
+```
+
+### Caveat
+Metadata can be really powerfull in generalizing and abstracting code. However you can quickly fall into the trap of
+coding through metadata. This tends to lead to code that's hard to read and maintain.
+
+Only use the metadata to abstract widely use functionality and use overloading to implement special cases.
+
+
+Type casting
+---
+
+Entities support type casting. This is done based on the metadata. Type casting is implemented by the
+[Jasny\Meta](http://www.github.com/jasny/meta) library.
+
+### Internal types
+For [php internal types](http://php.net/types) normal [type juggling](http://php.net/type-juggling) is used. Values
+aren't blindly casted. For instance casting `"foo"` to an integer would trigger a warning and skip the casting.
+
+### Objects
+Casting a value to a model entity that supports [Lazy Loading](#lazy-loading), creates a ghost object. Entities that
+implement the Active Record pattern or have a Data Mapper, but do not support Lazy Loading are fetched from the
+database.
+
+Casting to any other type of object will create a new object normally. For instance casting "bar" to `Foo` would 
+result in `new Foo("bar")`.
+
+
 Validation
 ---
 

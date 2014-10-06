@@ -17,13 +17,11 @@
         "source": "https://github.com/jasny/db"
     },
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "jasny/meta": "~1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "3.*"
-    },
-    "suggest": {
-        "jasny/meta": "Add metadata and type casting to entities"
     },
     "autoload": {
         "psr-0": {
