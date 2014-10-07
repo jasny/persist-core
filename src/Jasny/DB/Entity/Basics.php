@@ -2,7 +2,7 @@
 
 namespace Jasny\DB\Entity;
 
-use \Jasny\Meta\TypedObject;
+use Jasny\Meta\TypedObject;
 
 /**
  * Basic implementation for an entity
