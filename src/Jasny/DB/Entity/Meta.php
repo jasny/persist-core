@@ -46,19 +46,13 @@ trait Meta
     protected static function castValueToClass($value, $type)
     {
         if (!class_exists($type)) throw new \Exception("Invalid type '$type'");
-        
-        if (is_array($value) || $value instanceof \stdClass) {
-            if (is_a($type, '\Jasny\DB\Entity')) {
-                return $type::__set_state($value);
-            }
-        } else {
-            if (is_a($type, '\Jasny\DB\Entity\LazyLoading', true)) return $type::ghost($value);
-            if (is_a($type, '\Jasny\DB\Entity\ActiveRecord')) return $type::fetch($value);
-            
-            if (class_exists($type . 'Mapper')) {
-                $mapper = $type . 'Mapper';
-                $mapper::fetch($value);
-            }
+
+        if (is_a($type, '\Jasny\DB\Entity\LazyLoading', true)) return $type::ghost($value);
+        if (is_a($type, '\Jasny\DB\Entity\ActiveRecord', true)) return $type::fetch($value);
+
+        if (class_exists($type . 'Mapper')) {
+            $mapper = $type . 'Mapper';
+            $mapper::fetch($value);
         }
         
         return new $type($value);

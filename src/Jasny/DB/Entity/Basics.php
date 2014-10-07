@@ -64,7 +64,7 @@ trait Basics
      * @param object $values
      * @return static
      */
-    public static function __set_state($values)
+    public static function instantiate($values)
     {
         $class = get_called_class();
         $reflection = new \ReflectionClass($class);
