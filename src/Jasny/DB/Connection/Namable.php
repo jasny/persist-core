@@ -9,16 +9,8 @@ namespace Jasny\DB\Connection;
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.io/db
  */
-interface Namable
+interface Namable extends \Jasny\DB\Connection
 {
-    /**
-     * Get a named DB connection.
-     * 
-     * @param string $name
-     * @return static
-     */
-    public static function conn($name='default');
-
     /**
      * Name the connection, making it globally available.
      * 

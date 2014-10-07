@@ -52,7 +52,7 @@ trait Meta
                 return $type::__set_state($value);
             }
         } else {
-            if (is_a($type, '\Jasny\DB\Entity\LazyLoadable', true)) return $type::ghost($value);
+            if (is_a($type, '\Jasny\DB\Entity\LazyLoading', true)) return $type::ghost($value);
             if (is_a($type, '\Jasny\DB\Entity\ActiveRecord')) return $type::fetch($value);
             
             if (class_exists($type . 'Mapper')) {

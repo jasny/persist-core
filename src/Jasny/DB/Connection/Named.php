@@ -2,6 +2,8 @@
 
 namespace Jasny\DB\Connection;
 
+use Jasny\DB;
+
 /**
  * Implementation for named connections
  * 
@@ -12,32 +14,13 @@ namespace Jasny\DB\Connection;
 trait Named
 {
     /**
-     * Named connections
-     * @var static[]
-     */
-    protected static $connections = [];
-    
-    
-    /**
-     * Get a named DB connection.
-     * 
-     * @param string $name
-     * @return static
-     */
-    public static function conn($name='default')
-    {
-        if (!isset(self::$connections[$name])) throw new \Exception("DB connection named '$name' doesn't exist");
-        return self::$connections[$name];
-    }
-
-    /**
      * Name the connection, making it globally available.
      * 
      * @param string $name
      */
     public function useAs($name)
     {
-        self::$connections[$name] = $this;
+        DB::register($name, $this);
     }
     
     /**
@@ -48,10 +31,6 @@ trait Named
      */
     public function getConnectionName()
     {
-        foreach (self::$connections as $name => $connection) {
-            if ($connection === $this) return $name;
-        }
-        
-        return null;
+        return DB::getRegistredName($this);
     }
 }

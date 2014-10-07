@@ -3,18 +3,18 @@
 namespace Jasny\DB\Entity;
 
 /**
- * Entity has a unique identifier
+ * Entity can be enriched with related data
  * 
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-interface Identifiable extends \Jasny\DB\Entity
+interface Enrichable extends \Jasny\DB\Entity
 {
     /**
-     * Get entity id.
+     * Enrich entity with related data
      * 
-     * @return mixed
+     * @return $this
      */
-    public function getId();
+    public function enrich();
 }

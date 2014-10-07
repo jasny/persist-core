@@ -1,4 +1,5 @@
 <?php
+
 namespace Jasny\DB\Entity;
 
 /**
@@ -8,7 +9,7 @@ namespace Jasny\DB\Entity;
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-interface ActiveRecord
+interface ActiveRecord extends \Jasny\DB\Entity
 {
     /**
      * Fetch a single entity.

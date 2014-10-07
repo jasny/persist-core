@@ -5,7 +5,7 @@ Jasny DB
 
 Jasny DB adds OOP design patterns to PHP's database extensions.
 
-* [Named connections](#named-connections)
+* [Registered connections](#registered-connections)
 * [Entity](#entity)
 * [Active record](#active-record)
 * [Data mapper](#data-mapper)
@@ -21,42 +21,93 @@ Jasny DB is *not* a DB abstraction layer. It does allow you properly structure y
 native database extensions.
 
 ### Installation
-The Jasny\DB library serves as an abstract base for concrete libraries implementing Jasny DB for specific
-PHP extensions like mysqli and mongo. It isn't intended to be installed directly.
+This library is not intended to be installed directly. The Jasny DB library contains design pattern definitions and
+implementations. It serves as an abstract base for concrete libraries implemented for specific PHP extensions.
 
 ### Implementations
 
 * [Jasny\DB-MySQL](http://github.com/jasny/db-mysql) extends [mysqli](http://php.net/mysqli)
 * [Jasny\DB-Mongo](http://github.com/jasny/db-mongo) extends [mongo](http://php.net/mongo)
+* [Jasny\DB-Rest](http://github.com/jasny/db-rest) for datasources implementing
+  [REST](http://en.wikipedia.org/wiki/Representational_state_transfer)
 
 
-Named connections
+Connections
 ---
 
-By implementing the [multiton pattern](http://en.wikipedia.org/wiki/Multiton_pattern), Jasny DB enables global use 
-of one or more database connections.
+Connection objects are use used to interact with a database. Other object must use a connection object do actions
+like getting getting, saving and deleting data from the DB.
 
-Register connections with the `useAs($name)` method and retrieve them with the `conn($name)` method.
+### Registry
+The static `Jasny\DB` serves as a [factory](http://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) and
+[registry](http://martinfowler.com/eaaCatalog/registry.html) for database connections. Registered connections can be
+used globally.
+
+To register a connection use the `register($name, $connection)` function. To get a registered connection, use the
+`conn($name)` function. Connections can be removed from the registry using `unregister($name|$connection)`.
 
 ```php
-$db = new DB();
+$db = new Jasny\DB\MySQL\Connection();
+Jasny\DB::register('foo');
+
+Jasny\DB::conn('foo')->query();
+
+Jasny\DB::unregister('foo');
+```
+
+The same connection may be registered multiple times under different names.
+
+### Named connections
+Connections implementing the `Named` interface can register themselves to `Jasny\DB` using the `useAs($name)` method.
+With the `getConnectionName()` you can get the name of a connection.
+
+```php
+$db = new Jasny\DB\MySQL\Connection();
 $db->useAs('foo');
 
-...
-
-DB::conn('foo')->query();
+Jasny\DB::conn('foo')->query();
 ```
 
 If you only have one DB connection name it 'default', since `$name` defaults to 'default'.
 
 ```php
-$db = new DB();
+$db = new Jasny\DB\MySQL\Connection();
 $db->useAs('default');
 
-...
-
-DB::conn()->query();
+Jasny\DB::conn()->query();
 ```
+
+### Configuration
+
+Instead of using `createConnection()` and `register()` directly, you may set `Jasny\DB::$config`. This static property
+may hold the configuration for each connection. When using the `conn()` method, Jasny DB will automatically create a
+new connection based on the configuration settings.
+
+```php
+Jasny\DB::$config = [
+    'default' => [
+        'driver'    => 'mysql',
+        'database'  => 'database',
+        'host'      => 'localhost',
+        'username'  => 'root',
+        'password'  => 'secure',
+        'charset'   => 'utf8'
+    ],
+    'external' => [
+        'driver'    => 'rest',
+        'host'      => 'api.example.com',
+        'username'  => 'user',
+        'password'  => 'secure'
+    ]
+];
+
+Jasny\DB::conn()->query();
+Jasny\DB::conn('external')->get("/something");
+```
+
+`Jasny\DB::$drivers` holds a list of `Connection` classes with their driver name. The `createConnection($settings)`
+method uses the `driver` setting to select the connection class. The other settings are passed to the connection's
+constructor.
 
 
 Entity
