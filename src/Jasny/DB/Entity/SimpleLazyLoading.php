@@ -25,7 +25,7 @@ trait SimpleLazyLoading
      * @param array $values
      * @return static
      */
-    public static function ghost($values)
+    public static function lazyload($values)
     {
         $class = get_called_class();
         $reflection = new \ReflectionClass($class);

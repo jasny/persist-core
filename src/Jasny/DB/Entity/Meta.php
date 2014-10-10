@@ -47,7 +47,7 @@ trait Meta
     {
         if (!class_exists($type)) throw new \Exception("Invalid type '$type'");
 
-        if (is_a($type, '\Jasny\DB\Entity\LazyLoading', true)) return $type::ghost($value);
+        if (is_a($type, '\Jasny\DB\Entity\LazyLoading', true)) return $type::lazyload($value);
         if (is_a($type, '\Jasny\DB\Entity\ActiveRecord', true)) return $type::fetch($value);
 
         if (class_exists($type . 'Mapper')) {

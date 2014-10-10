@@ -64,17 +64,23 @@ trait Basics
      * @param object $values
      * @return static
      */
-    public static function instantiate($values)
+    public static function fromData($values)
     {
         $class = get_called_class();
         $reflection = new \ReflectionClass($class);
         $entity = $reflection->newInstanceWithoutConstructor();
         
-        foreach ($values as $key=>$value) {
-            $entity->$key = $value;
-        }
+        // Using closure to prevent setting protected methods
+        $set = function($entity) use ($values) {
+            foreach ($values as $key=>$value) {
+                $entity->$key = $value;
+            }
+            
+            return $entity;
+        };
+        $set->bindTo(null);
         
-        if ($entity instanceof TypedObject) $entity->cast();
+        $set($entity);
         $entity->__construct();
         
         return $entity;
