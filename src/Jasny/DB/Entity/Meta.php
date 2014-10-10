@@ -47,12 +47,16 @@ trait Meta
     {
         if (!class_exists($type)) throw new \Exception("Invalid type '$type'");
 
-        if (is_a($type, '\Jasny\DB\Entity\LazyLoading', true)) return $type::lazyload($value);
-        if (is_a($type, '\Jasny\DB\Entity\ActiveRecord', true)) return $type::fetch($value);
+        if (is_a($type, '\Jasny\DB\Entity', true)) {
+            if (is_a($type, '\Jasny\DB\Entity\LazyLoading', true)) return $type::lazyload($value);
+            if (is_a($type, '\Jasny\DB\Entity\ActiveRecord', true)) return $type::fetch($value);
 
-        if (class_exists($type . 'Mapper')) {
             $mapper = $type . 'Mapper';
-            $mapper::fetch($value);
+            if (class_exists($mapper) && is_a($mapper, '\Jasny\DB\DataMapper', true)) {
+                return $mapper::fetch($value);
+            }
+            
+            return $type::fromData($value);
         }
         
         return new $type($value);
