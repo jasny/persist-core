@@ -2,8 +2,6 @@
 
 namespace Jasny\DB\Entity;
 
-use Jasny\Meta\TypedObject;
-
 /**
  * Basic implementation for an entity
  * 
@@ -15,7 +13,6 @@ trait Basics
 {
     /**
      * Set the values.
-     * {@interal Using Entity::setValues() shouldn't be any different than setting the properties one by one }}
      * 
      * @param array|object $values
      * @return $this
@@ -37,7 +34,6 @@ trait Basics
 
     /**
      * Get the values.
-     * {@interal Using Entity::getValues() shouldn't be any different than getting the properties one by one }}
      * 
      * @param array|object $values
      * @return $this
