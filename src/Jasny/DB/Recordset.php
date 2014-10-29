@@ -14,10 +14,10 @@ interface Recordset
     /**
      * Fetch a single entity.
      * 
-     * @param mixed|array $filter  ID or filter
+     * @param mixed|array $id  ID or filter
      * @return static
      */
-    public static function fetch($filter);
+    public static function fetch($id);
     
     /**
      * Fetch all entities from the set.

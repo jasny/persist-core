@@ -2,8 +2,6 @@
 
 namespace Jasny\DB\Entity;
 
-use Jasny\Meta\TypedObject;
-
 /**
  * Implemetentation for LazyLoading interface.
  * 
@@ -40,7 +38,6 @@ trait SimpleLazyLoading
             $entity->$key = $value;
         }
 
-        if ($entity instanceof TypedObject) $entity->cast();
         $entity->ghost__ = true;
         
         return $entity;
@@ -75,14 +72,12 @@ trait SimpleLazyLoading
             }
             
             $ghostProps = get_object_vars($this);
-            foreach ($entity as $prop => $value) {
+            foreach ((array)$entity as $prop => $value) {
                 if ($prop[0] === "\0") continue; // Ignore private and protected properties
                 if (!array_key_exists($prop, $ghostProps)) $this->$prop = $value;
             }
 
             $this->ghost__ = false;
-            
-            if ($this instanceof TypedObject) $this->cast();
             $this->__construct();
         }
         

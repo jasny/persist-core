@@ -238,15 +238,19 @@ Operator | Description
 ==       | Equals (alt)
 !=       | Not equals
 <>       | Not equals (alt)
->        | More than
->=       | More than or equals
+>        | Greater than
+>=       | Greater than or equals
 <        | Less than
 <=       | Less than or equals
-@        | Contains
-!@       | Does not contain
+{has}    | Contains
+{!has}   | Does not contain
+{any}    | Is one of the values / Contains any of the values
+{!any}   | Is none of the values / Contains none of the values
+{all}    | Contains all of the values
+{!all}   | Doesn't contain all of the values
 
-The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method
-and not overload the basic fetch methods.
+The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method and not
+overload the basic fetch methods.
 
 
 Metadata
@@ -299,8 +303,8 @@ Casting a value to a model entity that supports [Lazy Loading](#lazy-loading), c
 implement the Active Record pattern or have a Data Mapper, but do not support Lazy Loading are fetched from the
 database.
 
-Casting to any other type of object will create a new object normally. For instance casting "bar" to `Foo` would 
-result in `new Foo("bar")`.
+Casting to any other type of object will create a new object normally. For instance casting "bar" to `Foo` would result
+in `new Foo("bar")`.
 
 
 Validation
@@ -314,9 +318,9 @@ uniquely present in the database.
 Lazy loading
 ---
 
-Jasny DB supports [lazy loading](http://en.wikipedia.org/wiki/Lazy_loading) of entities by allowing them to be 
-created as ghost. A ghost only hold a limited set of the entity's data, usually only the identifier. When other 
-properties are accessed it will load the rest of the data.
+Jasny DB supports [lazy loading](http://en.wikipedia.org/wiki/Lazy_loading) of entities by allowing them to be created
+as ghost. A ghost only hold a limited set of the entity's data, usually only the identifier. When other properties are
+accessed it will load the rest of the data.
 
 When a value is [casted](#type-casting) to an entity that supports lazy loading, a ghost of that entity is created.
 

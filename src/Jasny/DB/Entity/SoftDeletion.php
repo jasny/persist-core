@@ -9,7 +9,7 @@ namespace Jasny\DB\Entity;
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-interface SoftDeletion extends \Jasny\DB\ActiveRecord, \Jasny\DB\SoftDeletion
+interface SoftDeletion extends \Jasny\DB\Entity\ActiveRecord, \Jasny\DB\SoftDeletion
 {
     /**
      * Checks if entity has been deleted

@@ -12,16 +12,24 @@ namespace Jasny\DB\Recordset;
 interface WithTrash extends \Jasny\DB\Recordset
 {
     /**
-     * Fetch all deleted documents.
+     * Fetch a deleted entity.
+     * 
+     * @param mixed|array $id  ID or filter
+     * @return static[]
+     */
+    public static function fetchDeleted($id);
+    
+    /**
+     * Fetch all deleted entities.
      * 
      * @param array $filter
      * @param array $sort
      * @return static[]
      */
-    public static function fetchDeleted(array $filter=[], $sort=null);
+    public static function fetchAllDeleted(array $filter=[], $sort=null);
 
     /**
-     * Count all deleted documents in the collection
+     * Count all deleted entities in the collection
      * 
      * @param array $filter
      * @return static[]
@@ -29,7 +37,7 @@ interface WithTrash extends \Jasny\DB\Recordset
     public static function countDeleted(array $filter=[]);
     
     /**
-     * Purge all deleted documents
+     * Purge all deleted entities
      */
     public static function purgeAll();
 }

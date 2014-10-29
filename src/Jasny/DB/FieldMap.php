@@ -30,8 +30,8 @@ trait FieldMap
         $map = array_intersect_key(static::getFieldMap(), $fields);
         
         if (!empty($map)) $values = is_array($values) ?
-            static::mapArrayKeys($values, $map) :
-            static::mapPropertyNames($values, $map);
+            static::mapFieldsForArray($values, $map) :
+            static::mapFieldsForObject($values, $map);
         
         return $values;
     }
@@ -44,14 +44,64 @@ trait FieldMap
      */
     public static function mapToFields($values)
     {
-        $props = is_array($values) ? $values : get_object_vars($values);
+        list($props, $operators) = is_array($values) ?
+            static::extractOperatorsForMapping($values) :
+            [get_object_vars($values), null];
+        
         $map = array_intersect_key(array_flip(static::getFieldMap()), $props);
         
-        if (!empty($map)) $values = is_array($values) ?
-            static::mapArrayKeys($values, $map) :
-            static::mapPropertyNames($values, $map);
+        if (empty($map)) return $values;
         
-        return $values;
+        $mapped = is_array($props) ?
+            static::mapFieldsForArray($props, $map) :
+            static::mapFieldsForObject($props, $map);
+        
+        if (!empty($operators)) $mapped = static::insertOperatorsForMapping($mapped, $operators);
+        
+        return $mapped;
+    }
+    
+    /**
+     * Extract operators from property name.
+     * 
+     * @param array $values
+     * @return array
+     */
+    protected static function extractOperatorsForMapping(array $values)
+    {
+        $props = [];
+        $operators = [];
+        
+        foreach ($values as $key => $value) {
+            if (strpos($key, ' ') === false) {
+                $props[$key] = $value;
+            } else {
+                list($field, $op) = explode(' ', $key, 2);
+                $props[$field] = $value;
+                $operators[$field] = $op;
+            }
+        }
+        
+        return [$props, $operators];
+    }
+    
+    /**
+     * Insert operators to field name.
+     * 
+     * @param array $values
+     * @param array $operators
+     * @return array
+     */
+    protected static function insertOperatorsForMapping(array $values, array $operators)
+    {
+        $fields = [];
+        
+        foreach ($values as $key => $value) {
+            if (isset($operators[$key])) $key .= ' ' . $operators[$key];
+            $fields[$key] = $value;
+        }
+        
+        return $fields;
     }
     
     /**
@@ -61,7 +111,7 @@ trait FieldMap
      * @param array $map
      * @return array
      */
-    protected static function mapArrayKeys(array $values, array $map)
+    protected static function mapFieldsForArray(array $values, array $map)
     {
         foreach ($map as $from => $to) {
             $values[$to] = $values[$from];
@@ -78,7 +128,7 @@ trait FieldMap
      * @param array $map
      * @return array
      */
-    protected static function mapPropertyNames($values, array $map)
+    protected static function mapFieldsForObject($values, array $map)
     {
         foreach ($map as $from => $to) {
             $values->$to = $values->$from;
