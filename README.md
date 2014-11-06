@@ -214,14 +214,21 @@ Recordset
 ---
 
 An entity tends to be a part of a set of data, like a table or collection. If it's possible to load multiple entities
-from that set, the Active Record or Data Mapper implements the Recordset interface.
+from that set, the Active Record or Data Mapper implement the `Recordset` interface.
 
 The `fetch()` method returns a single entity. The `fetchAll()` method returns multiple enities. `fetchList()`
 loads a list with the id and description as key/value pairs. The `count()` method counts the number of entities in the
 set.
 
-Each of these methods accept a `$filter` argument. The filter is an associated array with field name and corresponding
+The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method and not
+overload the basic fetch methods.
+
+### Filter
+
+Fetch methods accept a `$filter` argument. The filter is an associated array with field name and corresponding
 value. _Note that the `fetch()` methods takes either a unique ID or filter._
+
+A filter SHOULD always return the same or less results that calling the method without a filter. 
 
 ```php
 $foo   = Foo::fetch(['reference' => 'zoo']);
@@ -230,27 +237,30 @@ $list  = Foo::fetchList(['bar' => 10]);
 $count = Foo::count(['bar' => 10]);
 ```
 
-Optinally filter keys may include an operator (eg `['date <' => date('c')]`). The following operators are supported:
+Optinally filter keys may include an directives. The following directives are supported:
 
-Operator | Description
--------- | -------------------
-=        | Equals
-==       | Equals (alt)
-!=       | Not equals
-<>       | Not equals (alt)
->        | Greater than
->=       | Greater than or equals
-<        | Less than
-<=       | Less than or equals
-{has}    | Contains
-{!has}   | Does not contain
-{any}    | Is one of the values / Contains any of the values
-{!any}   | Is none of the values / Contains none of the values
-{all}    | Contains all of the values
-{!all}   | Doesn't contain all of the values
+Key            | Value  | Description
+-------------- | ------ | ---------------------------------------------------
+"field"        | scalar | Field is the value
+"field (not)"  | scalar | Field is not the value
+"field (min)"  | scalar | Field is equal to or greater than the value
+"field (max)"  | scalar | Field is equal to or less than the value
+"field"        | array  | Field is one of the values in the array
+"field (not)"  | array  | Field is none of the values in the array
 
-The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method and not
-overload the basic fetch methods.
+If the field is an array, you may use the following directives
+
+Key            | Value  | Description
+-------------- | ------ | ---------------------------------------------------
+"field"        | scalar | The value is part of the field
+"field (not)"  | scalar | The value is not part of the field
+"field (any)"  | array  | Any of the values are part of the field
+"field (all)"  | array  | All of the values are part of the field
+"field (none)" | array  | Is not the value or none of the values in the array
+
+Filters SHOULD be alligned business logic, wich may not directly align to checking a value of a field. A recordset
+SHOULD implement a method `filterToQuery` which converts the filter to a DB dependent query statement. You MAY overload
+this method to support custom filter keys.
 
 
 Metadata
