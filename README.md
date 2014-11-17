@@ -213,15 +213,15 @@ FooMapper::undelete($foo);
 Recordset
 ---
 
-An entity tends to be a part of a set of data, like a table or collection. If it's possible to load multiple entities
-from that set, the Active Record or Data Mapper implement the `Recordset` interface.
+An entity tends to be a part of a set of data, like a table or collection. If it's possible to load multiple 
+entities from that set, the Active Record or Data Mapper implement the `Recordset` interface.
 
 The `fetch()` method returns a single entity. The `fetchAll()` method returns multiple enities. `fetchList()`
-loads a list with the id and description as key/value pairs. The `count()` method counts the number of entities in the
-set.
+loads a list with the id and description as key/value pairs. The `count()` method counts the number of entities
+in the set.
 
-The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method and not
-overload the basic fetch methods.
+The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method 
+and not overload the basic fetch methods.
 
 ### Filter
 
@@ -259,8 +259,15 @@ Key            | Value  | Description
 "field (none)" | array  | None of the values are part of the field
 
 Filters SHOULD be alligned business logic, wich may not directly align to checking a value of a field. A recordset
-SHOULD implement a method `filterToQuery` which converts the filter to a DB dependent query statement. You MAY overload
-this method to support custom filter keys.
+SHOULD implement a method `filterToQuery` which converts the filter to a DB dependent query statement. You MAY
+overload this method to support custom filter keys.
+
+It's save to use `$_GET` and `$_POST` parameters directly.
+
+    // -> GET /foos?color=red&date(min)=2014-09-01&tags(not)=abandoned&created.user=12345
+    
+    $result = Foo::fetchAll($_GET);
+    
 
 
 Metadata
@@ -270,10 +277,10 @@ An entity represents an element in the model. The [metadata](http://en.wikipedia
 information about the structure of the entity. Metadata should be considered static as it describes all the
 entities of a certain type.
 
-Metadata for a class might contain the table name where data should be stored. Metadata for a property might contain
-the data type, whether or not it is required and the property description.
+Metadata for a class might contain the table name where data should be stored. Metadata for a property might 
+contain the data type, whether or not it is required and the property description.
 
-Jasn DB support defining metadata through annotations by using [Jasny\Meta](http://www.github.com/jasny/meta).
+Jasny DB support defining metadata through annotations by using [Jasny\Meta](http://www.github.com/jasny/meta).
 
 ```php
 /**
