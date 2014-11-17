@@ -256,7 +256,7 @@ Key            | Value  | Description
 "field (not)"  | scalar | The value is not part of the field
 "field (any)"  | array  | Any of the values are part of the field
 "field (all)"  | array  | All of the values are part of the field
-"field (none)" | array  | Is not the value or none of the values in the array
+"field (none)" | array  | None of the values are part of the field
 
 Filters SHOULD be alligned business logic, wich may not directly align to checking a value of a field. A recordset
 SHOULD implement a method `filterToQuery` which converts the filter to a DB dependent query statement. You MAY overload
