@@ -22,20 +22,22 @@ interface Recordset
     /**
      * Fetch all entities from the set.
      * 
-     * @param array $filter
-     * @param array $sort
+     * @param array     $filter
+     * @param array     $sort
+     * @param int|array $limit   limit or [limit, offset]
      * @return static[]
      */
-    public static function fetchAll(array $filter=[], $sort=null);
+    public static function fetchAll(array $filter = [], $sort = null, $limit = null);
 
     /**
      * Fetch all descriptions from the set.
      * 
      * @param array $filter
      * @param array $sort
-     * @return static[]
+     * @param int|array $limit   limit or [limit, offset]
+     * @return array
      */
-    public static function fetchList(array $filter=[], $sort=null);
+    public static function fetchList(array $filter = [], $sort = null, $limit = null);
     
     /**
      * Fetch the number of entities in the set.
