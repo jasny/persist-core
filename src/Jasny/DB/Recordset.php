@@ -2,46 +2,15 @@
 
 namespace Jasny\DB;
 
+trigger_error("Jasny\DB\Recordset has been renamed to Jasny\DB\Dataset", E_USER_DEPRECATED);
+
 /**
- * Indicates that an entity is part of a set, like a table or collection.
+ * Alias for Dataset.
+ * @deprecated
  * 
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-interface Recordset
-{
-    /**
-     * Fetch a single entity.
-     * 
-     * @param mixed|array $filter  ID or filter
-     * @return static
-     */
-    public static function fetch($filter);
-    
-    /**
-     * Fetch all entities from the set.
-     * 
-     * @param array $filter
-     * @param array $sort
-     * @return static[]
-     */
-    public static function fetchAll(array $filter=[], $sort=null);
-
-    /**
-     * Fetch all descriptions from the set.
-     * 
-     * @param array $filter
-     * @param array $sort
-     * @return static[]
-     */
-    public static function fetchList(array $filter=[], $sort=null);
-    
-    /**
-     * Fetch the number of entities in the set.
-     * 
-     * @param array $filter
-     * @return int
-     */
-    public static function count(array $filter);
-}
+interface Recordset extends Dataset
+{ }
