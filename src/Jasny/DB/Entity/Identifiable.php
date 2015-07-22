@@ -17,4 +17,9 @@ interface Identifiable extends \Jasny\DB\Entity
      * @return mixed
      */
     public function getId();
+    
+    /**
+     * Get identity property
+     */
+    public static function getIdProperty();
 }

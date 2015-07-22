@@ -37,6 +37,22 @@ trait Meta
     }
     
     /**
+     * Get the identity property/properties
+     * 
+     * @return string|key
+     */
+    public static function getIdProperty()
+    {
+        $key = [];
+        
+        foreach (static::meta()->ofProperties() as $prop => $meta) {
+            if (isset($meta['id'])) $key[] = $prop;
+        }
+        
+        return empty($key) ? null : (count($key) === 1 ? $key[0] : $key);
+    }
+    
+    /**
      * Cast value to a non-internal type
      * 
      * @param mixed  $value
