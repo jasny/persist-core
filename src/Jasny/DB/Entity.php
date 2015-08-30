@@ -36,5 +36,5 @@ interface Entity extends \JsonSerializable
      * @param object $values
      * @return static
      */
-    public static function instantiate($values);
+    public static function fromData($values);
 }

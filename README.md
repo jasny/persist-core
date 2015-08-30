@@ -213,15 +213,22 @@ FooMapper::undelete($foo);
 Recordset
 ---
 
-An entity tends to be a part of a set of data, like a table or collection. If it's possible to load multiple entities
-from that set, the Active Record or Data Mapper implements the Recordset interface.
+An entity tends to be a part of a set of data, like a table or collection. If it's possible to load multiple 
+entities from that set, the Active Record or Data Mapper implement the `Recordset` interface.
 
 The `fetch()` method returns a single entity. The `fetchAll()` method returns multiple enities. `fetchList()`
-loads a list with the id and description as key/value pairs. The `count()` method counts the number of entities in the
-set.
+loads a list with the id and description as key/value pairs. The `count()` method counts the number of entities
+in the set.
 
-Each of these methods accept a `$filter` argument. The filter is an associated array with field name and corresponding
+The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method 
+and not overload the basic fetch methods.
+
+### Filter
+
+Fetch methods accept a `$filter` argument. The filter is an associated array with field name and corresponding
 value. _Note that the `fetch()` methods takes either a unique ID or filter._
+
+A filter SHOULD always return the same or less results that calling the method without a filter. 
 
 ```php
 $foo   = Foo::fetch(['reference' => 'zoo']);
@@ -230,23 +237,37 @@ $list  = Foo::fetchList(['bar' => 10]);
 $count = Foo::count(['bar' => 10]);
 ```
 
-Optinally filter keys may include an operator (eg `['date <' => date('c')]`). The following operators are supported:
+Optinally filter keys may include an directives. The following directives are supported:
 
-Operator | Description
--------- | -------------------
-=        | Equals
-==       | Equals (alt)
-!=       | Not equals
-<>       | Not equals (alt)
->        | More than
->=       | More than or equals
-<        | Less than
-<=       | Less than or equals
-@        | Contains
-!@       | Does not contain
+Key            | Value  | Description
+-------------- | ------ | ---------------------------------------------------
+"field"        | scalar | Field is the value
+"field (not)"  | scalar | Field is not the value
+"field (min)"  | scalar | Field is equal to or greater than the value
+"field (max)"  | scalar | Field is equal to or less than the value
+"field"        | array  | Field is one of the values in the array
+"field (not)"  | array  | Field is none of the values in the array
 
-The fetch methods are intended to support only simple cases. For specific cases you SHOULD add a specific method
-and not overload the basic fetch methods.
+If the field is an array, you may use the following directives
+
+Key            | Value  | Description
+-------------- | ------ | ---------------------------------------------------
+"field"        | scalar | The value is part of the field
+"field (not)"  | scalar | The value is not part of the field
+"field (any)"  | array  | Any of the values are part of the field
+"field (all)"  | array  | All of the values are part of the field
+"field (none)" | array  | None of the values are part of the field
+
+Filters SHOULD be alligned business logic, wich may not directly align to checking a value of a field. A recordset
+SHOULD implement a method `filterToQuery` which converts the filter to a DB dependent query statement. You MAY
+overload this method to support custom filter keys.
+
+It's save to use `$_GET` and `$_POST` parameters directly.
+
+    // -> GET /foos?color=red&date(min)=2014-09-01&tags(not)=abandoned&created.user=12345
+    
+    $result = Foo::fetchAll($_GET);
+    
 
 
 Metadata
@@ -256,10 +277,10 @@ An entity represents an element in the model. The [metadata](http://en.wikipedia
 information about the structure of the entity. Metadata should be considered static as it describes all the
 entities of a certain type.
 
-Metadata for a class might contain the table name where data should be stored. Metadata for a property might contain
-the data type, whether or not it is required and the property description.
+Metadata for a class might contain the table name where data should be stored. Metadata for a property might 
+contain the data type, whether or not it is required and the property description.
 
-Jasn DB support defining metadata through annotations by using [Jasny\Meta](http://www.github.com/jasny/meta).
+Jasny DB support defining metadata through annotations by using [Jasny\Meta](http://www.github.com/jasny/meta).
 
 ```php
 /**
@@ -299,8 +320,8 @@ Casting a value to a model entity that supports [Lazy Loading](#lazy-loading), c
 implement the Active Record pattern or have a Data Mapper, but do not support Lazy Loading are fetched from the
 database.
 
-Casting to any other type of object will create a new object normally. For instance casting "bar" to `Foo` would 
-result in `new Foo("bar")`.
+Casting to any other type of object will create a new object normally. For instance casting "bar" to `Foo` would result
+in `new Foo("bar")`.
 
 
 Validation
@@ -314,9 +335,9 @@ uniquely present in the database.
 Lazy loading
 ---
 
-Jasny DB supports [lazy loading](http://en.wikipedia.org/wiki/Lazy_loading) of entities by allowing them to be 
-created as ghost. A ghost only hold a limited set of the entity's data, usually only the identifier. When other 
-properties are accessed it will load the rest of the data.
+Jasny DB supports [lazy loading](http://en.wikipedia.org/wiki/Lazy_loading) of entities by allowing them to be created
+as ghost. A ghost only hold a limited set of the entity's data, usually only the identifier. When other properties are
+accessed it will load the rest of the data.
 
 When a value is [casted](#type-casting) to an entity that supports lazy loading, a ghost of that entity is created.
 

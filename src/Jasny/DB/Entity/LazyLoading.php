@@ -17,7 +17,7 @@ interface LazyLoading extends \Jasny\DB\Entity
      * @param mixed|array $values  Unique ID or values
      * @return Entity\Ghost
      */
-    public static function ghost($values);
+    public static function lazyload($values);
     
     /**
      * Check if the object is a ghost.
