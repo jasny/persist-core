@@ -5,13 +5,13 @@ namespace Jasny\DB\Connection;
 use Jasny\DB;
 
 /**
- * Implementation for named connections
+ * Implementation for named connections using the Jasny\DB register
  * 
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.io/db
  */
-trait Named
+trait RegisterByName
 {
     /**
      * Name the connection, making it globally available.
