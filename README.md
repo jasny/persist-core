@@ -27,7 +27,7 @@ implementations. It serves as an abstract base for concrete libraries implemente
 
 * [Jasny\DB-MySQL](http://github.com/jasny/db-mysql) extends [mysqli](http://php.net/mysqli)
 * [Jasny\DB-Mongo](http://github.com/jasny/db-mongo) extends [mongo](http://php.net/mongo)
-* [Jasny\DB-Rest](http://github.com/jasny/db-rest) for datasources implementing
+* [Jasny\DB-REST](http://github.com/jasny/db-rest) for datasources implementing
   [REST](http://en.wikipedia.org/wiki/Representational_state_transfer)
 
 
