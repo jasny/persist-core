@@ -14,18 +14,19 @@ class DB
     /**
      * Configuration (per connection)
      * 
-     * @var array|object
+     * @var object
      */
-    public static $config = [];
+    public static $config;
     
     /**
      * List of supported drivers with class names
      * @var array
      */
     public static $drivers = [
-        'mysql' => '\Jasny\DB\MySQL\Connection',
-        'mysqli' => '\Jasny\DB\MySQL\Connection',
-        'mongo' => '\Jasny\DB\Mongo\DB'
+        'mysql' => 'Jasny\DB\MySQL\Connection',
+        'mysqli' => 'Jasny\DB\MySQL\Connection',
+        'mongo' => 'Jasny\DB\Mongo\DB',
+        'rest' => 'Jasny\DB\REST\Client'
     ];
     
     /**
@@ -57,12 +58,12 @@ class DB
 
 
     /**
-     * Get the connection
-     * @param type $driver
-     * @throws Exception
-     * @throws \Exception
+     * Get the connection class.
+     * 
+     * @param string $driver
+     * @return string
      */
-    protected static function getConnectionClass($driver)
+    protected static function getConnectionClass($driver = null)
     {
         if (!isset($driver)) {
             $supported = [];
@@ -71,10 +72,16 @@ class DB
                 if (class_exists($class)) $supported[] = $driver;
             }
             
-            if (count($supported) !== 1) throw new Exception("Please specify the database driver. The following " .
-                "are supported: " . join(', ', $supported));
+            if (empty($supported)) throw new \Exception("No Jasny DB drivers found");
             
-            $driver = reset($supported);
+            if (count($supported) > 1) {
+                throw new \Exception("Please specify the database driver. " .
+                    "The following are supported: " . join(', ', $supported));
+            }
+            
+            $driver = reset($supported); // Exactly one driver is installed
+        } else {
+            $driver = strtolower($driver);
         }
         
         if (!isset(static::$drivers[$driver])) throw new \Exception("Unknown DB driver '{$driver}'");

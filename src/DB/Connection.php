@@ -11,4 +11,10 @@ namespace Jasny\DB;
  */
 interface Connection
 {
+    /**
+     * Class constructor
+     * 
+     * @param array|object $settings
+     */
+    public function __construct($settings);
 }
