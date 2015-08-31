@@ -1,6 +1,6 @@
 <?php
 
-namespace Jasny\DB\Connection;
+namespace Jasny\DB\Connection\Namable;
 
 use Jasny\DB;
 
@@ -11,7 +11,7 @@ use Jasny\DB;
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.io/db
  */
-trait RegisterByName
+trait Implemention
 {
     /**
      * Name the connection, making it globally available.

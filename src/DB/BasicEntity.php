@@ -7,5 +7,5 @@ namespace Jasny\DB;
  */
 abstract class BasicEntity implements Entity
 {
-    use Entity\Basics;
+    use Entity\Implementation;
 }

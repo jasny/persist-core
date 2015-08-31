@@ -10,7 +10,7 @@ interface Validation extends \Jasny\DB\Entity
     /**
      * Validate the entity
      * 
-     * @return boolean
+     * @return Jasny\ValidationResult
      */
-    public function isValid();
+    public function validate();
 }

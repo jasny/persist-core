@@ -1,15 +1,15 @@
 <?php
 
-namespace Jasny\DB\Entity;
+namespace Jasny\DB\Entity\LazyLoading;
 
 /**
- * Implemetentation for LazyLoading interface.
+ * Implementation for LazyLoading interface.
  * 
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-trait SimpleLazyLoading
+trait Implementation
 {
     /**
      * Flag entity as ghost

@@ -20,6 +20,14 @@ interface Dataset
     public static function fetch($id);
     
     /**
+     * Check if an exists in the collection.
+     * 
+     * @param string|array $id  ID or filter
+     * @return boolean
+     */
+    public static function exists($id);
+    
+    /**
      * Fetch all entities from the set.
      * 
      * @param array     $filter

@@ -9,7 +9,7 @@ namespace Jasny\DB\Entity;
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-trait Basics
+trait Implementation
 {
     /**
      * Set the values.
@@ -96,6 +96,21 @@ trait Basics
             if ($value instanceof \DateTime) $value = $value->format(\DateTime::ISO8601);
         }
         
-        return (object)$values;
+        return $this->jsonSerializeFilter((object)$values);
+    }
+    
+    /**
+     * Filter object for json serialization
+     * 
+     * @param object $object
+     * @return object
+     */
+    protected function jsonSerializeFilter($object)
+    {
+        foreach (get_object_vars($object) as $prop) {
+            if ($prop[0] === '_') unset($object->$prop);
+        }
+        
+        return $object;
     }
 }

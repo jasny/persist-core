@@ -1,22 +1,25 @@
 <?php
 
-namespace Jasny\DB;
+namespace Jasny\DB\FieldMapping;
 
 /**
- * Simple implementation for Field Mapping.
+ * Implementation for Field Mapping.
  * 
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.io/db
  */
-trait FieldMap
+trait Implementation
 {
     /**
      * Get the field map.
      * 
      * @return array
      */
-    abstract protected static function getFieldMap();
+    protected static function getFieldMap()
+    {
+        return [];
+    }
     
     /**
      * Map field names to property names.
