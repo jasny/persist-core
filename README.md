@@ -17,8 +17,7 @@ Jasny DB adds OOP design patterns to PHP's database extensions.
 * [Maintainable code](#maintainable-code)
 * [Code generation](#code-generation)
 
-Jasny DB is *not* a DB abstraction layer. It does allow you properly structure your model, while still using PHP's
-native database extensions.
+Jasny DB is a [data access layer](https://en.wikipedia.org/wiki/Data_access_layer) (*not* a DB abstraction layer) for PHP. It does allow you properly structure your model, while still using the methods and functionality of PHP's native database extensions.
 
 ### Installation
 This library is not intended to be installed directly. The Jasny DB library contains design pattern definitions and
