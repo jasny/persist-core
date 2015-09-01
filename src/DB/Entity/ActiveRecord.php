@@ -15,29 +15,33 @@ interface ActiveRecord extends \Jasny\DB\Entity
      * Fetch a single entity.
      * 
      * @param string|array $filter  ID or filter
+     * @param array        $opts
      * @return static
      */
-    public static function fetch($filter);
+    public static function fetch($filter, array $opts = []);
     
     /**
      * Check if an entity exists in the database.
      * 
      * @param string|array $filter  ID or filter
+     * @param array        $opts
      * @return boolean
      */
-    public static function exists($filter);
+    public static function exists($filter, array $opts = []);
 
     /**
      * Save the entity to the database.
      * 
+     * @param array $opts
      * @return $this
      */
-    public function save();
+    public function save(array $opts = []);
 
     /**
      * Delete the entity from the database.
      * 
+     * @param array $opts
      * @return $this
      */
-    public function delete();
+    public function delete(array $opts = []);
 }

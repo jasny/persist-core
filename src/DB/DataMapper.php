@@ -15,29 +15,33 @@ interface DataMapper
      * Fetch a single entity.
      * 
      * @param string|array $filter  ID or filter
+     * @param array        $opts
      * @return Entity
      */
-    public static function fetch($filter);
+    public static function fetch($filter, array $opts = []);
     
     /**
      * Check if an entity exists
      * 
      * @param string|array $filter  ID or filter
+     * @param array        $opts
      * @return boolean
      */
-    public static function exists($filter);
+    public static function exists($filter, array $opts = []);
     
     /**
      * Save the entity
      * 
      * @param Entity $entity
+     * @param array  $opts
      */
-    public static function save(Entity $entity);
+    public static function save(Entity $entity, array $opts = []);
 
     /**
      * Delete the entity
      * 
      * @param Entity $entity
+     * @param array  $opts
      */
-    public static function delete();
+    public static function delete(Entity $entity, array $opts = []);
 }
