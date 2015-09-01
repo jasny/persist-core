@@ -66,9 +66,10 @@ trait Implementation
         $reflection = new \ReflectionClass($class);
         $entity = $reflection->newInstanceWithoutConstructor();
         
-        // Using closure to prevent setting protected methods
+        // Using closure to prevent setting protected properties
         $set = function($entity) use ($values) {
             foreach ($values as $key=>$value) {
+                if (!property_exists($entity, $key)) continue;
                 $entity->$key = $value;
             }
             
@@ -107,10 +108,6 @@ trait Implementation
      */
     protected function jsonSerializeFilter($object)
     {
-        foreach (get_object_vars($object) as $prop) {
-            if ($prop[0] === '_') unset($object->$prop);
-        }
-        
         return $object;
     }
 }
