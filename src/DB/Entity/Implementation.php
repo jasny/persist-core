@@ -69,7 +69,9 @@ trait Implementation
         // Using closure to prevent setting protected properties
         $set = function($entity) use ($values) {
             foreach ($values as $key=>$value) {
-                if (!property_exists($entity, $key)) continue;
+                $skip = !property_exists($entity, $key) && ($key[0] === '_' || !$entity instanceof Dynamic);
+                if ($skip) continue;
+                
                 $entity->$key = $value;
             }
             
