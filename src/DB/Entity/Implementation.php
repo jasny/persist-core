@@ -80,7 +80,7 @@ trait Implementation
         $set->bindTo(null);
         
         $set($entity);
-        $entity->__construct();
+        if (method_exists($entity, '__construct')) $entity->__construct();
         
         return $entity;
     }
