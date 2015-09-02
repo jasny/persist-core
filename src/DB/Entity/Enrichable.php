@@ -14,7 +14,8 @@ interface Enrichable extends \Jasny\DB\Entity
     /**
      * Enrich entity with related data
      * 
+     * @param string|array $properties
      * @return $this
      */
-    public function enrich();
+    public function with($properties);
 }
