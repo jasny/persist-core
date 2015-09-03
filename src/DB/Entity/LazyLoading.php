@@ -9,7 +9,7 @@ namespace Jasny\DB\Entity;
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
  * @link    https://jasny.github.com/db
  */
-interface LazyLoading extends \Jasny\DB\Entity
+interface LazyLoading extends \Jasny\DB\Entity, SelfAware
 {
     /**
      * Create a ghost object.
