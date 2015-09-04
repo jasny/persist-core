@@ -37,4 +37,11 @@ interface Entity extends \JsonSerializable
      * @return static
      */
     public static function fromData($values);
+    
+    /**
+     * Get data that needs stored in the DB
+     * 
+     * @return array
+     */
+    public function toData();
 }

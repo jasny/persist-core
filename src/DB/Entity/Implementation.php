@@ -85,6 +85,16 @@ trait Implementation
         return $entity;
     }
     
+    /**
+     * Get the data that needs to be stored in the DB
+     * 
+     * @return array
+     */
+    public function toData()
+    {
+        return $this->getValues();
+    }
+    
     
     /**
      * Prepare entity for JSON encoding
