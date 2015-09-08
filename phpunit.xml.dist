@@ -8,18 +8,17 @@
     convertWarningsToExceptions="true"
 >
     <testsuites>
-        <testsuite name="Jasny TypeCast Test Suite">
+        <testsuite>
             <directory>tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
-        <whitelist>
+        <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src</directory>
         </whitelist>
     </filter>
     <logging>
         <log type="coverage-text" target="php://stdout"/>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>    
 </phpunit>
 

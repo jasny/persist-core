@@ -18,10 +18,11 @@
     },
     "require": {
         "php": ">=5.4.0",
-        "jasny/validation-result": "^0.1.0"
+        "jasny/validation-result": "^0.1.0",
+        "jasny/meta": "^1.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.*"
+        "jasny/php-code-quality": "^1.1"
     },
     "autoload": {
         "psr-4": {
