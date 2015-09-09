@@ -25,22 +25,21 @@ trait Implementation
      */
     public static function lazyload($values)
     {
+        $class = get_called_class();
+        
         if (is_scalar($values)) {
-            if (!$this instanceof Identifiable) {
-                $class = get_called_class();
+            if (!is_a($class, Identifiable::class)) {
                 throw new Exception("Unable to lazy load a scalar value for $class: Identity property not defined");
             }
             
             $prop = static::getIdProperty();
             if (is_array($prop)) {
-                $class = get_called_class();
                 throw new Exception("Unable to lazy load a scalar value for $class: Class has a complex identity");
             }
             
             $values = [$prop => $values];
         }
         
-        $class = get_called_class();
         $reflection = new \ReflectionClass($class);
         $entity = $reflection->newInstanceWithoutConstructor();
         
