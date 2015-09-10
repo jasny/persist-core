@@ -17,14 +17,25 @@ trait Implementation
     /**
      * @var array
      */
-    private $originalData__;
+    private $persistedData__;
 
     /**
-     * Set the current data as original data
+     * Set the current data as persisted data
      */
-    protected function markAsOriginal()
+    protected function markAsPersisted()
     {
-        $this->originalData__ = $this->getData();
+        $this->persistedData__ = $this->toData();
+    }
+    
+    
+    /**
+     * Check if the entity is new
+     * 
+     * @return boolean
+     */
+    public function isNew()
+    {
+        return !isset($this->persistedData__);
     }
     
     /**
@@ -45,13 +56,13 @@ trait Implementation
      */
     public function hasModified($property)
     {
-        $data = $this->getData();
+        $data = $this->toData();
         
         if ($property === $this) {
-            $original = $this->originalData__;
+            $original = $this->persistedData__;
             $current = $data;
         } else {
-            $original = isset($this->originalData__[$property]) ? $this->originalData__[$property] : null;
+            $original = isset($this->persistedData__[$property]) ? $this->persistedData__[$property] : null;
             $current = isset($data[$property]) ? $data[$property] : null;
         }
         

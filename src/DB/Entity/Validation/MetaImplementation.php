@@ -3,6 +3,7 @@
 namespace Jasny\DB\Entity\Validation;
 
 use Jasny\ValidationResult,
+    Jasny\DB\Entity\ChangeAware,
     Jasny\DB\Entity\SelfAware;
 
 /**
@@ -39,11 +40,13 @@ trait MetaImplementation
             if (isset($meta['immutable'])) {
                 if (!$this instanceof ChangeAware) {
                     trigger_error(static::class . " can't check if $prop has changed", E_USER_WARNING);
-                } elseif ($this->hasModified($prop)) {
+                } elseif (!$this->isNew() && $this->hasModified($prop)) {
                     $validation->addError("%s shouldn't be modified", $prop);
                 }
             }
         }
+        
+        return $validation;
     }
     
     /**

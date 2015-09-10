@@ -8,6 +8,13 @@ namespace Jasny\DB\Entity;
 interface ChangeAware
 {
     /**
+     * Check if the entity is new
+     * 
+     * @return boolean
+     */
+    public function isNew();
+    
+    /**
      * Check if the entity is modified
      * 
      * @return boolean
