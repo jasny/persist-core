@@ -17,7 +17,7 @@ trait MetaImplementation
      */
     public function validate()
     {
-        $validation = ValidationResult::forEntity($this);
+        $validation = new ValidationResult();
         
         foreach (static::meta()->ofProperties() as $prop => $meta) {
             if (isset($meta['required']) && !isset($this->$prop)) {
@@ -37,9 +37,9 @@ trait MetaImplementation
             }
             
             if (isset($meta['immutable'])) {
-                if (!$this instanceof SelfAware) {
-                    trigger_error(static::class . " can't check if it has a unique $prop", E_USER_WARNING);
-                } elseif ($this->isModified($prop)) {
+                if (!$this instanceof ChangeAware) {
+                    trigger_error(static::class . " can't check if $prop has changed", E_USER_WARNING);
+                } elseif ($this->hasModified($prop)) {
                     $validation->addError("%s shouldn't be modified", $prop);
                 }
             }
@@ -49,11 +49,11 @@ trait MetaImplementation
     /**
      * Perform basic validation
      * 
-     * @param string     $prop
-     * @param Jasny\Meta $meta
+     * @param string      $prop
+     * @param \Jasny\Meta $meta
      * @return ValidationResult
      */
-    public function validateBasics($prop, $meta)
+    protected function validateBasics($prop, $meta)
     {
         $validation = new ValidationResult();
 
