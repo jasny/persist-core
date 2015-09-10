@@ -14,16 +14,16 @@ interface FieldMapping
     /**
      * Map field names to property names.
      * 
-     * @param array|object $values
+     * @param array $values
      * @return array
      */
-    public static function mapFromFields($values);
+    public static function mapFromFields(array $values);
     
     /**
      * Map property names to field names.
      * 
-     * @param array|object $values
+     * @param array $values
      * @return array
      */
-    public static function mapToFields($values);
+    public static function mapToFields(array $values);
 }
