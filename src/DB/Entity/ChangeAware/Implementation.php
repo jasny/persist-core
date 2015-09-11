@@ -66,15 +66,17 @@ trait Implementation
             $current = isset($data[$property]) ? $data[$property] : null;
         }
         
+        if ($original === $current) return false;
+        
         $factory = new ComparatorFactory();
         $comparator = $factory->getComparatorFor($original, $current);
         
         try {
             $comparator->assertEquals($original, $current);
         } catch (ComparisonFailure $failure) {
-            return false;
+            return true;
         }
         
-        return true;        
+        return false;        
     }
 }
