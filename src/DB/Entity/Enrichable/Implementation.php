@@ -25,7 +25,7 @@ trait Implementation
         
         foreach ($properties as $property) {
             $fn = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $property))); // camelcase
-            $this->property = $this->$fn();
+            $this->$property = $this->$fn();
         }
         
         return $this;

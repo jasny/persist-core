@@ -3,6 +3,7 @@
 namespace Jasny\DB\Entity\Meta;
 
 use Jasny\DB\Entity,
+    Jasny\DB\DataMapper,
     Jasny\Meta\TypeCasting;
 
 /**
@@ -71,7 +72,7 @@ trait Implementation
             if (is_a($type, Entity\ActiveRecord::class, true)) return $type::fetch($value);
 
             $mapper = $type . 'Mapper';
-            if (class_exists($mapper) && is_a($mapper, '\Jasny\DB\DataMapper', true)) {
+            if (class_exists($mapper) && is_a($mapper, DataMapper::class, true)) {
                 return $mapper::fetch($value);
             }
             
