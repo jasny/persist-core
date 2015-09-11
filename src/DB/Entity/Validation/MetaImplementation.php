@@ -30,9 +30,11 @@ trait MetaImplementation
             $validation->add($this->validateBasics($prop, $meta));
             
             if (isset($meta['unique'])) {
+                $uniqueGroup = is_string($meta['unique']) ? $meta['unique'] : null;
+                
                 if (!$this instanceof SelfAware) {
                     trigger_error(static::class . " can't check if it has a unique $prop", E_USER_WARNING);
-                } elseif (!$this->hasUnique($prop)) {
+                } elseif (!$this->hasUnique($prop, $uniqueGroup)) {
                     $validation->addError("There is already a %s with this %s", get_class($this), $prop);
                 }
             }
