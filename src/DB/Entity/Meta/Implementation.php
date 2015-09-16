@@ -89,6 +89,8 @@ trait Implementation
     {
         if (!class_exists($type)) throw new \Exception("Invalid type '$type'");
 
+        if (is_object($value) && is_a($value, $type)) return $value;
+        
         if (is_a($type, Entity::class, true)) {
             if (is_a($type, Entity\LazyLoading::class, true)) return $type::lazyload($value);
             if (is_a($type, Entity\ActiveRecord::class, true)) return $type::fetch($value);
@@ -100,7 +102,7 @@ trait Implementation
             
             return $type::fromData($value);
         }
-        
+                
         return new $type($value);
     }
 }
