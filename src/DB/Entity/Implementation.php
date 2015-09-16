@@ -123,4 +123,15 @@ trait Implementation
     {
         return $object;
     }
+    
+    /**
+     * Create an entity set
+     * 
+     * @param Entity[] $entities
+     * @return EntitySet
+     */
+    public static function entitySet(array $entities = [])
+    {
+        return new EntitySet(get_called_class(), $entities);
+    }
 }

@@ -44,4 +44,13 @@ interface Entity extends \JsonSerializable
      * @return array
      */
     public function toData();
+    
+    
+    /**
+     * Create an entity set
+     * 
+     * @param Entity[] $entities
+     * @return EntitySet
+     */
+    public static function entitySet(array $entities = []);
 }

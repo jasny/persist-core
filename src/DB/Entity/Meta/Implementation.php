@@ -70,9 +70,8 @@ trait Implementation
     {
         $array = self::_typecasting_castValueToArray($value, $subtype);
         
-        if (is_a($subtype, Entity::class, true)) {
-            $class = static::meta()['entitySet'] ?: EntitySet::class;
-            $array = new $class($subtype, $array);
+        if (isset($subtype) && is_a($subtype, Entity::class, true)) {
+            $array = $subtype::entitySet($array);
         }
         
         return $array;
