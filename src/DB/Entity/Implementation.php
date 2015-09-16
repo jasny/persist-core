@@ -2,6 +2,8 @@
 
 namespace Jasny\DB\Entity;
 
+use Jasny\DB\EntitySet;
+
 /**
  * Basic implementation for an entity
  * 
