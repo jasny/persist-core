@@ -40,7 +40,7 @@ trait Implementation
      */
     public function getValues()
     {
-        if ($this instanceof LazyLoadable && $this->isGhost()) $this->expand();
+        if ($this instanceof LazyLoading && $this->isGhost()) $this->expand();
         
         $values = [];
         
@@ -107,6 +107,7 @@ trait Implementation
         
         foreach ($values as &$value) {
             if ($value instanceof \DateTime) $value = $value->format(\DateTime::ISO8601);
+            if ($value instanceof EntitySet) $value->expand();
         }
         
         return $this->jsonSerializeFilter((object)$values);

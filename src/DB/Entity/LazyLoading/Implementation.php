@@ -20,6 +20,13 @@ trait Implementation
     protected $ghost__ = false;
     
     /**
+     * Reload the entity
+     * 
+     * @param array $opts
+     */
+    abstract public function reload(array $opts = []);
+    
+    /**
      * Create a ghost object.
      * 
      * @param array $values
@@ -61,8 +68,9 @@ trait Implementation
     
     /**
      * Check if the object is a ghost.
+     * Returns -1 if the ghost can't be expanded (because it's deleted).
      * 
-     * @return boolean
+     * @return boolean|int
      */
     public function isGhost()
     {
@@ -71,36 +79,56 @@ trait Implementation
     
     /**
      * Expand a ghost.
-     * Does nothing is entity isn't a ghost.
+     * Does nothing is entity isn't a ghost or can't be expanded.
      * 
+     * @param array $opts
      * @return $this
      */
-    public function expand()
+    public function expand(array $opts = [])
     {
-        if ($this->isGhost()) {
-            $ghostProps = get_object_vars($this);
-            
-            $this->reload();
-            
-            foreach ($ghostProps as $prop => $value) {
-                $this->$prop = $value;
-            }
-
-            $this->ghost__ = false;
-            if (method_exists($this, '__construct')) $this->__construct();
+        if ($this->ghost__ !== true) return $this;
+        
+        $ghostProps = get_object_vars($this);
+        
+        $this->ghost__ = -1; // Intermediate state
+        
+        if (!$this->reload($opts)) return $this;
+        
+        foreach ($ghostProps as $prop => $value) {
+            $this->$prop = $value;
         }
+
+        $this->ghost__ = false;
+        if (method_exists($this, '__construct')) $this->__construct();
         
         return $this;
     }
     
+    
     /**
-     * Auto-expand ghost
+     * Auto-expand entity
+     */
+    protected function autoExpand()
+    {
+        if ($this->ghost__ !== true) return;
+        
+        $this->expand();
+
+        if ($this->ghost__ === -1) {
+            $me = get_class($this) . ($this instanceof Identifiable ? ' ' . $this->getId() : '');
+            trigger_error("Unable to auto-expand $me", E_USER_NOTICE);
+        }
+    }
+    
+    /**
+     * Auto-expand ghost and return property
      * 
      * @param string $prop  Property name
      * @return mixed
      */
     public function __get($prop)
     {
-        return $this->expand()->$prop;
+        $this->autoExpand();
+        return $this->ghost__ ? null : $this->$prop;
     }
 }

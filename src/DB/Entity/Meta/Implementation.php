@@ -3,6 +3,7 @@
 namespace Jasny\DB\Entity\Meta;
 
 use Jasny\DB\Entity,
+    Jasny\DB\EntitySet,
     Jasny\DB\DataMapper,
     Jasny\Meta\TypeCasting;
 
@@ -17,7 +18,9 @@ use Jasny\DB\Entity,
  */
 trait Implementation
 {
-    use TypeCasting;
+    use TypeCasting {
+        castValueToArray as private _typecasting_castValueToArray;
+    }
     
     /**
      * Cached meta data
@@ -54,6 +57,25 @@ trait Implementation
         }
         
         return empty($key) ? null : (count($key) === 1 ? $key[0] : $key);
+    }
+
+    /**
+     * Cast value to a typed array
+     *
+     * @param mixed  $value
+     * @param string $subtype  Type of the array items
+     * @return array|EntitySet
+     */
+    protected static function castValueToArray($value, $subtype = null)
+    {
+        $array = self::_typecasting_castValueToArray($value, $subtype);
+        
+        if (is_a($subtype, Entity::class, true)) {
+            $class = static::meta()['entitySet'] ?: EntitySet::class;
+            $array = new $class($subtype, $array);
+        }
+        
+        return $array;
     }
     
     /**
