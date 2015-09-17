@@ -94,13 +94,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
                 $entity = $class::fromData($entity);
             }
             
-            if (!$entity instanceof Entity) throw new \InvalidArgumentException("Not all items are entities");
-            
-            if (!isset($this->entityClass)) $this->entityClass = get_class($entity);
-            
-            if (!is_a($entity, $this->entityClass)) {
-                throw new \InvalidArgumentException(get_class($entity) . " is not a $this->entityClass entity");
-            }
+            $this->entitySetAssertInput($entity);
         }
     }
     
