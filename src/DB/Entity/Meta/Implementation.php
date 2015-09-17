@@ -68,13 +68,21 @@ trait Implementation
      */
     protected static function castValueToArray($value, $subtype = null)
     {
-        $array = self::_typecasting_castValueToArray($value, $subtype);
-        
-        if (isset($subtype) && is_a($subtype, Entity::class, true)) {
-            $array = $subtype::entitySet($array);
+        if (!isset($subtype) || !is_a($subtype, Entity::class, true)) {
+            return self::_typecasting_castValueToArray($value, $subtype);
         }
         
-        return $array;
+        if ($value instanceof EntitySet) {
+            if ($value->getEntityClass() !== $subtype) {
+                $setClass = $value->getEntityClass();
+                trigger_error("Unable to cast set of $setClass entities to $subtype entities", E_USER_WARNING);
+            }
+            
+            return $value;
+        }
+        
+        $input = self::_typecasting_castValueToArray($value, $subtype);
+        return $subtype::entitySet($input);
     }
     
     /**

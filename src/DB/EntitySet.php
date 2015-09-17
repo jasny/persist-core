@@ -85,6 +85,15 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         }
         
         foreach ($input as $entity) {
+            if ($entity instanceof \stdClass || (is_array($entity) && is_string(key($entity)))) {
+                if (!isset($this->entityClass)) {
+                    throw new \InvalidArgumentException("Unable to cast: entity class not set");
+                }
+                
+                $class = $this->entityClass;
+                $entity = $class::fromData($entity);
+            }
+            
             if (!$entity instanceof Entity) throw new \InvalidArgumentException("Not all items are entities");
             
             if (!isset($this->entityClass)) $this->entityClass = get_class($entity);
@@ -161,47 +170,65 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     }
 
     /**
-     * Check if set contains a specific entity
+     * Get the entities as array
+     * 
+     * @return array
+     */
+    public function getArrayCopy()
+    {
+        return $this->entities;
+    }
+    
+    /**
+     * Find the entity in this set
      * 
      * @param Entity $entity
-     * @return boolean
+     * @return Entity|null
      */
-    public function contains(Entity $entity)
+    protected function getEntityFromSet(Entity $entity)
     {
         $this->entitySetAssertInput($entity);
         
         if ($entity instanceof Entity\Identifiable) {
             foreach ($this->entities as $cur) {
-                if ($cur->getId() === $entity->getId()) return true;
+                if ($cur->getId() === $entity->getId()) return $cur;
             }
         } else {
             foreach ($this->entities as $cur) {
-                if ($cur->toData() === $entity->toData()) return true;
+                if ($cur->toData() === $entity->toData()) return $cur;
             }
         }
         
-        return false;
+        return null;
     }
     
     /**
-     * Check if offset exists
+     * Check if offset exists or if entity is part of the set
      * 
      * @param int $index
      */
     public function offsetExists($index)
     {
+        if ($index instanceof Entity) {
+            return (boolean)$this->getEntityFromSet($index);
+        }
+
         if (!is_int($index)) throw new \InvalidArgumentException("Only numeric keys are allowed");
         return isset($this->entities[$index]);
     }
 
     /**
-     * Get the entity of a specific index
+     * Get the entity of a specific index or find entity in set
      * 
-     * @param int|string $index
+     * @param int|Entity $index
      * @return Entity
      */
     public function offsetGet($index)
     {
+        if ($index instanceof Entity) {
+            return $this->getEntityFromSet($index);
+        }
+        
         $this->entitySetAssertIndex($index);
         return $this->entities[$index];
     }
@@ -217,7 +244,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     {
         $this->entitySetAssertInput($entity);
         
-        if ($this->contains($entity)) {
+        if ($this->offsetExists($entity)) {
             if (isset($index)) {
                 unset($this->entities[$index]);
                 $this->entities[] = array_values($this->entities);
@@ -241,6 +268,13 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function offsetUnset($index)
     {
+        if ($index instanceof Entity) {
+            $entity = $this->getEntityFromSet($index);
+            if (!isset($entity)) return;
+            
+            $index = array_search($entity, $this->entities, true);
+        }
+        
         $this->entitySetAssertIndex($index);
         unset($this->entities[$index]);
     }
