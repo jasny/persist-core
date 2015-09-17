@@ -2,6 +2,8 @@
 
 namespace Jasny\DB\DataMapper;
 
+use Jasny\DB\Entity;
+
 /**
  * Data Mapper interface when entities that can be restored after deletion.
  * 
