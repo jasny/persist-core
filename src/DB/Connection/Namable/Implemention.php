@@ -31,6 +31,6 @@ trait Implemention
      */
     public function getConnectionName()
     {
-        return DB::getRegistredName($this);
+        return DB::getRegisteredName($this);
     }
 }

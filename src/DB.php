@@ -140,14 +140,8 @@ class DB
      */
     public static function unregister($conn)
     {
-        if ($conn instanceof DB\Connection) {
-            foreach (self::$connections as $name => $cur) {
-                if ($cur === $this) static::unregister($name);
-            }
-            return;
-        }
-        
-        unset(self::$connections[$name]);
+        $name = is_string($conn) ? $conn : static::getRegisteredName($conn);
+        if (isset($name)) unset(self::$connections[$name]);
     }
     
     /**
@@ -157,7 +151,7 @@ class DB
      * @param DB\Connection $conn
      * @return string|null
      */
-    public function getRegisteredName(DB\Connection $conn)
+    public static function getRegisteredName(DB\Connection $conn)
     {
         foreach (self::$connections as $name => $cur) {
             if ($cur === $conn) return $name;

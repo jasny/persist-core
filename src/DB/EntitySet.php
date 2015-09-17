@@ -259,6 +259,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
             if (!isset($entity)) return;
             
             $index = array_search($entity, $this->entities, true);
+            if ($index === false) return; // Shouldn't happen
         }
         
         $this->entitySetAssertIndex($index);
@@ -277,8 +278,6 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     {
         // No lazy loading is nothing to do
         if (!is_a($this->entityClass, Entity\LazyLoading::class, true)) return $this;
-        
-        $remove = [];
         
         foreach ($this->entities as $i => $entity) {
             $entity->expand($opts);
