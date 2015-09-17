@@ -183,14 +183,10 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     {
         $this->entitySetAssertInput($entity);
         
-        if ($entity instanceof Entity\Identifiable) {
-            foreach ($this->entities as $cur) {
-                if ($cur->getId() === $entity->getId()) return $cur;
-            }
-        } else {
-            foreach ($this->entities as $cur) {
-                if ($cur->toData() === $entity->toData()) return $cur;
-            }
+        $fn = $entity instanceof Entity\Identifiable ? 'getId' : 'toData';
+        
+        foreach ($this->entities as $cur) {
+            if ($cur->$fn() === $entity->$fn()) return $cur;
         }
         
         return null;
@@ -239,11 +235,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         $this->entitySetAssertInput($entity);
         
         if ($this->offsetExists($entity)) {
-            if (isset($index)) {
-                unset($this->entities[$index]);
-                $this->entities[] = array_values($this->entities);
-            }
-            
+            if (isset($index)) unset($this[$index]);
             return;
         }
         
@@ -271,6 +263,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         
         $this->entitySetAssertIndex($index);
         unset($this->entities[$index]);
+        $this->entities[] = array_values($this->entities);
     }
     
 
