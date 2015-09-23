@@ -36,12 +36,12 @@ interface Dataset
      * @param array     $sort
      * @param int|array $limit   limit or [limit, offset]
      * @param array     $opts
-     * @return static[]
+     * @return EntitySet|static[]
      */
     public static function fetchAll(array $filter = [], $sort = null, $limit = null, array $opts = []);
 
     /**
-     * Fetch all descriptions from the set.
+     * Fetch id/description pairs.
      * 
      * @param array     $filter
      * @param array     $sort
@@ -49,7 +49,7 @@ interface Dataset
      * @param array     $opts
      * @return array
      */
-    public static function fetchList(array $filter = [], $sort = null, $limit = null, array $opts = []);
+    public static function fetchPairs(array $filter = [], $sort = null, $limit = null, array $opts = []);
     
     /**
      * Fetch the number of entities in the set.
