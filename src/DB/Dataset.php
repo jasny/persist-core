@@ -36,7 +36,7 @@ interface Dataset
      * @param array     $sort
      * @param int|array $limit   limit or [limit, offset]
      * @param array     $opts
-     * @return EntitySet|static[]
+     * @return EntitySet|\Jasny\DB\Entity[]
      */
     public static function fetchAll(array $filter = [], $sort = null, $limit = null, array $opts = []);
 
