@@ -23,6 +23,14 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     protected $entities;
     
     /**
+     * Total number of entities.
+     * Specified if the set has been limited.
+     * @var int
+     */
+    public $total;
+    
+    
+    /**
      * Class constructor
      * 
      * <code>

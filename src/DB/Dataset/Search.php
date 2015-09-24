@@ -14,9 +14,8 @@ interface Search
      * @param array     $filter
      * @param array     $sort
      * @param int|array $limit
-     * @param int       $total   OUTPUT: total number of records
      * @param array     $opts
-     * @return Jasny\DB\Entity[]
+     * @return Jasny\DB\EntitySet|Jasny\DB\Entity[]
      */
-    public static function search($terms, $filter, $sort = null, $limit = null, &$total = null, array $opts = []);
+    public static function search($terms, $filter, $sort = null, $limit = null, array $opts = []);
 }
