@@ -24,15 +24,9 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     
     /**
      * Total number of entities.
-     * @var int
+     * @var int|\Closure
      */
-    public $total;
-    
-    /**
-     * Callback to get total.
-     * @var int
-     */
-    protected $totalCallback;
+    protected $totalCount;
     
     
     /**
@@ -61,14 +55,9 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         $this->entityClass = $class;
         
         $this->entitySetAssertInputArray($input);
-        $this->entities = $input;
+        $this->entities = array_values($input);
         
-        if ($total instanceof \Closure) {
-            $this->totalCallback = $total;
-            unset($this->total);
-        } else {
-            $this->total = $total;
-        }
+        $this->totalCount = $total;
     }
 
     
@@ -127,26 +116,6 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         if (!isset($this->entityClass)) throw new \Exception("Entity class hasn't been determined yet");
         return $this->entityClass;
     }
-    
-    /**
-     * Call a method on each entity.
-     * Return $this if method is a fluid interfaces, otherwise return array of results.
-     * 
-     * @param string $name
-     * @param array  $arguments
-     * @return $this|array
-     */
-    public function __call($name, $arguments)
-    {
-        $results = [];
-        
-        foreach ($this as $key => $entity) {
-            $results[$key] = call_user_func_array([$entity, $name], $arguments);
-        }
-        
-        return $results === $this->getArrayCopy() ? $this : $results;
-    }
-    
 
     /**
      * Check if index is an integer and not out of bounds.
@@ -175,13 +144,30 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Count the number of entities
      * 
-     * @return arr
+     * @return int
      */
     public function count()
     {
         return count($this->entities);
     }
 
+    /**
+     * Count all the entities (if set was limited)
+     * 
+     * @return int
+     */
+    public function countTotal()
+    {
+        if (!$this->totalCount) return $this->count();
+        
+        if ($this->totalCount instanceof \Closure) {
+            $fn = $this->totalCount;
+            $this->totalCount = $fn();
+        }
+        
+        return $this->totalCount;
+    }
+    
     /**
      * Get the entities as array
      * 
@@ -283,7 +269,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         
         $this->entitySetAssertIndex($index);
         unset($this->entities[$index]);
-        $this->entities[] = array_values($this->entities);
+        $this->entities = array_values($this->entities);
     }
     
 
@@ -317,21 +303,5 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     {
         $this->expand();
         return $this->entities;
-    }
-    
-    /**
-     * Get magic property
-     * 
-     * @param string $name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        if ($name !== 'total') return $this->$name;
-        
-        $fn = $this->totalCallback;
-        $this->total = $fn();
-        
-        return $this->total;
     }
 }
