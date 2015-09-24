@@ -24,10 +24,15 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     
     /**
      * Total number of entities.
-     * Specified if the set has been limited.
      * @var int
      */
     public $total;
+    
+    /**
+     * Callback to get total.
+     * @var int
+     */
+    protected $totalCallback;
     
     
     /**
@@ -40,24 +45,30 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      *   new EntitySet('User', $users);
      * </code>
      * 
-     * @param string             $entityClass  (may be ommitted)
-     * @param array|\Traversable $input        Array of entities
+     * @param string             $class  (may be ommitted)
+     * @param array|\Traversable $input  Array of entities
+     * @param int|\Closure       $total  Total number of entities (if set is limited)
      */
-    public function __construct($entityClass = null, $input = [])
+    public function __construct($class = null, $input = [], $total = null)
     {
-        if (is_array($entityClass) || $entityClass instanceof \Traversable) {
-            $input = $entityClass;
-            $entityClass = null;
+        if (is_array($class) || $class instanceof \Traversable) {
+            list($class, $input, $total) = array_unshift(func_get_args(), null) + [3 => null];
         }
 
-        if (isset($this->entityClass) && !is_a($entityClass, $this->entityClass, true)) {
-            $class = self::class;
-            throw new \DomainException("A $class is only for $this->entityClass entities, not $entityClass entities");
+        if (isset($this->entityClass) && !is_a($class, $this->entityClass, true)) {
+            throw new \DomainException("A " . self::class . " is only for $this->entityClass entities, not $class");
         }
-        $this->entityClass = $entityClass;
+        $this->entityClass = $class;
         
         $this->entitySetAssertInputArray($input);
         $this->entities = $input;
+        
+        if ($total instanceof \Closure) {
+            $this->totalCallback = $total;
+            unset($this->total);
+        } else {
+            $this->total = $total;
+        }
     }
 
     
@@ -306,5 +317,21 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     {
         $this->expand();
         return $this->entities;
+    }
+    
+    /**
+     * Get magic property
+     * 
+     * @param string $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        if ($name !== 'total') return $this->$name;
+        
+        $fn = $this->totalCallback;
+        $this->total = $fn();
+        
+        return $this->total;
     }
 }
