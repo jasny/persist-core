@@ -15,7 +15,7 @@ trait Implementation
      *   $entity->with('foo', 'bar');
      * </code>
      * 
-     * @param string|array $properties
+     * @param string|array $property
      * @param string       ...
      * @return $this
      */
@@ -26,6 +26,31 @@ trait Implementation
         foreach ($properties as $property) {
             $fn = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $property))); // camelcase
             $this->$property = $this->$fn();
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Unset properties from entity
+     * 
+     * <code>
+     *   $entity->without(['foo', 'bar']);
+     *   $entity->without('foo', 'bar');
+     * </code>
+     * 
+     * @param string|array $property
+     * @param string       ...
+     * @return $this
+     */
+    public function without($property)
+    {
+        $properties = is_array($property) ? $property : func_get_args();
+        $myProps = array_keys((array)$this); // This adds \0 for private properties
+        
+        foreach ($properties as $property) {
+            if ($property[0] === "\0") continue; // Ignore private properties
+            if (isset($myProps[$property])) unset($this->$property);
         }
         
         return $this;

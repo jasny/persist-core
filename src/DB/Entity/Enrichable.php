@@ -24,4 +24,18 @@ interface Enrichable extends \Jasny\DB\Entity
      * @return $this
      */
     public function with($property);
+    
+    /**
+     * Unset properties from entity
+     * 
+     * <code>
+     *   $entity->without(['foo', 'bar']);
+     *   $entity->without('foo', 'bar');
+     * </code>
+     * 
+     * @param string|array $property
+     * @param string       ...
+     * @return $this
+     */
+    public function without($property);
 }
