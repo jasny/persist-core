@@ -50,7 +50,7 @@ trait Implementation
         
         foreach ($properties as $property) {
             if ($property[0] === "\0") continue; // Ignore private properties
-            if (isset($myProps[$property])) unset($this->$property);
+            if (array_search($property, $myProps)) unset($this->$property);
         }
         
         return $this;
