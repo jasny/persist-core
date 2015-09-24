@@ -38,7 +38,7 @@ interface Dataset
      * @param array     $opts
      * @return EntitySet|\Jasny\DB\Entity[]
      */
-    public static function fetchAll(array $filter = [], $sort = null, array $opts = []);
+    public static function fetchAll(array $filter = [], $sort = null,  $limit = null, array $opts = []);
 
     /**
      * Fetch id/description pairs.
@@ -49,7 +49,7 @@ interface Dataset
      * @param array     $opts
      * @return array
      */
-    public static function fetchPairs(array $filter = [], $sort = null, array $opts = []);
+    public static function fetchPairs(array $filter = [], $sort = null, $limit = null, array $opts = []);
     
     /**
      * Fetch the number of entities in the set.
