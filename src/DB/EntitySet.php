@@ -3,6 +3,7 @@
 namespace Jasny\DB;
 
 use Jasny\DB\Entity;
+use Jasny\Meta\Introspection;
 
 /**
  * An Entity Set is an array of the same entities.
@@ -11,6 +12,23 @@ use Jasny\DB\Entity;
  */
 class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSerializable
 {
+    /**
+     * Flag to allow duplicate entities
+     */
+    const ALLOW_DUPLICATES = 0b1;
+
+    /**
+     * Flag to preserve associated keys
+     */
+    const PRESERVE_KEYS = 0b10;
+    
+    
+    /**
+     * Control the behaviour of the entity set
+     * @var int
+     */
+    protected $flags = 0;
+    
     /**
      * The class name of the entities in this set
      * @var string
@@ -32,31 +50,24 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Class constructor
      * 
-     * <code>
-     *   new EntitySet();
-     *   new EntitySet('User');
-     *   new EntitySet($users);
-     *   new EntitySet('User', $users);
-     * </code>
-     * 
-     * @param string             $class  (may be ommitted)
-     * @param array|\Traversable $input  Array of entities
-     * @param int|\Closure       $total  Total number of entities (if set is limited)
+     * @param string                  $class     (may be ommitted)
+     * @param Entities[]|\Traversable $entities  Array of entities
+     * @param int|\Closure            $total     Total number of entities (if set is limited)
+     * @param int                     $flags     Control the behaviour of the entity set
      */
-    public function __construct($class = null, $input = [], $total = null)
+    public function __construct($class = null, $entities = [], $total = null, $flags = 0)
     {
         if (is_array($class) || $class instanceof \Traversable) {
-            list($class, $input, $total) = array_unshift(func_get_args(), null) + [3 => null];
+            list($class, $entities, $total, $flags) = array_unshift(func_get_args(), null) + [3 => null, 4 => 0];
         }
 
-        if (isset($this->entityClass) && !is_a($class, $this->entityClass, true)) {
+        if (isset($this->entityClass) && $class !== $this->entityClass && !is_a($class, $this->entityClass, true)) {
             throw new \DomainException("A " . self::class . " is only for $this->entityClass entities, not $class");
         }
+        
+        $this->flags = $flags;
         $this->entityClass = $class;
-        
-        $this->entitySetAssertInputArray($input);
-        $this->entities = array_values($input);
-        
+        $this->setEntities($entities);
         $this->totalCount = $total;
     }
 
@@ -84,9 +95,8 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      * 
      * @param array|\Traversable $input
      */
-    protected function entitySetAssertInputArray(&$input)
+    protected function entitySetAssertInputArray($input)
     {
-        if ($input instanceof \Traversable) $input = iterator_to_array($input);
         if (!is_array($input)) {
             $type = is_object($input) ? get_class($input) : gettype($input);
             throw new \InvalidArgumentException("Input should either be an array or Traverable, not a $type");
@@ -105,17 +115,6 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
             $this->entitySetAssertInput($entity);
         }
     }
-    
-    /**
-     * Get the class entities of this set (must) have
-     * 
-     * @return string
-     */
-    public function getEntityClass()
-    {
-        if (!isset($this->entityClass)) throw new \Exception("Entity class hasn't been determined yet");
-        return $this->entityClass;
-    }
 
     /**
      * Check if index is an integer and not out of bounds.
@@ -131,6 +130,56 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         }
     }
     
+    
+    /**
+     * Get the class entities of this set (must) have
+     * 
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        if (!isset($this->entityClass)) throw new \Exception("Entity class hasn't been determined yet");
+        return $this->entityClass;
+    }
+
+    /**
+     * Set the entities
+     * 
+     * @param array|\Traversable $entities
+     */
+    protected function setEntities($entities)
+    {
+        if ($entities instanceof \Traversable) $entities = iterator_to_array($entities);
+        $this->entitySetAssertInputArray($entities);
+        
+        if (~$this->flags & self::PRESERVE_KEYS) $entities = array_values($entities);
+        if (~$this->flags & self::ALLOW_DUPLICATES) $entities = $this->uniqueEntities($entities);
+        
+        $this->entities = $entities;
+    }
+    
+    /**
+     * Remove duplicate entities
+     * 
+     * @param array|\Traversable $input  Array of entities
+     */
+    protected function uniqueEntities($input)
+    {
+        $ids = [];
+        $entities = [];
+        
+        foreach ($input as $entity) {
+            $id = $entity instanceof Entity\Identifiable ? $entity->getId() : $entity->toData();
+            if (array_search($id, $ids)) continue;
+            
+            $ids[] = $id;
+            $entities[] = $entity;
+        }
+        
+        return $entities;
+    }
+    
+    
     /**
      * Get the iterator for looping through the set
      * 
@@ -139,6 +188,16 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     public function getIterator()
     {
         return new \ArrayIterator($this->entities);
+    }
+    
+    /**
+     * Get the entities as array
+     * 
+     * @return array
+     */
+    public function getArrayCopy()
+    {
+        return $this->entities;
     }
 
     /**
@@ -168,34 +227,83 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         return $this->totalCount;
     }
     
+    
     /**
-     * Get the entities as array
+     * Check if the entity exists in this set
      * 
-     * @return array
+     * @param mixed|Entity $id
+     * @return boolean
      */
-    public function getArrayCopy()
+    public function contains($id)
     {
-        return $this->entities;
+        return (boolean)$this->get($id);
     }
     
     /**
      * Find the entity in this set
      * 
-     * @param Entity $entity
+     * @param mixed|Entity $id
      * @return Entity|null
      */
-    protected function getEntityFromSet(Entity $entity)
+    public function get($id)
     {
-        $this->entitySetAssertInput($entity);
+        $fn = is_a($this->entityClass, Entity\Identifiable::class, true) ? 'getId' : 'toData';
         
-        $fn = $entity instanceof Entity\Identifiable ? 'getId' : 'toData';
+        if ($id instanceof Entity) {
+            $this->entitySetAssertInput($id);
+            $id = $id->$fn();
+        }
         
-        foreach ($this->entities as $cur) {
-            if ($cur->$fn() === $entity->$fn()) return $cur;
+        foreach ($this->entities as $entity) {
+            if ($entity->$fn() === $id) return $entity;
         }
         
         return null;
     }
+    
+    /**
+     * Add an entity to the set
+     * 
+     * @param Entity $entity
+     */
+    final public function add($entity)
+    {
+        $this->offsetSet(null, $entity); 
+    }
+    
+    /**
+     * Remove an entity from the set
+     * 
+     * @param mixed|Entity $id
+     */
+    public function remove($id)
+    {
+        do {
+            $entity = $this->get($id);
+            if ($entity) {
+                unset($this->entities[array_search($entity, $this->entities, true)]);
+            }
+        } while ($this->flags & self::ALLOW_DUPLICATES && $entity);
+        
+        if (~$this->flags & self::PRESERVE_KEYS) {
+            $this->entities = array_values($this->entities);
+        }
+    }
+    
+    /**
+     * Return a unique set of entities.
+     * Return this entity set, if it's already unique.
+     * 
+     * @return static|$this
+     */
+    public function unique()
+    {
+        if (~$this->flags & self::ALLOW_DUPLICATES) return $this;
+        
+        $flags = $this->flags & ~static::ALLOW_DUPLICATES;
+        return new static($this->getEntityClass(), $this->entitiesm, $this->totalCount, $flags);
+    }
+    
     
     /**
      * Check if offset exists or if entity is part of the set
@@ -204,11 +312,6 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function offsetExists($index)
     {
-        if ($index instanceof Entity) {
-            return (boolean)$this->getEntityFromSet($index);
-        }
-
-        if (!is_int($index)) throw new \InvalidArgumentException("Only numeric keys are allowed");
         return isset($this->entities[$index]);
     }
 
@@ -220,15 +323,10 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function offsetGet($index)
     {
-        if ($index instanceof Entity) {
-            return $this->getEntityFromSet($index);
-        }
-        
         $this->entitySetAssertIndex($index);
         return $this->entities[$index];
     }
 
-    
     /**
      * Replace the entity of a specific index
      * 
@@ -239,14 +337,14 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     {
         $this->entitySetAssertInput($entity);
         
-        if ($this->offsetExists($entity)) {
-            if (isset($index)) unset($this[$index]);
+        if (~$this->flags & self::ALLOW_DUPLICATES && $this->contains($entity)) {
+            if (isset($index)) $this->offsetUnset($index);
             return;
         }
-        
+
         if (!isset($index)) {
             $this->entities[] = $entity;
-        } else{
+        } else {
             $this->entitySetAssertIndex($index);
             $this->entities[$index] = $entity;
         }
@@ -259,17 +357,12 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function offsetUnset($index)
     {
-        if ($index instanceof Entity) {
-            $entity = $this->getEntityFromSet($index);
-            if (!isset($entity)) return;
-            
-            $index = array_search($entity, $this->entities, true);
-            if ($index === false) return; // Shouldn't happen
-        }
-        
         $this->entitySetAssertIndex($index);
         unset($this->entities[$index]);
-        $this->entities = array_values($this->entities);
+        
+        if (~$this->flags & self::PRESERVE_KEYS) {
+            $this->entities = array_values($this->entities);
+        }
     }
     
 
@@ -303,5 +396,66 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     {
         $this->expand();
         return $this->entities;
+    }
+    
+    
+    /**
+     * Call a method on each entity.
+     * Return $this if method is a fluid interfaces, otherwise return array of results.
+     * 
+     * @param string $name
+     * @param array  $arguments
+     * @return $this|array
+     */
+    public function __call($name, $arguments)
+    {
+        $results = [];
+        
+        foreach ($this as $key => $entity) {
+            $results[$key] = call_user_func_array([$entity, $name], $arguments);
+        }
+        
+        return $results === $this->entities ? $this : $results;
+    }
+    
+    /**
+     * Get property of entities as array.
+     * If property is an array or EntitySet, it will be flattened.
+     * 
+     * @param string $property
+     * @return EntitySet|array
+     */
+    public function __get($property)
+    {
+        if (is_a($this->entityClass, Introspection::class, true)) {
+            $entityClass = $this->entityClass;
+            $var = $entityClass::meta()->of($property)['var'];
+            if ($var) $var = substr_replace('[]', '', $var);
+        }
+        
+        $array = [];
+        
+        foreach ($this->entities as $entity) {
+            if (!isset($entity->$property)) continue;
+            
+            $value = $entity->$property;
+            
+            if ($value instanceof self) {
+                if (!$var) $var = $value->entityClass;
+                $value = $value->getArrayCopy();
+            }
+            
+            if (!isset($var)) $var = is_object($value) ? get_class($value) : gettype($value);
+            
+            if (is_array($value)) {
+                $array = array_merge($array, $value);
+            } else {
+                $array[] = $value;
+            }
+        }
+        
+        return is_a($var, Entity::class, true) 
+            ? $var::entitySet($array, null, self::ALLOW_DUPLICATES)
+            : $array;
     }
 }

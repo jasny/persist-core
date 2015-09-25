@@ -126,14 +126,17 @@ trait Implementation
         return $object;
     }
     
+    
     /**
      * Create an entity set
      * 
-     * @param Entity[] $entities
+     * @param Entities[]|\Traversable $entities  Array of entities
+     * @param int|\Closure            $total     Total number of entities (if set is limited)
+     * @param int                     $flags     Control the behaviour of the entity set
      * @return EntitySet
      */
-    public static function entitySet(array $entities = [])
+    public static function entitySet($entities = [], $total = null, $flags = 0)
     {
-        return new EntitySet(get_called_class(), $entities);
+        return new EntitySet(get_called_class(), $entities, $total, $flags);
     }
 }

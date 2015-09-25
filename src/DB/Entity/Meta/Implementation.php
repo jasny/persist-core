@@ -112,4 +112,19 @@ trait Implementation
                 
         return new $type($value);
     }
+
+    
+    /**
+     * Create an entity set
+     * 
+     * @param Entities[]|\Traversable $entities  Array of entities
+     * @param int|\Closure            $total     Total number of entities (if set is limited)
+     * @param int                     $flags     Control the behaviour of the entity set
+     * @return EntitySet
+     */
+    public static function entitySet($entities = [], $total = null, $flags = 0)
+    {
+        $setClass = static::meta()['entitySet'] ?: EntitySet::class;
+        return new $setClass(get_called_class(), $entities, $total, $flags);
+    }
 }
