@@ -2,18 +2,23 @@
 
 namespace Jasny\DB\Entity\Enrichable;
 
+use Jasny\DB\Entity\LazyLoading;
+use Jasny\DB\Entity\EntitySet;
+
 /**
  * Entity can be enriched with related data
  */
 trait Implementation
 {
     /**
-     * Enrich entity with related data
+     * Enrich entity with related data.
      * 
      * <code>
      *   $entity->with(['foo', 'bar']);
      *   $entity->with('foo', 'bar');
      * </code>
+     * 
+     * Also expands ghost entities (lazy loading).
      * 
      * @param string|array $property
      * @param string       ...
@@ -24,8 +29,14 @@ trait Implementation
         $properties = is_array($property) ? $property : func_get_args();
         
         foreach ($properties as $property) {
-            $fn = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $property))); // camelcase
-            $this->$property = $this->$fn();
+            if (!isset($this->$property)) {
+                $fn = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $property))); // camelcase
+                $this->$property = $this->$fn();
+            }
+            
+            if ($this->$property instanceof LazyLoading || $this->$property instanceof EntitySet) {
+                $this->$property->exand();
+            }
         }
         
         return $this;
