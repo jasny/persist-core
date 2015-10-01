@@ -114,12 +114,12 @@ trait MetaImplementation
             case 'number':
                 return is_int($value) || ctype_digit((string)$value);
             case 'range':
-                return is_numeric($this->getValue());
+                return is_numeric($value);
             case 'url':
                 $pos = strpos($value, ':');
                 return $pos !== false && ctype_alpha(substr($value, 0, $pos));
             case 'email':
-                return preg_match('/^[\w\-\.]+@[\w\-\.]+\w+$/', $this->getValue());
+                return preg_match('/^[\w\-\.]+@[\w\-\.]+\w+$/', $value);
             
             default:
                 trigger_error("Unknown property type '$type'", E_USER_WARNING);
