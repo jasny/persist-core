@@ -88,13 +88,14 @@ trait Implementation
     {
         if ($this->ghost__ !== true) return $this;
         
-        $ghostProps = get_object_vars($this);
+        $ghostProps = (array)$this;
         
         $this->ghost__ = -1; // Intermediate state
         
         if (!$this->reload($opts)) return $this;
         
         foreach ($ghostProps as $prop => $value) {
+            if ($prop[0] === "\0") continue;
             $this->$prop = $value;
         }
 

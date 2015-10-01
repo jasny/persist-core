@@ -61,8 +61,13 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
             list($class, $entities, $total, $flags) = array_unshift(func_get_args(), null) + [3 => null, 4 => 0];
         }
 
-        if (isset($this->entityClass) && $class !== $this->entityClass && !is_a($class, $this->entityClass, true)) {
-            throw new \DomainException("A " . self::class . " is only for $this->entityClass entities, not $class");
+        if (
+            isset($this->entityClass) &&
+            isset($class) &&
+            $class !== $this->entityClass &&
+            !is_a($class, $this->entityClass, true)
+        ) {
+            throw new \DomainException("A " . static::class . " is only for $this->entityClass entities, not $class");
         }
         
         $this->flags = $flags;
@@ -170,7 +175,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         
         foreach ($input as $entity) {
             $id = $entity instanceof Entity\Identifiable ? $entity->getId() : $entity->toData();
-            if (array_search($id, $ids)) continue;
+            if (isset($id) && array_search($id, $ids)) continue;
             
             $ids[] = $id;
             $entities[] = $entity;
@@ -253,6 +258,8 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
             $this->entitySetAssertInput($id);
             $id = $id->$fn();
         }
+        
+        if (!isset($id)) return null;
         
         foreach ($this->entities as $entity) {
             if ($entity->$fn() === $id) return $entity;
