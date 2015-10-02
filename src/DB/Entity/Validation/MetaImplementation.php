@@ -21,7 +21,7 @@ trait MetaImplementation
         $validation = new ValidationResult();
         
         foreach (static::meta()->ofProperties() as $prop => $meta) {
-            if ($this instanceof ChangeAware && !$this->hasModified($prop)) {
+            if ($this instanceof ChangeAware && !$this->isNew() && !$this->hasModified($prop)) {
                 continue;
             }
             
