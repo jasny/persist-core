@@ -21,6 +21,10 @@ trait MetaImplementation
         $validation = new ValidationResult();
         
         foreach (static::meta()->ofProperties() as $prop => $meta) {
+            if ($this instanceof ChangeAware && !$this->hasModified($prop)) {
+                continue;
+            }
+            
             if (isset($meta['required']) && !isset($this->$prop)) {
                 $validation->addError("%s is required", $prop);
             }
@@ -42,7 +46,7 @@ trait MetaImplementation
             if (isset($meta['immutable'])) {
                 if (!$this instanceof ChangeAware) {
                     trigger_error(static::class . " can't check if $prop has changed", E_USER_WARNING);
-                } elseif (!$this->isNew() && $this->hasModified($prop)) {
+                } elseif (!$this->isNew()) {
                     $validation->addError("%s shouldn't be modified", $prop);
                 }
             }
