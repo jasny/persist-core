@@ -56,14 +56,14 @@ trait Implementation
      */
     public function hasModified($property)
     {
-        $data = $this->toData();
-        
         if ($property === $this) {
             $original = $this->persistedData__;
-            $current = $data;
+            $current = $this->toData();
         } else {
-            $original = isset($this->persistedData__[$property]) ? $this->persistedData__[$property] : null;
-            $current = isset($data[$property]) ? $data[$property] : null;
+            $persisted = static::fromData($this->persistedData__);
+
+            $original = isset($persisted->$property) ? $persisted->$property : null;
+            $current = isset($this->$property) ? $this->$property : null;
         }
         
         if ($original === $current) return false;
