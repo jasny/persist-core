@@ -140,6 +140,6 @@ trait MetaImplementation
      */
     protected function validatePattern($prop, $pattern)
     {
-        return preg_match('/' . str_replace('/', '\/', $pattern) . '/A', $this->$prop);
+        return preg_match('/^(?:' . str_replace('/', '\/', $pattern) . ')$/', $this->$prop);
     }
 }
