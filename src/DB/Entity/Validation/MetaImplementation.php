@@ -31,8 +31,6 @@ trait MetaImplementation
             
             if (!isset($this->$prop)) continue;
             
-            $validation->add($this->validateBasics($prop, $meta));
-            
             if (isset($meta['unique'])) {
                 $uniqueGroup = is_string($meta['unique']) ? $meta['unique'] : null;
                 
@@ -40,6 +38,7 @@ trait MetaImplementation
                     trigger_error(static::class . " can't check if it has a unique $prop", E_USER_WARNING);
                 } elseif (!$this->hasUnique($prop, $uniqueGroup)) {
                     $validation->addError("There is already a %s with this %s", get_class($this), $prop);
+                    continue;
                 }
             }
             
@@ -48,8 +47,11 @@ trait MetaImplementation
                     trigger_error(static::class . " can't check if $prop has changed", E_USER_WARNING);
                 } elseif (!$this->isNew()) {
                     $validation->addError("%s shouldn't be modified", $prop);
+                    continue;
                 }
             }
+            
+            $validation->add($this->validateBasics($prop, $meta));
         }
         
         return $validation;
