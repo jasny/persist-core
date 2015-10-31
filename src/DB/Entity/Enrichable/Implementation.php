@@ -35,7 +35,7 @@ trait Implementation
             }
             
             if ($this->$property instanceof LazyLoading || $this->$property instanceof EntitySet) {
-                $this->$property->exand();
+                $this->$property->expand();
             }
         }
         
