@@ -125,7 +125,7 @@ trait MetaImplementation
                 $pos = strpos($value, ':');
                 return $pos !== false && ctype_alpha(substr($value, 0, $pos));
             case 'email':
-                return preg_match('/^[\w\-\.]+@[\w\-\.]+\w+$/', $value);
+                return preg_match('/^[\w\-\.\+]+@[\w\-\.]+\w+$/', $value);
             
             default:
                 trigger_error("Unknown property type '$type'", E_USER_WARNING);
