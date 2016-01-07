@@ -137,6 +137,16 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     
     
     /**
+     * Get the flags set for this entity set
+     *
+     * @return int
+     */
+    public function getFlags()
+    {
+        return $this->flags;
+    }
+    
+    /**
      * Get the class entities of this set (must) have
      * 
      * @return string
