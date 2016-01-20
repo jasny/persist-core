@@ -27,6 +27,16 @@ trait Implementation
         $this->persistedData__ = $this->toData();
     }
     
+    /**
+     * Get the persisted data
+     * 
+     * @return array
+     */
+    protected function getPersistedData()
+    {
+        return $this->persistedData__;
+    }
+    
     
     /**
      * Check if the entity is new
@@ -35,7 +45,7 @@ trait Implementation
      */
     public function isNew()
     {
-        return !isset($this->persistedData__);
+        return $this->getPersistedData() === null;
     }
     
     /**
@@ -57,10 +67,10 @@ trait Implementation
     public function hasModified($property)
     {
         if ($property === $this) {
-            $original = $this->persistedData__;
+            $original = $this->getPersistedData();
             $current = $this->toData();
         } else {
-            $persisted = static::fromData($this->persistedData__);
+            $persisted = static::fromData($this->getPersistedData() ?: []);
 
             $original = isset($persisted->$property) ? $persisted->$property : null;
             $current = isset($this->$property) ? $this->$property : null;

@@ -25,37 +25,53 @@ trait MetaImplementation
                 continue;
             }
             
-            if (isset($meta['required']) && !isset($this->$prop)) {
-                $validation->addError("%s is required", $prop);
-            }
-            
-            if (!isset($this->$prop)) continue;
-            
-            if (isset($meta['unique'])) {
-                $uniqueGroup = is_string($meta['unique']) ? $meta['unique'] : null;
-                
-                if (!$this instanceof SelfAware) {
-                    trigger_error(static::class . " can't check if it has a unique $prop", E_USER_WARNING);
-                } elseif (!$this->hasUnique($prop, $uniqueGroup)) {
-                    $validation->addError("There is already a %s with this %s", get_class($this), $prop);
-                    continue;
-                }
-            }
-            
-            if (isset($meta['immutable'])) {
-                if (!$this instanceof ChangeAware) {
-                    trigger_error(static::class . " can't check if $prop has changed", E_USER_WARNING);
-                } elseif (!$this->isNew()) {
-                    $validation->addError("%s shouldn't be modified", $prop);
-                    continue;
-                }
-            }
-            
-            $validation->add($this->validateBasics($prop, $meta));
+            $validation->add($this->validateProperty($prop, $meta));
         }
         
         return $validation;
     }
+    
+    /**
+     * Validate a property
+     * 
+     * @param string      $prop
+     * @param \Jasny\Meta $meta
+     * @return ValidationResult
+     */
+    public function validateProperty($prop, $meta)
+    {
+        $validation = new ValidationResult();
+        
+        if (isset($meta['required']) && !isset($this->$prop)) {
+            $validation->addError("%s is required", $prop);
+        }
+
+        if (!isset($this->$prop)) return $validation;
+
+        if (isset($meta['unique'])) {
+            $uniqueGroup = is_string($meta['unique']) ? $meta['unique'] : null;
+
+            if (!$this instanceof SelfAware) {
+                trigger_error(static::class . " can't check if it has a unique $prop", E_USER_WARNING);
+            } elseif (!$this->hasUnique($prop, $uniqueGroup)) {
+                $validation->addError("There is already a %s with this %s", get_class($this), $prop);
+                return $validation;
+            }
+        }
+
+        if (isset($meta['immutable'])) {
+            if (!$this instanceof ChangeAware) {
+                trigger_error(static::class . " can't check if $prop has changed", E_USER_WARNING);
+            } elseif (!$this->isNew()) {
+                $validation->addError("%s shouldn't be modified", $prop);
+                return $validation;
+            }
+        }
+
+        $validation->add($this->validateBasics($prop, $meta));
+        
+        return $validation;
+ }
     
     /**
      * Perform basic validation
@@ -125,7 +141,7 @@ trait MetaImplementation
                 $pos = strpos($value, ':');
                 return $pos !== false && ctype_alpha(substr($value, 0, $pos));
             case 'email':
-                return preg_match('/^[\w\-\.\+]+@[\w\-\.]+\w+$/', $value);
+                return preg_match('/^[\w\-\.\+]+@[\w\-\.]*\w$/', $value);
             
             default:
                 trigger_error("Unknown property type '$type'", E_USER_WARNING);
