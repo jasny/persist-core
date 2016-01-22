@@ -127,4 +127,22 @@ trait Implementation
         $setClass = static::meta()['entitySet'] ?: EntitySet::class;
         return new $setClass(get_called_class(), $entities, $total, $flags);
     }
+    
+    
+    /**
+     * Filter object for json serialization
+     * 
+     * @param \stdClass $object
+     * @return \stdClass
+     */
+    protected function jsonSerializeFilter(\stdClass $object)
+    {
+        foreach ($object as $prop => $value) {
+            if (static::meta()->of($prop)['censored']) {
+                unset($object->$prop);
+            }
+        }
+        
+        return $object;
+    }
 }
