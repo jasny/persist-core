@@ -89,4 +89,22 @@ trait Implementation
         
         return false;        
     }
+    
+    
+    
+    /**
+     * Get the values that have changed
+     * 
+     * @return array
+     */
+    public function getChanges()
+    {
+        $values = [];
+        
+        foreach ($this->getValues() as $prop => $value) {
+            if ($this->hasModified($prop)) $values[$prop] = $value;
+        }
+        
+        return $values;
+    }
 }

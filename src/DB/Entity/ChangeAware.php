@@ -28,4 +28,12 @@ interface ChangeAware
      * @return boolean
      */
     public function hasModified($property);
+    
+    
+    /**
+     * Get the values that have changed
+     * 
+     * @return array
+     */
+    public function getChanges();
 }
