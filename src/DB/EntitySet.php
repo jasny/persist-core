@@ -320,6 +320,26 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         $flags = $this->flags & ~static::ALLOW_DUPLICATES;
         return new static($this->getEntityClass(), $this->entitiesm, $this->totalCount, $flags);
     }
+
+    /**
+     * Sort the entities as string or on a property.
+     * 
+     * @internal This should be ported to Jasny\DB\EntitySet
+     * 
+     * @param string $property
+     * @return $this
+     */
+    public function sort($property = null)
+    {
+        usort($this->entities, function($a, $b) use($property) {
+            $valA = isset($property) ? (isset($a->$property) ? $a->$property : null) : (string)$a;
+            $valB = isset($property) ? (isset($b->$property) ? $b->$property : null) : (string)$b;
+            
+            return strcmp($valA, $valB);
+        });
+        
+        return $this;
+    }
     
     
     /**
