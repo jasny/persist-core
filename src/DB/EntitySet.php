@@ -82,7 +82,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      * 
      * @param Entity $entity
      */
-    protected function entitySetAssertInput(Entity $entity)
+    protected function assertEntity(Entity $entity)
     {
         if (!$entity instanceof Entity) {
             throw new \InvalidArgumentException("Item is not an entity, but a " . get_class($entity));
@@ -98,16 +98,19 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Check if input array contains valid Entities
      * 
-     * @param array|\Traversable $input
+     * @param array|\Traversable $entities
+     * @return array
      */
-    protected function entitySetAssertInputArray($input)
+    protected function castEntities($entities)
     {
-        if (!is_array($input)) {
-            $type = is_object($input) ? get_class($input) : gettype($input);
+        if (!is_array($entities) && !$entities instanceof \Traversable) {
+            $type = (is_object($entities) ? get_class($entities) . ' ' : '') . gettype($entities);
             throw new \InvalidArgumentException("Input should either be an array or Traverable, not a $type");
         }
         
-        foreach ($input as $entity) {
+        if ($entities instanceof \Traversable) $entities = iterator_to_array($entities);
+        
+        foreach ($entities as &$entity) {
             if ($entity instanceof \stdClass || (is_array($entity) && is_string(key($entity)))) {
                 if (!isset($this->entityClass)) {
                     throw new \InvalidArgumentException("Unable to cast: entity class not set");
@@ -117,8 +120,10 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
                 $entity = $class::fromData($entity);
             }
             
-            $this->entitySetAssertInput($entity);
+            $this->assertEntity($entity);
         }
+        
+        return $entities;
     }
 
     /**
@@ -126,8 +131,10 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      * 
      * @param int $index
      */
-    protected function entitySetAssertIndex($index)
+    protected function assertIndex($index)
     {
+        if ($this->flags & self::PRESERVE_KEYS) return;
+        
         if (!is_int($index)) throw new \InvalidArgumentException("Only numeric keys are allowed");
         
         if ($index < 0 || $index > count($this->entities)) {
@@ -160,15 +167,14 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Set the entities
      * 
-     * @param array|\Traversable $entities
+     * @param array|\Traversable $input
      */
-    protected function setEntities($entities)
+    protected function setEntities($input)
     {
-        if ($entities instanceof \Traversable) $entities = iterator_to_array($entities);
-        $this->entitySetAssertInputArray($entities);
+        $entities = $this->castEntities($input);
         
-        if (~$this->flags & self::PRESERVE_KEYS) $entities = array_values($entities);
         if (~$this->flags & self::ALLOW_DUPLICATES) $entities = $this->uniqueEntities($entities);
+        if (~$this->flags & self::PRESERVE_KEYS) $entities = array_values($entities);
         
         $this->entities = $entities;
     }
@@ -183,12 +189,12 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         $ids = [];
         $entities = [];
         
-        foreach ($input as $entity) {
+        foreach ($input as $key => $entity) {
             $id = $entity instanceof Entity\Identifiable ? $entity->getId() : $entity->toData();
             if (isset($id) && array_search($id, $ids)) continue;
             
             $ids[] = $id;
-            $entities[] = $entity;
+            $entities[$key] = $entity;
         }
         
         return $entities;
@@ -265,7 +271,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         $fn = is_a($this->entityClass, Entity\Identifiable::class, true) ? 'getId' : 'toData';
         
         if ($id instanceof Entity) {
-            $this->entitySetAssertInput($id);
+            $this->assertEntity($id);
             $id = $id->$fn();
         }
         
@@ -360,7 +366,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function offsetGet($index)
     {
-        $this->entitySetAssertIndex($index);
+        $this->assertIndex($index);
         return $this->entities[$index];
     }
 
@@ -372,7 +378,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function offsetSet($index, $entity)
     {
-        $this->entitySetAssertInput($entity);
+        $this->assertEntity($entity);
         
         if (~$this->flags & self::ALLOW_DUPLICATES && $this->contains($entity)) {
             if (isset($index)) $this->offsetUnset($index);
@@ -382,7 +388,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         if (!isset($index)) {
             $this->entities[] = $entity;
         } else {
-            $this->entitySetAssertIndex($index);
+            $this->assertIndex($index);
             $this->entities[$index] = $entity;
         }
     }
@@ -394,7 +400,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function offsetUnset($index)
     {
-        $this->entitySetAssertIndex($index);
+        $this->assertIndex($index);
         unset($this->entities[$index]);
         
         if (~$this->flags & self::PRESERVE_KEYS) {
