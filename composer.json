@@ -17,7 +17,7 @@
         "source": "https://github.com/jasny/db"
     },
     "require": {
-        "php": ">=5.5.0",
+        "php": ">=5.6.0",
         "jasny/validation-result": "^1.0.0",
         "jasny/meta": "^1.2",
         "sebastian/comparator": "~1.2"
