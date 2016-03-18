@@ -24,6 +24,7 @@ trait Implementation
         // Using closure to prevent setting protected methods
         $set = function($entity) use ($values) {
             foreach ($values as $key=>$value) {
+                if ($key[0] === "\0") continue; // Ignore private and protected properties
                 $entity->$key = $value;
             }
             
