@@ -417,7 +417,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function expand(array $opts = [])
     {
-        // No lazy loading is nothing to do
+        // No lazy loading, so nothing to do
         if (!is_a($this->entityClass, Entity\LazyLoading::class, true)) return $this;
         
         foreach ($this->entities as $i => $entity) {
@@ -425,7 +425,9 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
             if ($entity->isGhost()) unset($this->entities[$i]);
         }
         
-        $this->entities = array_values($this->entities);
+        if (~$this->flags & self::PRESERVE_KEYS) {
+            $this->entities = array_values($this->entities);
+        }
         
         return $this;
     }
