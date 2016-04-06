@@ -129,16 +129,25 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Check if index is an integer and not out of bounds.
      * 
-     * @param int $index
+     * @param int     $index
+     * @param boolean $add     Indexed is used for adding an element
      */
-    protected function assertIndex($index)
+    protected function assertIndex($index, $add = false)
     {
-        if ($this->flags & self::PRESERVE_KEYS) return;
+        if ($this->flags & self::PRESERVE_KEYS) {
+            if (!isset($index)) throw new \LogicException("Cannot use [], please use an index");
+            
+            if (!$add && !isset($this->entities[$index])) {
+                throw new \OutOfBoundsException("Set doesn't contain a '$index' entity");
+            }
+            
+            return;
+        }
         
         if (!is_int($index)) throw new \InvalidArgumentException("Only numeric keys are allowed");
         
-        if ($index < 0 || $index > count($this->entities)) {
-            throw new \OutOfBoundsException("Index $index is out of bounds");
+        if ($index < 0 || $index > count($this->entities) - ($add ? 0 : 1)) {
+            throw new \OutOfBoundsException("Index '$index' is out of bounds");
         }
     }
     
@@ -388,7 +397,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         if (!isset($index)) {
             $this->entities[] = $entity;
         } else {
-            $this->assertIndex($index);
+            $this->assertIndex($index, true);
             $this->entities[$index] = $entity;
         }
     }
