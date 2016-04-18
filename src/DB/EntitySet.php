@@ -21,6 +21,11 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      * Flag to preserve associated keys
      */
     const PRESERVE_KEYS = 0b10;
+
+    /**
+     * Flag to indicate to use lazyload (if available) when casting
+     */
+    const LAZYLOAD = 0b100;
     
     
     /**
@@ -57,25 +62,57 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function __construct($class = null, $entities = [], $total = null, $flags = 0)
     {
-        if (is_array($class) || $class instanceof \Traversable) {
-            list($class, $entities, $total, $flags) = array_unshift(func_get_args(), null) + [3 => null, 4 => 0];
-        }
+        list($class, $entities, $total, $flags) = $this->getConstructArgs(func_get_args());
 
+        $this->flags |= $flags;
+        if (isset($class)) $this->setEntityClass($class);
+        $this->setEntities($entities);
+        $this->totalCount = $total;
+    }
+
+    /**
+     * Shift the constructor arguments if $class is omitted.
+     * 
+     * @param array $args
+     * @return array  [class, entities, total, flags, ...]
+     */
+    protected function getConstructArgs(array $args)
+    {
+        if (isset($args[0]) && (is_array($args[0]) || $args[0] instanceof \Traversable)) {
+            array_unshift($args, null);
+        }
+        
+        return $args + [null, [], null, 0, null, null, null, null, null, null, null, null, null, null];
+    }
+
+    
+    /**
+     * Set the entity class
+     * 
+     * @param string $class
+     */
+    protected function setEntityClass($class)
+    {
+        if (!is_a($class, Entity::class, true)) {
+            throw new \DomainException("A $class is not an Entity");
+        }
+        
         if (
             isset($this->entityClass) &&
             isset($class) &&
             $class !== $this->entityClass &&
             !is_a($class, $this->entityClass, true)
         ) {
-            throw new \DomainException("A " . static::class . " is only for $this->entityClass entities, not $class");
+            $setClass = get_class($this);
+            throw new \DomainException("A $setClass is only for {$this->entityClass} entities, not $class");
         }
         
-        $this->flags = $flags;
+        if (!empty($this->entities) && $class !== $this->entityClass) {
+            throw new \LogicException("Can't change the entity class to '$class': set already contains entities");
+        }
+        
         $this->entityClass = $class;
-        $this->setEntities($entities);
-        $this->totalCount = $total;
     }
-
     
     /**
      * Check if input is valid Entity
@@ -84,14 +121,12 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     protected function assertEntity(Entity $entity)
     {
-        if (!$entity instanceof Entity) {
-            throw new \InvalidArgumentException("Item is not an entity, but a " . get_class($entity));
+        if (!isset($this->entityClass)) {
+            $this->setEntityClass(get_class($entity));
         }
         
-        if (!isset($this->entityClass)) $this->entityClass = get_class($entity);
-
         if (!is_a($entity, $this->entityClass)) {
-            throw new \InvalidArgumentException(get_class($entity) . " is not a $this->entityClass entity");
+            throw new \InvalidArgumentException(get_class($entity) . " is not a {$this->entityClass} entity");
         }
     }
     
@@ -117,7 +152,10 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
                 }
                 
                 $class = $this->entityClass;
-                $entity = $class::fromData($entity);
+                
+                $entity = $this->flags & static::LAZYLOAD && is_a($class, Entity\LazyLoading::class, true)
+                    ? $class::lazyload($entity)
+                    : $class::fromData($entity);
             }
             
             $this->assertEntity($entity);
@@ -333,7 +371,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         if (~$this->flags & self::ALLOW_DUPLICATES) return $this;
         
         $flags = $this->flags & ~static::ALLOW_DUPLICATES;
-        return new static($this->getEntityClass(), $this->entitiesm, $this->totalCount, $flags);
+        return new static($this->getEntityClass(), $this->entities, $this->totalCount, $flags);
     }
 
     /**
