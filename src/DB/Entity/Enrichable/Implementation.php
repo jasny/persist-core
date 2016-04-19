@@ -12,26 +12,19 @@ trait Implementation
 {
     /**
      * Enrich entity with related data.
+     * Returns a clone of $this with the additional data.
      * 
-     * <code>
-     *   $entity->with(['foo', 'bar']);
-     *   $entity->with('foo', 'bar');
-     * </code>
-     * 
-     * Also expands ghost entities (lazy loading).
-     * 
-     * @param string|array $property
-     * @param string       ...
+     * @param string[] $properties
      * @return $this
      */
-    public function with($property)
+    public function with(...$properties)
     {
-        $properties = is_array($property) ? $property : func_get_args();
+        if (count($properties) === 1 && is_array($properties)) $properties = $properties[0]; // BC v2.2
         
         foreach ($properties as $property) {
             if (!isset($this->$property)) {
                 $fn = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $property))); // camelcase
-                $this->$property = $this->$fn();
+                if (is_callable([$this, $fn])) $this->$property = $this->$fn();
             }
             
             if ($this->$property instanceof LazyLoading || $this->$property instanceof EntitySet) {
@@ -43,27 +36,44 @@ trait Implementation
     }
 
     /**
-     * Unset properties from entity
+     * Remove properties from entity.
+     * Returns a clone of $this without the specified properties.
      * 
-     * <code>
-     *   $entity->without(['foo', 'bar']);
-     *   $entity->without('foo', 'bar');
-     * </code>
-     * 
-     * @param string|array $property
-     * @param string       ...
-     * @return $this
+     * @param string[] $properties
+     * @return static
      */
-    public function without($property)
+    public function without(...$properties)
     {
-        $properties = is_array($property) ? $property : func_get_args();
+        if (count($properties) === 1 && is_array($properties)) $properties = $properties[0]; // BC v2.2
+        
         $myProps = array_keys((array)$this); // This adds \0 for private properties
         
         foreach ($properties as $property) {
             if ($property[0] === "\0") continue; // Ignore private properties
-            if (array_search($property, $myProps)) unset($this->$property);
+            if (in_array($property, $myProps)) unset($this->$property);
         }
         
         return $this;
+    }
+    
+    /**
+     * Remove properties from entity.
+     * Returns a clone of $this without the specified properties.
+     * 
+     * @param string[] $properties
+     * @return static
+     */
+    public function withOnly(...$properties)
+    {
+        if (count($properties) === 1 && is_array($properties)) $properties = $properties[0]; // BC v2.2
+        
+        $myProps = array_keys((array)$this); // This adds \0 for private properties
+        
+        foreach ($myProps as $property) {
+            if ($property[0] === "\0") continue; // Ignore private properties
+            if (!in_array($property, $properties)) unset($this->$property);
+        }
+        
+        return $this->with(...$properties);
     }
 }

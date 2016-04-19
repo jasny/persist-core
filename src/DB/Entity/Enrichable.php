@@ -12,30 +12,29 @@ namespace Jasny\DB\Entity;
 interface Enrichable extends \Jasny\DB\Entity
 {
     /**
-     * Enrich entity with related data
+     * Enrich entity with related data.
+     * Returns a clone of $this with the additional data.
      * 
-     * <code>
-     *   $entity->with(['foo', 'bar']);
-     *   $entity->with('foo', 'bar');
-     * </code>
-     * 
-     * @param string|array $property
-     * @param string       ...
+     * @param string[] $properties
      * @return $this
      */
-    public function with($property);
+    public function with(...$properties);
     
     /**
-     * Unset properties from entity
+     * Remove properties from entity.
+     * Returns a clone of $this without the specified properties.
      * 
-     * <code>
-     *   $entity->without(['foo', 'bar']);
-     *   $entity->without('foo', 'bar');
-     * </code>
-     * 
-     * @param string|array $property
-     * @param string       ...
+     * @param string[] $properties
      * @return $this
      */
-    public function without($property);
+    public function without(...$properties);
+    
+    /**
+     * Returns a clone of $this with only the specified properties.
+     * Enriches with related data if needed.
+     * 
+     * @param string[] $properties
+     * @return $this
+     */
+    public function withOnly(...$properties);
 }
