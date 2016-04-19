@@ -3,6 +3,7 @@
 namespace Jasny\DB;
 
 use Jasny\DB\Entity;
+use Jasny\DB\Data;
 use Jasny\Meta\Introspection;
 
 /**
@@ -10,7 +11,7 @@ use Jasny\Meta\Introspection;
  * 
  * Calling a method on an entity set will call the method on all entities.
  */
-class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSerializable
+class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSerializable, Data
 {
     /**
      * Flag to allow duplicate entities
@@ -55,17 +56,16 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Class constructor
      * 
-     * @param string                  $class     (may be ommitted)
      * @param Entities[]|\Traversable $entities  Array of entities
      * @param int|\Closure            $total     Total number of entities (if set is limited)
      * @param int                     $flags     Control the behaviour of the entity set
      */
-    public function __construct($class = null, $entities = [], $total = null, $flags = 0)
+    public function __construct($entities = [], $total = null, $flags = 0)
     {
-        list($class, $entities, $total, $flags) = $this->getConstructArgs(func_get_args());
-
+        list($class, $entities, $total, $flags) = $this->getConstructArgs(func_get_args()); // BC v2.2
+        
         $this->flags |= $flags;
-        if (isset($class)) $this->setEntityClass($class);
+        if (isset($class)) $this->setClass($class);
         $this->setEntities($entities);
         $this->totalCount = $total;
     }
@@ -83,6 +83,27 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         }
         
         return $args + [null, [], null, 0, null, null, null, null, null, null, null, null, null, null];
+    }
+
+    /**
+     * Factory method
+     * 
+     * @param string                  $class     Class name
+     * @param Entities[]|\Traversable $entities  Array of entities
+     * @param int|\Closure            $total     Total number of entities (if set is limited)
+     * @param int                     $flags     Control the behaviour of the entity set
+     */
+    public function forClass($class, $entities = [], $total = null, $flags = 0)
+    {
+        $refl = new \ReflectionClass($class);
+        
+        $entitySet = $refl->newInstanceWithoutConstructor();
+        $entitySet->entityClass = $class;
+        
+        $args = func_get_args();
+        $entitySet->__construct(...$args);
+        
+        return $entitySet;
     }
 
     
@@ -334,9 +355,9 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Add an entity to the set
      * 
-     * @param Entity $entity
+     * @param Entity|array $entity  Entity or data representation of entity
      */
-    final public function add($entity)
+    public function add($entity)
     {
         $this->offsetSet(null, $entity); 
     }
@@ -490,6 +511,33 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         return $this->entities;
     }
     
+    /**
+     * Convert loaded values to an entityset.
+     * 
+     * @param array $values
+     * @return static
+     */
+    public static function fromData(array $values)
+    {
+        return new static($values);
+    }
+    
+    /**
+     * Get data that needs stored in the DB
+     * 
+     * @return array
+     */
+    public function toData()
+    {
+        $data = [];
+        
+        foreach ($this->entities as $key => $entity) {
+            $data[$key] = $entity->toData();
+        }
+        
+        return $data;
+    }
+    
     
     /**
      * Call a method on each entity.
@@ -503,7 +551,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     {
         $results = [];
         
-        foreach ($this as $key => $entity) {
+        foreach ($this->entities as $key => $entity) {
             $results[$key] = call_user_func_array([$entity, $name], $arguments);
         }
         

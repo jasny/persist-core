@@ -3,6 +3,7 @@
 namespace Jasny\DB\Entity;
 
 use Jasny\DB\EntitySet;
+use Jasny\DB\Data;
 
 /**
  * Basic implementation for an entity
@@ -94,7 +95,15 @@ trait Implementation
      */
     public function toData()
     {
-        return $this->getValues();
+        $values = $this->getValues();
+        
+        foreach ($values as &$item) {
+            if ($item instanceof Data) {
+                $item = $item->toData();
+            }
+        }
+        
+        return $values;
     }
     
     
@@ -133,10 +142,14 @@ trait Implementation
      * @param Entities[]|\Traversable $entities  Array of entities
      * @param int|\Closure            $total     Total number of entities (if set is limited)
      * @param int                     $flags     Control the behaviour of the entity set
+     * @param mixed                   ...        Additional are passed to the constructor
      * @return EntitySet
      */
     public static function entitySet($entities = [], $total = null, $flags = 0)
     {
-        return new EntitySet(get_called_class(), $entities, $total, $flags);
+        $args = func_get_args();
+        array_unshift($args, get_called_class());
+        
+        return EntitySet::forClass(...$args);
     }
 }
