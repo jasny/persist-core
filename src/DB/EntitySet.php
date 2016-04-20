@@ -517,7 +517,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      * @param array $values
      * @return static
      */
-    public static function fromData(array $values)
+    public static function fromData($values)
     {
         return new static($values);
     }
