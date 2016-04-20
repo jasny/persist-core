@@ -2,10 +2,10 @@
 
 namespace Jasny\DB\Entity\Meta;
 
-use Jasny\DB\Entity,
-    Jasny\DB\EntitySet,
-    Jasny\DB\DataMapper,
-    Jasny\Meta\TypeCasting;
+use Jasny\DB\Entity;
+use Jasny\DB\EntitySet;
+use Jasny\DB\DataMapper;
+use Jasny\Meta\TypeCasting;
 
 /**
  * Use metadata and type casting for entities.
@@ -102,7 +102,7 @@ trait Implementation
             if (is_a($type, Entity\LazyLoading::class, true)) return $type::lazyload($value);
             if (is_a($type, Entity\ActiveRecord::class, true)) return $type::fetch($value);
 
-            $mapper = $type . 'Mapper';
+            $mapper = $type.'Mapper';
             if (class_exists($mapper) && is_a($mapper, DataMapper::class, true)) {
                 return $mapper::fetch($value);
             }

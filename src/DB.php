@@ -75,8 +75,8 @@ class DB
             if (empty($supported)) throw new \Exception("No Jasny DB drivers found");
             
             if (count($supported) > 1) {
-                throw new \Exception("Please specify the database driver. " .
-                    "The following are supported: " . join(', ', $supported));
+                throw new \Exception("Please specify the database driver. ".
+                    "The following are supported: ".join(', ', $supported));
             }
             
             $driver = reset($supported); // Exactly one driver is installed
