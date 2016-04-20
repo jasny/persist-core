@@ -460,8 +460,8 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Replace the entity of a specific index
      * 
-     * @param int    $index
-     * @param Entity $entity
+     * @param int          $index
+     * @param Entity|array $entity  Entity or data representation of entity
      */
     public function offsetSet($index, $entity)
     {
