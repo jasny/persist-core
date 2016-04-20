@@ -15,9 +15,10 @@ trait Implementation
 {
     /**
      * Flag entity as ghost
+     * @ignore
      * @var boolean
      */
-    protected $ghost__ = false;
+    protected $i__ghost__ = false;
     
     /**
      * Reload the entity
@@ -61,7 +62,7 @@ trait Implementation
             $entity->$key = $value;
         }
 
-        $entity->ghost__ = true;
+        $entity->i__ghost__ = true;
         
         return $entity;
     }
@@ -74,7 +75,7 @@ trait Implementation
      */
     public function isGhost()
     {
-        return $this->ghost__;
+        return $this->i__ghost__;
     }
     
     /**
@@ -86,11 +87,11 @@ trait Implementation
      */
     public function expand(array $opts = [])
     {
-        if ($this->ghost__ !== true) return $this;
+        if ($this->i__ghost__ !== true) return $this;
         
         $ghostProps = (array)$this;
         
-        $this->ghost__ = -1; // Intermediate state
+        $this->i__ghost__ = -1; // Intermediate state
         
         if (!$this->reload($opts)) return $this;
         
@@ -99,7 +100,7 @@ trait Implementation
             $this->$prop = $value;
         }
 
-        $this->ghost__ = false;
+        $this->i__ghost__ = false;
         if (method_exists($this, '__construct')) $this->__construct();
         
         return $this;
@@ -111,11 +112,11 @@ trait Implementation
      */
     protected function autoExpand()
     {
-        if ($this->ghost__ !== true) return;
+        if ($this->i__ghost__ !== true) return;
         
         $this->expand();
 
-        if ($this->ghost__ === -1) {
+        if ($this->i__ghost__ === -1) {
             $me = get_class($this) . ($this instanceof Identifiable ? ' ' . $this->getId() : '');
             trigger_error("Unable to auto-expand $me", E_USER_NOTICE);
         }
@@ -130,6 +131,6 @@ trait Implementation
     public function __get($prop)
     {
         $this->autoExpand();
-        return $this->ghost__ ? null : $this->$prop;
+        return $this->i__ghost__ ? null : $this->$prop;
     }
 }
