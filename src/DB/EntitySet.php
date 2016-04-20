@@ -65,7 +65,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         list($class, $entities, $total, $flags) = $this->getConstructArgs(func_get_args()); // BC v2.2
         
         $this->flags |= $flags;
-        if (isset($class)) $this->setClass($class);
+        if (isset($class)) $this->setEntityClass($class);
         $this->setEntities($entities);
         $this->totalCount = $total;
     }
@@ -329,24 +329,26 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     }
     
     /**
-     * Find the entity in this set
+     * Get an entity from the set by id
      * 
      * @param mixed|Entity $id
      * @return Entity|null
      */
     public function get($id)
     {
-        $fn = is_a($this->entityClass, Entity\Identifiable::class, true) ? 'getId' : 'toData';
+        if (!is_a($this->entityClass, Entity\Identifiable::class, true)) {
+            throw new \LogicException("Unable to get entity from set by id: {$this->entityClass} is not Identifiable");
+        }
         
         if ($id instanceof Entity) {
             $this->assertEntity($id);
-            $id = $id->$fn();
+            $id = $id->getId();
         }
         
         if (!isset($id)) return null;
         
         foreach ($this->entities as $entity) {
-            if ($entity->$fn() === $id) return $entity;
+            if ($entity->getId() === $id) return $entity;
         }
         
         return null;
