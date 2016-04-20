@@ -10,4 +10,5 @@ namespace Jasny\DB;
  * @link    https://jasny.github.io/db
  */
 interface Exception
-{}
+{
+}

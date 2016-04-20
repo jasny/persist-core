@@ -53,7 +53,7 @@ trait Implementation
             list($prop, $operator) = static::extractOperatorForMapping($key);
             
             if (isset($map[$prop])) {
-                $values[$map[$prop] . $operator] = $value;
+                $values[$map[$prop].$operator] = $value;
                 unset($values[$key]);
             }
         }

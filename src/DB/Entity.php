@@ -26,7 +26,6 @@ interface Entity extends \JsonSerializable, Data
      * Get the values.
      * {@interal Using Entity::getValues() shouldn't be any different than getting the properties one by one }}
      * 
-     * @param array|object $values
      * @return $this
      */
     public function getValues();

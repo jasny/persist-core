@@ -115,7 +115,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     protected function setEntityClass($class)
     {
         if (!is_a($class, Entity::class, true)) {
-            throw new \DomainException("A $class is not an Entity");
+            throw new \DomainException("a $class is not an Entity");
         }
         
         if (
@@ -125,7 +125,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
             !is_a($class, $this->entityClass, true)
         ) {
             $setClass = get_class($this);
-            throw new \DomainException("A $setClass is only for {$this->entityClass} entities, not $class");
+            throw new \DomainException("a $setClass is only for {$this->entityClass} entities, not $class");
         }
         
         if (!empty($this->entities) && $class !== $this->entityClass) {
@@ -147,7 +147,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         }
         
         if (!is_a($entity, $this->entityClass)) {
-            throw new \InvalidArgumentException(get_class($entity) . " is not a {$this->entityClass} entity");
+            throw new \InvalidArgumentException(get_class($entity)." is not a {$this->entityClass} entity");
         }
     }
     
@@ -160,7 +160,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     protected function castEntities($entities)
     {
         if (!is_array($entities) && !$entities instanceof \Traversable) {
-            $type = (is_object($entities) ? get_class($entities) . ' ' : '') . gettype($entities);
+            $type = (is_object($entities) ? get_class($entities).' ' : '').gettype($entities);
             throw new \InvalidArgumentException("Input should either be an array or Traverable, not a $type");
         }
         
@@ -282,7 +282,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Get the entities as array
      * 
-     * @return array
+     * @return Entity[]
      */
     public function getArrayCopy()
     {
@@ -316,6 +316,23 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         return $this->totalCount;
     }
     
+    /**
+     * Get the id of an entity
+     *
+     * @param Entity $entity
+     * @return mixed
+     */
+    protected function getEntityId(Entity $entity)
+    {
+        $this->assertEntity($id);
+        
+        if (!$id instanceof Entity\Identifiable) {
+           throw new \LogicException("Unable to get entity from set by id: Entity is not Identifiable");
+        }
+    
+        $id = $id->getId();
+    }
+    
     
     /**
      * Check if the entity exists in this set
@@ -325,13 +342,13 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function contains($id)
     {
-        return (boolean)$this->get($id);
+        return !is_null($this->get($id));
     }
     
     /**
      * Get an entity from the set by id
      * 
-     * @param mixed|Entity $id
+     * @param mixed|Entity $id   Entity id or Entity
      * @return Entity|null
      */
     public function get($id)
@@ -341,13 +358,13 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         }
         
         if ($id instanceof Entity) {
-            $this->assertEntity($id);
-            $id = $id->getId();
+            $id = $this->getEntityId($entity);
         }
         
         if (!isset($id)) return null;
         
         foreach ($this->entities as $entity) {
+            if (!$id instanceof Entity\Identifiable) continue; // Shouldn't happen
             if ($entity->getId() === $id) return $entity;
         }
         
@@ -443,8 +460,8 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Replace the entity of a specific index
      * 
-     * @param int    $index
-     * @param Entity $entity
+     * @param int          $index
+     * @param Entity|array $entity  Entity or data representation of entity
      */
     public function offsetSet($index, $entity)
     {
@@ -491,6 +508,8 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         if (!is_a($this->entityClass, Entity\LazyLoading::class, true)) return $this;
         
         foreach ($this->entities as $i => $entity) {
+            if (!$entity instanceof Entity\LazyLoading) continue; // Shouldn't happen
+        
             $entity->expand($opts);
             if ($entity->isGhost()) unset($this->entities[$i]);
         }
