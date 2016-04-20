@@ -316,6 +316,23 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         return $this->totalCount;
     }
     
+    /**
+     * Get the id of an entity
+     *
+     * @param Entity $entity
+     * @return mixed
+     */
+    protected function getEntityId(Entity $entity)
+    {
+        $this->assertEntity($id);
+        
+        if (!$id instanceof Entity\Identifiable) {
+           throw new \LogicException("Unable to get entity from set by id: Entity is not Identifiable");
+        }
+    
+        $id = $id->getId();
+    }
+    
     
     /**
      * Check if the entity exists in this set
@@ -325,13 +342,13 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function contains($id)
     {
-        return (boolean)$this->get($id);
+        return !is_null($this->get($id));
     }
     
     /**
      * Get an entity from the set by id
      * 
-     * @param mixed|Entity $id
+     * @param mixed|Entity $id   Entity id or Entity
      * @return Entity|null
      */
     public function get($id)
@@ -341,13 +358,13 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         }
         
         if ($id instanceof Entity) {
-            $this->assertEntity($id);
-            $id = $id->getId();
+            $id = $this->getEntityId($entity);
         }
         
         if (!isset($id)) return null;
         
         foreach ($this->entities as $entity) {
+            if (!$id instanceof Entity\Identifiable) continue; // Shouldn't happen
             if ($entity->getId() === $id) return $entity;
         }
         
@@ -491,6 +508,8 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         if (!is_a($this->entityClass, Entity\LazyLoading::class, true)) return $this;
         
         foreach ($this->entities as $i => $entity) {
+            if (!$entity instanceof Entity\LazyLoading) continue; // Shouldn't happen
+        
             $entity->expand($opts);
             if ($entity->isGhost()) unset($this->entities[$i]);
         }
