@@ -38,7 +38,6 @@ trait Implementation
     /**
      * Get the values.
      * 
-     * @param array|object $values
      * @return $this
      */
     public function getValues()

@@ -115,7 +115,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     protected function setEntityClass($class)
     {
         if (!is_a($class, Entity::class, true)) {
-            throw new \DomainException("A $class is not an Entity");
+            throw new \DomainException("a $class is not an Entity");
         }
         
         if (
@@ -125,7 +125,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
             !is_a($class, $this->entityClass, true)
         ) {
             $setClass = get_class($this);
-            throw new \DomainException("A $setClass is only for {$this->entityClass} entities, not $class");
+            throw new \DomainException("a $setClass is only for {$this->entityClass} entities, not $class");
         }
         
         if (!empty($this->entities) && $class !== $this->entityClass) {
@@ -147,7 +147,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         }
         
         if (!is_a($entity, $this->entityClass)) {
-            throw new \InvalidArgumentException(get_class($entity) . " is not a {$this->entityClass} entity");
+            throw new \InvalidArgumentException(get_class($entity)." is not a {$this->entityClass} entity");
         }
     }
     
@@ -160,7 +160,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     protected function castEntities($entities)
     {
         if (!is_array($entities) && !$entities instanceof \Traversable) {
-            $type = (is_object($entities) ? get_class($entities) . ' ' : '') . gettype($entities);
+            $type = (is_object($entities) ? get_class($entities).' ' : '').gettype($entities);
             throw new \InvalidArgumentException("Input should either be an array or Traverable, not a $type");
         }
         
@@ -282,7 +282,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Get the entities as array
      * 
-     * @return array
+     * @return Entity[]
      */
     public function getArrayCopy()
     {

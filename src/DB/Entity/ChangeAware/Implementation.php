@@ -2,8 +2,8 @@
 
 namespace Jasny\DB\Entity\ChangeAware;
 
-use SebastianBergmann\Comparator\Factory as ComparatorFactory,
-    SebastianBergmann\Comparator\ComparisonFailure;
+use SebastianBergmann\Comparator\Factory as ComparatorFactory;
+use SebastianBergmann\Comparator\ComparisonFailure;
 
 /**
  * Implementation for change aware entities.
