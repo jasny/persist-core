@@ -19,7 +19,8 @@ trait Implementation
      */
     public function with(...$properties)
     {
-        if (count($properties) === 1 && is_array($properties)) $properties = $properties[0]; // BC v2.2
+        if (!is_array($properties)) $properties = [$properties];
+        if (count($properties) === 1 && is_array($properties[0])) $properties = $properties[0]; // BC v2.2
         
         foreach ($properties as $property) {
             if (!isset($this->$property)) {
@@ -44,7 +45,8 @@ trait Implementation
      */
     public function without(...$properties)
     {
-        if (count($properties) === 1 && is_array($properties)) $properties = $properties[0]; // BC v2.2
+        if (!is_array($properties)) $properties = [$properties];
+        if (count($properties) === 1 && is_array($properties[0])) $properties = $properties[0]; // BC v2.2
         
         $myProps = array_keys((array)$this); // This adds \0 for private properties
         
@@ -65,7 +67,8 @@ trait Implementation
      */
     public function withOnly(...$properties)
     {
-        if (count($properties) === 1 && is_array($properties)) $properties = $properties[0]; // BC v2.2
+        if (!is_array($properties)) $properties = [$properties];
+        if (count($properties) === 1 && is_array($properties[0])) $properties = $properties[0]; // BC v2.2
         
         $myProps = array_keys((array)$this); // This adds \0 for private properties
         
