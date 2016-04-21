@@ -74,6 +74,11 @@ trait Implementation
      */
     protected function markAsGhost($state)
     {
+        if (!in_array($state, [true, false, -1])) {
+            $var = var_export($state, true);
+            throw new \InvalidArgumentException("Ghost state should be true, false or -1, not $var");
+        }
+        
         $this->i__ghost__ = $state;
     }
     
@@ -85,6 +90,10 @@ trait Implementation
      */
     public function isGhost()
     {
+        if (!isset($this->i__ghost__)) {
+            throw new \LogicException("Ghost state is null, this shouldn't happen");
+        }
+        
         return $this->i__ghost__;
     }
     
@@ -126,7 +135,7 @@ trait Implementation
         
         $this->expand();
 
-        if ($this->markAsGhost(-1)) {
+        if ($this->isGhost() === -1) {
             $me = get_class($this) . ($this instanceof Identifiable ? ' ' . $this->getId() : '');
             trigger_error("Unable to auto-expand $me", E_USER_NOTICE);
         }
