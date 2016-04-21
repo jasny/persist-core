@@ -258,8 +258,8 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         $entities = [];
         
         foreach ($input as $key => $entity) {
-            $id = $entity instanceof Entity\Identifiable ? $entity->getId() : $entity->toData();
-            if (isset($id) && array_search($id, $ids)) continue;
+            $id = $this->getEntityId($entity);
+            if (isset($id) && in_array($id, $ids)) continue;
             
             $ids[] = $id;
             $entities[$key] = $entity;
@@ -316,6 +316,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         return $this->totalCount;
     }
     
+    
     /**
      * Get the id of an entity
      *
@@ -324,15 +325,15 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     protected function getEntityId(Entity $entity)
     {
-        $this->assertEntity($id);
+        $this->assertEntity($entity);
         
-        if (!$id instanceof Entity\Identifiable) {
-           throw new \LogicException("Unable to get entity from set by id: Entity is not Identifiable");
+        if (!$entity instanceof Entity\Identifiable) {
+           $class = get_class($entity);
+           throw new \LogicException("Unable to get entity id: {$class} is not Identifiable");
         }
     
-        $id = $id->getId();
+        return $entity->getId();
     }
-    
     
     /**
      * Check if the entity exists in this set
@@ -353,19 +354,14 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function get($id)
     {
-        if (!is_a($this->entityClass, Entity\Identifiable::class, true)) {
-            throw new \LogicException("Unable to get entity from set by id: {$this->entityClass} is not Identifiable");
-        }
-        
         if ($id instanceof Entity) {
-            $id = $this->getEntityId($entity);
+            $id = $this->getEntityId($id);
         }
         
         if (!isset($id)) return null;
         
         foreach ($this->entities as $entity) {
-            if (!$id instanceof Entity\Identifiable) continue; // Shouldn't happen
-            if ($entity->getId() === $id) return $entity;
+            if ($this->getEntityId($entity) === $id) return $entity;
         }
         
         return null;
@@ -410,8 +406,11 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     {
         if (~$this->flags & self::ALLOW_DUPLICATES) return $this;
         
-        $flags = $this->flags & ~static::ALLOW_DUPLICATES;
-        return new static($this->getEntityClass(), $this->entities, $this->totalCount, $flags);
+        $uniqueSet = clone $this;
+        $uniqueSet->flags = $uniqueSet->flags & ~static::ALLOW_DUPLICATES;
+        $uniqueSet->entities = $uniqueSet->uniqueEntities($uniqueSet->entities);
+        
+        return $uniqueSet;
     }
 
     /**
