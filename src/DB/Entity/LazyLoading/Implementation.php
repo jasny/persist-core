@@ -18,7 +18,7 @@ trait Implementation
      * @ignore
      * @var boolean
      */
-    protected $i__ghost__ = false;
+    private $i__ghost__ = false;
     
     /**
      * Reload the entity
@@ -62,9 +62,19 @@ trait Implementation
             $entity->$key = $value;
         }
 
-        $entity->i__ghost__ = true;
+        $entity->markAsGhost(true);
         
         return $entity;
+    }
+    
+    /**
+     * Mark the entity as a ghost
+     * 
+     * @param boolean|int $state   true, false or -1
+     */
+    protected function markAsGhost($state)
+    {
+        $this->i__ghost__ = $state;
     }
     
     /**
@@ -87,11 +97,11 @@ trait Implementation
      */
     public function expand(array $opts = [])
     {
-        if ($this->i__ghost__ !== true) return $this;
+        if ($this->isGhost() !== true) return $this;
         
         $ghostProps = (array)$this;
         
-        $this->i__ghost__ = -1; // Intermediate state
+        $this->markAsGhost(-1); // Intermediate state
         
         if (!$this->reload($opts)) return $this;
         
@@ -100,7 +110,7 @@ trait Implementation
             $this->$prop = $value;
         }
 
-        $this->i__ghost__ = false;
+        $this->markAsGhost(false);
         if (method_exists($this, '__construct')) $this->__construct();
         
         return $this;
@@ -112,11 +122,11 @@ trait Implementation
      */
     protected function autoExpand()
     {
-        if ($this->i__ghost__ !== true) return;
+        if ($this->isGhost() !== true) return;
         
         $this->expand();
 
-        if ($this->i__ghost__ === -1) {
+        if ($this->markAsGhost(-1)) {
             $me = get_class($this) . ($this instanceof Identifiable ? ' ' . $this->getId() : '');
             trigger_error("Unable to auto-expand $me", E_USER_NOTICE);
         }
@@ -131,6 +141,6 @@ trait Implementation
     public function __get($prop)
     {
         $this->autoExpand();
-        return $this->i__ghost__ ? null : $this->$prop;
+        return $this->isGhost() ? null : $this->$prop;
     }
 }
