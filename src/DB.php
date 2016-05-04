@@ -26,6 +26,7 @@ class DB
         'mysql' => 'Jasny\DB\MySQL\Connection',
         'mysqli' => 'Jasny\DB\MySQL\Connection',
         'mongo' => 'Jasny\DB\Mongo\DB',
+        'mongodb' => 'Jasny\DB\Mongo\DB',
         'rest' => 'Jasny\DB\REST\Client'
     ];
     
@@ -43,6 +44,20 @@ class DB
     private function __construct()
     {}
     
+    
+    /**
+     * Set the configuration
+     * 
+     * @param array|object $config
+     */
+    public static function configure($config)
+    {
+        if (is_array($config)) {
+            $config = (object)$config;
+        }
+        
+        self::$config = $config;
+    }
     
     /**
      * Get configuration settings for a connection.
@@ -69,14 +84,20 @@ class DB
             $supported = [];
             
             foreach (array_unique(static::$drivers) as $driver => $class) {
-                if (class_exists($class)) $supported[] = $driver;
+                if (class_exists($class)) {
+                    $supported[] = $driver;
+                }
             }
             
-            if (empty($supported)) throw new \Exception("No Jasny DB drivers found");
+            if (empty($supported)) {
+                throw new \Exception("No Jasny DB drivers found");
+            }
             
             if (count($supported) > 1) {
-                throw new \Exception("Please specify the database driver. ".
-                    "The following are supported: ".join(', ', $supported));
+                throw new \Exception(
+                    "Please specify the database driver. " .
+                    "The following are supported: " . join(', ', $supported)
+                );
             }
             
             $driver = reset($supported); // Exactly one driver is installed
@@ -84,7 +105,9 @@ class DB
             $driver = strtolower($driver);
         }
         
-        if (!isset(static::$drivers[$driver])) throw new \Exception("Unknown DB driver '{$driver}'");
+        if (!isset(static::$drivers[$driver])) {
+            throw new \Exception("Unknown DB driver '{$driver}'");
+        }
         
         return static::$drivers[$driver];
     }
@@ -97,7 +120,9 @@ class DB
      */
     public static function createConnection($settings)
     {
-        if (is_array($settings)) $settings = (object)$settings;
+        if (is_array($settings)) {
+            $settings = (object)$settings;
+        }
         
         $class = static::getConnectionClass(isset($settings->driver) ? $settings->driver : null);
         return new $class($settings);
@@ -114,7 +139,9 @@ class DB
     {
         if (!isset(self::$connections[$name])) {
             $settings = static::getSettings($name);
-            if (!$settings) throw new \Exception("DB connection named '$name' doesn't exist");
+            if (!$settings) {
+                throw new \Exception("DB connection named '$name' doesn't exist");
+            }
             
             self::$connections[$name] = static::createConnection($settings);
         }
@@ -141,7 +168,10 @@ class DB
     public static function unregister($conn)
     {
         $name = is_string($conn) ? $conn : static::getRegisteredName($conn);
-        if (isset($name)) unset(self::$connections[$name]);
+        
+        if (isset($name)) {
+            unset(self::$connections[$name]);
+        }
     }
     
     /**
@@ -154,7 +184,9 @@ class DB
     public static function getRegisteredName(DB\Connection $conn)
     {
         foreach (self::$connections as $name => $cur) {
-            if ($cur === $conn) return $name;
+            if ($cur === $conn) {
+                return $name;
+            }
         }
         
         return null;
