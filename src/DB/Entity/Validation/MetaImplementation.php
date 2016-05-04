@@ -46,8 +46,10 @@ trait MetaImplementation
             $validation->addError("%s is required", $prop);
         }
 
-        if (!isset($this->$prop)) return $validation;
-
+        if (!isset($this->$prop)) {
+            return $validation;
+        }
+        
         if (isset($meta['unique'])) {
             $uniqueGroup = is_string($meta['unique']) ? $meta['unique'] : null;
 

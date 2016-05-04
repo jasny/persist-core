@@ -18,7 +18,7 @@ trait Implementation
      * @ignore
      * @var boolean
      */
-    private $i__ghost__ = false;
+    private $i__ghost = false;
     
     /**
      * Reload the entity
@@ -26,6 +26,7 @@ trait Implementation
      * @param array $opts
      */
     abstract public function reload(array $opts = []);
+    
     
     /**
      * Create a ghost object.
@@ -50,11 +51,10 @@ trait Implementation
             $values = [$prop => $values];
         }
         
-        $reflection = new \ReflectionClass($class);
-        $entity = $reflection->newInstanceWithoutConstructor();
+        $entity = (new \ReflectionClass($class))->newInstanceWithoutConstructor();
+        $props = call_user_func('get_object_vars', $entity); // Get public vars as array
         
-        foreach ((array)$entity as $prop => $value) {
-            if ($prop[0] === "\0") continue; // Ignore private and protected properties
+        foreach ($props as $prop => $value) {
             unset($entity->$prop);
         }
         
@@ -62,25 +62,42 @@ trait Implementation
             $entity->$key = $value;
         }
 
-        $entity->markAsGhost(true);
+        $entity->setGhostState(true);
         
         return $entity;
     }
     
+    
     /**
-     * Mark the entity as a ghost
+     * Set the ghost state
      * 
      * @param boolean|int $state   true, false or -1
      */
-    protected function markAsGhost($state)
+    final protected function markAsGhost($state)
     {
         if (!in_array($state, [true, false, -1])) {
             $var = var_export($state, true);
             throw new \InvalidArgumentException("Ghost state should be true, false or -1, not $var");
         }
         
-        $this->i__ghost__ = $state;
+        $this->i__ghost = $state;
     }
+    
+    /**
+     * Get the ghost state
+     * 
+     * @return boolean|int
+     * @throws \LogicException
+     */
+    final protected function isMarkedAsGhost()
+    {
+        if (!isset($this->i__ghost)) {
+            throw new \LogicException("Ghost state is null, this shouldn't happen");
+        }
+        
+        return $this->i__ghost;
+    }
+    
     
     /**
      * Check if the object is a ghost.
@@ -90,11 +107,7 @@ trait Implementation
      */
     public function isGhost()
     {
-        if (!isset($this->i__ghost__)) {
-            throw new \LogicException("Ghost state is null, this shouldn't happen");
-        }
-        
-        return $this->i__ghost__;
+        return $this->isMarkedAsGhost();
     }
     
     /**
@@ -106,21 +119,26 @@ trait Implementation
      */
     public function expand(array $opts = [])
     {
-        if ($this->isGhost() !== true) return $this;
+        if ($this->isGhost() !== true) {
+            return $this;
+        }
         
-        $ghostProps = (array)$this;
+        $ghostProps = call_user_func('get_object_vars', $this); // Get public vars as array
         
         $this->markAsGhost(-1); // Intermediate state
         
-        if (!$this->reload($opts)) return $this;
+        if (!$this->reload($opts)) {
+            return $this;
+        }
         
         foreach ($ghostProps as $prop => $value) {
-            if ($prop[0] === "\0") continue;
             $this->$prop = $value;
         }
 
         $this->markAsGhost(false);
-        if (method_exists($this, '__construct')) $this->__construct();
+        if (method_exists($this, '__construct')) {
+            $this->__construct();
+        }
         
         return $this;
     }
@@ -131,7 +149,9 @@ trait Implementation
      */
     protected function autoExpand()
     {
-        if ($this->isGhost() !== true) return;
+        if ($this->isGhost() !== true) {
+            return;
+        }
         
         $this->expand();
 
