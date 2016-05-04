@@ -6,19 +6,30 @@ Jasny DB
 
 Jasny DB adds OOP design patterns to PHP's database extensions.
 
-* [Registered connections](#registered-connections)
+* [Connection registry](#connections)
 * [Entity](#entity)
 * [Active record](#active-record)
 * [Data mapper](#data-mapper)
-* [Recordset](#recordset)
-* [Validation](#validation)
-* [Lazy loading](#lazy-loading)
-* [Soft deletion](#soft-deletion)
-* [Resultset](#resultset)
+* [Dataset](#dataset)
+* [Entity set](#entity-set)
+* [Metadata](#meta-data)
+* Entity traits
+  * [Type casting](#type-casting)
+  * [Identifiable](#identifiable)
+  * [Self aware](#self-aware)
+  * [Change aware](#change-aware)
+  * [Validation](#validation)
+  * [Dynamic](#dynamic)
+  * [Enrichable](#enrichable)
+  * [Redactable](#redactable)
+  * [Lazy loading](#lazy-loading)
+  * [Soft deletion](#soft-deletion)
 * [Maintainable code](#maintainable-code)
 * [Code generation](#code-generation)
 
-Jasny DB is a [data access layer](https://en.wikipedia.org/wiki/Data_access_layer) (*not* a DB abstraction layer) for PHP. It does allow you properly structure your model, while still using the methods and functionality of PHP's native database extensions.
+Jasny DB is a [data access layer](https://en.wikipedia.org/wiki/Data_access_layer) (*not* a DB abstraction layer) for
+PHP. It does allow you properly structure your model, while still using the methods and functionality of PHP's native
+database extensions.
 
 ### Installation
 This library is not intended to be installed directly. The Jasny DB library contains design pattern definitions and
@@ -26,9 +37,9 @@ implementations. It serves as an abstract base for concrete libraries implemente
 
 ### Implementations
 
-* [Jasny\DB-MySQL](http://github.com/jasny/db-mysql) extends [mysqli](http://php.net/mysqli)
-* [Jasny\DB-Mongo](http://github.com/jasny/db-mongo) extends [mongo](http://php.net/mongo)
-* [Jasny\DB-REST](http://github.com/jasny/db-rest) for datasources implementing
+* [Jasny\DB\MySQL](http://github.com/jasny/db-mysql) extends [mysqli](http://php.net/mysqli)
+* [Jasny\DB\Mongo](http://github.com/jasny/db-mongo) extends [mongo](http://php.net/mongo)
+* [Jasny\DB\REST](http://github.com/jasny/db-rest) for datasources implementing
   [REST](http://en.wikipedia.org/wiki/Representational_state_transfer)
 
 
@@ -58,7 +69,7 @@ Jasny\DB::unregister('foo');
 The same connection may be registered multiple times under different names.
 
 ### Named connections
-Connections implementing the `Named` interface can register themselves to `Jasny\DB` using the `useAs($name)` method.
+Connections implementing the `Namable` interface can register themselves to `Jasny\DB` using the `useAs($name)` method.
 With the `getConnectionName()` you can get the name of a connection.
 
 ```php
@@ -84,7 +95,7 @@ may hold the configuration for each connection. When using the `conn()` method, 
 new connection based on the configuration settings.
 
 ```php
-Jasny\DB::$config = [
+Jasny\DB::configure([
     'default' => [
         'driver'    => 'mysql',
         'database'  => 'database',
@@ -99,7 +110,7 @@ Jasny\DB::$config = [
         'username'  => 'user',
         'password'  => 'secure'
     ]
-];
+]);
 
 Jasny\DB::conn()->query();
 Jasny\DB::conn('external')->get("/something");
@@ -210,11 +221,11 @@ FooMapper::undelete($foo);
 ```
 
 
-Recordset
+Dataset
 ---
 
 An entity tends to be a part of a set of data, like a table or collection. If it's possible to load multiple 
-entities from that set, the Active Record or Data Mapper implement the `Recordset` interface.
+entities from that set, the Active Record or Data Mapper implement the `Dataset` interface.
 
 The `fetch()` method returns a single entity. The `fetchAll()` method returns multiple enities. `fetchList()`
 loads a list with the id and description as key/value pairs. The `count()` method counts the number of entities
@@ -269,6 +280,14 @@ It's save to use `$_GET` and `$_POST` parameters directly.
     $result = Foo::fetchAll($_GET);
     
 
+Entity set
+---
+
+Whenever an array of entities would be returned, Jasny DB will return an `EntitySet` object instead. An entity set
+can be used as array as well as object.
+
+_further documentation required_
+
 
 Metadata
 ---
@@ -284,19 +303,43 @@ Jasny DB support defining metadata through annotations by using [Jasny\Meta](htt
 
 ```php
 /**
- * Foo entity
+ * User entity
  *
- * @supportive yes
+ * @entitySet UserSet
  */
-class Foo
+class User
 {
    /**
     * @var string
     * @required
     */
-   public $color;
+   public $name;
 }
 ```
+
+### Class annotations
+
+    * @entitySet - Default entity set for this class of Entities
+
+_Additional class annotations may be used by a specific Jasny DB driver._
+
+### Property annotations
+
+    * @var - (type casting) - Value type or class name
+    * @type - (validation) - Value (sub)type
+    * @required (validation) - Value should not be blank at validation.
+    * @min (validation) - Minimal value
+    * @max (validation) - Maximal value
+    * @minLength (validation) - Minimal length of a string
+    * @maxLength (validation) - Maximal length of a string
+    * @options _values_ (validation) - Value should be one the the given options.
+    * @pattern _regex_ (validation) - Value should match the regex pattern.
+    * @immutable (validation) - Property can't be changed after it is created.
+    * @unique (validation) - Entity should be unique accross it's dataset.
+    * @unique _field_ (validation) - Entity should be unique for a group. The group is identified by _field_.
+    * @censor (redact) - Skip property when outputting the entity.
+
+_Additional property annotations may be used by a specific Jasny DB driver._
 
 ### Caveat
 Metadata can be really powerfull in generalizing and abstracting code. However you can quickly fall into the trap of
@@ -316,9 +359,11 @@ For [php internal types](http://php.net/types) normal [type juggling](http://php
 aren't blindly casted. For instance casting `"foo"` to an integer would trigger a warning and skip the casting.
 
 ### Objects
-Casting a value to a model entity that supports [Lazy Loading](#lazy-loading), creates a ghost object. Entities that
-implement the Active Record pattern or have a Data Mapper, but do not support Lazy Loading are fetched from the
+Casting a value to an `Identifiable` entity that supports [Lazy Loading](#lazy-loading), creates a ghost object.
+Entities that implement `ActiveRecord` or have a `DataMapper`, but do not support `LazyLoading` are fetched from the
 database.
+
+Casting a value to a non-identifiable entity will call the `Entity::fromData()` method.
 
 Casting to any other type of object will create a new object normally. For instance casting "bar" to `Foo` would result
 in `new Foo("bar")`.
@@ -331,6 +376,17 @@ Entities implementing the Validatable interface, can do some basic validation pr
 checking that all required properties have values, checking the variable type matches and checking if values are
 uniquely present in the database.
 
+The `validate()` method will return a [`Jasny\ValidationResult`](https://github.com/jasny/validation-result#readme).
+
+```php
+$validation = $entity->validate();
+
+if ($validation->failed()) {
+    http_response_code(400); // Bad Request
+    json_encode($validation->getErrors());
+    exit();
+}
+```
 
 Lazy loading
 ---
@@ -353,12 +409,6 @@ The `isDeleted()` method check whether this document has been deleted.
 
 Fetch methods do not return deleted entities. Instead use `fetchDeleted($filter)` to load a deleted entity. Use
 `fetchAllDeleted($filter)` to fetch all deleted entities from the database.
-
-
-Resultset
----
-
-_Not implemented yet_
 
 
 Maintainable code
@@ -400,9 +450,9 @@ $user->setValues($data);
 $user->save();
 
 // Data Mapper
-$user = UserMapper::fetch(10);
+$user = DB::mapper('User')->fetch(10);
 $user->setValues($data);
-UserMapper::save($user);
+DB::mapper('User')->save($user);
 ```
 
 
@@ -410,9 +460,3 @@ Code generation
 ---
 
 _Present in version 1, but not yet available for version 2_
-
-
-API documentation (generated)
----
-
-http://jasny.github.com/db/docs
