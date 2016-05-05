@@ -2,10 +2,9 @@
 
 namespace Jasny\DB\Entity\Meta;
 
-use Jasny\DB\Entity;
-use Jasny\DB\EntitySet;
-use Jasny\DB\DataMapper;
+use stdClass;
 use Jasny\Meta;
+use Jasny\DB;
 
 /**
  * Use metadata and type casting for entities.
@@ -41,7 +40,7 @@ trait Implementation
      * Set cached meta for class
      * 
      * @param string $class
-     * @param Meta $meta
+     * @param Meta   $meta
      */
     final protected static function cacheMeta($class, Meta $meta)
     {
@@ -59,17 +58,18 @@ trait Implementation
         $meta = static::getCachedMeta($class);
         
         if (!isset($meta)) {
-            $meta = \Jasny\Meta::fromAnnotations(new \ReflectionClass($class));
+            $meta = Meta::fromAnnotations(new \ReflectionClass($class));
             static::setCachedMeta($class, $meta);
         }
         
         return $meta;
     }
     
+    
     /**
      * Get the identity property/properties
      * 
-     * @return string|key
+     * @return string|array
      */
     public static function getIdProperty()
     {
@@ -82,32 +82,33 @@ trait Implementation
         return empty($key) ? null : (count($key) === 1 ? $key[0] : $key);
     }
     
-    
+        
     /**
-     * Create an entity set
+     * Get type cast object
      * 
-     * @param Entities[]|\Traversable $entities  Array of entities
-     * @param int|\Closure            $total     Total number of entities (if set is limited)
-     * @param int                     $flags     Control the behaviour of the entity set
-     * @return EntitySet
+     * @return DB\TypeCast
      */
-    public static function entitySet($entities = [], $total = null, $flags = 0)
+    protected function typeCast($value)
     {
-        $setClass = static::meta()['entitySet'] ?: EntitySet::class;
-        return new $setClass(get_called_class(), $entities, $total, $flags);
+        $typecast = DB\TypeCast::value($value);
+        
+        $typecast->alias('self', get_class($this));
+        $typecast->alias('static', get_class($this));
+        
+        return $typecast;
     }
     
-    
+
     /**
      * Filter object for json serialization
      * 
-     * @param \stdClass $object
-     * @return \stdClass
+     * @param stdClass $object
+     * @return stdClass
      */
-    protected function jsonSerializeFilter(\stdClass $object)
+    protected function jsonSerializeFilter(stdClass $object)
     {
-        foreach ($object as $prop => $value) {
-            if (static::meta()->of($prop)['censored']) {
+        foreach (static::meta()->ofProperties() as $prop => $meta) {
+            if ($meta['censored']) {
                 unset($object->$prop);
             }
         }
