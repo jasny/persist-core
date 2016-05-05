@@ -2,8 +2,13 @@
 
 namespace Jasny;
 
+use Jasny\DB\Connection;
+use Jasny\DB\ConnectionFactory;
+use Jasny\DB\ConnectionRegistry;
+use Jasny\DB\EntitySetFactory;
+
 /**
- * Connection factory and registry.
+ * DB factories and registries
  * 
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
@@ -19,23 +24,20 @@ class DB
     public static $config;
     
     /**
-     * List of supported drivers with class names
-     * @var array
+     * @var ConnectionFactory
      */
-    public static $drivers = [
-        'mysql' => 'Jasny\DB\MySQL\Connection',
-        'mysqli' => 'Jasny\DB\MySQL\Connection',
-        'mongo' => 'Jasny\DB\Mongo\DB',
-        'mongodb' => 'Jasny\DB\Mongo\DB',
-        'rest' => 'Jasny\DB\REST\Client'
-    ];
+    protected static $connectionFactory;
     
     /**
-     * Named connections
-     * @var \Jasny\DB\Connection[]
+     * @var ConnectionRegistry
      */
-    protected static $connections = [];
+    protected static $connectionRegistry;
     
+    /**
+     * @var EntitySetFactory
+     */
+    protected static $entitySetFactory;
+
     
     /**
      * Should not be instantiated.
@@ -63,132 +65,165 @@ class DB
      * Get configuration settings for a connection.
      * 
      * @param string $name
-     * @return array|object
+     * @return array|object|null
      */
     public static function getSettings($name)
     {
-        $config = (object)static::$config;
-        return isset($config->$name) ? $config->$name : null;
+        return isset(self::$config->$name) ? self::$config->$name : null;
     }
 
+    /**
+     * Use a custom factory
+     * 
+     * @param ConnectionFactory|ConnectionRegistry|EntitySetFactory $custom
+     */
+    public static function employ($custom)
+    {
+        DB::employ(new MyCustomConnectionFactory());
+        DB::employ(new AwesomeEntitySetFactory());
+        
+        if ($custom instanceof ConnectionFactory) {
+            self::$connectionFactory = $custom;
+        } elseif ($custom instanceof ConnectionRegistry) {
+            self::$connectionRegistry = $custom;
+        } elseif ($custom instanceof EntitySetFactory) {
+            self::$entitySetFactory = $custom;
+        } else {
+            $expected = "Jasny\DB\ConnectionFactory, Jasny\DB\ConnectionRegistry or Jasny\DB\EntitySetFactory";
+            $type = (is_object($custom) ? get_class($custom) . ' ' : '') . gettype($custom);
+            
+            throw new \InvalidArgumentException("Expected a $expected object, but got a $type");
+        }
+    }
+    
 
     /**
-     * Get the connection class.
+     * Get the connection factory
      * 
-     * @param string $driver
-     * @return string
+     * @return ConnectionFactory
      */
-    protected static function getConnectionClass($driver = null)
+    public static function connectionFactory()
     {
-        if (!isset($driver)) {
-            $supported = [];
-            
-            foreach (array_unique(static::$drivers) as $driver => $class) {
-                if (class_exists($class)) {
-                    $supported[] = $driver;
-                }
-            }
-            
-            if (empty($supported)) {
-                throw new \Exception("No Jasny DB drivers found");
-            }
-            
-            if (count($supported) > 1) {
-                throw new \Exception(
-                    "Please specify the database driver. " .
-                    "The following are supported: " . join(', ', $supported)
-                );
-            }
-            
-            $driver = reset($supported); // Exactly one driver is installed
-        } else {
-            $driver = strtolower($driver);
+        if (!isset(self::$connectionFactory)) {
+            self::$connectionFactory = new ConnectionFactory();
         }
         
-        if (!isset(static::$drivers[$driver])) {
-            throw new \Exception("Unknown DB driver '{$driver}'");
-        }
-        
-        return static::$drivers[$driver];
+        return self::$connectionFactory;
     }
     
     /**
      * Create a new database connection
      * 
-     * @param array|object $settings
-     * @return DB\Connection
+     * @param array|mixed $settings  Configuration settings
+     * @return Connection
      */
     public static function createConnection($settings)
     {
-        if (is_array($settings)) {
-            $settings = (object)$settings;
-        }
-        
-        $class = static::getConnectionClass(isset($settings->driver) ? $settings->driver : null);
-        return new $class($settings);
+        return self::connectionFactory()->create($settings);
     }
     
     
     /**
+     * Get connection registry
+     * 
+     * @return ConnectionRegistry
+     */
+    public static function connections()
+    {
+        if (!isset(self::$connectionRegistry)) {
+            self::$connectionRegistry = new ConnectionRegistry();
+        }
+        
+        return self::$connectionRegistry;
+    }
+    
+    /**
      * Get a named DB connection.
      * 
-     * @param string $name
+     * @param string $name  Name
      * @return static
      */
     public static function conn($name = 'default')
     {
-        if (!isset(self::$connections[$name])) {
-            $settings = static::getSettings($name);
-            if (!$settings) {
-                throw new \Exception("DB connection named '$name' doesn't exist");
-            }
-            
-            self::$connections[$name] = static::createConnection($settings);
-        }
-        
-        return self::$connections[$name];
+        return self::connections()->get($name);
     }
     
     /**
      * Register a DB connection
      * 
-     * @param string        $name
-     * @param DB\Connection $conn
+     * @deprecated since v2.4.0
+     * @see Jasny\DB\ConnectionRegistry::register()
+     * 
+     * @param string     $name  Name
+     * @param Connection $conn  Connection
      */
-    public static function register($name, DB\Connection $conn)
+    public static function register($name, Connection $conn)
     {
-        self::$connections[$name] = $conn;
+        return self::connections()->register($name, $conn);
     }
     
     /**
      * Unregister a connection
      * 
-     * @param string|DB\Connection $conn
+     * @deprecated since v2.4.0
+     * @see Jasny\DB\ConnectionRegistry::unregister()
+     * 
+     * @param string|Connection $conn  Name or connection
      */
     public static function unregister($conn)
     {
-        $name = is_string($conn) ? $conn : static::getRegisteredName($conn);
-        
-        if (isset($name)) {
-            unset(self::$connections[$name]);
-        }
+        return self::connections()->unregister($conn);
     }
     
     /**
      * Get the name of the connection.
      * If the connection has multiple names, returns the first one.
      * 
-     * @param DB\Connection $conn
+     * @deprecated since v2.4.0
+     * @see Jasny\DB\ConnectionRegistry::getRegisteredName()
+     * 
+     * @param Connection $conn
      * @return string|null
      */
-    public static function getRegisteredName(DB\Connection $conn)
+    public static function getRegisteredName(Connection $conn)
     {
-        foreach (self::$connections as $name => $cur) {
-            if ($cur === $conn) {
-                return $name;
-            }
+        return self::connections()->getRegisteredName($conn);
+    }
+
+    
+    /**
+     * Get the entitySet factory
+     * 
+     * @return EntitySetFactory
+     */
+    public static function entitySetFactory()
+    {
+        if (!isset(self::$entitySetFactory)) {
+            self::$entitySetFactory = new EntitySetFactory();
         }
         
-        return null;
+        return self::$entitySetFactory;
+    }
+    
+    /**
+     * Create an entity set
+     * 
+     * @param string                  $entityClass  Entity or entity class
+     * @param Entities[]|\Traversable $entities     Array of entities
+     * @param int|\Closure            $total        Total number of entities (if set is limited)
+     * @param int                     $flags        Control the behaviour of the entity set
+     * @param mixed                   ...           Additional arguments are passed to the constructor
+     * @return EntitySet
+     */
+    public function entitySet($entityClass, $entities = [], $total = null, $flags = 0)
+    {
+        $args = func_get_args();
+        
+        if (!isset($this->classes[$entityClass]) && is_callable([$entityClass, 'entitySet'])) {
+            array_shift($args);
+            return $entityClass::entitySet(...$args); // BC v2.3
+        }
+        
+        return self::entitySetFactory()->create(...$args);
     }
 }

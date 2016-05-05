@@ -2,6 +2,7 @@
 
 namespace Jasny\DB\Entity;
 
+use Jasny\DB;
 use Jasny\DB\EntitySet;
 use Jasny\DB\Data;
 
@@ -138,6 +139,9 @@ trait Implementation
     /**
      * Create an entity set
      * 
+     * @deprecated since v2.4.0
+     * @see DB::entitySet()
+     * 
      * @param Entities[]|\Traversable $entities  Array of entities
      * @param int|\Closure            $total     Total number of entities (if set is limited)
      * @param int                     $flags     Control the behaviour of the entity set
@@ -146,9 +150,9 @@ trait Implementation
      */
     public static function entitySet($entities = [], $total = null, $flags = 0)
     {
-        $args = func_get_args();
-        array_unshift($args, get_called_class());
+        $entityClass = get_called_class();
         
-        return EntitySet::forClass(...$args);
+        $entitySetClass = DB::entitySetFactory()->getClass($entityClass);
+        return $entitySetClass::forClass($entityClass, ...$args);
     }
 }

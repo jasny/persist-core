@@ -29,15 +29,4 @@ interface Entity extends \JsonSerializable, Data
      * @return $this
      */
     public function getValues();
-    
-    
-    /**
-     * Create an entity set
-     * 
-     * @param Entities[]|\Traversable $entities  Array of entities
-     * @param int|\Closure            $total     Total number of entities (if set is limited)
-     * @param int                     $flags     Control the behaviour of the entity set
-     * @return EntitySet
-     */
-    public static function entitySet($entities = [], $total = null, $flags = 0);
 }
