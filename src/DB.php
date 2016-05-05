@@ -19,6 +19,10 @@ class DB
     /**
      * Configuration (per connection)
      * 
+     * @deprecated since v2.4.0
+     * @see DB::configure()
+     * @access private
+     * 
      * @var object
      */
     public static $config;
@@ -222,5 +226,19 @@ class DB
         }
         
         return self::entitySetFactory()->create(...$args);
+    }
+    
+    
+    /**
+     * Reset the global state.
+     * Should be run before each unit test.
+     */
+    public static function resetGlobalState()
+    {
+        self::$config = null;
+        
+        self::$connectionFactory = null;
+        self::$connectionRegistry = null;
+        self::$entitySetFactory = null;
     }
 }
