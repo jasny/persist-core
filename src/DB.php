@@ -26,17 +26,17 @@ class DB
     /**
      * @var ConnectionFactory
      */
-    protected static $connectionFactory;
+    private static $connectionFactory;
     
     /**
      * @var ConnectionRegistry
      */
-    protected static $connectionRegistry;
+    private static $connectionRegistry;
     
     /**
      * @var EntitySetFactory
      */
-    protected static $entitySetFactory;
+    private static $entitySetFactory;
 
     
     /**
@@ -52,7 +52,7 @@ class DB
      * 
      * @param array|object $config
      */
-    public static function configure($config)
+    final public static function configure($config)
     {
         if (is_array($config)) {
             $config = (object)$config;
@@ -67,7 +67,7 @@ class DB
      * @param string $name
      * @return array|object|null
      */
-    public static function getSettings($name)
+    final public static function getSettings($name)
     {
         return isset(self::$config->$name) ? self::$config->$name : null;
     }
@@ -79,9 +79,6 @@ class DB
      */
     public static function employ($custom)
     {
-        DB::employ(new MyCustomConnectionFactory());
-        DB::employ(new AwesomeEntitySetFactory());
-        
         if ($custom instanceof ConnectionFactory) {
             self::$connectionFactory = $custom;
         } elseif ($custom instanceof ConnectionRegistry) {
@@ -102,7 +99,7 @@ class DB
      * 
      * @return ConnectionFactory
      */
-    public static function connectionFactory()
+    final public static function connectionFactory()
     {
         if (!isset(self::$connectionFactory)) {
             self::$connectionFactory = new ConnectionFactory();
@@ -117,7 +114,7 @@ class DB
      * @param array|mixed $settings  Configuration settings
      * @return Connection
      */
-    public static function createConnection($settings)
+    final public static function createConnection($settings)
     {
         return self::connectionFactory()->create($settings);
     }
@@ -128,7 +125,7 @@ class DB
      * 
      * @return ConnectionRegistry
      */
-    public static function connections()
+    final public static function connections()
     {
         if (!isset(self::$connectionRegistry)) {
             self::$connectionRegistry = new ConnectionRegistry();
@@ -143,7 +140,7 @@ class DB
      * @param string $name  Name
      * @return static
      */
-    public static function conn($name = 'default')
+    final public static function conn($name = 'default')
     {
         return self::connections()->get($name);
     }
@@ -157,7 +154,7 @@ class DB
      * @param string     $name  Name
      * @param Connection $conn  Connection
      */
-    public static function register($name, Connection $conn)
+    final public static function register($name, Connection $conn)
     {
         return self::connections()->register($name, $conn);
     }
@@ -170,7 +167,7 @@ class DB
      * 
      * @param string|Connection $conn  Name or connection
      */
-    public static function unregister($conn)
+    final public static function unregister($conn)
     {
         return self::connections()->unregister($conn);
     }
@@ -185,7 +182,7 @@ class DB
      * @param Connection $conn
      * @return string|null
      */
-    public static function getRegisteredName(Connection $conn)
+    final public static function getRegisteredName(Connection $conn)
     {
         return self::connections()->getRegisteredName($conn);
     }
@@ -196,7 +193,7 @@ class DB
      * 
      * @return EntitySetFactory
      */
-    public static function entitySetFactory()
+    final public static function entitySetFactory()
     {
         if (!isset(self::$entitySetFactory)) {
             self::$entitySetFactory = new EntitySetFactory();
@@ -215,7 +212,7 @@ class DB
      * @param mixed                   ...           Additional arguments are passed to the constructor
      * @return EntitySet
      */
-    public function entitySet($entityClass, $entities = [], $total = null, $flags = 0)
+    final public function entitySet($entityClass, $entities = [], $total = null, $flags = 0)
     {
         $args = func_get_args();
         
