@@ -35,7 +35,7 @@ class ConnectionRegistry
      * @param string $name
      * @return Connection|null
      */
-    protected function create($name)
+    protected function createConnection($name)
     {
         $settings = $this->getSettings($name);
         

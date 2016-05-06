@@ -69,7 +69,7 @@ class ConnectionFactory
             );
         }
 
-        $driver = reset($supported); // Exactly one driver is installed
+        return reset($supported); // Exactly one driver is installed
     }
     
     /**

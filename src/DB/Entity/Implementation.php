@@ -151,6 +151,7 @@ trait Implementation
     public static function entitySet($entities = [], $total = null, $flags = 0)
     {
         $entityClass = get_called_class();
+        $args = func_get_args();
         
         $entitySetClass = DB::entitySetFactory()->getClass($entityClass);
         return $entitySetClass::forClass($entityClass, ...$args);

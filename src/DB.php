@@ -8,7 +8,9 @@ use Jasny\DB\ConnectionRegistry;
 use Jasny\DB\EntitySetFactory;
 
 /**
- * DB factories and registries
+ * DB factories and registries.
+ * 
+ * @interal Methods that are used by the library are made `final`. Overwriting them in would give unexpected results.
  * 
  * @author  Arnold Daniels <arnold@jasny.net>
  * @license https://raw.github.com/jasny/db/master/LICENSE MIT
@@ -56,7 +58,7 @@ class DB
      * 
      * @param array|object $config
      */
-    final public static function configure($config)
+    public static function configure($config)
     {
         if (is_array($config)) {
             $config = (object)$config;

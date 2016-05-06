@@ -3,11 +3,11 @@
 namespace Jasny\DB\Entity;
 
 use Jasny\Meta\Introspection,
-    Jasny\Meta\TypedObject;
+    Jasny\Meta\TypeCasting;
 
 /**
  * Description of Meta
  */
-interface Meta extends Introspection, TypedObject
+interface Meta extends Introspection, TypeCasting
 {
 }

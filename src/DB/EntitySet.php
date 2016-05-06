@@ -95,12 +95,14 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function forClass($class, $entities = [], $total = null, $flags = 0)
     {
-        $refl = new \ReflectionClass($class);
+        $refl = new \ReflectionClass(get_called_class());
         
         $entitySet = $refl->newInstanceWithoutConstructor();
         $entitySet->entityClass = $class;
         
         $args = func_get_args();
+        array_shift($args);
+        
         $entitySet->__construct(...$args);
         
         return $entitySet;
@@ -589,7 +591,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     {
         if (is_a($this->entityClass, Introspection::class, true)) {
             $entityClass = $this->entityClass;
-            $var = $entityClass::meta()->of($property)['var'];
+            $var = $entityClass::meta()->ofProperty($property)->get('var');
             if ($var) $var = substr_replace('[]', '', $var);
         }
         

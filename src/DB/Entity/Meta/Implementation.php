@@ -59,7 +59,7 @@ trait Implementation
         
         if (!isset($meta)) {
             $meta = Meta::fromAnnotations(new \ReflectionClass($class));
-            static::setCachedMeta($class, $meta);
+            static::cacheMeta($class, $meta);
         }
         
         return $meta;
