@@ -20,7 +20,7 @@ trait Implemention
      */
     public function useAs($name)
     {
-        DB::register($name, $this);
+        DB::connections()->register($name, $this);
     }
     
     /**
@@ -31,6 +31,6 @@ trait Implemention
      */
     public function getConnectionName()
     {
-        return DB::getRegisteredName($this);
+        return DB::connections()->getRegisteredName($this);
     }
 }

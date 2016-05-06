@@ -62,7 +62,7 @@ trait Implementation
             $entity->$key = $value;
         }
 
-        $entity->setGhostState(true);
+        $entity->markAsGhost(true);
         
         return $entity;
     }
