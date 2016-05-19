@@ -93,7 +93,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      * @param int|\Closure            $total     Total number of entities (if set is limited)
      * @param int                     $flags     Control the behaviour of the entity set
      */
-    public function forClass($class, $entities = [], $total = null, $flags = 0)
+    public static function forClass($class, $entities = [], $total = null, $flags = 0)
     {
         $refl = new \ReflectionClass(get_called_class());
         
@@ -140,16 +140,21 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Check if input is valid Entity
      * 
-     * @param Entity $entity
+     * @param Entity|mixed $entity
      */
-    protected function assertEntity(Entity $entity)
+    protected function assertEntity($entity)
     {
+        if (!$entity instanceof Entity) {
+            $type = (is_object($entity) ? get_class($entity) . ' ' : '') . gettype($entity);
+            throw new \InvalidArgumentException("A $type is not an Entity");
+        }
+        
         if (!isset($this->entityClass)) {
             $this->setEntityClass(get_class($entity));
         }
         
         if (!is_a($entity, $this->entityClass)) {
-            throw new \InvalidArgumentException(get_class($entity)." is not a {$this->entityClass} entity");
+            throw new \InvalidArgumentException(get_class($entity) . " is not a {$this->entityClass} entity");
         }
     }
     
@@ -169,14 +174,14 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         if ($entities instanceof \Traversable) $entities = iterator_to_array($entities);
         
         foreach ($entities as &$entity) {
-            if ($entity instanceof \stdClass || (is_array($entity) && is_string(key($entity)))) {
+            if (!$entity instanceof Entity) {
                 if (!isset($this->entityClass)) {
                     throw new \InvalidArgumentException("Unable to cast: entity class not set");
                 }
                 
                 $class = $this->entityClass;
                 
-                $entity = $this->flags & static::LAZYLOAD && is_a($class, Entity\LazyLoading::class, true)
+                $entity = $this->flags & self::LAZYLOAD && is_a($class, Entity\LazyLoading::class, true)
                     ? $class::lazyload($entity)
                     : $class::fromData($entity);
             }
@@ -539,7 +544,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      * @param array $values
      * @return static
      */
-    public static function fromData($values)
+    final public static function fromData($values)
     {
         return new static($values);
     }
