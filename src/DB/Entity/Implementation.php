@@ -95,10 +95,12 @@ trait Implementation
      */
     public function toData()
     {
-        $values = $this->getValues();
+        $values = call_user_func('get_object_vars', $this);
         
         foreach ($values as &$item) {
-            if ($item instanceof Data) {
+            if ($item instanceof Identifiable) {
+                $item = $item->getId();
+            } elseif ($item instanceof Data) {
                 $item = $item->toData();
             }
         }
