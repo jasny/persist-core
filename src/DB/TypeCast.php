@@ -50,10 +50,9 @@ class TypeCast extends \Jasny\TypeCast
         }
         
         $array = $this->toArray();
-        
-        return is_a($entityClass, Entity\LazyLoading::class, true)
-            ? $entitySetClass::lazyload($array)
-            : $entitySetClass::fromData($array);
+
+        $flags = is_a($entityClass, Entity\LazyLoading::class, true) ? EntitySet::LAZYLOAD : 0;
+        return $entitySetClass::forClass($entityClass, $array, null, $flags);
     }
     
     
