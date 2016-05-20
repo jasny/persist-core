@@ -17,54 +17,8 @@ use Jasny\DB;
  */
 trait Implementation
 {
-    use Meta\TypeCastingImplementation;
-    
-    /**
-     * Cached meta data per class
-     * @var Meta[]
-     */
-    private static $i__meta;
-    
-    /**
-     * Get cached meta for class
-     * 
-     * @param string $class
-     * @return Meta
-     */
-    final protected static function getCachedMeta($class)
-    {
-        return isset(self::$i__meta[$class]) ? self::$i__meta[$class] : null;
-    }
-    
-    /**
-     * Set cached meta for class
-     * 
-     * @param string $class
-     * @param Meta   $meta
-     */
-    final protected static function cacheMeta($class, Meta $meta)
-    {
-        self::$i__meta[$class] = $meta;
-    }
-    
-    /**
-     * Get metadata
-     * 
-     * @return Meta
-     */
-    public static function meta()
-    {
-        $class = get_called_class();
-        $meta = static::getCachedMeta($class);
-        
-        if (!isset($meta)) {
-            $meta = Meta::fromAnnotations(new \ReflectionClass($class));
-            static::cacheMeta($class, $meta);
-        }
-        
-        return $meta;
-    }
-    
+    use Meta\TypeCasting\Implementation;
+    use Meta\Introspection\AnnotationsImplementation;
     
     /**
      * Get the identity property/properties

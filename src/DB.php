@@ -218,7 +218,7 @@ class DB
      * @param mixed                   ...           Additional arguments are passed to the constructor
      * @return EntitySet
      */
-    final public function entitySet($entityClass, $entities = [], $total = null, $flags = 0)
+    final public static function entitySet($entityClass, $entities = [], $total = null, $flags = 0)
     {
         $args = func_get_args();
         

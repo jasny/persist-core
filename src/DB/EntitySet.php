@@ -5,6 +5,7 @@ namespace Jasny\DB;
 use Jasny\DB\Entity;
 use Jasny\DB\Data;
 use Jasny\Meta\Introspection;
+use Jasny\DB\TypeCast;
 
 /**
  * An Entity Set is an array of the same entities.
@@ -138,7 +139,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     }
     
     /**
-     * Check if input is valid Entity
+     * Turn input into array of entities
      * 
      * @param Entity|mixed $entity
      */
@@ -161,35 +162,55 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Check if input array contains valid Entities
      * 
-     * @param array|\Traversable $entities
+     * @param array|\Traversable $input
      * @return array
      */
-    protected function castEntities($entities)
+    protected function castEntities($input)
     {
-        if (!is_array($entities) && !$entities instanceof \Traversable) {
-            $type = (is_object($entities) ? get_class($entities).' ' : '').gettype($entities);
+        if (!is_array($input) && !$input instanceof \Traversable) {
+            $type = (is_object($input) ? get_class($input).' ' : '') . gettype($input);
             throw new \InvalidArgumentException("Input should either be an array or Traverable, not a $type");
         }
+
+        $entities = [];
         
-        if ($entities instanceof \Traversable) $entities = iterator_to_array($entities);
-        
-        foreach ($entities as &$entity) {
-            if (!$entity instanceof Entity) {
-                if (!isset($this->entityClass)) {
-                    throw new \InvalidArgumentException("Unable to cast: entity class not set");
-                }
-                
-                $class = $this->entityClass;
-                
-                $entity = $this->flags & self::LAZYLOAD && is_a($class, Entity\LazyLoading::class, true)
-                    ? $class::lazyload($entity)
-                    : $class::fromData($entity);
-            }
-            
+        foreach ($input as $item) {
+            $entity = $this->castEntity($item);
             $this->assertEntity($entity);
+            
+            $entities[] = $entity;
         }
         
         return $entities;
+    }
+    
+    /**
+     * Turn item into entity
+     * 
+     * @param mixed $item
+     * @return Entity
+     */
+    protected function castEntity($item)
+    {
+        if ($item instanceof Entity) {
+            return $item;
+        }
+        
+        if (!isset($this->entityClass)) {
+            throw new \InvalidArgumentException("Unable to cast: entity class not set");
+        }
+
+        $class = $this->entityClass;
+        
+        if ($this->flags & self::LAZYLOAD && is_a($class, Entity\LazyLoading::class, true)) {
+            return $class::lazyload($item);
+        }
+        
+        if (!$item instanceof Data) {
+            throw new \LogicException("Unable to cast: $class doesn't implement the " . Data::class . " interface");
+        }
+        
+        return $class::fromData($item);
     }
 
     /**
@@ -586,6 +607,21 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     }
     
     /**
+     * Get property type (through var meta data)
+     * 
+     * @param string $property
+     * @return string
+     */
+    protected function getEntityPropertyType($property)
+    {
+        $entityClass = $this->getEntityClass();
+        
+        return is_a($entityClass, Introspection::class, true)
+            ? $entityClass::meta()->ofProperty($property)->get('var')
+            : null;
+    }
+    
+    /**
      * Get property of entities as array.
      * If property is an array or EntitySet, it will be flattened.
      * 
@@ -594,35 +630,14 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     public function __get($property)
     {
-        if (is_a($this->entityClass, Introspection::class, true)) {
-            $entityClass = $this->entityClass;
-            $var = $entityClass::meta()->ofProperty($property)->get('var');
-            if ($var) $var = substr_replace('[]', '', $var);
-        }
-        
         $array = [];
         
         foreach ($this->entities as $entity) {
             if (!isset($entity->$property)) continue;
-            
-            $value = $entity->$property;
-            
-            if ($value instanceof self) {
-                if (!$var) $var = $value->entityClass;
-                $value = $value->getArrayCopy();
-            }
-            
-            if (!isset($var)) $var = is_object($value) ? get_class($value) : gettype($value);
-            
-            if (is_array($value)) {
-                $array = array_merge($array, $value);
-            } else {
-                $array[] = $value;
-            }
+            $array[] = $entity->$property;
         }
         
-        return is_a($var, Entity::class, true) 
-            ? $var::entitySet($array, null, self::ALLOW_DUPLICATES)
-            : $array;
+        $hint = $this->getEntityPropertyType($property);
+        return TypeCast::value($array)->withEntitySetFlags(self::ALLOW_DUPLICATES)->flatten($hint);
     }
 }
