@@ -168,7 +168,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     protected function castEntities($input)
     {
         if (!is_array($input) && !$input instanceof \Traversable) {
-            $type = (is_object($input) ? get_class($input).' ' : '').gettype($input);
+            $type = (is_object($input) ? get_class($input).' ' : '') . gettype($input);
             throw new \InvalidArgumentException("Input should either be an array or Traverable, not a $type");
         }
 
@@ -192,7 +192,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
      */
     protected function castEntity($item)
     {
-        if (!$item instanceof Entity) {
+        if ($item instanceof Entity) {
             return $item;
         }
         
@@ -201,9 +201,16 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         }
 
         $class = $this->entityClass;
-        $lazyload = ($this->flags & self::LAZYLOAD) && is_a($class, Entity\LazyLoading::class, true);
         
-        return $lazyload ? $class::lazyload($item) : $class::fromData($item);
+        if ($this->flags & self::LAZYLOAD && is_a($class, Entity\LazyLoading::class, true)) {
+            return $class::lazyload($item);
+        }
+        
+        if (!$item instanceof Data) {
+            throw new \LogicException("Unable to cast: $class doesn't implement the " . Data::class . " interface");
+        }
+        
+        return $class::fromData($item);
     }
 
     /**

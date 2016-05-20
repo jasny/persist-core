@@ -208,7 +208,7 @@ class TypeCast extends \Jasny\TypeCast
             $types[] = $type . (is_array($value) || $value instanceof EntitySet ? '' : '[]');
             
             if ($value instanceof EntitySet) {
-                $types[] = $value->getEntityClass();
+                $types[] = $value->getEntityClass() . '[]';
                 $value = $value->getArrayCopy();
             }
             
@@ -237,6 +237,7 @@ class TypeCast extends \Jasny\TypeCast
             $isArray &= $type === 'array' || is_a($type, EntitySet::class, true) || strstr($type, '[]');
             
             foreach ($types as $parentType) {
+                if ($type === $parentType) continue;
                 if (strstr($type, '[]') !== strstr($parentType, '[]')) continue;
                 
                 $class = str_replace('[]', '', $type);
