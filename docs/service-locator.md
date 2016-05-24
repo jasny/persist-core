@@ -1,73 +1,91 @@
 Service Locator
----
+===
 
-The `Jasny\DB` class is a [service locator][service locator pattern]. It grant access to [registries][registry pattern]
+The `Jasny\DB` class is a [service locator][service locator pattern]. It grants access to [registries][registry pattern]
 and [builders][builder pattern].
 
+With the service locator your application can access any part of model from anywhere in the code, including other model
+classes.
 
-## Methods
+---
 
-#### [[`Connection`](connections.md) conn(string $name = 'default')]
-Get a connection from the registry.
+> **Beware!** Using a service locator will make it easier to create your application. However it can make the code more
+> difficult to maintain (opposed to using [Dependency injection](#dependency-injection), because it becomes unclear when
+> you would be introducing a breaking change.
 
-_This is a shortcut of `Jasny\DB::getConnectionRegistry()->get($name)`._
+## Mapper Registry
 
-**Returns a **
-
-
-#### [`map(string $className)`]
-Get a data mapper for an entity class.
-
-_This is a shortcut of `Jasny\DB::getMapperRegistry()->get($name)`._
-
-**Returns a [Mapper](mapper.md)**
-
-
-#### [`entitySet()`]
-Get the builder to create an EntitySet.
-
-**Returns an [EntitySetBuilder](/entity-set.md#builder)**
+The service locator holds a single instance of a [mapper registry](mapper.md#registry). The `map()` method is a
+shortcut for creating a mapper.
 
 ```php
-$entitySet = Jasny\DB::entitySet()->forClass(User::class)->create($data);
+class User implements Entity
+{
+    public function getTeams()
+    {
+        return Jasny\DB::map(Team::class)->fetchAll(['users' => $this]);
+    }
+}
 ```
 
-#### [`getConnectionRegistry()`]
-Get the registry with DB connections.
+If you need direct access to the mapper you can use
 
-**Returns a [ConnectionRegistry](connections.md#registry)**
+```php
+$mappers = Jasny\DB::getMapperRegistry();
+```
+
+To use a custom mapper registry use
+
+```php
+$factory = new Jasny\DB\MapperFactory();
+Jasny\DB::withMapperRegistry(new MyCustomMapperRegistry($factory));
+```
+
+## Connection Registry
+
+The service locator holds a single instance of a [connection registry](connection.md#registry). If the application has
+only one database connection, it can be simply registered as 'default'.
+
+When there are multiple connections, you can get one of the connections by name.
+
+```php
+$db = DB::conn(); // The default connection
+$crm = DB::conn('crm-backend');
+```
+
+To use a custom connection registry use
+
+```php
+$factory = new Jasny\DB\ConnectionFactory();
+Jasny\DB::withConnectionRegistry(new MyCustomConnectionRegistry($factory));
+```
+
+> **Note:** Using the database connection should be reserved to classes that have the specific function to interact with
+>the databases, like a data mapper or data import class.
 
 
-#### [`withConnectionRegistry()`]
-Get the registry with DB connections.
+## EntitySet Builder
 
-**Returns a [ConnectionRegistry](connections.md#registry)**
+The service locator holds a single instance of a [entity set builder](entity-set.md#builder). The `entitySet()` method
+will clone this instance, allow you to further specify the build.
+
+```php
+$users = Jasny\DB::entitySet()->forClass(User::class)->allowDuplicates()->create($records);
+```
 
 
-#### [`Jasny\DB\EntitySetFactory getMapperFactory()`]
-Get the factory for data mappers.
-
-**Returns a [MapperFactory](mappers.md#factory)**
-
-#### [`getMapperRegistry()`]
-Get the registry for with data mappers.
-
-**Returns a [MapperRegistry](mappers.md#registry)**
-
-#### [`getMapperFactory()`]
-Get the registry for data mappers.
-
-**Returns a [MapperFactory](mappers.md#factory)**
-
+```php
+$builder = new MyCustomEntitySetBuilder();
+Jasny\DB::withEntitySetBuilder($builder);
+```
 
 ## Testing
 
-```
-Jasny\DB::entitySet()->forClass(User::class)->does(function($entities, $flags) use ($entitySetMock) {
-    return $entitySetMock();
-});
-```
+The service provider allows mocking the registries and builder using the `with...()` methods. However, you typically
+shouldn't need to use this when testing your application.
 
+The registries can be used to register mock objects. The entity set
+builder has it's own [capability for testing](entity-set.md#testing).
 
 
 [service locator pattern]: https://en.wikipedia.org/wiki/Service_locator_pattern
