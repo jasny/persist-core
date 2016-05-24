@@ -44,17 +44,10 @@ implementations. It serves as an abstract base for concrete libraries implemente
   [REST](http://en.wikipedia.org/wiki/Representational_state_transfer)
 
 
-Service Locator
----
+## Documentation
 
-The static `Jasny\DB` is a [service locator](https://en.wikipedia.org/wiki/Service_locator_pattern). It grant access to
-[factories](http://en.wikipedia.org/wiki/Factory_(object-oriented_programming)),
-[registries](http://martinfowler.com/eaaCatalog/registry.html) and
-[builders](https://en.wikipedia.org/wiki/Builder_pattern).
+This package is fully documented [here](http://jasny-db.readthedocs.io/en/latest/).
 
-* `connectionFactory()` - Factory for DB connections
-* `connectionRegistry()` - Registry for DB connections
-* `entitySetFactory()` - Factory for entity sets
 
 
 Connections
