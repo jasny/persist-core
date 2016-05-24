@@ -6,7 +6,8 @@ Jasny DB
 
 Jasny DB adds OOP design patterns to PHP's database extensions.
 
-* [Connection registry](#connections)
+* [Service Locator](#service-locator)
+* [Connection](#connections)
 * [Entity](#entity)
 * [Active record](#active-record)
 * [Data mapper](#data-mapper)
@@ -43,27 +44,37 @@ implementations. It serves as an abstract base for concrete libraries implemente
   [REST](http://en.wikipedia.org/wiki/Representational_state_transfer)
 
 
+Service Locator
+---
+
+The static `Jasny\DB` is a [service locator](https://en.wikipedia.org/wiki/Service_locator_pattern). It grant access to
+[factories](http://en.wikipedia.org/wiki/Factory_(object-oriented_programming)),
+[registries](http://martinfowler.com/eaaCatalog/registry.html) and
+[builders](https://en.wikipedia.org/wiki/Builder_pattern).
+
+* `connectionFactory()` - Factory for DB connections
+* `connectionRegistry()` - Registry for DB connections
+* `entitySetFactory()` - Factory for entity sets
+
+
 Connections
 ---
 
-Connection objects are use used to interact with a database. Other object must use a connection object do actions
-like getting getting, saving and deleting data from the DB.
+Connection objects are use used to interact with a database. Other object must use a connection object do actions like
+getting getting, saving and deleting data from the DB.
 
 ### Registry
-The static `Jasny\DB` serves as a [factory](http://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) and
-[registry](http://martinfowler.com/eaaCatalog/registry.html) for database connections. Registered connections can be
-used globally.
-
-To register a connection use the `register($name, $connection)` function. To get a registered connection, use the
-`conn($name)` function. Connections can be removed from the registry using `unregister($name|$connection)`.
+To register a connection use `Jasny\DB::connectionFactory()->register($name, $connection)`. To get a registered
+connection, use `Jasny\DB::connectionFactory()->get($name)` or the shortcut `Jasny\DB::conn($name)`. Connections can be
+removed from the registry using `Jasny\DB::connectionFactory()->unregister($name|$connection)`.
 
 ```php
 $db = new Jasny\DB\MySQL\Connection();
-Jasny\DB::register('foo');
+Jasny\DB::connectionFactory()->register('foo');
 
 Jasny\DB::conn('foo')->query();
 
-Jasny\DB::unregister('foo');
+Jasny\DB::connectionFactory()->unregister('foo');
 ```
 
 The same connection may be registered multiple times under different names.
@@ -90,9 +101,9 @@ Jasny\DB::conn()->query();
 
 ### Configuration
 
-Instead of using `createConnection()` and `register()` directly, you may set `Jasny\DB::$config`. This static property
-may hold the configuration for each connection. When using the `conn()` method, Jasny DB will automatically create a
-new connection based on the configuration settings.
+Instead of manually creating and configuring, you may configure connections using `Jasny\DB::configure()`. This static
+property may hold the configuration for each connection. When using the `conn()` method, Jasny DB will automatically
+create a new connection based on the configuration settings.
 
 ```php
 Jasny\DB::configure([
