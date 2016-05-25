@@ -222,7 +222,7 @@ class DB
     {
         $args = func_get_args();
         
-        if (!isset($this->classes[$entityClass]) && is_callable([$entityClass, 'entitySet'])) {
+        if (is_callable([$entityClass, 'entitySet'])) {
             array_shift($args);
             return $entityClass::entitySet(...$args); // BC v2.3
         }
