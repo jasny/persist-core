@@ -174,11 +174,11 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
 
         $entities = [];
         
-        foreach ($input as $item) {
+        foreach ($input as $key => $item) {
             $entity = $this->castEntity($item);
             $this->assertEntity($entity);
             
-            $entities[] = $entity;
+            $entities[$key] = $entity;
         }
         
         return $entities;
@@ -206,7 +206,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
             return $class::lazyload($item);
         }
         
-        if (!$item instanceof Data) {
+        if (!is_a($class, Data::class, true)) {
             throw new \LogicException("Unable to cast: $class doesn't implement the " . Data::class . " interface");
         }
         

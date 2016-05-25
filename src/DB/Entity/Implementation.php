@@ -43,16 +43,11 @@ trait Implementation
      */
     public function getValues()
     {
-        if ($this instanceof LazyLoading && $this->isGhost()) $this->expand();
-        
-        $values = [];
-        
-        foreach ((array)$this as $key=>$value) {
-            if ($key[0] === "\0") continue; // Ignore private and protected properties
-            $values[$key] = $value;
+        if ($this instanceof LazyLoading && $this->isGhost()) {
+            $this->expand();
         }
         
-        return $values;
+        return call_user_func('get_object_vars', $this);
     }
     
     
@@ -97,7 +92,12 @@ trait Implementation
     {
         $values = call_user_func('get_object_vars', $this);
         
-        foreach ($values as &$item) {
+        foreach ($values as $key => &$item) {
+            if (!$this instanceof Dynamic && !property_exists(get_class($this), $key)) {
+                unset($values[$key]);
+                continue;
+            }
+            
             if ($item instanceof Identifiable) {
                 $item = $item->getId();
             } elseif ($item instanceof Data) {
