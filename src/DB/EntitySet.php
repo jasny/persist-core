@@ -440,6 +440,32 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         
         return $uniqueSet;
     }
+    
+    /**
+     * Filter the elements
+     * 
+     * @param array $filter
+     * @return static
+     */
+    public function filter(array $filter)
+    {
+        $filteredSet = clone $this;
+        $filteredSet->flags = $filteredSet->flags & ~static::ALLOW_DUPLICATES;
+        
+        $filteredSet->entities = array_filter($filteredSet->entities, function($entity) use ($filter) {
+            $valid = true;
+            
+            foreach ($filter as $key => $value) {
+                $valid = $valid && !isset($entity->$key)
+                    ? !isset($value)
+                    : ($value == $entity->$key || (is_array($entity->$key) && in_array($value, $entity->$key)));
+            }
+            
+            return $valid;
+        });
+        
+        return $filteredSet;
+    }
 
     /**
      * Sort the entities as string or on a property.
