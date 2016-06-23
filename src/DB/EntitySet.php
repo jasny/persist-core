@@ -444,8 +444,6 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     /**
      * Sort the entities as string or on a property.
      * 
-     * @internal This should be ported to Jasny\DB\EntitySet
-     * 
      * @param string $property
      * @return $this
      */
@@ -598,12 +596,23 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     public function __call($name, $arguments)
     {
         $results = [];
+        $allEntitySets = true;
         
-        foreach ($this->entities as $key => $entity) {
-            $results[$key] = call_user_func_array([$entity, $name], $arguments);
+        foreach ($this->entities as $entity) {
+            $result = call_user_func_array([$entity, $name], $arguments);
+            $results[] = $result;
+            $allEntitySets = $allEntitySets && $result instanceof EntitySet;
         }
         
-        return $results === $this->entities ? $this : $results;
+        if ($results === $this->entities) {
+            return $this;
+        }
+        
+        if ($allEntitySets) {
+            $results = TypeCast::value($results)->withEntitySetFlags(self::ALLOW_DUPLICATES)->flatten();
+        }
+        
+        return $results;
     }
     
     /**
@@ -623,21 +632,27 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     
     /**
      * Get property of entities as array.
-     * If property is an array or EntitySet, it will be flattened.
+     * If property is an EntitySet, it will be flattened.
      * 
      * @param string $property
      * @return EntitySet|array
      */
     public function __get($property)
     {
-        $array = [];
+        $results = [];
+        $allEntitySets = true;
         
         foreach ($this->entities as $entity) {
             if (!isset($entity->$property)) continue;
-            $array[] = $entity->$property;
+            $results[] = $entity->$property;
+            $allEntitySets = $allEntitySets && $entity->$property instanceof EntitySet;
+        }
+
+        if ($allEntitySets) {
+            $hint = $this->getEntityPropertyType($property);
+            $results = TypeCast::value($results)->withEntitySetFlags(self::ALLOW_DUPLICATES)->flatten($hint);
         }
         
-        $hint = $this->getEntityPropertyType($property);
-        return TypeCast::value($array)->withEntitySetFlags(self::ALLOW_DUPLICATES)->flatten($hint);
+        return $results;
     }
 }
