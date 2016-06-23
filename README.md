@@ -235,8 +235,8 @@ Key            | Value  | Description
 "field (not)"  | scalar | Field is not the value
 "field (min)"  | scalar | Field is equal to or greater than the value
 "field (max)"  | scalar | Field is equal to or less than the value
-"field"        | array  | Field is one of the values in the array
-"field (not)"  | array  | Field is none of the values in the array
+"field (any)"  | array  | Field is one of the values in the array
+"field (none)" | array  | Field is none of the values in the array
 
 If the field is an array, you may use the following directives
 
@@ -252,7 +252,7 @@ Filters SHOULD be alligned business logic, wich may not directly align to checki
 SHOULD implement a method `filterToQuery` which converts the filter to a DB dependent query statement. You MAY
 overload this method to support custom filter keys.
 
-It's save to use `$_GET` and `$_POST` parameters directly.
+It's save to use query parameters (`$_GET`) and input data (`$_POST`) directly.
 
     // -> GET /foos?color=red&date(min)=2014-09-01&tags(not)=abandoned&created.user=12345
     
