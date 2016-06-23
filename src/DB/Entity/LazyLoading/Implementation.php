@@ -156,7 +156,7 @@ trait Implementation
         $this->expand();
 
         if ($this->isGhost() === -1) {
-            $me = get_class($this) . ($this instanceof Identifiable ? ' ' . $this->getId() : '');
+            $me = get_class($this) . ($this instanceof Identifiable ? ' ' . json_encode($this->getId()) : '');
             trigger_error("Unable to auto-expand $me", E_USER_NOTICE);
         }
     }
