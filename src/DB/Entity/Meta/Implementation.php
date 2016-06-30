@@ -54,12 +54,24 @@ trait Implementation
     
 
     /**
-     * Filter object for json serialization
+     * Filter object for json serialization.
+     * @deprecated
      * 
      * @param stdClass $object
      * @return stdClass
      */
     protected function jsonSerializeFilter(stdClass $object)
+    {
+        return $this->jsonSerializeFilterByMeta($object);
+    }
+
+    /**
+     * Filter object for json serialization
+     * 
+     * @param stdClass $object
+     * @return stdClass
+     */
+    protected function jsonSerializeFilterByMeta(stdClass $object)
     {
         foreach (static::meta()->ofProperties() as $prop => $meta) {
             if ($meta['censored']) {

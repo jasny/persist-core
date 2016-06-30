@@ -2,6 +2,7 @@
 
 namespace Jasny\DB\Entity\Redactable;
 
+use stdClass;
 use Jasny\DB\Entity\Enrichable;
 use Jasny\Meta\Introspection;
 
@@ -11,11 +12,37 @@ use Jasny\Meta\Introspection;
 trait Implementation
 {
     /**
+     * @var boolean
+     * @ignore
+     */
+    private $i__censor_default = false;
+    
+    /**
      * @var array
      * @ignore
      */
     private $i__censored = [];
     
+    
+    /**
+     * Set if properties are censored by default
+     * 
+     * @param boolean $censored
+     */
+    final protected function censorByDefault($censored)
+    {
+        $this->i__censor_default = $censored;
+    }
+    
+    /**
+     * Get if properties are censored by default
+     * 
+     * @return boolean
+     */
+    final protected function isCensoredByDefault()
+    {
+        return $this->i__censor_default;
+    }
     
     /**
      * Set a censored property
@@ -44,7 +71,8 @@ trait Implementation
      */
     final protected function resetMarkedAsCensored()
     {
-       $this->i__censored = [];
+        $this->i__censor_default = false;
+        $this->i__censored = [];
     }
     
     /**
@@ -105,16 +133,35 @@ trait Implementation
         if (is_array($properties) && count($properties) === 1 && is_array($properties[0])) {
             $properties = $properties[0]; // BC v2.2
         }
-        
-        $myProps = call_user_func('get_object_vars', $this); // Get public vars as array
-        $censorProps = array_diff($myProps, $properties);
-        
-        foreach ((array)$censorProps as $property) {
-            $this->markAsCensored($property, false);
-        }
+
+        $this->censorByDefault(true);
         
         if ($this instanceof Enrichable) {
             $this->with($properties);
         }
+    }
+
+    
+    /**
+     * Filter object for json serialization
+     * 
+     * @param stdClass $object
+     * @return stdClass
+     */
+    protected function jsonSerializeFilterCensored(stdClass $object)
+    {
+        foreach ($object as $property => $value) {
+            $censored = $this->hasMarkedAsCensored($property);
+            
+            if (!isset($censored)) {
+                $censored = $this->isCensoredByDefault();
+            }
+            
+            if ($censored) {
+                unset($object->$property);
+            }
+        }
+        
+        return $object;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Jasny\DB\Entity;
 
+use stdClass;
 use Jasny\DB;
 use Jasny\DB\EntitySet;
 use Jasny\DB\Data;
@@ -119,21 +120,35 @@ trait Implementation
         $values = $this->getValues();
         
         foreach ($values as &$value) {
-            if ($value instanceof \DateTime) $value = $value->format(\DateTime::ISO8601);
-            if ($value instanceof EntitySet) $value->expand();
+            if ($value instanceof \DateTime) {
+                $value = $value->format(\DateTime::ISO8601);
+            }
+            
+            if ($value instanceof EntitySet) {
+                $value->expand();
+            }
         }
         
         return $this->jsonSerializeFilter((object)$values);
     }
     
     /**
-     * Filter object for json serialization
+     * Filter object for json serialization.
+     * This method will call other methods that start with jsonSerializeFilter
      * 
-     * @param object $object
-     * @return object
+     * @param stdClass $object
+     * @return stdClass
      */
-    protected function jsonSerializeFilter($object)
+    protected function jsonSerializeFilter(stdClass $object)
     {
+        $refl = new \ReflectionClass($this);
+        foreach ($refl->getMethods() as $method) {
+            if (strpos($method->getName(), __FUNCTION__) === 0 && $method->getName() !== __FUNCTION__) {
+                $fn = $method->getName();
+                $object = $this->$fn($object);
+            }
+        }
+        
         return $object;
     }
     

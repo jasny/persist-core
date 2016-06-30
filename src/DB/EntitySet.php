@@ -622,19 +622,19 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     public function __call($name, $arguments)
     {
         $results = [];
-        $allEntitySets = true;
+        $flatten = true;
         
         foreach ($this->entities as $entity) {
             $result = call_user_func_array([$entity, $name], $arguments);
             $results[] = $result;
-            $allEntitySets = $allEntitySets && $result instanceof EntitySet;
+            $flatten = $flatten && ($result instanceof self || $result instanceof Entity);
         }
         
         if ($results === $this->entities) {
             return $this;
         }
         
-        if ($allEntitySets) {
+        if ($flatten && !empty($results)) {
             $results = TypeCast::value($results)->withEntitySetFlags(self::ALLOW_DUPLICATES)->flatten();
         }
         
@@ -666,15 +666,16 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     public function __get($property)
     {
         $results = [];
-        $allEntitySets = true;
+        $flatten = true;
         
         foreach ($this->entities as $entity) {
             if (!isset($entity->$property)) continue;
             $results[] = $entity->$property;
-            $allEntitySets = $allEntitySets && $entity->$property instanceof EntitySet;
+            $flatten = $flatten &&
+                ($entity->$property instanceof self || $entity->$property instanceof Entity);
         }
 
-        if ($allEntitySets) {
+        if ($flatten && !empty($results)) {
             $hint = $this->getEntityPropertyType($property);
             $results = TypeCast::value($results)->withEntitySetFlags(self::ALLOW_DUPLICATES)->flatten($hint);
         }
