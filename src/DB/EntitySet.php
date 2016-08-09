@@ -171,10 +171,19 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
             $type = (is_object($input) ? get_class($input).' ' : '') . gettype($input);
             throw new \InvalidArgumentException("Input should either be an array or Traverable, not a $type");
         }
-
+        
+        $items = [];
         $entities = [];
         
-        foreach ($input as $key => $item) {
+        if (~$this->flags & self::PRESERVE_KEYS) {
+            foreach ($input as $item) {
+                $items[] = $item;
+            }
+        } else {
+            $items = $input;
+        }
+        
+        foreach ($items as $key => $item) {
             $entity = $this->castEntity($item);
             $this->assertEntity($entity);
             
