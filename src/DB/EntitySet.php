@@ -633,9 +633,9 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         $results = [];
         $flatten = true;
         
-        foreach ($this->entities as $entity) {
+        foreach ($this->entities as $key => $entity) {
             $result = call_user_func_array([$entity, $name], $arguments);
-            $results[] = $result;
+            $results[$key] = $result;
             $flatten = $flatten && ($result instanceof self || $result instanceof Entity);
         }
         
