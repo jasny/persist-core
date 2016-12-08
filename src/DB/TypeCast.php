@@ -66,7 +66,7 @@ class TypeCast extends \Jasny\TypeCast
      * @param array $types
      * @return mixed
      */
-    public function toMultiple($types)
+    public function toMultiple(array $types)
     {
         $types = $this->uniqueTypes($types);
         

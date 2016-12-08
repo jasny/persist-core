@@ -659,7 +659,7 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
     protected function getEntityPropertyType($property)
     {
         $entityClass = $this->getEntityClass();
-        
+
         return is_a($entityClass, Introspection::class, true)
             ? $entityClass::meta()->ofProperty($property)->get('var')
             : null;
@@ -677,9 +677,9 @@ class EntitySet implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSe
         $results = [];
         $flatten = true;
         
-        foreach ($this->entities as $entity) {
+        foreach ($this->entities as $key => $entity) {
             if (!isset($entity->$property)) continue;
-            $results[] = $entity->$property;
+            $results[$key] = $entity->$property;
             $flatten = $flatten &&
                 ($entity->$property instanceof self || $entity->$property instanceof Entity);
         }
