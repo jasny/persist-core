@@ -84,12 +84,15 @@ class TypeCast extends \Jasny\TypeCast
     /**
      * Cast value to a typed array
      *
-     * @param mixed  $value
      * @param string $subtype  Type of the array items
      * @return array|EntitySet
      */
     public function toArray($subtype = null)
     {
+        if ($this->value instanceof EntitySet) {
+            $this->value = $this->value->getArrayCopy();
+        }
+        
         return isset($subtype) && is_a($subtype, Entity::class, true)
             ? $this->toEntitySet($subtype)
             : parent::toArray($subtype);
