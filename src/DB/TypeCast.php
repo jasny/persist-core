@@ -66,7 +66,7 @@ class TypeCast extends \Jasny\TypeCast
      * @param array $types
      * @return mixed
      */
-    public function toMultiType($types)
+    public function toMultiple($types)
     {
         $types = $this->uniqueTypes($types);
         
@@ -78,7 +78,7 @@ class TypeCast extends \Jasny\TypeCast
             }
         }
         
-        return parent::toMultiType($types);
+        return parent::toMultiple($types);
     }
         
     /**
@@ -90,7 +90,8 @@ class TypeCast extends \Jasny\TypeCast
     public function toArray($subtype = null)
     {
         if ($this->value instanceof EntitySet) {
-            $this->value = $this->value->getArrayCopy();
+            $array = $this->value->getArrayCopy();
+            return $this->forValue($array)->toArray($subtype);
         }
         
         return isset($subtype) && is_a($subtype, Entity::class, true)
@@ -191,7 +192,7 @@ class TypeCast extends \Jasny\TypeCast
             $types = $this->uniqueTypes($types);
         }
         
-        return $this->forValue($values)->toMultiType($types);
+        return $this->forValue($values)->toMultiple($types);
     }
     
     /**
