@@ -56,11 +56,16 @@ trait Implementation
      * Convert loaded values to an entity.
      * Calls the construtor *after* setting the properties.
      * 
-     * @param object $values
+     * @param array|stdClass $values
      * @return static
      */
     public static function fromData($values)
     {
+        if (!is_array($values) && !$values instanceof stdClass) {
+            $type = (is_object($values) ? get_class($values) . ' ' : '') . gettype($values);
+            throw new \InvalidArgumentException("Expected an array or stdClass object, but got a $type");
+        }
+
         $class = get_called_class();
         $reflection = new \ReflectionClass($class);
         $entity = $reflection->newInstanceWithoutConstructor();
