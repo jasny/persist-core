@@ -94,7 +94,7 @@ trait MetaImplementation
             $validation->addError("%s should no at most %s", $prop, $meta['max']);
         }
 
-        if (isset($meta['minLength']) && strlen($this->$prop) > $meta['minLength']) {
+        if (isset($meta['minLength']) && strlen($this->$prop) < $meta['minLength']) {
             $validation->addError("%s should be at least %d characters", $prop, $meta['minLength']);
         }
 
