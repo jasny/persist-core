@@ -3,28 +3,36 @@ Jasny DB
 
 Jasny DB adds OOP design patterns to PHP's database extensions.
 
-* [Service locator](service-locator.md)
 * [Connection](connection.md)
 * [Entity](entity.md)
-* [Data mapper](mapper.md)
-* [Dataset](dataset.md)
-* [Entity set](entity-set.md)
-* [Metadata](meta-data.md)
-* Entity traits
 <ul>
   * [Type casting](entity/type-casting.md)
   * [Identifiable](entity/identifiable.md)
-  * [Self aware](entity/self-aware.md)
   * [Change aware](entity/change-aware.md)
-  * [Active record](entity/active-record.md)
+  * [Self aware](entity/self-aware.md)
   * [Dynamic](entity/dynamic.md)
   * [Enrichable](entity/enrichable.md)
   * [Redactable](entity/redactable.md)
+  * [Validation](entity/validation.md)
   * [Lazy loading](entity/lazy-loading.md)
-  * [Soft deletion](entity/soft-deletion.md)
+  * [Metadata](entity/metadata.md)
+  * [Active record](entity/active-record.md)
 </ul>
+* [Data mapper](mapper.md)
+<ul>
+  * [Property mapping](data-mapper/property-mapping.md)
+  * [Property casing](data-mapper/property-casing.md)
+  * [Searching](data-mapper/searching.md)
+  * [Sorting](data-mapper/sorting.md)
+  * [Soft deletion](data-mapper/soft-deletion.md)
+</ul>
+* [Filter](filter.md)
+* [Entity set](entity-set.md)
 * [Maintainable code](maintainable-code.md)
-* [Code generation](code-generation.md)
+<ul>
+  * [Dependency injection](dependency-injection.md)
+  * [Service locator](service-locator.md)
+</ul>
 
 Jasny DB is a [data access layer](https://en.wikipedia.org/wiki/Data_access_layer) (*not* a DB abstraction layer) for
 PHP. It does allow you properly structure your model, while still using the methods and functionality of PHP's native
