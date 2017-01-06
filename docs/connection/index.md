@@ -134,10 +134,4 @@ $factory->set('mysql', App\MySqlConnection::class);
 $connections->setFactory($factory);
 ```
 
-
 [`Interop\Container\ContainerInterface`]: https://github.com/container-interop/container-interop/blob/master/docs/ContainerInterface.md
-
----
-
-[Next: Entity »](introduction/entity.md)
-

@@ -2,14 +2,14 @@
 
 Jasny DB adds OOP design patterns to PHP's database extensions.
 
-* [Introduction](index.md)
+* [Home](index.md)
+* [Maintainable code](maintainable-code/index.md)
 <ul>
-  * [Maintainable code](introduction/maintainable-code.md)
-  * [Dependency injection](introduction/dependency-injection.md)
-  * [Service locator](introduction/service-locator.md)
+  * [Dependency injection](maintainable-code/dependency-injection.md)
+  * [Service locator](maintainable-code/service-locator.md)
 </ul>
-* [Connection](connection.md)
-* [Entity](entity.md)
+* [Connection](connection/index.md)
+* [Entity](entity/index.md)
 <ul>
   * [Type casting](entity/type-casting.md)
   * [Identifiable](entity/identifiable.md)
@@ -23,7 +23,8 @@ Jasny DB adds OOP design patterns to PHP's database extensions.
   * [Metadata](entity/metadata.md)
   * [Active record](entity/active-record.md)
 </ul>
-* [Data mapper](data-mapper.md)
+* [Entity set](entity-set/index.md)
+* [Data mapper](data-mapper/index.md)
 <ul>
   * [Property mapping](data-mapper/property-mapping.md)
   * [Property casing](data-mapper/property-casing.md)
@@ -31,8 +32,7 @@ Jasny DB adds OOP design patterns to PHP's database extensions.
   * [Sorting](data-mapper/sorting.md)
   * [Soft deletion](data-mapper/soft-deletion.md)
 </ul>
-* [Filter](filter.md)
-* [Entity set](entity-set.md)
+* [Filter](filter/index.md)
 
 ---
 
@@ -51,12 +51,36 @@ implementations. It serves as an abstract base for concrete libraries implemente
 * [Jasny\DB\Mongo][] extends the [MongoDB PHP library][]
 * [Jasny\DB\REST][] extends [Guzzle][] for datasources implementing [REST][]
 
+## Introduction
+
+A [Connection][] can be used to used to load and store data from the database. Jasny DB doesn't abstract a connection
+object, so the exact use differs per implementation.
+
+An [Entity][] is a representation of "thing" in your application, like a user, product, article, etc. A data
+representation of the entity is stored in the database, so the entity can be loaded. An entity SHOULD only be
+concerned with business logic and SHOULD NOT hold any database specific logic.
+
+An [Entity set][] is a collection of entities, similar to an array entities. The only difference is that has methods to
+interact with all entities in the set at once, rather than needed to loop through them.
+
+A [Data mapper][] is the bridge between the connection object and the entity. It's responsible for loading data from
+the database and creating an entity. It's also responsible for turning an entity into data, so it can be stored in the
+database.
+
+A [Filter][] is used by the data mapper to turn filter conditions into database logic, like an SQL query.
+
+
 [Jasny\DB\MySQL]: https://github.com/jasny/db-mysql
 [mysqli]: http://php.net/mysqli
 [Jasny\DB\Mongo]: https://github.com/jasny/db-mongo
 [MongoDB PHP library]: https://github.com/mongodb/mongo-php-library
 [Jasny\DB\REST]: https://github.com/jasny/db-rest
 [REST]: https://en.wikipedia.org/wiki/Representational_state_transfer
+
+[Connection]: connection/index.md
+[Entity]: entity/index.md
+[Data mapper]: data-mapper/index.md
+[Filter]: filter/index.md
 
 ---
 

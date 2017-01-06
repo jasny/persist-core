@@ -2,4 +2,31 @@ site_name: Jasny DB
 theme: readthedocs
 pages:
     - Home: index.md
-    - Service Locator: service-locator.md
+    - Maintainable code:
+        - Introduction: maintainable-code/index.md 
+        - Dependency injection: maintainable-code/service-locator.md
+        - Service Locator: maintainable-code/service-locator.md
+    - Connection: connection/index.md
+    - Entity:
+        - Entity: entity/index.md
+        - Type casting: entity/type-casting.md
+        - Identifiable: entity/identifiable.md
+        - Change aware: entity/change-aware.md
+        - Self aware: entity/self-aware.md
+        - Dynamic: entity/dynamic.md
+        - Enrichable: entity/enrichable.md
+        - Redactable: entity/redactable.md
+        - Validation: entity/validation.md
+        - Lazy loading: entity/lazy-loading.md
+        - Metadata: entity/metadata.md
+        - Active record: entity/active-record.md
+    - Entity set: entity-set/index.md
+    - Data mapper:
+        - Data mapper: data-mapper/index.md
+        - Property mapping: data-mapper/property-mapping.md
+        - Property casing: data-mapper/property-casing.md
+        - Searching: data-mapper/searching.md
+        - Sorting: data-mapper/sorting.md
+        - Soft deletion: data-mapper/soft-deletion.md
+    - Filter: filter/index.md
+

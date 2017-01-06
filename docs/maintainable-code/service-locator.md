@@ -91,3 +91,8 @@ builder has it's own [capability for testing](entity-set.md#testing).
 [service locator pattern]: https://en.wikipedia.org/wiki/Service_locator_pattern
 [registry pattern]: http://martinfowler.com/eaaCatalog/registry.html
 [builder pattern]: https://en.wikipedia.org/wiki/Builder_pattern
+
+---
+
+[Next: Connection »](connection/index.md)
+

@@ -11,11 +11,11 @@ To create maintainable code you SHOULD at least uphold the following rules:
 [SOLID][] embodies 5 principles principles that, when used together, will make a code base more maintainable over time.
 While not forcing you to, Jasny DB supports building a SOLID code base.
 
-* Single responsibility principle
-* Open/closed principle
-* Liskov substitution principle
-* Interface segregation principle
-* Dependency inversion principle
+* [Single responsibility principle][]
+* [Open/closed principle][]
+* [Liskov substitution principle][]
+* [Interface segregation principle][]
+* [Dependency inversion principle][]
 
 ## Interfaces and traits
 
@@ -31,5 +31,15 @@ extending these objects, makes it easier to use the library.
 Rather than using these base objects, you may choose to create you're own base classes. Dependency is always on
 interfaces, never on classes.
 
+
 [SOLID]: http://en.wikipedia.org/wiki/SOLID_(object-oriented_design)
+[Single responsibility principle]: https://en.wikipedia.org/wiki/Single_responsibility_principle
+[Open/closed principle]: https://en.wikipedia.org/wiki/Open/closed_principle
+[Liskov substitution principle]: https://en.wikipedia.org/wiki/Liskov_substitution_principle
+[Interface segregation principle]: https://en.wikipedia.org/wiki/Interface_segregation_principle
+[Dependency inversion principle]: https://en.wikipedia.org/wiki/Dependency_inversion_principle
+
+---
+
+[Next: Dependency injection »](introduction/dependency-injection.md)
 
