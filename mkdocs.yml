@@ -28,4 +28,6 @@ pages:
     - Filter: filter.md
     - Maintainable code: maintainable-code.md 
     - Testing: testing.md
+extra_css: 
+    - extra.css
 
