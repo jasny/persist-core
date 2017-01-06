@@ -48,7 +48,3 @@ implementations. It serves as an abstract base for concrete libraries implemente
 [Jasny\DB\REST]: https://github.com/jasny/db-rest
 [REST]: https://en.wikipedia.org/wiki/Representational_state_transfer
 
----
-
-[Next: Maintainable code »](introduction/maintainable-code.md)
-

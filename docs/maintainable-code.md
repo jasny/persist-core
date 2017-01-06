@@ -39,7 +39,3 @@ interfaces, never on classes.
 [Interface segregation principle]: https://en.wikipedia.org/wiki/Interface_segregation_principle
 [Dependency inversion principle]: https://en.wikipedia.org/wiki/Dependency_inversion_principle
 
----
-
-[Next: Dependency injection »](../maintainable-code/dependency-injection.md)
-
