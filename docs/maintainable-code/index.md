@@ -41,5 +41,5 @@ interfaces, never on classes.
 
 ---
 
-[Next: Dependency injection »](introduction/dependency-injection.md)
+[Next: Dependency injection »](../maintainable-code/dependency-injection.md)
 

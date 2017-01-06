@@ -27,7 +27,7 @@ Jasny DB adds OOP design patterns to PHP's database extensions.
 * [Data mapper](data-mapper/index.md)
 <ul>
   * [Property mapping](data-mapper/property-mapping.md)
-  * [Property casing](data-mapper/property-casing.md)
+  * [Property casing](data-mapper/property-casting.md)
   * [Searching](data-mapper/searching.md)
   * [Sorting](data-mapper/sorting.md)
   * [Soft deletion](data-mapper/soft-deletion.md)
