@@ -38,10 +38,11 @@ implementations. It serves as an abstract base for concrete libraries implemente
 * [Jasny\DB\REST][] extends [Guzzle][] for datasources implementing [REST][] and using JSON
 
 
-[Connection]: connection/index.md
-[Entity]: entity/index.md
-[Data mapper]: data-mapper/index.md
-[Filter]: filter/index.md
+[Connection]: connection.md
+[Entity]: entity.md
+[Entity set]: entity-set.md
+[Data mapper]: data-mapper.md
+[Filter]: filter.md
 
 [Jasny\DB\MySQL]: https://github.com/jasny/db-mysql
 [mysqli]: http://php.net/mysqli
@@ -49,4 +50,5 @@ implementations. It serves as an abstract base for concrete libraries implemente
 [MongoDB PHP library]: https://github.com/mongodb/mongo-php-library
 [Jasny\DB\REST]: https://github.com/jasny/db-rest
 [REST]: https://en.wikipedia.org/wiki/Representational_state_transfer
+[Guzzle]: http://docs.guzzlephp.org/
 
