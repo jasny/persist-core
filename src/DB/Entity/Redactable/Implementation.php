@@ -122,7 +122,7 @@ trait Implementation
     }
     
     /**
-     * Censor all  only the specified properties.
+     * Censor all except the specified properties.
      * Enriches with related data if needed.
      * 
      * @param string[] $properties
@@ -138,6 +138,10 @@ trait Implementation
         
         if ($this instanceof Enrichable) {
             $this->with($properties);
+        } else {
+            foreach ((array)$properties as $property) {
+                $this->markAsCensored($property, false);
+            }
         }
     }
 
