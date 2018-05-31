@@ -3,8 +3,10 @@
 namespace Jasny\DB\Entity;
 
 use stdClass;
+use ReflectionClass;
 use Jasny\DB;
 use Jasny\DB\EntitySet;
+use Jasny\DB\Entity\Dynamic;
 use Jasny\DB\Data;
 
 /**
@@ -24,7 +26,20 @@ trait Implementation
      */
     public function setValues($values)
     {
-        return DB::setPublicProperties($this, $values);
+        $refl = new ReflectionClass($this);
+
+        foreach ($values as $key => $value) {
+            $skip = !property_exists($object, $key) && ($key[0] === '_' || !$object instanceof Dynamic)
+              || !$refl->getProperty($key)->isPublic() || $refl->getProperty($key)->isStatic();
+
+            if ($skip) {
+                continue;
+            }
+
+            $object->$key = $value;
+        }
+        
+        return $object;
     }
 
     /**
@@ -60,7 +75,7 @@ trait Implementation
         $reflection = new \ReflectionClass($class);
         $entity = $reflection->newInstanceWithoutConstructor();
         
-        DB::setPublicProperties($entity, $values);
+        self::setValues($values);
         if (method_exists($entity, '__construct')) {
             $entity->__construct();
         }
