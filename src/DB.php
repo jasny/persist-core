@@ -243,4 +243,36 @@ class DB
         self::$connectionRegistry = null;
         self::$entitySetFactory = null;
     }
+
+
+    /**
+     * Set public properties of an object.
+     * Utility function
+     *
+     * @param object $object
+     * @param array  $values
+     * @return object $object
+     */
+    public static function setPublicProperties($object, array $values)
+    {
+        foreach ($values as $key => $value) {
+            $object->$key = $value;
+        }
+        
+        return $object;
+    }
+
+    /**
+     * Set public properties of an object.
+     * Utility function
+     *
+     * @param object $object
+     * @param array  $values
+     * @return object $object
+     */
+    public static function getPublicProperties($object)
+    {
+        return get_object_vars($object);
+    }
 }
+
