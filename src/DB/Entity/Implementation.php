@@ -29,17 +29,18 @@ trait Implementation
         $refl = new ReflectionClass($this);
 
         foreach ($values as $key => $value) {
-            $skip = !property_exists($object, $key) && ($key[0] === '_' || !$object instanceof Dynamic)
-              || !$refl->getProperty($key)->isPublic() || $refl->getProperty($key)->isStatic();
+            $skip = $refl->hasProperty($key)
+                ? (!$refl->getProperty($key)->isPublic() || $refl->getProperty($key)->isStatic())
+                : ($key[0] === '_' || !$this instanceof Dynamic);
 
             if ($skip) {
                 continue;
             }
 
-            $object->$key = $value;
+            $this->$key = $value;
         }
         
-        return $object;
+        return $this;
     }
 
     /**
@@ -75,7 +76,7 @@ trait Implementation
         $reflection = new \ReflectionClass($class);
         $entity = $reflection->newInstanceWithoutConstructor();
         
-        self::setValues($values);
+        $this->setValues($values);
         if (method_exists($entity, '__construct')) {
             $entity->__construct();
         }
