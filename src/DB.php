@@ -6,6 +6,7 @@ use Jasny\DB\Connection;
 use Jasny\DB\ConnectionFactory;
 use Jasny\DB\ConnectionRegistry;
 use Jasny\DB\EntitySetFactory;
+use Jasny\DB\Entity\Dynamic;
 
 /**
  * DB factories and registries.
@@ -256,6 +257,10 @@ class DB
     public static function setPublicProperties($object, array $values)
     {
         foreach ($values as $key => $value) {
+            if (!property_exists($object, $key) && ($key[0] === '_' || !$object instanceof Dynamic)) {
+                continue;
+            }
+
             $object->$key = $value;
         }
         

@@ -24,17 +24,7 @@ trait Implementation
      */
     public function setValues($values)
     {
-        // Using closure to prevent setting protected methods
-        $set = function($entity) use ($values) {
-            foreach ($values as $key=>$value) {
-                $entity->$key = $value;
-            }
-            
-            return $entity;
-        };
-        $set->bindTo(null);
-        
-        return $set($this);
+        return DB::setPublicProperties($this, $values);
     }
 
     /**
@@ -48,7 +38,7 @@ trait Implementation
             $this->expand();
         }
         
-        return call_user_func('get_object_vars', $this);
+        return DB::getPublicProperties($this);
     }
     
     
@@ -70,21 +60,10 @@ trait Implementation
         $reflection = new \ReflectionClass($class);
         $entity = $reflection->newInstanceWithoutConstructor();
         
-        // Using closure to prevent setting protected properties
-        $set = function($entity) use ($values) {
-            foreach ($values as $key=>$value) {
-                $skip = !property_exists($entity, $key) && ($key[0] === '_' || !$entity instanceof Dynamic);
-                if ($skip) continue;
-                
-                $entity->$key = $value;
-            }
-            
-            return $entity;
-        };
-        $set->bindTo(null);
-        
-        $set($entity);
-        if (method_exists($entity, '__construct')) $entity->__construct();
+        DB::setPublicProperties($entity, $values);
+        if (method_exists($entity, '__construct')) {
+            $entity->__construct();
+        }
         
         return $entity;
     }
@@ -96,7 +75,7 @@ trait Implementation
      */
     public function toData()
     {
-        $values = call_user_func('get_object_vars', $this);
+        $values = DB::getPublicProperties($this);
         
         foreach ($values as $key => &$item) {
             if (!$this instanceof Dynamic && !property_exists(get_class($this), $key)) {
