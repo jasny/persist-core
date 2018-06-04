@@ -76,7 +76,7 @@ trait Implementation
         $reflection = new \ReflectionClass($class);
         $entity = $reflection->newInstanceWithoutConstructor();
         
-        $this->setValues($values);
+        $entity->setValues($values);
         if (method_exists($entity, '__construct')) {
             $entity->__construct();
         }
