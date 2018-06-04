@@ -75,8 +75,20 @@ trait Implementation
         $class = get_called_class();
         $reflection = new \ReflectionClass($class);
         $entity = $reflection->newInstanceWithoutConstructor();
-        
-        $entity->setValues($values);
+
+        // manual set properties instead of setValues, because that function might be overridden
+        foreach ($values as $key => $value) {
+            $skip = $reflection->hasProperty($key)
+                ? (!$reflection->getProperty($key)->isPublic() || $reflection->getProperty($key)->isStatic())
+                : ($key[0] === '_' || !$entity instanceof Dynamic);
+
+            if ($skip) {
+                continue;
+            }
+
+            $entity->$key = $value;
+        }
+
         if (method_exists($entity, '__construct')) {
             $entity->__construct();
         }
