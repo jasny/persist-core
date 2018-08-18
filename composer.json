@@ -25,15 +25,31 @@
     "require-dev": {
         "jasny/php-code-quality": "^2.3"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/jasny/inflector"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "Jasny\\DB\\": "src/"
         }
-    }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jasny\\DB\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "phpunit",
+            "phpcs -p src",
+            "phpstan analyse"
+        ],
+        "post-create-project-cmd": [
+            "bash init.sh && rm init.sh"
+        ]
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
