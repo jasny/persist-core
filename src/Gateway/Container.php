@@ -4,13 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Gateway;
 
-use Doctrine\Inflector\CachedWordInflector;
-use Doctrine\Inflector\Inflector;
-use Doctrine\Inflector\Rules\English;
-use Jasny\DB\Gateway\Container\ClassInflector;
 use Jasny\DB\Gateway\Container\IdGeneratorInterface;
-use Jasny\DB\Gateway\Container\IdInflector;
-use Jasny\DB\Gateway\Container\InflectionIdGenerator;
 use Jasny\DB\GatewayInterface;
 use Jasny\DB\Gateway\Exception\GatewayNotFoundException;
 use Jasny\EntityInterface;

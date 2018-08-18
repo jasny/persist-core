@@ -20,5 +20,3 @@ implementations. It serves as an abstract base for concrete libraries implemente
   [REST](http://en.wikipedia.org/wiki/Representational_state_transfer)
 
 ## Documentation
-
-This package is fully documented [here](http://jasny-db.readthedocs.io/en/latest/).
