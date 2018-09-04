@@ -3,7 +3,7 @@
 namespace Jasny\DB\Tests;
 
 use Doctrine\Inflector\Inflector;
-use Jasny\DB\Gateway\Container\InflectionIdGenerator;
+use Jasny\DB\CRUD\Container\InflectionIdGenerator;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 

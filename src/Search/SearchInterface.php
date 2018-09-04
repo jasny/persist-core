@@ -1,6 +1,6 @@
 <?php
 
-namespace Jasny\DB\Gateway;
+namespace Jasny\DB;
 
 use Jasny\EntityCollectionInterface;
 use Jasny\EntityInterface;

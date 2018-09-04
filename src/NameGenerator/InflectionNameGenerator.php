@@ -2,20 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Gateway\Container;
+namespace Jasny\DB\NameGenerator;
 
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\CachedWordInflector;
 use Doctrine\Inflector\RulesetInflector;
 use Doctrine\Inflector\Rules\English;
-use UnexpectedValueException;
 
 use function Jasny\str_ends_with;
 
 /**
- * Conver generator class to id and visa versa using inflection
+ * Convert generator class to name and visa versa using inflection
  */
-class InflectionIdGenerator implements IdGeneratorInterface
+class InflectionNameGenerator implements NameGeneratorInterface
 {
     /**
      * @var string
@@ -28,15 +27,15 @@ class InflectionIdGenerator implements IdGeneratorInterface
     protected $inflector;
 
     /**
-     * InflectionIdGenerator constructor.
+     * InflectionNameGenerator constructor.
      *
      * @param string    $ns         Namespace
      * @param Inflector $inflector
      */
-    public function __construct(string $ns, Inflector $inflector)
+    public function __construct(string $ns, Inflector $inflector = null)
     {
         $this->ns = $ns;
-        $this->inflector = $inflector;
+        $this->inflector = $inflector ?? self::createDefaultInflector();
     }
 
     /**
@@ -61,28 +60,28 @@ class InflectionIdGenerator implements IdGeneratorInterface
 
 
     /**
-     * Turn a container id to a Entity class
+     * Turn a container name to a Entity class
      *
-     * @param string $id
+     * @param string $name
      * @return string
      */
-    public function fromIdToEntityClass(string $id): string
+    public function fromNameToEntityClass(string $name): string
     {
-        $word = $this->inflector->singularize($id);
+        $word = $this->inflector->singularize($name);
         $entityClass = $this->inflector->classify($word);
 
         return ($this->ns === '' ? '' : $this->ns . '\\') . $entityClass;
     }
 
     /**
-     * Turn a container id to a Gateway class
+     * Turn a container name to a Gateway class
      *
-     * @param string $id
+     * @param string $name
      * @return string
      */
-    public function fromIdToGatewayClass(string $id): string
+    public function fromNameToGatewayClass(string $name): string
     {
-        $entityClass = $this->fromIdToEntityClass($id);
+        $entityClass = $this->fromNameToEntityClass($name);
 
         return $this->fromEntityClassToGatewayClass($entityClass);
     }
@@ -93,7 +92,7 @@ class InflectionIdGenerator implements IdGeneratorInterface
      *
      * @param string $fqcn
      * @return string
-     * @throws UnexpectedValueException
+     * @throws \UnexpectedValueException
      */
     protected function getClassname(string $fqcn): string
     {
@@ -102,7 +101,7 @@ class InflectionIdGenerator implements IdGeneratorInterface
         $classname = end($parts);
 
         if ($ns !== $this->ns) {
-            throw new UnexpectedValueException("Class '$fqcn' is not in "
+            throw new \UnexpectedValueException("Class '$fqcn' is not in "
                 . ($this->ns === '' ? "root namespace" : "expected namespace '$this->ns'"));
         }
 
@@ -110,34 +109,34 @@ class InflectionIdGenerator implements IdGeneratorInterface
     }
 
     /**
-     * Turn a class name to an id
+     * Turn a class name to an name
      *
      * @param string $class
      * @return string
      */
-    protected function fromClassnameToId(string $class): string
+    protected function fromClassnameToName(string $class): string
     {
         $word = $this->inflector->tableize($class);
-        $id = $this->inflector->pluralize($word);
+        $name = $this->inflector->pluralize($word);
 
-        return $id;
+        return $name;
     }
 
     /**
-     * Turn an Entity class to a container id
+     * Turn an Entity class to a container name
      *
      * @param string $fqcn
      * @return string
      */
-    public function fromEntityClassToId(string $fqcn): string
+    public function fromEntityClassToName(string $fqcn): string
     {
         $class = $this->getClassname($fqcn);
 
-        return $this->fromClassnameToId($class);
+        return $this->fromClassnameToName($class);
     }
 
     /**
-     * Turn an Entity class to a container id
+     * Turn an Entity class to a container name
      *
      * @param string $fqcn
      * @return string
@@ -149,17 +148,17 @@ class InflectionIdGenerator implements IdGeneratorInterface
 
 
     /**
-     * Turn a Gateway class to a container id
+     * Turn a Gateway class to a container name
      *
      * @param string $fqcn
      * @return string
      */
-    public function fromGatewayClassToId(string $fqcn): string
+    public function fromGatewayClassToName(string $fqcn): string
     {
         $class = $this->getClassname($fqcn);
         $entityClass = $this->fromGatewayClassToEntityClass($class);
 
-        return $this->fromClassnameToId($entityClass);
+        return $this->fromClassnameToName($entityClass);
     }
 
     /**
@@ -171,7 +170,7 @@ class InflectionIdGenerator implements IdGeneratorInterface
     public function fromGatewayClassToEntityClass(string $fqcn): string
     {
         if (!str_ends_with($fqcn, 'Gateway')) {
-            throw new UnexpectedValueException("Invalid gateway class name '$fqcn': should end in 'Gateway'");
+            throw new \UnexpectedValueException("Invalname gateway class name '$fqcn': should end in 'Gateway'");
         }
 
         return substr($fqcn, 0, -7);
@@ -179,18 +178,15 @@ class InflectionIdGenerator implements IdGeneratorInterface
 
 
     /**
-     * Create the default id generator for English class names.
+     * Create the default inflector for English class names.
      *
-     * @param string $ns  Namespace
-     * @return static
+     * @return Inflector
      */
-    public static function createDefault($ns = ''): self
+    final public static function createDefaultInflector(): Inflector
     {
         $singular = new RulesetInflector(English\Rules::getSingularRuleset());
         $plural = new RulesetInflector(English\Rules::getPluralRuleset());
 
-        $inflector = new Inflector(new CachedWordInflector($singular), new CachedWordInflector($plural));
-
-        return new static($ns, $inflector);
+        return new Inflector(new CachedWordInflector($singular), new CachedWordInflector($plural));
     }
 }
