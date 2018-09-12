@@ -2,12 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\NameGenerator;
-
-use Doctrine\Inflector\Inflector;
-use Doctrine\Inflector\CachedWordInflector;
-use Doctrine\Inflector\RulesetInflector;
-use Doctrine\Inflector\Rules\English;
+namespace Jasny\DB\Gateway\NameGenerator;
 
 use function Jasny\str_ends_with;
 

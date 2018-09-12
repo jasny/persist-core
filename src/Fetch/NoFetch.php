@@ -13,7 +13,6 @@ use Jasny\EntityCollectionInterface;
  */
 class NoFetch implements FetchInterface
 {
-
     /**
      * Fetch all entities from the set.
      *

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\NameGenerator;
+namespace Jasny\DB\Gateway\NameGenerator;
 
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\CachedWordInflector;

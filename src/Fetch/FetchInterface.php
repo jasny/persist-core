@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB;
+namespace Jasny\DB\Fetch;
 
 use Jasny\EntityCollectionInterface;
 

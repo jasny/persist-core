@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Jasny\DB\CRUD;
 
-use Jasny\DB\CRUDInterface;
 use Jasny\DB\EntityNotFoundException;
 use Jasny\EntityInterface;
 
@@ -18,7 +17,7 @@ class NoCRUD implements CRUDInterface
      *
      * @return EntityInterface
      */
-    public function create(): ?EntityInterface
+    public function create(): EntityInterface
     {
         throw new \BadMethodCallException("CRUD is not supported");
     }

@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB;
+namespace Jasny\DB\CRUD;
 
+use Jasny\DB\PrototypeInterface;
 use Jasny\EntityInterface;
 
 /**
@@ -16,7 +17,7 @@ interface CRUDInterface
      *
      * @return EntityInterface
      */
-    public function create(): ?EntityInterface;
+    public function create(): EntityInterface;
 
     /**
      * Fetch a single entity.
