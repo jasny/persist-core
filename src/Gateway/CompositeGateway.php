@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB;
+namespace Jasny\DB\Gateway;
 
 use Jasny\DB\CRUD\CRUDInterface;
 use Jasny\DB\CRUD\EntityNotFoundException;
-use Jasny\DB\Fetch\FetchInterface;
+use Jasny\DB\Fetcher\FetcherInterface;
 use Jasny\DB\Search\SearchInterface;
+use Jasny\Entity\EntityInterface;
 use Jasny\EntityCollection\EntityCollectionInterface;
-use Jasny\EntityInterface;
+use Jasny\Entity\Trigger\TriggerSet;
+use Jasny\IteratorPipeline\Pipeline;
 
 
 /**
@@ -23,9 +25,9 @@ class CompositeGateway implements GatewayInterface
     protected $source;
 
     /**
-     * @var EntityEvents
+     * @var TriggerManager
      */
-    protected $events;
+    protected $triggers;
 
     /**
      * @var CRUDInterface
@@ -33,9 +35,9 @@ class CompositeGateway implements GatewayInterface
     protected $crud;
 
     /**
-     * @var FetchInterface
+     * @var FetcherInterface
      */
-    protected $fetch;
+    protected $fetcher;
 
     /**
      * @var SearchInterface`
@@ -46,37 +48,38 @@ class CompositeGateway implements GatewayInterface
     /**
      * CompositeGateway constructor.
      *
-     * @param mixed           $source
-     * @param EntityEvents    $events
-     * @param CRUDInterface   $crud
-     * @param FetchInterface  $fetch
-     * @param SearchInterface $search
+     * @param mixed            $source
+     * @param TriggerSet       $triggers
+     * @param CRUDInterface    $crud      Service for CRUD and ORM/ODM
+     * @param FetcherInterface $fetcher   Service to fetch data
+     * @param SearchInterface  $search    Service for full text search
      */
     public function __construct(
         $source,
-        TriggerSet $events,
+        TriggerSet $triggers,
         CRUDInterface $crud,
-        FetchInterface $fetch,
+        FetcherInterface $fetcher,
         SearchInterface $search
     ) {
         $this->source = $source;
-        $this->events = $events;
+        $this->triggers = $triggers;
 
         $this->crud = $crud instanceof PrototypeInterface ? $crud->withSource($source) : $crud;
-        $this->fetch = $fetch instanceof PrototypeInterface ? $fetch->withSource($source) : $fetch;
+        $this->fetcher = $fetcher instanceof PrototypeInterface ? $fetcher->withSource($source) : $fetcher;
         $this->search = $search instanceof PrototypeInterface ? $search->withSource($source) : $search;
     }
 
 
     /**
-     * Prepare entity, like setting events.
+     * Prepare entity, like setting triggers.
      *
      * @param EntityInterface $entity
      * @return void
      */
-    protected function prepareEntity(EntityInterface $entity): void
+    protected function addEventsToEntity(EntityInterface $entity): void
     {
-        $this->events->applyTo($entity);
+        $dispatcher = $this->triggers->getDispatcher();
+        $entity->setEventDispatcher($dispatcher);
     }
 
 
@@ -89,7 +92,7 @@ class CompositeGateway implements GatewayInterface
     public function create(...$params): EntityInterface
     {
         $entity = $this->crud->create(...$params);
-        $this->prepareEntity($entity);
+        $this->addEventsToEntity($entity);
 
         return $entity;
     }
@@ -105,9 +108,27 @@ class CompositeGateway implements GatewayInterface
     public function fetch($id, array $opts = []): ?EntityInterface
     {
         $entity = $this->crud->fetch($id, $opts);
-        $this->prepareEntity($entity);
+        $this->addEventsToEntity($entity);
 
         return $entity;
+    }
+
+    /**
+     * Fetch all entities from the set.
+     *
+     * @param array $filter
+     * @param array $opts
+     * @return EntityCollectionInterface|EntityInterface\[]
+     */
+    public function fetchAll(array $filter = [], array $opts = []): EntityCollectionInterface
+    {
+        $set = $this->fetcher->fetchAll($filter, $opts);
+
+        $set->apply(function(EntityInterface $entity) {
+            $this->addEventsToEntity($entity);
+        });
+
+        return $set;
     }
 
     /**
@@ -146,46 +167,17 @@ class CompositeGateway implements GatewayInterface
         $this->crud->delete($entity, $opts);
     }
 
-    /**
-     * Fetch all entities from the set.
-     *
-     * @param array $filter
-     * @param array $opts
-     * @return EntityCollectionInterface|EntityInterface\[]
-     */
-    public function fetchAll(array $filter = [], array $opts = []): EntityCollectionInterface
-    {
-        $set = $this->fetch->fetchAll($filter, $opts);
-
-        $set->apply(function(EntityInterface $entity) {
-            $this->prepareEntity($entity);
-        });
-
-        return $set;
-    }
 
     /**
      * Fetch data and make it available through an iterator
      *
      * @param array $filter
      * @param array $opts
-     * @return iterable
+     * @return Pipeline
      */
-    public function fetchList(array $filter = [], array $opts = []): iterable
+    public function fetchData(array $filter = [], array $opts = []): Pipeline
     {
-        return $this->fetch->fetchList($filter, $opts);
-    }
-
-    /**
-     * Fetch id/description pairs.
-     *
-     * @param array $filter
-     * @param array $opts
-     * @return array
-     */
-    public function fetchPairs(array $filter = [], array $opts = []): array
-    {
-        return $this->fetch->fetchPairs($filter, $opts);
+        return $this->fetcher->fetchData($filter, $opts);
     }
 
     /**
@@ -197,7 +189,7 @@ class CompositeGateway implements GatewayInterface
      */
     public function count(array $filter = [], array $opts = []): int
     {
-        return $this->fetch->count($filter, $opts);
+        return $this->fetcher->count($filter, $opts);
     }
 
 

@@ -19,8 +19,11 @@
     "require": {
         "php": ">=7.1.0",
         "doctrine/inflector": "master-dev as v2.0.0",
-        "psr/container": "^1.0",
-        "jasny/entity": "dev-master as v1.0.0"
+        "jasny/entity": "dev-master as v1.0.0",
+        "jasny/entity-collection": "dev-master as 1.0.0",
+        "jasny/iterator-pipeline": "dev-master as 1.0.0",
+        "jasny/php-functions": "dev-master as 4.1.0",
+        "psr/container": "^1.0"
     },
     "require-dev": {
         "jasny/php-code-quality": "^2.3"

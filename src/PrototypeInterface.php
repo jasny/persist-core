@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Gateway;
+namespace Jasny\DB;
 
 /**
- * Implementation of the prototype interface for different sources.
+ * Interface for any service that can be created without a source and prototyped.
  */
 interface PrototypeInterface
 {
     /**
-     * Create a copy for a specific source.
+     * Get a copy of the service with a source.
      *
      * @param mixed $source
      * @return static

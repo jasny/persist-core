@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Jasny\DB\CRUD;
 
-use Jasny\DB\EntityNotFoundException;
-use Jasny\EntityInterface;
+use Jasny\DB\Exception\UnsupportedFeatureException;
+use Jasny\Entity\EntityInterface;
+use Jasny\EntityCollection\EntityCollectionInterface;
 
 /**
  * CRUD is not supported
@@ -16,10 +17,11 @@ class NoCRUD implements CRUDInterface
      * Create a new entity.
      *
      * @return EntityInterface
+     * @throws UnsupportedFeatureException
      */
-    public function create(): EntityInterface
+    public function create(...$args): EntityInterface
     {
-        throw new \BadMethodCallException("CRUD is not supported");
+        throw new UnsupportedFeatureException("CRUD is not supported");
     }
 
     /**
@@ -27,12 +29,25 @@ class NoCRUD implements CRUDInterface
      *
      * @param mixed $id ID or filter
      * @param array $opts
-     * @return EntityInterface|null
-     * @throws EntityNotFoundException if Entity with id isn't found and no 'optional' opt was given
+     * @return EntityInterface
+     * @throws UnsupportedFeatureException
      */
     public function fetch($id, array $opts = []): ?EntityInterface
     {
-        throw new \BadMethodCallException("CRUD is not supported");
+        throw new UnsupportedFeatureException("CRUD is not supported");
+    }
+
+    /**
+     * Fetch multiple entities
+     *
+     * @param array $filter
+     * @param array $opts
+     * @return EntityCollectionInterface|EntityInterface[]
+     * @throws UnsupportedFeatureException
+     */
+    public function fetchAll(array $filter, array $opts = []): EntityCollectionInterface
+    {
+        throw new UnsupportedFeatureException("CRUD is not supported");
     }
 
     /**
@@ -41,10 +56,11 @@ class NoCRUD implements CRUDInterface
      * @param mixed $id ID or filter
      * @param array $opts
      * @return bool
+     * @throws UnsupportedFeatureException
      */
     public function exists($id, array $opts = []): bool
     {
-        throw new \BadMethodCallException("CRUD is not supported");
+        throw new UnsupportedFeatureException("CRUD is not supported");
     }
 
     /**
@@ -53,10 +69,11 @@ class NoCRUD implements CRUDInterface
      * @param EntityInterface $entity
      * @param array $opts
      * @return void
+     * @throws UnsupportedFeatureException
      */
     public function save(EntityInterface $entity, array $opts = []): void
     {
-        throw new \BadMethodCallException("CRUD is not supported");
+        throw new UnsupportedFeatureException("CRUD is not supported");
     }
 
     /**
@@ -65,9 +82,10 @@ class NoCRUD implements CRUDInterface
      * @param EntityInterface $entity
      * @param array $opts
      * @return void
+     * @throws UnsupportedFeatureException
      */
     public function delete(EntityInterface $entity, array $opts = []): void
     {
-        throw new \BadMethodCallException("CRUD is not supported");
+        throw new UnsupportedFeatureException("CRUD is not supported");
     }
 }
