@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Search;
 
-use Jasny\EntityCollectionInterface;
-use Jasny\EntityInterface;
-use Jasny\IteratorPipeline\Pipeline;
+use Jasny\DB\CRUD\Result;
 
 /**
- * Gateway support for full text search.
+ * Service for full text search.
  */
 interface SearchInterface
 {
     /**
-     * Find records in the data source using full text search.
-     * 
+     * Full text search.
+     *
+     * @param mixed  $storage
      * @param string $terms
      * @param array  $filter
      * @param array  $opts
-     * @return Pipeline
+     * @return Result
      */
-    public function search(string $terms, array $filter = [], array $opts = []): Pipeline;
+    public function search($storage, string $terms, array $filter = [], array $opts = []): Result;
 }

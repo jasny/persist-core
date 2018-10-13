@@ -4,66 +4,74 @@ declare(strict_types=1);
 
 namespace Jasny\DB\CRUD;
 
-use Jasny\DB\Exception\EntityNotFoundException;
-use Jasny\Entity\EntityInterface;
-use Jasny\EntityCollection\EntityCollectionInterface;
+use Jasny\DB\QueryBuilder\QueryBuilderInterface;
+use Jasny\DB\Result\Result;
 
 /**
- * Interface for Database CRUD plus ORM / ODM.
+ * Service to fetch, save and delete data from a persistent data storage (DB table, collection, etc).
  */
 interface CRUDInterface
 {
     /**
-     * Create a new entity.
+     * Create a CRUD service with a custom query builder.
      *
-     * @param mixed ...$args   Arguments are passed to entity constructor
-     * @return EntityInterface
+     * @param QueryBuilderInterface $queryBuilder
+     * @return mixed
      */
-    public function create(...$args): EntityInterface;
+    public function withQueryBuilder(QueryBuilderInterface $queryBuilder);
+
 
     /**
-     * Fetch a single entity.
+     * Query and fetch data.
      *
-     * @param mixed $id    ID or filter
-     * @param array $opts
-     * @return EntityInterface
-     * @throws EntityNotFoundException if Entity with id isn't found and no 'optional' opt was given
-     */
-    public function fetch($id, array $opts = []): ?EntityInterface;
-
-    /**
-     * Fetch multiple entities
-     *
+     * @param mixed $storage
      * @param array $filter
      * @param array $opts
-     * @return EntityCollectionInterface|EntityInterface[]
+     * @return Result
      */
-    public function fetchAll(array $filter, array $opts = []): EntityCollectionInterface;
+    public function fetch($storage, array $filter = null, array $opts = []): Result;
 
     /**
-     * Check if an exists in the collection.
+     * Query and count result.
      *
-     * @param mixed $id   ID or filter
+     * @param mixed $storage
+     * @param array $filter
      * @param array $opts
-     * @return bool
+     * @return int
      */
-    public function exists($id, array $opts = []): bool;
+    public function count($storage, array $filter = null, array $opts = []): int;
+
 
     /**
-     * Save the entity
+     * Query and update records.
      *
-     * @param EntityInterface $entity
-     * @param array           $opts
+     * @param mixed $storage
+     * @param array $filter
+     * @param array $changes
+     * @param array $opts
      * @return void
      */
-    public function save(EntityInterface $entity, array $opts = []): void;
+    public function update($storage, array $filter, array $changes, array $opts = []): update;
 
     /**
-     * Delete the entity
+     * Save the data.
+     * Returns an array with generated properties per entry.
      *
-     * @param EntityInterface $entity
-     * @param array           $opts
+     * @param mixed    $storage
+     * @param iterable $items
+     * @param array    $opts
+     * @return iterable
+     */
+    public function save($storage, iterable $items, array $opts = []): iterable;
+
+    /**
+     * Delete data.
+     * Returns an array with generated properties per entry.
+     *
+     * @param mixed $storage
+     * @param array $filter
+     * @param array $opts
      * @return void
      */
-    public function delete(EntityInterface $entity, array $opts = []): void;
+    public function delete($storage, array $filter = null, array $opts = []): void;
 }

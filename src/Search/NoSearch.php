@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Search;
 
-use Jasny\DB\SearchInterface;
-use Jasny\EntityCollectionInterface;
-use Jasny\EntityInterface;
-use Jasny\IteratorPipeline\Pipeline;
+use Jasny\DB\CRUD\Result;
+use Jasny\DB\Exception\UnsupportedFeatureException;
 
 /**
  * Search is not supported
@@ -15,15 +13,16 @@ use Jasny\IteratorPipeline\Pipeline;
 class NoSearch implements SearchInterface
 {
     /**
-     * SearchInterface entities.
+     * Full text search.
      *
+     * @param mixed  $storage
      * @param string $terms
      * @param array  $filter
      * @param array  $opts
-     * @return Pipeline
+     * @return Result
      */
-    public function search(string $terms, array $filter = [], array $opts = []): Pipeline
+    public function search($storage, string $terms, array $filter = [], array $opts = []): Result
     {
-        throw new \BadMethodCallException("Search is not supported");
+        throw new UnsupportedFeatureException("Full text search is not supported");
     }
 }
