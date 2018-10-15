@@ -6,15 +6,15 @@ namespace Jasny\DB\QueryBuilder;
 
 use Improved\IteratorPipeline\Pipeline;
 
-
 /**
  * Base class for service that can convert a filter to a databsae query.
+ *
  * @immutable
  */
 class StagedQueryBuilder implements StagedQueryBuilderInterface
 {
     /**
-     * @var callable[]
+     * @var array<string, callable[]>
      */
     protected $stages = [
         'prepare' => [],
@@ -27,7 +27,7 @@ class StagedQueryBuilder implements StagedQueryBuilderInterface
     /**
      * Create a clone with a new step
      *
-     * @param string $stage
+     * @param string   $stage
      * @param callable $step
      * @return static
      */
@@ -43,17 +43,20 @@ class StagedQueryBuilder implements StagedQueryBuilderInterface
     /**
      * Create a query builder with a custom filter criteria.
      *
-     * @param string $field
+     * @param string   $field
      * @param callable $apply
      * @return static
      */
     public function withFilter(string $field, callable $apply)
     {
-        return $this->withAddedStep('compose', function (iterable $filter) use ($field, $apply) {
-            foreach ($filter as $info => $orig) {
-                yield $info => ($info['field'] === $field ? $apply : $orig);
-            };
-        });
+        return $this->withAddedStep(
+            'compose',
+            function (iterable $filter) use ($field, $apply) {
+                foreach ($filter as $info => $orig) {
+                    yield $info => ($info['field'] === $field ? $apply : $orig);
+                };
+            }
+        );
     }
 
 
@@ -106,7 +109,7 @@ class StagedQueryBuilder implements StagedQueryBuilderInterface
      * Create the query from a filter
      *
      * @param iterable $filter
-     * @param array $opts
+     * @param array    $opts
      * @return mixed
      */
     public function buildQuery(iterable $filter, array $opts = [])
@@ -125,7 +128,7 @@ class StagedQueryBuilder implements StagedQueryBuilderInterface
      * Alias of `buildQuery()`
      *
      * @param iterable $filter
-     * @param array $opts
+     * @param array    $opts
      * @return mixed
      */
     final public function __invoke(iterable $filter, array $opts = [])

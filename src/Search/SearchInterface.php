@@ -4,13 +4,23 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Search;
 
-use Jasny\DB\CRUD\Result;
+use Jasny\DB\QueryBuilder\QueryBuilderInterface;
+use Jasny\DB\Result\Result;
 
 /**
  * Service for full text search.
  */
 interface SearchInterface
 {
+    /**
+     * Create a CRUD service with a custom query builder.
+     *
+     * @param QueryBuilderInterface $queryBuilder
+     * @return mixed
+     */
+    public function withQueryBuilder(QueryBuilderInterface $queryBuilder);
+
+
     /**
      * Full text search.
      *

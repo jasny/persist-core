@@ -27,7 +27,7 @@ class FieldMap implements FieldMapInterface
      * Class constructor.
      *
      * @param array $map
-     * @param bool  $dynamic  Allow properties that are not mapped?
+     * @param bool  $dynamic Allow properties that are not mapped?
      */
     public function __construct(array $map, bool $dynamic = true)
     {
@@ -50,7 +50,7 @@ class FieldMap implements FieldMapInterface
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->map;
     }
@@ -61,7 +61,7 @@ class FieldMap implements FieldMapInterface
      *
      * @return static
      */
-    public function flip()
+    public function flip(): self
     {
         return new static(array_flip($this->map), $this->dynamic);
     }
@@ -125,17 +125,20 @@ class FieldMap implements FieldMapInterface
     }
 
     /**
+     * @param mixed $field
+     * @param mixed $value
      * @throws \BadMethodCallException
      */
-    public function offsetSet($field, $value)
+    public function offsetSet($field, $value): void
     {
         throw new \BadMethodCallException("FieldMap is immutable");
     }
 
     /**
+     * @param mixed $field
      * @throws \BadMethodCallException
      */
-    public function offsetUnset($field)
+    public function offsetUnset($field): void
     {
         throw new \BadMethodCallException("FieldMap is immutable");
     }

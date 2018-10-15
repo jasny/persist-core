@@ -51,7 +51,7 @@ interface CRUDInterface
      * @param array $opts
      * @return void
      */
-    public function update($storage, array $filter, array $changes, array $opts = []): update;
+    public function update($storage, array $filter, array $changes, array $opts = []): void;
 
     /**
      * Save the data.

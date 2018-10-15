@@ -2,6 +2,7 @@
 
 namespace Jasny\DB\Tests\Search;
 
+use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Search\NoSearch;
 use PHPUnit\Framework\TestCase;
 
@@ -10,6 +11,16 @@ use PHPUnit\Framework\TestCase;
  */
 class NoSearchTest extends TestCase
 {
+    public function testWithQueryBuilder()
+    {
+        $builder = $this->createMock(QueryBuilderInterface::class);
+
+        $base = new NoSearch();
+        $search = $base->withQueryBuilder($builder);
+
+        $this->assertSame($base, $search);
+    }
+
     /**
      * @expectedException \Jasny\DB\Exception\UnsupportedFeatureException
      */

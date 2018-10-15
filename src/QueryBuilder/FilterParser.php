@@ -44,7 +44,7 @@ class FilterParser
             return ['field' => trim($key), 'operator' => ''];
         }
 
-        if (!preg_match(static::REGEXP, $key, $matches)){
+        if (!preg_match(static::REGEXP, $key, $matches)) {
             throw new InvalidFilterException("Invalid filter item '$key': Bad use of parentheses");
         }
 

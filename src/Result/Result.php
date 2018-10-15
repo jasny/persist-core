@@ -50,8 +50,10 @@ class Result extends Pipeline
         $count = i\function_call($this->totalCount);
 
         if ((!is_int($count) && !ctype_digit($count)) || $count < 0) {
-            throw new \UnexpectedValueException("Failed to get total count: " .
-                "Expected a positive integer, got " . (is_int($count) ? $count : get_type_description($count)));
+            throw new \UnexpectedValueException(
+                "Failed to get total count: " .
+                "Expected a positive integer, got " . (is_int($count) ? $count : get_type_description($count))
+            );
         }
 
         $this->totalCount = (int)$count;
