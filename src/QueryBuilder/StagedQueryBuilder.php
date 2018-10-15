@@ -51,7 +51,7 @@ class StagedQueryBuilder implements StagedQueryBuilderInterface
     {
         return $this->withAddedStep('compose', function (iterable $filter) use ($field, $apply) {
             foreach ($filter as $info => $orig) {
-                yield $info['field'] === $field ? $apply : $orig;
+                yield $info => ($info['field'] === $field ? $apply : $orig);
             };
         });
     }
