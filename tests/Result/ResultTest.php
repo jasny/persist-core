@@ -13,67 +13,63 @@ class ResultTest extends TestCase
 {
     use TestHelper;
 
-    /**
-     * Test 'getTotalCount' method
-     */
-    public function testGetTotalCount()
+    public function testGetMeta()
     {
-        $result = new Result([], 42);
+        $input = (object)['total' => 42];
+        $result = new Result([], $input);
 
-        $this->assertSame(42, $result->getTotalCount());
+        $meta = $result->getMeta();
+
+        $this->assertEquals($input, $meta);
+        $this->assertNotSame($input, $meta);
     }
 
-    /**
-     * Test 'getTotalCount' method with closure
-     */
-    public function testGetTotalCountWithClosure()
+    public function testGetMetaWithArray()
     {
-        $closure = $this->createCallbackMock($this->once(), [], 21);
+        $result = new Result([], ['total' => 42]);
 
-        $result = new Result([], $closure);
-
-        $this->assertSame(21, $result->getTotalCount());
-
-        // Closure should not be called twice
-        $this->assertSame(21, $result->getTotalCount());
+        $this->assertEquals((object)['total' => 42], $result->getMeta());
     }
 
-    /**
-     * Test 'getTotalCount' method, in case when totalCount proerpty is not set
-     *
-     * @expectedException \BadMethodCallException
-     */
-    public function testGetTotalCountNotSet()
+    public function testGetMetaImmutable()
+    {
+        $input = (object)['total' => 42];
+        $result = new Result([], $input);
+
+        $meta = $result->getMeta();
+        $meta->foo = 'bar';
+
+        $this->assertEquals((object)['total' => 42], $result->getMeta());
+    }
+
+    public function testGetMetaNotSet()
     {
         $result = new Result([]);
-        $result->getTotalCount();
+
+        $this->assertEquals((object)[], $result->getMeta());
     }
 
-    /**
-     * Test 'getTotalCount' method with closure that returns a negative number
-     *
-     * @expectedException \UnexpectedValueException
-     * @expectedExceptionMessage Failed to get total count: Expected a positive integer, got -1
-     */
-    public function testGetTotalCountWithClosureNegative()
+    public function testGetMetaWithClosure()
     {
-        $closure = $this->createCallbackMock($this->once(), [], -1);
+        $closure = $this->createCallbackMock($this->once(), [], ['total' => 42]);
 
         $result = new Result([], $closure);
-        $result->getTotalCount();
+
+        $this->assertEquals((object)['total' => 42], $result->getMeta());
+
+        // Closure should not be called twice
+        $this->assertEquals((object)['total' => 42], $result->getMeta());
     }
 
     /**
-     * Test 'getTotalCount' method with closure that returns a string
-     *
      * @expectedException \UnexpectedValueException
-     * @expectedExceptionMessage Failed to get total count: Expected a positive integer, got string
+     * @expectedExceptionMessage Failed to get total count: Expected stdClass object or array, got string
      */
-    public function testGetTotalCountWithClosureString()
+    public function testGetMetaWithClosureReturnsString()
     {
         $closure = $this->createCallbackMock($this->once(), [], 'foo');
 
         $result = new Result([], $closure);
-        $result->getTotalCount();
+        $result->getMeta();
     }
 }

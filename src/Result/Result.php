@@ -7,7 +7,6 @@ namespace Jasny\DB\Result;
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
 use function Jasny\expect_type;
-use function Jasny\get_type_description;
 
 /**
  * Query result
@@ -15,65 +14,56 @@ use function Jasny\get_type_description;
 class Result extends Pipeline
 {
     /**
-     * @var int|\Closure
+     * @var \stdClass|\Closure
      */
-    protected $totalCount;
+    protected $meta;
 
 
     /**
      * Result constructor.
      *
-     * @param iterable          $iterable
-     * @param int|callable|null $totalCount
+     * @param iterable                 $iterable
+     * @param \stdClass|array|callable $meta
      */
-    public function __construct(iterable $iterable, $totalCount = null)
+    public function __construct(iterable $iterable, $meta = [])
     {
-        expect_type($totalCount, ['int', 'callable', 'null']);
+        expect_type($meta, [\stdClass::class, 'array', 'callable', 'null']);
 
         parent::__construct($iterable);
 
-        $this->totalCount = $totalCount;
+        $this->meta = $meta instanceof \stdClass ? clone $meta : (object)$meta;
     }
 
     /**
-     * Resolve total count if it's still a Closure.
+     * Resolve metadata if it's still a Closure.
      *
      * @return void
-     * @throws \UnexpectedValueException if total count closure didn't return a positive integer
+     * @throws \UnexpectedValueException if metadata closure didn't return a positive integer
      */
-    protected function resolveTotalCount(): void
+    protected function resolveMeta(): void
     {
-        if (is_int($this->totalCount) || !is_callable($this->totalCount)) {
-            return;
-        }
+        expect_type($this->meta, 'callable', \BadMethodCallException::class);
 
-        $count = i\function_call($this->totalCount);
+        $meta = i\function_call($this->meta);
 
-        if ((!is_int($count) && !ctype_digit($count)) || $count < 0) {
-            throw new \UnexpectedValueException(
-                "Failed to get total count: " .
-                "Expected a positive integer, got " . (is_int($count) ? $count : get_type_description($count))
-            );
-        }
+        $msg = "Failed to get total count: Expected %2\$s, got %1\$s";
+        expect_type($meta, [\stdClass::class, 'array'], \UnexpectedValueException::class, $msg);
 
-        $this->totalCount = (int)$count;
+        $this->meta = $meta instanceof \stdClass ? clone $meta : (object)$meta;
     }
 
     /**
-     * Get the total count of all the entities (if set was limited)
+     * Get the metadata of the result
      *
-     * @return int
-     * @throws \BadMethodCallException if total count isn't set
-     * @throws \UnexpectedValueException if total count closure didn't return a positive integer
+     * @return \stdClass
+     * @throws \UnexpectedValueException if metadata closure didn't return an array or object
      */
-    public function getTotalCount(): int
+    public function getMeta(): \stdClass
     {
-        if (!isset($this->totalCount)) {
-            throw new \BadMethodCallException("Total count is not set");
+        if (is_callable($this->meta)) {
+            $this->resolveMeta();
         }
 
-        $this->resolveTotalCount();
-
-        return $this->totalCount;
+        return clone $this->meta;
     }
 }
