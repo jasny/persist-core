@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Result;
+namespace Jasny\DB\Read;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
@@ -14,7 +14,7 @@ use function Jasny\expect_type;
 class Result extends Pipeline
 {
     /**
-     * @var \stdClass|\Closure
+     * @var array|\Closure
      */
     protected $meta;
 
@@ -22,16 +22,32 @@ class Result extends Pipeline
     /**
      * Result constructor.
      *
-     * @param iterable                 $iterable
-     * @param \stdClass|array|callable $meta
+     * @param iterable       $iterable
+     * @param array|callable $meta
      */
     public function __construct(iterable $iterable, $meta = [])
     {
-        expect_type($meta, [\stdClass::class, 'array', 'callable', 'null']);
+        expect_type($meta, ['array', 'callable']);
 
         parent::__construct($iterable);
 
-        $this->meta = $meta instanceof \stdClass ? clone $meta : (object)$meta;
+        $this->meta = $meta;
+    }
+
+    /**
+     * Get a copy with new meta data.
+     *
+     * @param array|callable $meta
+     * @return static
+     */
+    public function withMeta($meta): self
+    {
+        expect_type($meta, ['array', 'callable']);
+
+        $clone = clone $this;
+        $clone->meta = $meta;
+
+        return $clone;
     }
 
     /**
@@ -45,11 +61,9 @@ class Result extends Pipeline
         expect_type($this->meta, 'callable', \BadMethodCallException::class);
 
         $meta = i\function_call($this->meta);
+        expect_type($meta, 'array', \UnexpectedValueException::class, "Failed to get meta: Expected %2\$s, got %1\$s");
 
-        $msg = "Failed to get total count: Expected %2\$s, got %1\$s";
-        expect_type($meta, [\stdClass::class, 'array'], \UnexpectedValueException::class, $msg);
-
-        $this->meta = $meta instanceof \stdClass ? clone $meta : (object)$meta;
+        $this->meta = $meta;
     }
 
     /**
@@ -60,10 +74,10 @@ class Result extends Pipeline
      */
     public function getMeta(): \stdClass
     {
-        if (is_callable($this->meta)) {
+        if (!is_array($this->meta)) {
             $this->resolveMeta();
         }
 
-        return clone $this->meta;
+        return $this->meta;
     }
 }

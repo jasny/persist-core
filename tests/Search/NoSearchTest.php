@@ -3,11 +3,11 @@
 namespace Jasny\DB\Tests\Search;
 
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
-use Jasny\DB\Search\NoSearch;
+use Jasny\DB\Read\NoWrite;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Search\NoSearch
+ * @covers \Jasny\DB\Read\NoWrite
  */
 class NoSearchTest extends TestCase
 {
@@ -15,7 +15,7 @@ class NoSearchTest extends TestCase
     {
         $builder = $this->createMock(QueryBuilderInterface::class);
 
-        $base = new NoSearch();
+        $base = new NoWrite();
         $search = $base->withQueryBuilder($builder);
 
         $this->assertSame($base, $search);
@@ -26,7 +26,7 @@ class NoSearchTest extends TestCase
      */
     public function testSearch()
     {
-        $search = new NoSearch();
+        $search = new NoWrite();
 
         $search->search([], 'foo');
     }
