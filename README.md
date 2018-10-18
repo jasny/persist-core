@@ -7,9 +7,23 @@ Jasny DB
 [![Packagist Stable Version](https://img.shields.io/packagist/v/jasny/db.svg)](https://packagist.org/packages/jasny/db)
 [![Packagist License](https://img.shields.io/packagist/l/jasny/db.svg)](https://packagist.org/packages/jasny/db)
 
-Database abstraction layer.
+Database abstraction layer that doesn't wrap and shield underlying the PHP driver.
+
+The library provides services that allow the user to abstract DB access, while still having access to all capabilities
+of the underlying db / storage.
+
+Other abstraction layers force the user to use SQL like builders or (string) SQL dialects. These are only able to
+formulate very generic queries. When you actively choose for a DBMS (MongoDB, MySQL, Postgres) you want to use the
+features that system has, and not for it to be abstracted away into a grey mass.
+
+With Jasny DB some basic logic is included. The rest needs to be defined by you as developer. If you need to switch DB,
+add cache etc, this custom logic might still need to be rewritten. But now it's all in one place instead spread over the
+app.  
 
 _All objects are immutable._
+
+This library doesn't do ORM / ODM. For that take a look at [Jasny Entity Mapper](https://github.com/jasny/entity-mapper)
+and [Jasny DB Gateway](https://github.com/jasny/db-gateway).
 
 Installation
 ---
@@ -126,113 +140,11 @@ Key            | Value  | Description
 
 To filter between two values, use both `(min)` and `(max)`.
 
-#### Custom filters
+For data stores that support structured data (as MongoDB) the field may use the dot notation to reference a deeper
+properties.
 
-The functionality of the basic filters is limited. With the query builder, custom filters may be added. These filter
-do not have to correspond to one field, but can closely match the business logic.
-
-```php
-use Jasny\DB\QueryBuilder\StagedQueryBuilder;
-use Jasny\DB\Mongo\Read\MongoReader;
-use Jasny\DB\Mongo\QueryBuilder\Query;
-
-$reader = new MongoReader();
-
-$queryBuilder = (new StagedQueryBuilder)
-    ->withFilter('prominent', function(Query $query, $field, $operator, $value) {
-        $condition = ($operator === 'not' xor !$value)
-            ? ['$and' => ['totalSale' => ['$gte' => 1000], 'activation_date' => ['$lte' => new DateTime('-1 year')]]]
-            : ['$or' => ['totalSale' => ['$lt' => 1000], 'activation_date' => ['$gt' => new DateTime('-1 year')]]];
-        
-        $quey->add($condition);
-    });
-
-$clientReader = $reader->withQueryBuilder($queryBuilder);
-
-$prominentResellers = $clientReader->fetch(['prominent' => true, 'reseller' => true]);
-```
-
-Both Reader and Search service support the `withQueryBuilder()` method, which creates a new copy of the service.
-
-Custom filters are DB specific as the accumulator (first argument) is DB specific.
-
-#### Custom query builder
-
-It's possible to create a custom query builder from scratch. You class needs to implement the `QueryBuilderInterface`
-
-```php
-$reader = (new MongoReader)->withQueryBuilder(new MyQueryBuilder());
-```
-
-Alternatively, it's possible to customize a staged query builder. (Which also needs to be set, as query builders are
-immutable objects.) The staged builder has 4 stages
-
-##### 1. prepare
-The first step in the first stage parses the filter keys, so the iterator key is
-`["field" => string, "operator" => string]`.
-
-Subsequently the values may be cast into values accepted by the db driver. A field map might be applied for aliased
-fields. Etc.
-
-```php
-$newBuilder = $builder->onPrepare(function(iterable $iterator, array $opts) {
-    foreach ($iterator as $info => $value) {
-        $info['field'] = i\string_case_convert($info['field'], i\STRING_LOWERCASE);
-        $value = ($value !== '' ? $value : null);
-        
-        yield $info => $value;
-    }
-});
-```
-
-##### 2. compose
-The compose stage starts with a step that creates a callback function. For each entry, the value is added to the info
-which is present as key, which now is `["field" => string, "operator" => string, "value" => mixed]`. The value is this
-callback function with signature;
-
-    void callback($accumulator, $field, $operator, $value, $opts) 
-
-The accumulator is typically an object. The exact type differs per implementation.
-
-Other steps in this stage may replace these functions with custom logic. The `withFilter()` method adds steps in the
-compose stage.
-
-```php
-$newBuilder = $builder->onCompose(function(iterable $iterator, array $opts) {
-    // ...
-});
-```
-    
-##### 3. build
-The build stage creates the accumulator and calls each of the functions created in the compose stage.
-
-Additional steps may add logic to the accumulator object.
-
-```php
-$newBuilder = $builder->onBuild(function(Query $query, array $opts) {
-    if (isset($opts['page'])) {
-        $query = $query->withLimit($opts['page'] * 10);
-    }
-    
-    return $query;
-});
-```
-
-##### 4. finalize
-The last stage takes the accumulator and turns it into something that the underlying storage driver understands. This
-can be an array, an SQL query as string or even an HTTP request.
-
-Additional steps can customize this final result.
-
-```php
-$newBuilder = $builder->onFinalize(function(string $query, array $opts) {
-    // ...
-});
-```
-
-### Field map
-
-_TODO: Add text here_
+_The filter is a simple associative array, rather than an array of objects, making it easier to pass (part of) the
+HTTP query parameters as filter._
 
 ## Read service
 
@@ -246,15 +158,15 @@ The `fetch` and `count` methods accept a filter and options (`$opts`). The avail
 Typically you can set the fields that should be part of the result, a limit and offset and possibly which metadata you
 want to grab.
 
-#### fetch
+### fetch
 
-    Result fetch($storage, array $filter, array $opts = [])
+    Result fetch($storage, array $filter, QueryOption[] $opts = [])
 
 Query and fetch data.
 
-#### count
+### count
 
-    int count($storage, array $filter, array $opts = [])
+    int count($storage, array $filter, QueryOption[] $opts = [])
     
 Query and count result.
 
@@ -339,21 +251,18 @@ The `save`, `update` and `delete` methods accept options (`$opts`). The availabl
 
 ### save
 
-    iterable save($storage, iterable $items, array $opts = [])
+    iterable save($storage, iterable $items, QueryOption[] $opts = [])
 
-Save the data.
+Save the items. If an item has a unique id update it, otherwise add it.
 
 Multiple items must be specified. If you only want to save one item, wrap it in an array as `save($storage, [$item])`.
 
-The method returns an array or other iterable with generated properties per entry, like auto-increment ids.
-
-#### Custom save query builder
-
-_TODO: How does this work?_
+The method returns an array or other iterable with generated properties per entry, like auto-increment ids. Even if
+`$items` is an array of objects, the generated properties will not automatically be set for these objects.
 
 ### update
 
-    void update($storage, \stdClass $changes, array $filter, array $opts = [])
+    void update($storage, array $filter, UpdateOperation|UpdateOperation[] $changes,, QueryOption[] $opts = [])
     
 Query and update records.
 
@@ -362,14 +271,216 @@ switching `$changes` and `$filter` to ruin your whole database.
 
 If you want to update every record of the storage (table, collection, etc) you have to supply an empty array as filter.
 
-#### Custom update query builder
+```php
+use Jasny\DB\Update as u;
+use Jasny\DB\Mongo\Write\MongoWriter;
 
-_TODO: How to process the changes so they end up in the query?_
+$writer = new MongoWriter();
+$users = (MongoDB\Client)->tests->users;
+
+$writer->update($users, ['id' => 10], [u\set('last_login', new DateTime()), u\inc('logins')]);
+```
+
+The `$changes` argument must be one or more `UpdateOperation` objects. Rather than creating such an object by hand, the
+following helper functions exist in the `Jasny\DB\Update` namespace:
+
+* `set(string $field, $value)` or `set(iterable $values)`
+* `patch(string $field, array|object $value)`
+* `inc(string $field, int|float value = 1)`
+* `dec(string $field, int|float value = 1)`
+* `mul(string $field, int|float value)`
+* `div(string $field, int|float value)`
+* `mod(string $field, int|float value)`
+
+If the field is an array, the following operations are also available
+* `add(string $field, $value)`
+* `rem(string $field, $value)`
+
+To prevent accidentally swapping the changes and filter, passing a normal associative array is not allowed. Instead use
+`u\set($values)`, where values are all values that need to be set.
 
 ### delete
 
-    void delete($storage, array $filter, array $opts = [])
+    void delete($storage, array $filter, QueryOption[] $opts = [])
     
 Query and delete records.
 
-If you want to delete every record of the storage (table, collection, etc) you have to supply an empty array as filter.
+## Field map
+
+The field map can be used both as a step in a 'prepare' stage of a query or as step of the result builder. If convert
+database field names into field names used in the PHP app and visa versa.
+
+Construct the map using an associative array in the form `[from => to]`. The `flip()` method flips the `from` and `to`.
+
+```php
+use Jasny\DB\FieldMap\FieldMap;
+
+$fieldMap = new FieldMap(['ref' => 'reference', 'foo_bar_setting' => 'foo_bar']);
+
+$reader = new MongoReader();
+$queryBuilder = $reader->getQueryBuilder()->onPrepare($fieldMap);
+$resultBuilder = $reader->getResultBuilder()->then($fieldMap->flip());
+
+$reader = $reader
+    ->withQueryBuilder($queryBuilder)
+    ->withResultBuilder($resultBuilder);
+```
+
+## Custom filters
+
+The functionality of the basic filters is limited. With the query builder, custom filters may be added. These filter
+do not have to correspond to one field, but can closely match the business logic.
+
+```php
+use Jasny\DB\QueryBuilder\StagedQueryBuilder;
+use Jasny\DB\QueryBuilder\CustomFilter;
+use Jasny\DB\Mongo\Read\MongoReader;
+use Jasny\DB\Mongo\QueryBuilder\Query;
+
+$clients = (new MongoDB\Client)->test->clients; 
+$reader = new MongoReader();
+
+$queryBuilder = (new StagedQueryBuilder)
+    ->onCompose(new CustomFilter('prominent', function(Query $query, string $field, string $operator, $value) {
+        $condition = ($operator === 'not' xor !$value)
+            ? ['$or' => ['sold' => ['$lt' => 1000], 'activation_date' => ['$gt' => new DateTime('-1 year')]]]
+            : ['$and' => ['sold' => ['$gte' => 1000], 'activation_date' => ['$lte' => new DateTime('-1 year')]]]
+        
+        $quey->add($condition);
+    }));
+
+$clientReader = $reader->withQueryBuilder($queryBuilder);
+
+$prominentResellers = $clientReader->fetch($clients, ['prominent' => true, 'reseller' => true]);
+```
+
+Both Reader and Search service support the `withQueryBuilder()` method, which creates a new copy of the service.
+
+Custom filters are DB specific as the accumulator (first argument) is DB specific.
+
+## Custom query builder
+
+It's possible to create a custom query builder from scratch. You class needs to implement the `QueryBuilderInterface`
+
+```php
+$reader = (new MongoReader)->withQueryBuilder(new MyQueryBuilder());
+```
+
+### Staged query builder
+
+Alternatively, it's possible to customize a staged query builder. (Which also needs to be set, as query builders are
+immutable objects.) The staged builder has 4 stages
+
+##### 1. prepare
+The first step in the first stage parses the filter keys, so the iterator key is
+`["field" => string, "operator" => string]`.
+
+Subsequently the values may be cast into values accepted by the db driver. A field map might be applied for aliased
+fields. Etc.
+    
+```php
+$newBuilder = $builder->onPrepare(function(iterable $iterator, array $opts) {
+    foreach ($iterator as $info => $value) {
+        $info['field'] = i\string_case_convert($info['field'], i\STRING_LOWERCASE);
+        $value = ($value !== '' ? $value : null);
+        
+        yield $info => $value;
+    }
+});
+```
+
+##### 2. compose
+The compose stage starts with a step that creates a callback function. For each entry, the value is added to the info
+which is present as key, which now is `["field" => string, "operator" => string, "value" => mixed]`. The value is this
+callback function with signature;
+
+    void callback($accumulator, $field, $operator, $value, array $opts) 
+
+The accumulator is typically an object. The exact type differs per implementation.
+
+Other steps in this stage may replace these functions with custom logic, like with the `CustomFilter` class.
+
+```php
+$newBuilder = $builder->onCompose(function(iterable $iterator, array $opts) {
+    // ...
+});
+```
+    
+##### 3. build
+The build stage creates the accumulator and calls each of the functions created in the compose stage.
+
+Additional steps may add logic to the accumulator object.
+
+```php
+$newBuilder = $builder->onBuild(function(Query $query, array $opts) {
+    if (isset($opts['page'])) {
+        $query = $query->withLimit($opts['page'] * 10);
+    }
+    
+    return $query;
+});
+```
+
+##### 4. finalize
+The last stage takes the accumulator and turns it into something that the underlying storage driver understands. This
+can be an array, an SQL query as string or even an HTTP request.
+
+Additional steps can customize this final result.
+
+```php
+$newBuilder = $builder->onFinalize(function(string $query, array $opts) {
+    // ...
+});
+```
+
+#### Custom update query builder
+
+The writer service can be used to update multiple records at once. It creates an update query using not one but two
+query builders.
+
+The **update** query builder takes the update operations, which creates the change set (`SET field = value` in an SQL
+query). It can be replaced using `$writer->withUpdateQueryBuilder(...)`
+
+The first step in the prepare stage converts update instructions into an iterable with the field name and operator as
+key and value as value. The output this step is similar to that of the filter parser. From there the builder works the
+same as explained in the previous section.
+
+The **filter** query builder, which is also used by the other methods to build the conditions (`WHERE ...
+` part of an SQL query).
+
+#### Custom save query builder
+
+For saving the writer also uses the staged query builder, but this time it functions a bit different, as we start with
+a set of items instead of field, operator and value.
+
+##### 1. prepare
+
+The prepare step does nothing by default, but can be used to apply field mapping and casting. Do note that every item of
+the iterator is an array with `[field => value]` pairs. So you'd need to traverse through those, typically with
+`iterable_map`.
+
+```php
+use Improved as i;
+use Jasny\DB\FieldMap\FieldMap;
+
+$fieldMap = new FieldMap(['ref' => 'reference', 'foo_bar_setting' => 'foo_bar']);
+
+$writer = new MongoWriter();
+$queryBuilder = $writer->getSaveQueryBuilder()->onPrepare(function(iterable $items) use ($fieldMap) {
+    return i\iterable_map($items, $fieldMap);
+});
+
+$writer = $writer->withSaveQueryBuilder($queryBuilder);
+``` 
+
+##### 2. compose
+
+The compose stage first groups items together. It might create batches of (max) 100 items or group all existing and new
+together. It depends on to which extends saving these items can be combined into a single query.
+
+Next it will set these grouped values as key and change the value of the iterator into a callback function
+
+    void callback($accumulator, array $items, array $opts) 
+
+Additional steps could replace these functions, but as there is no clear way to identify them, this is typically not a
+good idea. In other words; you typically don't want to add steps to the compose stage of an insert query builder.

@@ -20,16 +20,6 @@ use Jasny\DB\FieldMap\FieldMapInterface;
 interface StagedQueryBuilderInterface extends QueryBuilderInterface
 {
     /**
-     * Create a query builder with a custom filter criteria.
-     *
-     * @param string   $field
-     * @param callable $apply
-     * @return static
-     */
-    public function withFilter(string $field, callable $apply);
-
-
-    /**
      * Create a query builder with a custom prepare step.
      *
      * @param callable $step

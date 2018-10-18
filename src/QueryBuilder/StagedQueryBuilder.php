@@ -39,27 +39,6 @@ class StagedQueryBuilder implements StagedQueryBuilderInterface
         return $clone;
     }
 
-
-    /**
-     * Create a query builder with a custom filter criteria.
-     *
-     * @param string   $field
-     * @param callable $apply
-     * @return static
-     */
-    public function withFilter(string $field, callable $apply)
-    {
-        return $this->withAddedStep(
-            'compose',
-            function (iterable $filter) use ($field, $apply) {
-                foreach ($filter as $info => $orig) {
-                    yield $info => ($info['field'] === $field ? $apply : $orig);
-                };
-            }
-        );
-    }
-
-
     /**
      * Create a query builder, adding a custom prepare step.
      *

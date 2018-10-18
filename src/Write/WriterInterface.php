@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Write;
 
+use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 
 /**
@@ -12,7 +13,23 @@ use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 interface WriterInterface
 {
     /**
-     * Create a CRUD service with a custom query builder.
+     * Create a CRUD service with a custom builder pipeline for save.
+     *
+     * @param PipelineBuilder $builder
+     * @return mixed
+     */
+    public function withSaveBuilder(PipelineBuilder $builder);
+
+    /**
+     * Create a CRUD service with a custom update query builder.
+     *
+     * @param QueryBuilderInterface $queryBuilder
+     * @return mixed
+     */
+    public function withUpdateQueryBuilder(QueryBuilderInterface $queryBuilder);
+
+    /**
+     * Create a CRUD service with a custom filter query builder.
      *
      * @param QueryBuilderInterface $queryBuilder
      * @return mixed
