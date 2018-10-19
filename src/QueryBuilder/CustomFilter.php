@@ -41,7 +41,9 @@ class CustomFilter
     public function __invoke(iterable $filter): \Generator
     {
         foreach ($filter as $info => $orig) {
-            yield $info => ($info['field'] === $this->field ? $this->apply : $orig);
+            $field = is_array($info) ? ($info['field'] ?? null) : $info;
+
+            yield $info => ($field === $this->field ? $this->apply : $orig);
         }
     }
 }

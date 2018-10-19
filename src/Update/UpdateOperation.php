@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Update;
 
-use Improved\IteratorPipeline\Pipeline;
+use function Jasny\expect_type;
 
 /**
  * Operation for update query
@@ -30,14 +30,15 @@ class UpdateOperation
     /**
      * Class constructor.
      *
-     * @param string $operator
-     * @param string $field
-     * @param mixed  $value
+     * @param string       $operator
+     * @param string|array $field
+     * @param mixed        $value
      */
-    public function __construct(string $operator, string $field, $value)
+    public function __construct(string $operator, $field, $value)
     {
-        $this->operator = $operator;
+        expect_type($field, ['string', 'array']);
 
+        $this->operator = $operator;
         $this->field = $field;
         $this->value = $value;
     }

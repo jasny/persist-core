@@ -4,29 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Update;
 
-use Improved\IteratorPipeline\Pipeline;
 use function Jasny\expect_type;
-
-
-/** @internal */
-const set = 'Jasny\DB\Update\set';
-/** @internal */
-const patch = 'Jasny\DB\Update\patch';
-/** @internal */
-const inc = 'Jasny\DB\Update\inc';
-/** @internal */
-const dec = 'Jasny\DB\Update\dec';
-/** @internal */
-const mul = 'Jasny\DB\Update\mul';
-/** @internal */
-const div = 'Jasny\DB\Update\div';
-/** @internal */
-const mod = 'Jasny\DB\Update\mod';
-/** @internal */
-const add = 'Jasny\DB\Update\add';
-/** @internal */
-const rem = 'Jasny\DB\Update\rem';
-
 
 /**
  * Set a field to a value
@@ -51,7 +29,7 @@ function set($field, $value = null)
 function patch(string $field, $value)
 {
     expect_type($value, ['array', 'object']);
-    return new UpdateOperation('set', $field, $value);
+    return new UpdateOperation('patch', $field, $value);
 }
 
 /**
@@ -121,27 +99,25 @@ function mod(string $field, $value)
 
 
 /**
- * Multiply a field by a specific value.
+ * Add a value to an array field.
  *
- * @param string    $field
- * @param int|float $value
+ * @param string $field
+ * @param mixed  $value
  * @return UpdateOperation
  */
 function add(string $field, $value)
 {
-    expect_type($value, ['int', 'float']);
     return new UpdateOperation('add', $field, $value);
 }
 
 /**
- * Multiply a field by a specific value.
+ * Remove an value from an array field.
  *
- * @param string    $field
- * @param int|float $value
+ * @param string $field
+ * @param mixed  $value
  * @return UpdateOperation
  */
 function rem(string $field, $value)
 {
-    expect_type($value, ['int', 'float']);
     return new UpdateOperation('rem', $field, $value);
 }

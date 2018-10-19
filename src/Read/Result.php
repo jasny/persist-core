@@ -69,10 +69,10 @@ class Result extends Pipeline
     /**
      * Get the metadata of the result
      *
-     * @return \stdClass
+     * @return array
      * @throws \UnexpectedValueException if metadata closure didn't return an array or object
      */
-    public function getMeta(): \stdClass
+    public function getMeta(): array
     {
         if (!is_array($this->meta)) {
             $this->resolveMeta();

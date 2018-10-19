@@ -2,51 +2,36 @@
 
 namespace Jasny\DB\Tests\Result;
 
-use Jasny\DB\Result\Result;
+use Improved\IteratorPipeline\Pipeline;
+use Jasny\DB\Read\Result;
 use Jasny\TestHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Result\Result
+ * @covers \Jasny\DB\Read\Result
  */
 class ResultTest extends TestCase
 {
     use TestHelper;
 
-    public function testGetMeta()
+    public function testPipeline()
     {
-        $input = (object)['total' => 42];
-        $result = new Result([], $input);
-
-        $meta = $result->getMeta();
-
-        $this->assertEquals($input, $meta);
-        $this->assertNotSame($input, $meta);
+        $result = new Result([]);
+        $this->assertInstanceOf(Pipeline::class, $result);
     }
 
-    public function testGetMetaWithArray()
+    public function testGetMeta()
     {
         $result = new Result([], ['total' => 42]);
 
-        $this->assertEquals((object)['total' => 42], $result->getMeta());
-    }
-
-    public function testGetMetaImmutable()
-    {
-        $input = (object)['total' => 42];
-        $result = new Result([], $input);
-
-        $meta = $result->getMeta();
-        $meta->foo = 'bar';
-
-        $this->assertEquals((object)['total' => 42], $result->getMeta());
+        $this->assertEquals(['total' => 42], $result->getMeta());
     }
 
     public function testGetMetaNotSet()
     {
         $result = new Result([]);
 
-        $this->assertEquals((object)[], $result->getMeta());
+        $this->assertEquals([], $result->getMeta());
     }
 
     public function testGetMetaWithClosure()
@@ -55,15 +40,15 @@ class ResultTest extends TestCase
 
         $result = new Result([], $closure);
 
-        $this->assertEquals((object)['total' => 42], $result->getMeta());
+        $this->assertEquals(['total' => 42], $result->getMeta());
 
         // Closure should not be called twice
-        $this->assertEquals((object)['total' => 42], $result->getMeta());
+        $this->assertEquals(['total' => 42], $result->getMeta());
     }
 
     /**
      * @expectedException \UnexpectedValueException
-     * @expectedExceptionMessage Failed to get total count: Expected stdClass object or array, got string
+     * @expectedExceptionMessage Failed to get meta: Expected array, got string
      */
     public function testGetMetaWithClosureReturnsString()
     {
@@ -71,5 +56,15 @@ class ResultTest extends TestCase
 
         $result = new Result([], $closure);
         $result->getMeta();
+    }
+
+    public function testWithMeta()
+    {
+        $base = new Result([]);
+
+        $result = $base->withMeta(['total' => 42]);
+
+        $this->assertNotSame($base, $result);
+        $this->assertEquals(['total' => 42], $result->getMeta());
     }
 }

@@ -4,37 +4,36 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Write;
 
-use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 
 /**
- * Service to fetch, save and delete data from a persistent data storage (DB table, collection, etc).
+ * Service to add, update, and delete data from a persistent data storage (DB table, collection, etc).
  */
 interface WriterInterface
 {
     /**
-     * Create a CRUD service with a custom builder pipeline for save.
+     * Create a Writer service with a custom filter query builder.
      *
-     * @param PipelineBuilder $builder
-     * @return mixed
+     * @param QueryBuilderInterface $builder
+     * @return static
      */
-    public function withSaveBuilder(PipelineBuilder $builder);
+    public function withQueryBuilder(QueryBuilderInterface $builder);
 
     /**
-     * Create a CRUD service with a custom update query builder.
+     * Create a Writer service with a custom builder pipeline for save.
      *
-     * @param QueryBuilderInterface $queryBuilder
-     * @return mixed
+     * @param QueryBuilderInterface $builder
+     * @return static
      */
-    public function withUpdateQueryBuilder(QueryBuilderInterface $queryBuilder);
+    public function withSaveQueryBuilder(QueryBuilderInterface $builder);
 
     /**
-     * Create a CRUD service with a custom filter query builder.
+     * Create a Writer service with a custom update query builder.
      *
-     * @param QueryBuilderInterface $queryBuilder
-     * @return mixed
+     * @param QueryBuilderInterface $builder
+     * @return static
      */
-    public function withQueryBuilder(QueryBuilderInterface $queryBuilder);
+    public function withUpdateQueryBuilder(QueryBuilderInterface $builder);
 
 
     /**
@@ -51,13 +50,13 @@ interface WriterInterface
     /**
      * Query and update records.
      *
-     * @param mixed     $storage
-     * @param \stdClass $changes
-     * @param array     $filter
-     * @param array     $opts
+     * @param mixed                             $storage
+     * @param UpdateOperation|UpdateOperation[] $changes
+     * @param array                             $filter
+     * @param array                             $opts
      * @return void
      */
-    public function update($storage, \stdClass $changes, array $filter, array $opts = []): void;
+    public function update($storage, array $changes, array $filter, array $opts = []): void;
 
     /**
      * Query and delete records.
@@ -67,5 +66,5 @@ interface WriterInterface
      * @param array $opts
      * @return void
      */
-    public function delete($storage, array $filter = null, array $opts = []): void;
+    public function delete($storage, array $filter, array $opts = []): void;
 }

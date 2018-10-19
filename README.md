@@ -48,6 +48,7 @@ Usage
 #### Fetch a list
 
 ```php
+use Jasny\DB\Mongo\Options as opts;
 use Jasny\DB\Mongo\Read\MongoReader;
 
 $users = (new MongoDB\Client)->test->users;
@@ -62,14 +63,13 @@ $list = $reader
             'role (any)' => ['user', 'admin', 'super']
         ],
         [
-            'fields' => ['name', 'role', 'age'],
-            'limit' => 10
+            opts\fields('name', 'role', 'age'),
+            opts\limit(10)
         ]
     )
     ->map(function(array $user): string {
         return sprintf("%s (%s) - %s", $user['name'], $user['age'], $user['role']);
-    })
-    ->toArray();
+    });
 ```
 
 #### Read and write
@@ -145,6 +145,41 @@ properties.
 
 _The filter is a simple associative array, rather than an array of objects, making it easier to pass (part of) the
 HTTP query parameters as filter._
+
+## Options
+
+In additions to a filter, database specific options can be passed. Such options include limiting the number of results,
+loading related data, sorting, etc. These options are passed to the query builder.
+
+```php
+use Jasny\DB\Options as opts;
+use Jasny\DB\Mongo\Read\MongoReader;
+
+$users = (new MongoDB\Client)->test->users;
+$reader = new MongoReader;
+
+$list = $reader
+    ->fetch(
+        $users,
+        ['active' => true],
+        [
+            opts\fields('name', 'role', 'age'),
+            opts\limit(10),
+            opts\sort('~activation_date', 'name')
+        ]
+    );
+```
+
+This library defines the concept of options and a number of common options.
+
+* `fields(string ...$fields)`
+* `sort(string ...$fields)`
+* `limit(int limit, int offset = 0)`
+* `page(int pageNr, int pageSize)` _(pagination is 1-indexed)_
+
+For sorting, add a `~` in front of the field to sort in descending order.
+
+Jasny DB implementations may define additional options.
 
 ## Read service
 
@@ -247,7 +282,7 @@ the storage needs to be passed to each method.
 
 Each implementation has its own Writer service that converts the [generic filter](#filters) into a DB specific query.
 
-The `save`, `update` and `delete` methods accept options (`$opts`). The available options differ per implementation.
+The `save`, `update` and `delete` methods accept options (`$opts`).
 
 ### save
 
@@ -439,7 +474,7 @@ The writer service can be used to update multiple records at once. It creates an
 query builders.
 
 The **update** query builder takes the update operations, which creates the change set (`SET field = value` in an SQL
-query). It can be replaced using `$writer->withUpdateQueryBuilder(...)`
+query). It can be replaced using `$writer->withUpdateQueryBuilder(...)`.
 
 The first step in the prepare stage converts update instructions into an iterable with the field name and operator as
 key and value as value. The output this step is similar to that of the filter parser. From there the builder works the
@@ -451,10 +486,9 @@ The **filter** query builder, which is also used by the other methods to build t
 #### Custom save query builder
 
 For saving the writer also uses the staged query builder, but this time it functions a bit different, as we start with
-a set of items instead of field, operator and value.
+a set of items instead of field, operator and value. It may be replaced using `$writer->withSaveQueryBuilder(...)`.
 
 ##### 1. prepare
-
 The prepare step does nothing by default, but can be used to apply field mapping and casting. Do note that every item of
 the iterator is an array with `[field => value]` pairs. So you'd need to traverse through those, typically with
 `iterable_map`.
@@ -474,13 +508,21 @@ $writer = $writer->withSaveQueryBuilder($queryBuilder);
 ``` 
 
 ##### 2. compose
-
 The compose stage first groups items together. It might create batches of (max) 100 items or group all existing and new
 together. It depends on to which extends saving these items can be combined into a single query.
 
 Next it will set these grouped values as key and change the value of the iterator into a callback function
 
-    void callback($accumulator, array $items, array $opts) 
+    mixed callback(array $items, array $opts) 
 
 Additional steps could replace these functions, but as there is no clear way to identify them, this is typically not a
 good idea. In other words; you typically don't want to add steps to the compose stage of an insert query builder.
+
+##### 3. build
+The build still calls all the callbacks created in the compose step. However, there is no accumulator, as the items
+are already grouped. Each callback function must return the terms of a query.
+
+##### 4. finalize
+The finalize will iterate over the query terms and turn them into things the underlying storage driver understands.
+Where the other query builders output a single query, the save query builder returns an iterable with one or more
+such queries.
