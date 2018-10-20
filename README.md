@@ -195,13 +195,13 @@ want to grab.
 
 ### fetch
 
-    Result fetch($storage, array $filter, QueryOption[] $opts = [])
+    Result fetch($storage, array $filter, array $opts = [])
 
 Query and fetch data.
 
 ### count
 
-    int count($storage, array $filter, QueryOption[] $opts = [])
+    int count($storage, array $filter, array $opts = [])
     
 Query and count result.
 
@@ -286,7 +286,7 @@ The `save`, `update` and `delete` methods accept options (`$opts`).
 
 ### save
 
-    iterable save($storage, iterable $items, QueryOption[] $opts = [])
+    iterable save($storage, iterable $items, array $opts = [])
 
 Save the items. If an item has a unique id update it, otherwise add it.
 
@@ -297,7 +297,7 @@ The method returns an array or other iterable with generated properties per entr
 
 ### update
 
-    void update($storage, array $filter, UpdateOperation|UpdateOperation[] $changes,, QueryOption[] $opts = [])
+    void update($storage, array $filter, UpdateOperation|UpdateOperation[] $changes,, array $opts = [])
     
 Query and update records.
 
@@ -336,7 +336,7 @@ To prevent accidentally swapping the changes and filter, passing a normal associ
 
 ### delete
 
-    void delete($storage, array $filter, QueryOption[] $opts = [])
+    void delete($storage, array $filter, array $opts = [])
     
 Query and delete records.
 
