@@ -57,7 +57,7 @@ class UpdateOperation
     /**
      * Get the field name.
      *
-     * @return string
+     * @return string|array
      */
     public function getField()
     {

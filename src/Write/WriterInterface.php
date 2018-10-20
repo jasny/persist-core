@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\Write;
 
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
+use Jasny\DB\Update\UpdateOperation;
 
 /**
  * Service to add, update, and delete data from a persistent data storage (DB table, collection, etc).
@@ -51,12 +52,12 @@ interface WriterInterface
      * Query and update records.
      *
      * @param mixed                             $storage
-     * @param UpdateOperation|UpdateOperation[] $changes
      * @param array                             $filter
+     * @param UpdateOperation|UpdateOperation[] $changes
      * @param array                             $opts
      * @return void
      */
-    public function update($storage, array $changes, array $filter, array $opts = []): void;
+    public function update($storage, array $filter, $changes, array $opts = []): void;
 
     /**
      * Query and delete records.

@@ -51,15 +51,14 @@ class NoWrite implements WriterInterface
      * Update is not supported
      *
      * @param mixed                             $storage
-     * @param UpdateOperation|UpdateOperation[] $changes
      * @param array                             $filter
+     * @param UpdateOperation|UpdateOperation[] $changes
      * @param array                             $opts
      * @return void
      */
-    public function update($storage, array $changes, array $filter, array $opts = []): void
+    public function update($storage, array $filter, $changes, array $opts = []): void
     {
         throw new UnsupportedFeatureException("Writing to storage is not supported");
-
     }
 
     /**
