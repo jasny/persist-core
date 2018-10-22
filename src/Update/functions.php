@@ -9,13 +9,13 @@ use function Jasny\expect_type;
 /**
  * Set a field to a value
  *
- * @param string|iterable $field
- * @param mixed           $value
+ * @param string|array $field
+ * @param mixed        $value
  * @return UpdateOperation
  */
 function set($field, $value = null)
 {
-    expect_type($field, ['string', 'iterable']);
+    expect_type($field, func_num_args() === 1 ? 'array' : 'string');
     return new UpdateOperation('set', $field, $value);
 }
 
