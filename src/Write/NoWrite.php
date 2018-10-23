@@ -6,6 +6,7 @@ namespace Jasny\DB\Write;
 
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Exception\UnsupportedFeatureException;
+use Jasny\DB\Read\Result;
 use Jasny\DB\Update\UpdateOperation;
 
 /**
@@ -54,9 +55,9 @@ class NoWrite implements WriterInterface
      * @param array                             $filter
      * @param UpdateOperation|UpdateOperation[] $changes
      * @param array                             $opts
-     * @return void
+     * @return Result
      */
-    public function update($storage, array $filter, $changes, array $opts = []): void
+    public function update($storage, array $filter, $changes, array $opts = []): Result
     {
         throw new UnsupportedFeatureException("Writing to storage is not supported");
     }
@@ -67,10 +68,10 @@ class NoWrite implements WriterInterface
      * @param mixed    $storage
      * @param iterable $items
      * @param array    $opts
-     * @return iterable
+     * @return Result
      * @throws UnsupportedFeatureException
      */
-    public function save($storage, iterable $items, array $opts = []): iterable
+    public function save($storage, iterable $items, array $opts = []): Result
     {
         throw new UnsupportedFeatureException("Writing to storage is not supported");
     }
@@ -81,10 +82,10 @@ class NoWrite implements WriterInterface
      * @param mixed $storage
      * @param array $filter
      * @param array $opts
-     * @return void
+     * @return Result
      * @throws UnsupportedFeatureException
      */
-    public function delete($storage, array $filter, array $opts = []): void
+    public function delete($storage, array $filter, array $opts = []): Result
     {
         throw new UnsupportedFeatureException("Writing to storage is not supported");
     }

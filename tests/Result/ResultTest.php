@@ -3,12 +3,12 @@
 namespace Jasny\DB\Tests\Result;
 
 use Improved\IteratorPipeline\Pipeline;
-use Jasny\DB\Read\Result;
+use Jasny\DB\Result\Result;
 use Jasny\TestHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Read\Result
+ * @covers \Jasny\DB\Result\Result
  */
 class ResultTest extends TestCase
 {

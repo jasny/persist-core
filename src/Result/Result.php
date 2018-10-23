@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Read;
+namespace Jasny\DB\Result;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
@@ -25,7 +25,7 @@ class Result extends Pipeline
      * @param iterable       $iterable
      * @param array|callable $meta
      */
-    public function __construct(iterable $iterable, $meta = [])
+    public function __construct(iterable $iterable = [], $meta = [])
     {
         expect_type($meta, ['array', 'callable']);
 

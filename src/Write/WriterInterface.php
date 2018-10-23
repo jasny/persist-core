@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\Write;
 
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
+use Jasny\DB\Read\Result;
 use Jasny\DB\Update\UpdateOperation;
 
 /**
@@ -44,9 +45,9 @@ interface WriterInterface
      * @param mixed    $storage
      * @param iterable $items
      * @param array    $opts
-     * @return iterable
+     * @return Result
      */
-    public function save($storage, iterable $items, array $opts = []): iterable;
+    public function save($storage, iterable $items, array $opts = []): Result;
 
     /**
      * Query and update records.
@@ -55,9 +56,9 @@ interface WriterInterface
      * @param array                             $filter
      * @param UpdateOperation|UpdateOperation[] $changes
      * @param array                             $opts
-     * @return void
+     * @return Result
      */
-    public function update($storage, array $filter, $changes, array $opts = []): void;
+    public function update($storage, array $filter, $changes, array $opts = []): Result;
 
     /**
      * Query and delete records.
@@ -65,7 +66,7 @@ interface WriterInterface
      * @param mixed $storage
      * @param array $filter
      * @param array $opts
-     * @return void
+     * @return Result
      */
-    public function delete($storage, array $filter, array $opts = []): void;
+    public function delete($storage, array $filter, array $opts = []): Result;
 }
