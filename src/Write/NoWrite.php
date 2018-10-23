@@ -6,7 +6,7 @@ namespace Jasny\DB\Write;
 
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\Read\Result;
+use Jasny\DB\Result\Result;
 use Jasny\DB\Update\UpdateOperation;
 
 /**

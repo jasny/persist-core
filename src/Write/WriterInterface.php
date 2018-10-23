@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\Write;
 
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
-use Jasny\DB\Read\Result;
+use Jasny\DB\Result\Result;
 use Jasny\DB\Update\UpdateOperation;
 
 /**
