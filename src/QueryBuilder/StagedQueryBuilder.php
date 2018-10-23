@@ -29,11 +29,17 @@ class StagedQueryBuilder implements StagedQueryBuilderInterface
      *
      * @param string   $stage
      * @param callable $step
+     * @param bool     $replace
      * @return static
      */
-    protected function withAddedStep(string $stage, callable $step)
+    protected function withAddedStep(string $stage, callable $step, bool $replace = false)
     {
         $clone = clone $this;
+
+        if ($replace) {
+            $clone->stages[$stage] = [];
+        }
+
         $clone->stages[$stage][] = $step;
 
         return $clone;
@@ -43,44 +49,48 @@ class StagedQueryBuilder implements StagedQueryBuilderInterface
      * Create a query builder, adding a custom prepare step.
      *
      * @param callable $step
+     * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    public function onPrepare(callable $step)
+    public function onPrepare(callable $step, bool $replace = false)
     {
-        return $this->withAddedStep('prepare', $step);
+        return $this->withAddedStep('prepare', $step, $replace);
     }
 
     /**
      * Create a query builder, adding a custom compose step.
      *
      * @param callable $step
+     * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    public function onCompose(callable $step)
+    public function onCompose(callable $step, bool $replace = false)
     {
-        return $this->withAddedStep('compose', $step);
+        return $this->withAddedStep('compose', $step, $replace);
     }
 
     /**
      * Create a query builder, adding a custom build step.
      *
      * @param callable $step
+     * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    public function onBuild(callable $step)
+    public function onBuild(callable $step, bool $replace = false)
     {
-        return $this->withAddedStep('build', $step);
+        return $this->withAddedStep('build', $step, $replace);
     }
 
     /**
      * Create a query builder, adding a custom finalize step.
      *
      * @param callable $step
+     * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    public function onFinalize(callable $step)
+    public function onFinalize(callable $step, bool $replace = false)
     {
-        return $this->withAddedStep('finalize', $step);
+        return $this->withAddedStep('finalize', $step, $replace);
     }
 
 

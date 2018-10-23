@@ -29,7 +29,7 @@ class StagedQueryBuilderTest extends TestCase
      */
     public function test($ab)
     {
-        $builder = (new StagedQueryBuilder())
+        $builder = (new StagedQueryBuilder)
             ->onPrepare($this->createCallbackMock(
                 $this->once(),
                 [['foo' => 1, 'bar' => 10], ['limit' => 5]],
@@ -66,5 +66,20 @@ class StagedQueryBuilderTest extends TestCase
             : $builder(['foo' => 1, 'bar' => 10], ['limit' => 5]);
 
         $this->assertEquals('color: red && shape: square && abc: 123', $result);
+    }
+
+    public function testReplace()
+    {
+        $builder = (new StagedQueryBuilder)
+            ->onPrepare($this->createCallbackMock($this->never()))
+            ->onCompose($this->createCallbackMock($this->never()))
+            ->onBuild($this->createCallbackMock($this->never()))
+            ->onFinalize($this->createCallbackMock($this->never()))
+            ->onPrepare($this->createCallbackMock($this->once()), true)
+            ->onCompose($this->createCallbackMock($this->once()), true)
+            ->onBuild($this->createCallbackMock($this->once()), true)
+            ->onFinalize($this->createCallbackMock($this->once()), true);
+
+        $builder->buildQuery([]);
     }
 }
