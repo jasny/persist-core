@@ -46,6 +46,26 @@ class StagedQueryBuilder implements StagedQueryBuilderInterface
     }
 
     /**
+     * Return a query builder with some steps removed.
+     *
+     * @param callable $matcher
+     * @return static
+     */
+    public function withFilteredSteps(callable $matcher)
+    {
+        $clone = clone $this;
+
+        foreach ($clone->stages as $stage => &$steps) {
+            $steps = array_filter($steps, function($step) use ($matcher, $stage) {
+                return $matcher($stage, $step);
+            });
+        }
+
+        return $clone;
+    }
+
+
+    /**
      * Create a query builder, adding a custom prepare step.
      *
      * @param callable $step

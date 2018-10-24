@@ -20,6 +20,15 @@ use Jasny\DB\FieldMap\FieldMapInterface;
 interface StagedQueryBuilderInterface extends QueryBuilderInterface
 {
     /**
+     * Return a query builder with some steps removed.
+     *
+     * @param callable $matcher
+     * @return static
+     */
+    public function withFilteredSteps(callable $matcher);
+
+
+    /**
      * Create a query builder with a custom prepare step.
      *
      * @param callable $step

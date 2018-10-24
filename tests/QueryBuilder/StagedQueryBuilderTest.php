@@ -68,6 +68,30 @@ class StagedQueryBuilderTest extends TestCase
         $this->assertEquals('color: red && shape: square && abc: 123', $result);
     }
 
+    public function testFilterSteps()
+    {
+        $remove = [
+            'prepare' => $this->createCallbackMock($this->never()),
+            'compose' => null,
+            'build' => $this->createCallbackMock($this->never()),
+            'finalize' => null
+        ];
+
+        $base = (new StagedQueryBuilder)
+            ->onPrepare($this->createCallbackMock($this->once()))
+            ->onPrepare($remove['prepare'])
+            ->onCompose($this->createCallbackMock($this->once()))
+            ->onBuild($remove['build'])
+            ->onBuild($this->createCallbackMock($this->once()))
+            ->onFinalize($this->createCallbackMock($this->once()));
+
+        $builder = $base->withFilteredSteps(function($stage, $callback) use ($remove) {
+            return $remove[$stage] !== $callback;
+        });
+
+        $builder->buildQuery([]);
+    }
+
     public function testReplace()
     {
         $builder = (new StagedQueryBuilder)
