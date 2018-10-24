@@ -12,7 +12,7 @@ namespace Jasny\DB\Option;
  */
 function fields(string ...$fields): FieldsOption
 {
-    return new FieldsOption('include', $fields);
+    return new FieldsOption('fields', $fields);
 }
 
 /**
@@ -23,7 +23,7 @@ function fields(string ...$fields): FieldsOption
  */
 function omit(string ...$fields): FieldsOption
 {
-    return new FieldsOption('exclude', $fields);
+    return new FieldsOption('omit', $fields);
 }
 
 /**

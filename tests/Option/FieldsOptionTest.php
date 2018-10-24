@@ -13,9 +13,9 @@ class FieldsOptionTest extends TestCase
 {
     public function test()
     {
-        $option = new FieldsOption('include', ['foo', 'bar', 'color.red']);
+        $option = new FieldsOption('do', ['foo', 'bar', 'color.red']);
 
-        $this->assertEquals('include', $option->getType());
+        $this->assertEquals('do', $option->getType());
         $this->assertEquals(['foo', 'bar', 'color.red'], $option->getFields());
     }
 
@@ -28,7 +28,7 @@ class FieldsOptionTest extends TestCase
         $option = opt\fields('foo', 'bar', 'color.red');
 
         $this->assertInstanceOf(FieldsOption::class, $option);
-        $this->assertEquals('include', $option->getType());
+        $this->assertEquals('fields', $option->getType());
         $this->assertEquals(['foo', 'bar', 'color.red'], $option->getFields());
     }
 
@@ -40,7 +40,7 @@ class FieldsOptionTest extends TestCase
         $option = opt\omit('foo', 'bar', 'color.red');
 
         $this->assertInstanceOf(FieldsOption::class, $option);
-        $this->assertEquals('exclude', $option->getType());
+        $this->assertEquals('omit', $option->getType());
         $this->assertEquals(['foo', 'bar', 'color.red'], $option->getFields());
     }
 
