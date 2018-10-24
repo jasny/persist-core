@@ -34,6 +34,7 @@ class LimitOptionTest extends TestCase
     {
         $option = opt\limit(10);
 
+        $this->assertInstanceOf(LimitOption::class, $option);
         $this->assertEquals(10, $option->getLimit());
         $this->assertEquals(0, $option->getOffset());
     }
@@ -45,6 +46,7 @@ class LimitOptionTest extends TestCase
     {
         $option = opt\limit(10, 40);
 
+        $this->assertInstanceOf(LimitOption::class, $option);
         $this->assertEquals(10, $option->getLimit());
         $this->assertEquals(40, $option->getOffset());
     }
@@ -56,6 +58,7 @@ class LimitOptionTest extends TestCase
     {
         $option = opt\page(5, 10);
 
+        $this->assertInstanceOf(LimitOption::class, $option);
         $this->assertEquals(10, $option->getLimit());
         $this->assertEquals(40, $option->getOffset());
     }

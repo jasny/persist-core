@@ -12,7 +12,18 @@ namespace Jasny\DB\Option;
  */
 function fields(string ...$fields): FieldsOption
 {
-    return new FieldsOption(...$fields);
+    return new FieldsOption('include', $fields);
+}
+
+/**
+ * Exclude the specified fields.
+ *
+ * @param string ...$fields
+ * @return FieldsOption
+ */
+function omit(string ...$fields): FieldsOption
+{
+    return new FieldsOption('exclude', $fields);
 }
 
 /**
@@ -20,11 +31,11 @@ function fields(string ...$fields): FieldsOption
  * Prepend field with `~` for descending order.
  *
  * @param string ...$fields
- * @return SortOption
+ * @return FieldsOption
  */
-function sort(string ...$fields): SortOption
+function sort(string ...$fields): FieldsOption
 {
-    return new SortOption(...$fields);
+    return new FieldsOption('sort', $fields);
 }
 
 /**
