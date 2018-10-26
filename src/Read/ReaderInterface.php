@@ -4,6 +4,7 @@ namespace Jasny\DB\Read;
 
 use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
+use Jasny\DB\Result\Result;
 
 /**
  * Service for full text search.

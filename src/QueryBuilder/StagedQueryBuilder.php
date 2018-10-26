@@ -54,7 +54,7 @@ class StagedQueryBuilder implements StagedQueryBuilderInterface
         $clone = clone $this;
 
         foreach ($clone->stages as $stage => &$steps) {
-            $steps = array_filter($steps, function($step) use ($matcher, $stage) {
+            $steps = array_filter($steps, function ($step) use ($matcher, $stage) {
                 return $matcher($stage, $step);
             });
         }
