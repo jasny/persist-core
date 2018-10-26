@@ -130,25 +130,25 @@ class FunctionsTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Update\add
+     * @covers \Jasny\DB\Update\push
      */
-    public function testAdd()
+    public function testPush()
     {
-        $operator = u\add("foo", 'hello');
+        $operator = u\push("foo", 'hello');
 
-        $this->assertEquals('add', $operator->getOperator());
+        $this->assertEquals('push', $operator->getOperator());
         $this->assertEquals('foo', $operator->getField());
         $this->assertEquals('hello', $operator->getValue());
     }
 
     /**
-     * @covers \Jasny\DB\Update\rem
+     * @covers \Jasny\DB\Update\pull
      */
-    public function testRem()
+    public function testPull()
     {
-        $operator = u\rem("foo", 'hello');
+        $operator = u\pull("foo", 'hello');
 
-        $this->assertEquals('rem', $operator->getOperator());
+        $this->assertEquals('pull', $operator->getOperator());
         $this->assertEquals('foo', $operator->getField());
         $this->assertEquals('hello', $operator->getValue());
     }

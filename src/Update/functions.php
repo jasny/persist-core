@@ -72,7 +72,7 @@ function mul(string $field, $value)
 }
 
 /**
- * Multiply a field by a specific value.
+ * Divide a field by a specific value.
  *
  * @param string    $field
  * @param int|float $value
@@ -85,7 +85,7 @@ function div(string $field, $value)
 }
 
 /**
- * Multiply a field by a specific value.
+ * Get modulo a field.
  *
  * @param string    $field
  * @param int|float $value
@@ -105,9 +105,9 @@ function mod(string $field, $value)
  * @param mixed  $value
  * @return UpdateOperation
  */
-function add(string $field, $value)
+function push(string $field, $value)
 {
-    return new UpdateOperation('add', $field, $value);
+    return new UpdateOperation('push', $field, $value);
 }
 
 /**
@@ -117,7 +117,7 @@ function add(string $field, $value)
  * @param mixed  $value
  * @return UpdateOperation
  */
-function rem(string $field, $value)
+function pull(string $field, $value)
 {
-    return new UpdateOperation('rem', $field, $value);
+    return new UpdateOperation('pull', $field, $value);
 }
