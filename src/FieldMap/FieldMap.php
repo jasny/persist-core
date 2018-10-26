@@ -2,7 +2,8 @@
 
 namespace Jasny\DB\FieldMap;
 
-use function Improved\iterable_to_array;
+use Improved as i;
+use Improved\IteratorPipeline\Pipeline;
 
 /**
  * Map DB field to PHP field or visa versa.
@@ -68,26 +69,24 @@ class FieldMap implements FieldMapInterface
      * Apply mapping.
      *
      * @param iterable $iterable
-     * @return \Generator
+     * @return iterable
      */
     protected function apply(iterable $iterable): iterable
     {
-        foreach ($iterable as $info => $value) {
-            $field = $info['field'] ?? $info;
+        return Pipeline::with($iterable)
+            ->mapKeys(function($_, $info) {
+                $field = is_array($info) ? ($info['field'] ?? '') : $info;
+                $newField = $this->map[$field] ?? ($this->dynamic ? $info : null);
 
-            if (isset($this->map[$field])) {
-                $mapped = $this->map[$field];
-                $info = is_array($info) ? ['field' => $mapped] + $info : $mapped;
-            } elseif (!$this->dynamic) {
-                continue;
-            }
-
-            yield $info => $value;
-        }
+                return isset($newField) && is_array($info) ? ['field' => $newField] + $info : $newField;
+            })
+            ->filter(function($_, $info) {
+                return $info !== null;
+            });
     }
 
     /**
-     * Apply mapping.
+     * Invoke field map to apply mapping.
      *
      * @param iterable $iterable
      * @return iterable
@@ -96,7 +95,7 @@ class FieldMap implements FieldMapInterface
     {
         $mapped = $this->apply($iterable);
 
-        return is_array($iterable) ? iterable_to_array($mapped, true) : $mapped;
+        return is_array($iterable) ? i\iterable_to_array($mapped, true) : $mapped;
     }
 
 

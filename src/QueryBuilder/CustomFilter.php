@@ -2,6 +2,8 @@
 
 namespace Jasny\DB\QueryBuilder;
 
+use Improved\IteratorPipeline\Pipeline;
+
 /**
  * Custom filter for query builder compose step
  */
@@ -34,14 +36,15 @@ class CustomFilter
      * Invoke the filter
      *
      * @param iterable $filter
-     * @return \Generator
+     * @return iterable
      */
-    public function __invoke(iterable $filter): \Generator
+    public function __invoke(iterable $filter): iterable
     {
-        foreach ($filter as $info => $orig) {
-            $field = is_array($info) ? ($info['field'] ?? null) : $info;
+        return Pipeline::with($filter)
+            ->map(function($orig, $info) {
+                $field = is_array($info) ? ($info['field'] ?? null) : $info;
 
-            yield $info => ($field === $this->field ? $this->apply : $orig);
-        }
+                return ($field === $this->field ? $this->apply : $orig);
+            });
     }
 }

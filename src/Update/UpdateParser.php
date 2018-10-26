@@ -2,6 +2,7 @@
 
 namespace Jasny\DB\Update;
 
+use Jasny\DB\Exception\InvalidUpdateOperationException;
 use function Jasny\expect_type;
 
 /**
@@ -15,10 +16,11 @@ class UpdateParser
      * @param iterable<UpdateOperation> $operations
      * @return \Generator
      */
-    public function __invoke($operations): \Generator
+    public function __invoke(iterable $operations): \Generator
     {
         foreach ($operations as $operation) {
-            expect_type($operation, UpdateOperation::class, \UnexpectedValueException::class);
+            /** @var UpdateOperation $operation */
+            expect_type($operation, UpdateOperation::class, InvalidUpdateOperationException::class);
 
             $field = $operation->getField();
             $operator = $operation->getOperator();

@@ -98,7 +98,7 @@ class FieldMapTest extends TestCase
             'color' => 'red'
         ];
 
-        $this->assertInstanceOf(\Iterator::class, $mapped);
+        $this->assertInstanceOf(\Traversable::class, $mapped);
         $this->assertEquals($expected, i\iterable_to_array($mapped, true));
     }
 

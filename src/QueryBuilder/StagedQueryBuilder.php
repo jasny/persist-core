@@ -121,14 +121,11 @@ class StagedQueryBuilder implements StagedQueryBuilderInterface
      */
     public function buildQuery(iterable $filter, array $opts = [])
     {
-        $data = $filter;
-        $steps = array_merge(...array_values($this->stages));
-
-        foreach ($steps as $step) {
-            $data = $step($data, $opts);
-        }
-
-        return $data;
+        return Pipeline::with($this->stages)
+            ->flatten()
+            ->reduce(function($data, callable $step) use ($opts) {
+                return $step($data, $opts);
+            }, $filter);
     }
 
     /**

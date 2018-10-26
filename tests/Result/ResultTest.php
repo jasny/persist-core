@@ -50,7 +50,7 @@ class ResultTest extends TestCase
      * @expectedException \UnexpectedValueException
      * @expectedExceptionMessage Failed to get meta: Expected array, got string
      */
-    public function testGetMetaWithClosureReturnsString()
+    public function testGetMetaWithClosureString()
     {
         $closure = $this->createCallbackMock($this->once(), [], 'foo');
 

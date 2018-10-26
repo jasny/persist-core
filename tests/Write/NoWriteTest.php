@@ -4,7 +4,6 @@ namespace Jasny\DB\Tests\Write;
 
 use Improved as i;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
-use Jasny\DB\Update\UpdateOperation;
 use Jasny\DB\Write\NoWrite;
 use PHPUnit\Framework\TestCase;
 

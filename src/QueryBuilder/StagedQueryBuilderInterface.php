@@ -2,8 +2,6 @@
 
 namespace Jasny\DB\QueryBuilder;
 
-use Jasny\DB\FieldMap\FieldMapInterface;
-
 /**
  * Query builder with customizable stages.
  *

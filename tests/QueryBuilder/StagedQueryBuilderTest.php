@@ -2,8 +2,6 @@
 
 namespace Jasny\DB\Tests\QueryBuilder;
 
-use Improved as i;
-use Jasny\DB\QueryBuilder\FilterParser;
 use Jasny\DB\QueryBuilder\StagedQueryBuilder;
 use Jasny\TestHelper;
 use PHPUnit\Framework\TestCase;

@@ -19,15 +19,14 @@ class FilterParser
      * Invoke the parser
      *
      * @param iterable $filter
-     * @return \Generator
+     * @return iterable
      */
-    public function __invoke(iterable $filter): \Generator
+    public function __invoke(iterable $filter): iterable
     {
-        foreach ($filter as $key => $value) {
+        return i\iterable_map_keys($filter, function($_, $key) {
             expect_type($key, 'string', InvalidFilterException::class);
-
-            yield $this->parse($key) => $value;
-        };
+            return $this->parse($key);
+        });
     }
 
     /**
