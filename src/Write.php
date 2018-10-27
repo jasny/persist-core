@@ -1,8 +1,7 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\Write;
+namespace Jasny\DB;
 
-use Jasny\DB\Result\Result;
 use Jasny\DB\Update\UpdateOperation;
 
 /**

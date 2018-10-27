@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\Read;
-
-use Jasny\DB\Result\Result;
+namespace Jasny\DB;
 
 /**
  * Service for full text search.

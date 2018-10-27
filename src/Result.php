@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\Result;
+namespace Jasny\DB;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;

@@ -4,8 +4,9 @@ namespace Jasny\DB\Write;
 
 use Jasny\DB\QueryBuilder\QueryBuilding;
 use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\Result\Result;
+use Jasny\DB\Result;
 use Jasny\DB\Update\UpdateOperation;
+use Jasny\DB\Write;
 
 /**
  * Writing to storage is not supported.

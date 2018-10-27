@@ -5,7 +5,8 @@ namespace Jasny\DB\Read;
 use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\QueryBuilder\QueryBuilding;
 use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\Result\Result;
+use Jasny\DB\Read;
+use Jasny\DB\Result;
 
 /**
  * Reading from storage is not supported.

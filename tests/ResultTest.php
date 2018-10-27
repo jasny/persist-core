@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Result;
+namespace Jasny\DB\Tests;
 
 use Improved\IteratorPipeline\Pipeline;
-use Jasny\DB\Result\Result;
+use Jasny\DB\Result;
 use Jasny\TestHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Result\Result
+ * @covers \Jasny\DB\Result
  */
 class ResultTest extends TestCase
 {
