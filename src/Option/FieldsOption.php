@@ -2,10 +2,12 @@
 
 namespace Jasny\DB\Option;
 
+use Jasny\DB\Option;
+
 /**
  * Only return the specified fields.
  */
-class FieldsOption implements QueryOption
+class FieldsOption implements Option
 {
     /**
      * @var string

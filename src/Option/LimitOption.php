@@ -2,10 +2,12 @@
 
 namespace Jasny\DB\Option;
 
+use Jasny\DB\Option;
+
 /**
  * Limit the query result.
  */
-class LimitOption implements QueryOption
+class LimitOption implements Option
 {
     /**
      * @var int
