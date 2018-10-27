@@ -75,8 +75,8 @@ class FieldMap implements FieldMapInterface
     {
         return Pipeline::with($iterable)
             ->mapKeys(function($_, $info) {
-                $field = is_array($info) ? ($info['field'] ?? '') : $info;
-                $newField = $this->map[$field] ?? ($this->dynamic ? $info : null);
+                $field = is_array($info) ? ($info['field'] ?? null) : $info;
+                $newField = $this->map[$field] ?? ($this->dynamic ? $field : null);
 
                 return isset($newField) && is_array($info) ? ['field' => $newField] + $info : $newField;
             })

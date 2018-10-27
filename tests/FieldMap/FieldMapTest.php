@@ -3,6 +3,7 @@
 namespace Jasny\DB\Tests\FieldMap;
 
 use Improved as i;
+use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\FieldMap\FieldMap;
 use PHPUnit\Framework\TestCase;
 
@@ -80,6 +81,30 @@ class FieldMapTest extends TestCase
         ];
 
         $this->assertEquals($expected, $mapped);
+    }
+
+    public function testInvokeInfo()
+    {
+        $inputFlipped = [
+            42 => ['field' => 'id', 'operator' => ''],
+            'man' => ['field' => 'bar', 'operator' => 'not'],
+            'red' => ['field' => 'color', 'operator' => ''],
+        ];
+
+        $fields = Pipeline::with($inputFlipped)->flip();
+
+        $mapped = i\function_call($this->fieldMap, $fields);
+        ['keys' => $keys, 'values' => $values] = i\iterable_separate($mapped);
+
+        $expectedKeys = [
+            ['field' => '_id', 'operator' => ''],
+            ['field' => 'bor', 'operator' => 'not'],
+            ['field' => 'color', 'operator' => '']
+        ];
+        $expectedValues = [42, 'man', 'red'];
+
+        $this->assertEquals($expectedKeys, $keys);
+        $this->assertEquals($expectedValues, $values);
     }
 
     public function testInvokeIterator()
