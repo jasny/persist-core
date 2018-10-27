@@ -8,7 +8,7 @@ use Improved\IteratorPipeline\Pipeline;
  * Base class for service that can convert a filter to a database query.
  * @immutable
  */
-class StagedQueryBuilding implements QueryBuilding, Stages
+class StagedQueryBuilder implements QueryBuilding, Stages
 {
     /**
      * @var array<string, callable[]>
