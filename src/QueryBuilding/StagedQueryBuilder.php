@@ -3,6 +3,7 @@
 namespace Jasny\DB\QueryBuilding;
 
 use Improved\IteratorPipeline\Pipeline;
+use Jasny\DB\QueryBuilding;
 
 /**
  * Base class for service that can convert a filter to a database query.

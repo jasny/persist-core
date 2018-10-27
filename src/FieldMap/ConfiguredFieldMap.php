@@ -4,6 +4,7 @@ namespace Jasny\DB\FieldMap;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
+use Jasny\DB\FieldMap;
 
 /**
  * Map DB field to PHP field or visa versa.

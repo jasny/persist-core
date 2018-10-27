@@ -3,7 +3,7 @@
 namespace Jasny\DB\Read;
 
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\QueryBuilding\QueryBuilding;
+use Jasny\DB\QueryBuilding;
 
 /**
  * Service has query builder and result builder.

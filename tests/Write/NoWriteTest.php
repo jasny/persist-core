@@ -3,7 +3,7 @@
 namespace Jasny\DB\Tests\Write;
 
 use Improved as i;
-use Jasny\DB\QueryBuilding\QueryBuilding;
+use Jasny\DB\QueryBuilding;
 use Jasny\DB\Write\NoWrite;
 use PHPUnit\Framework\TestCase;
 

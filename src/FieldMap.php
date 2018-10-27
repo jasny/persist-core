@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\FieldMap;
+namespace Jasny\DB;
 
 /**
  * Map MongoDB field to PHP field or visa versa

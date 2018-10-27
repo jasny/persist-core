@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\QueryBuilding;
+namespace Jasny\DB;
 
 /**
  * Interface for service that can convert a filter to a database specific query.

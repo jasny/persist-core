@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\Update;
+namespace Jasny\DB\QueryBuilding\Step;
 
 use Jasny\DB\Exception\InvalidUpdateOperationException;
+use Jasny\DB\Update\UpdateOperation;
 use function Jasny\expect_type;
 
 /**
