@@ -4,22 +4,22 @@ namespace Jasny\DB\Tests\FieldMap;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
-use Jasny\DB\FieldMap\FieldMap;
+use Jasny\DB\FieldMap\ConfiguredFieldMap;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\FieldMap\FieldMap
+ * @covers \Jasny\DB\FieldMap\ConfiguredFieldMap
  */
-class FieldMapTest extends TestCase
+class ConfiguredFieldMapTest extends TestCase
 {
     /**
-     * @var FieldMap
+     * @var ConfiguredFieldMap
      */
     protected $fieldMap;
 
     public function setUp()
     {
-        $this->fieldMap = new FieldMap(['id' => '_id', 'foo' => 'foos', 'bar' => 'bor']);
+        $this->fieldMap = new ConfiguredFieldMap(['id' => '_id', 'foo' => 'foos', 'bar' => 'bor']);
     }
 
 
@@ -32,17 +32,17 @@ class FieldMapTest extends TestCase
     {
         $flipped = $this->fieldMap->flip();
 
-        $this->assertInstanceOf(FieldMap::class, $flipped);
+        $this->assertInstanceOf(ConfiguredFieldMap::class, $flipped);
         $this->assertEquals(['_id' => 'id', 'foos' => 'foo', 'bor' => 'bar'], $flipped->toArray());
         $this->assertTrue($flipped->isDynamic());
     }
 
     public function testFlipStatic()
     {
-        $this->fieldMap = new FieldMap(['foo' => 'bar'], false);
+        $this->fieldMap = new ConfiguredFieldMap(['foo' => 'bar'], false);
         $flipped = $this->fieldMap->flip();
 
-        $this->assertInstanceOf(FieldMap::class, $flipped);
+        $this->assertInstanceOf(ConfiguredFieldMap::class, $flipped);
         $this->assertEquals(['bar' => 'foo'], $flipped->toArray());
         $this->assertFalse($flipped->isDynamic());
     }
@@ -67,7 +67,7 @@ class FieldMapTest extends TestCase
 
     public function testInvokeStatic()
     {
-        $this->fieldMap = new FieldMap(['id' => '_id', 'foo' => 'foos', 'bar' => 'bor'], false);
+        $this->fieldMap = new ConfiguredFieldMap(['id' => '_id', 'foo' => 'foos', 'bar' => 'bor'], false);
 
         $mapped = i\function_call($this->fieldMap, [
             'id' => 42,

@@ -2,12 +2,12 @@
 
 namespace Jasny\DB\Tests\QueryBuilder;
 
-use Jasny\DB\QueryBuilder\StagedQueryBuilder;
+use Jasny\DB\QueryBuilder\StagedQueryBuilding;
 use Jasny\TestHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryBuilder\StagedQueryBuilder
+ * @covers \Jasny\DB\QueryBuilder\StagedQueryBuilding
  */
 class StagedQueryBuilderTest extends TestCase
 {
@@ -27,7 +27,7 @@ class StagedQueryBuilderTest extends TestCase
      */
     public function test($ab)
     {
-        $builder = (new StagedQueryBuilder)
+        $builder = (new StagedQueryBuilding)
             ->onPrepare($this->createCallbackMock(
                 $this->once(),
                 [['foo' => 1, 'bar' => 10], ['limit' => 5]],
@@ -75,7 +75,7 @@ class StagedQueryBuilderTest extends TestCase
             'finalize' => null
         ];
 
-        $base = (new StagedQueryBuilder)
+        $base = (new StagedQueryBuilding)
             ->onPrepare($this->createCallbackMock($this->once()))
             ->onPrepare($remove['prepare'])
             ->onCompose($this->createCallbackMock($this->once()))
@@ -92,7 +92,7 @@ class StagedQueryBuilderTest extends TestCase
 
     public function testReplace()
     {
-        $builder = (new StagedQueryBuilder)
+        $builder = (new StagedQueryBuilding)
             ->onPrepare($this->createCallbackMock($this->never()))
             ->onCompose($this->createCallbackMock($this->never()))
             ->onBuild($this->createCallbackMock($this->never()))

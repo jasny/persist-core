@@ -5,6 +5,6 @@ namespace Jasny\DB\Option;
 /**
  * Options processed by the query builder
  */
-interface QueryOptionInterface
+interface QueryOption
 {
 }

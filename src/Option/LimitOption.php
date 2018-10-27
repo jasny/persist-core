@@ -5,7 +5,7 @@ namespace Jasny\DB\Option;
 /**
  * Limit the query result.
  */
-class LimitOption implements QueryOptionInterface
+class LimitOption implements QueryOption
 {
     /**
      * @var int

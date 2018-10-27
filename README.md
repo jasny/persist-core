@@ -395,7 +395,7 @@ Custom filters are DB specific as the accumulator (first argument) is DB specifi
 
 ## Custom query builder
 
-It's possible to create a custom query builder from scratch. You class needs to implement the `QueryBuilderInterface`
+It's possible to create a custom query builder from scratch. You class needs to implement the `QueryBuilding`.
 
 ```php
 $reader = (new MongoReader)->withQueryBuilder(new MyQueryBuilder());

@@ -5,11 +5,10 @@ namespace Jasny\DB\QueryBuilder;
 use Improved\IteratorPipeline\Pipeline;
 
 /**
- * Base class for service that can convert a filter to a databsae query.
- *
+ * Base class for service that can convert a filter to a database query.
  * @immutable
  */
-class StagedQueryBuilder implements StagedQueryBuilderInterface
+class StagedQueryBuilding implements QueryBuilding, Stages
 {
     /**
      * @var array<string, callable[]>

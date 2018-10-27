@@ -5,7 +5,7 @@ namespace Jasny\DB\Option;
 /**
  * Only return the specified fields.
  */
-class FieldsOption implements QueryOptionInterface
+class FieldsOption implements QueryOption
 {
     /**
      * @var string

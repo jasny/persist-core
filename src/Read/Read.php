@@ -2,32 +2,13 @@
 
 namespace Jasny\DB\Read;
 
-use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Result\Result;
 
 /**
  * Service for full text search.
  */
-interface ReaderInterface
+interface Read
 {
-    /**
-     * Create a reader with a custom query builder.
-     *
-     * @param QueryBuilderInterface $queryBuilder
-     * @return mixed
-     */
-    public function withQueryBuilder(QueryBuilderInterface $queryBuilder);
-
-    /**
-     * Create a reader with a custom result builder.
-     *
-     * @param PipelineBuilder $resultBuilder
-     * @return mixed
-     */
-    public function withResultBuilder(PipelineBuilder $resultBuilder);
-
-
     /**
      * Query and fetch data.
      *

@@ -3,22 +3,22 @@
 namespace Jasny\DB\Read;
 
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\QueryBuilder\QueryBuilderInterface;
+use Jasny\DB\QueryBuilder\QueryBuilding;
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\Result\Result;
 
 /**
  * Reading from storage is not supported.
  */
-class NoRead implements ReaderInterface
+class NoRead implements Read, WithBuilders
 {
     /**
      * Create a CRUD service with a custom query builder.
      *
-     * @param QueryBuilderInterface $queryBuilder
+     * @param QueryBuilding $queryBuilder
      * @return mixed
      */
-    public function withQueryBuilder(QueryBuilderInterface $queryBuilder)
+    public function withQueryBuilder(QueryBuilding $queryBuilder)
     {
         return $this;
     }
