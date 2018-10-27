@@ -48,7 +48,7 @@ Usage
 #### Fetch a list
 
 ```php
-use Jasny\DB\Mongo\Options as opts;
+use Jasny\DB\Option as opts;
 use Jasny\DB\Mongo\Read\MongoReader;
 
 $users = (new MongoDB\Client)->test->users;
@@ -91,12 +91,17 @@ $writer->save($users, [$user]);
 #### Update multiple
 
 ```php
+use Jasny\DB\Update as update;
 use Jasny\DB\Mongo\Write\MongoWriter;
 
 $users = (new MongoDB\Client)->test->users;
 $writer = new MongoWriter;
 
-$writer->update($users, (object)['access' => 1000], ['type' => 'admin']);
+$writer->update(
+    $users,
+    ['type' => 'admin'],
+    [update\inc('reward', 100), update\set('rewarded', new DateTime())
+]);
 ```
 
 _**Jasny DB makes extensive use of iterators and generators.** It's important to understand what they are and how they
@@ -152,7 +157,7 @@ In additions to a filter, database specific options can be passed. Such options 
 loading related data, sorting, etc. These options are passed to the query builder.
 
 ```php
-use Jasny\DB\Options as opts;
+use Jasny\DB\Option as opts;
 use Jasny\DB\Mongo\Read\MongoReader;
 
 $users = (new MongoDB\Client)->test->users;
@@ -173,6 +178,7 @@ $list = $reader
 This library defines the concept of options and a number of common options.
 
 * `fields(string ...$fields)`
+* `omit(string ...$fields)`
 * `sort(string ...$fields)`
 * `limit(int limit, int offset = 0)`
 * `page(int pageNr, int pageSize)` _(pagination is 1-indexed)_
@@ -207,7 +213,7 @@ Query and count result.
 
 ### Result
 
-The `Reader->fetch()` method returns a `Result` object which extends
+The `Read::fetch()` method returns a `Result` object which extends
 [iterator pipeline](https://github.com/improved-php-library/iteratable). As such, it provides methods, like map/reduce,
 to further process the result.
 
@@ -301,19 +307,14 @@ The method returns an array or other iterable with generated properties per entr
     
 Query and update records.
 
-The `$changes` must be an `stdClass` object rather than an array. This is primarily done to prevent a small mistake of
-switching `$changes` and `$filter` to ruin your whole database.
-
-If you want to update every record of the storage (table, collection, etc) you have to supply an empty array as filter.
-
 ```php
-use Jasny\DB\Update as u;
+use Jasny\DB\Update as update;
 use Jasny\DB\Mongo\Write\MongoWriter;
 
 $writer = new MongoWriter();
 $users = (MongoDB\Client)->tests->users;
 
-$writer->update($users, ['id' => 10], [u\set('last_login', new DateTime()), u\inc('logins')]);
+$writer->update($users, ['id' => 10], [update\set('last_login', new DateTime()), update\inc('logins')]);
 ```
 
 The `$changes` argument must be one or more `UpdateOperation` objects. Rather than creating such an object by hand, the
@@ -332,7 +333,9 @@ If the field is an array, the following operations are also available
 * `rem(string $field, $value)`
 
 To prevent accidentally swapping the changes and filter, passing a normal associative array is not allowed. Instead use
-`u\set($values)`, where values are all values that need to be set.
+`update\set($values)`, where values are all values that need to be set.
+
+If you want to update every record of the storage (table, collection, etc) you have to supply an empty array as filter.
 
 ### delete
 
