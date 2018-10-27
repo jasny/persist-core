@@ -348,9 +348,9 @@ database field names into field names used in the PHP app and visa versa.
 Construct the map using an associative array in the form `[from => to]`. The `flip()` method flips the `from` and `to`.
 
 ```php
-use Jasny\DB\FieldMap\FieldMap;
+use Jasny\DB\FieldMap\ConfiguredFieldMap;
 
-$fieldMap = new FieldMap(['ref' => 'reference', 'foo_bar_setting' => 'foo_bar']);
+$fieldMap = new ConfiguredFieldMap(['ref' => 'reference', 'foo_bar_setting' => 'foo_bar']);
 
 $reader = new MongoReader();
 $queryBuilder = $reader->getQueryBuilder()->onPrepare($fieldMap);
@@ -495,9 +495,9 @@ the iterator is an array with `[field => value]` pairs. So you'd need to travers
 
 ```php
 use Improved as i;
-use Jasny\DB\FieldMap\FieldMap;
+use Jasny\DB\FieldMap\ConfiguredFieldMap;
 
-$fieldMap = new FieldMap(['ref' => 'reference', 'foo_bar_setting' => 'foo_bar']);
+$fieldMap = new ConfiguredFieldMap(['ref' => 'reference', 'foo_bar_setting' => 'foo_bar']);
 
 $writer = new MongoWriter();
 $queryBuilder = $writer->getSaveQueryBuilder()->onPrepare(function(iterable $items) use ($fieldMap) {
