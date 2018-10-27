@@ -3,7 +3,7 @@
 namespace Jasny\DB\Tests\Read;
 
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\QueryBuilding;
+use Jasny\DB\QueryBuilder;
 use Jasny\DB\Read\NoRead;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -15,8 +15,8 @@ class NoReadTest extends TestCase
 {
     public function testWithQueryBuilder()
     {
-        /** @var QueryBuilding|MockObject $builder */
-        $builder = $this->createMock(QueryBuilding::class);
+        /** @var QueryBuilder|MockObject $builder */
+        $builder = $this->createMock(QueryBuilder::class);
 
         $base = new NoRead();
         $ret = $base->withQueryBuilder($builder);

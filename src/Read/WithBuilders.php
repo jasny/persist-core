@@ -3,7 +3,7 @@
 namespace Jasny\DB\Read;
 
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\QueryBuilding;
+use Jasny\DB\QueryBuilder;
 
 /**
  * Service has query builder and result builder.
@@ -13,10 +13,10 @@ interface WithBuilders
     /**
      * Create a reader with a custom query builder.
      *
-     * @param QueryBuilding $queryBuilder
+     * @param QueryBuilder $queryBuilder
      * @return mixed
      */
-    public function withQueryBuilder(QueryBuilding $queryBuilder);
+    public function withQueryBuilder(QueryBuilder $queryBuilder);
 
     /**
      * Create a reader with a custom result builder.

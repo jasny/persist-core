@@ -3,7 +3,7 @@
 namespace Jasny\DB\Tests\Write;
 
 use Improved as i;
-use Jasny\DB\QueryBuilding;
+use Jasny\DB\QueryBuilder;
 use Jasny\DB\Write\NoWrite;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +26,7 @@ class NoWriteTest extends TestCase
      */
     public function testWithQueryBuilder($method)
     {
-        $builder = $this->createMock(QueryBuilding::class);
+        $builder = $this->createMock(QueryBuilder::class);
 
         $base = new NoWrite();
         $ret = i\function_call([$base, $method], $builder);

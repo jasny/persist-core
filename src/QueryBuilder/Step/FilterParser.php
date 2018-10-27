@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\QueryBuilding\Step;
+namespace Jasny\DB\QueryBuilder\Step;
 
 use Improved as i;
 use Jasny\DB\Exception\InvalidFilterException;

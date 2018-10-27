@@ -3,7 +3,7 @@
 namespace Jasny\DB\Read;
 
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\QueryBuilding;
+use Jasny\DB\QueryBuilder;
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\Read;
 use Jasny\DB\Result;
@@ -16,10 +16,10 @@ class NoRead implements Read, WithBuilders
     /**
      * Create a CRUD service with a custom query builder.
      *
-     * @param QueryBuilding $queryBuilder
+     * @param QueryBuilder $queryBuilder
      * @return mixed
      */
-    public function withQueryBuilder(QueryBuilding $queryBuilder)
+    public function withQueryBuilder(QueryBuilder $queryBuilder)
     {
         return $this;
     }

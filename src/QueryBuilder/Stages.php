@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\QueryBuilding;
+namespace Jasny\DB\QueryBuilder;
 
 /**
  * Query builder with customizable stages.

@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\Tests\QueryBuilding\Step;
+namespace Jasny\DB\Tests\QueryBuilder\Step;
 
-use Jasny\DB\QueryBuilding\Step\UpdateParser;
+use Jasny\DB\QueryBuilder\Step\UpdateParser;
 use Jasny\DB\Update\UpdateOperation;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryBuilding\Step\UpdateParser
+ * @covers \Jasny\DB\QueryBuilder\Step\UpdateParser
  */
 class UpdateParserTest extends TestCase
 {

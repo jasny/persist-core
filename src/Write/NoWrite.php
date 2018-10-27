@@ -2,7 +2,7 @@
 
 namespace Jasny\DB\Write;
 
-use Jasny\DB\QueryBuilding;
+use Jasny\DB\QueryBuilder;
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\Result;
 use Jasny\DB\Update\UpdateOperation;
@@ -16,10 +16,10 @@ class NoWrite implements Write, WithBuilders
     /**
      * Create a Writer service with a custom filter query builder.
      *
-     * @param QueryBuilding $builder
+     * @param QueryBuilder $builder
      * @return $this
      */
-    public function withQueryBuilder(QueryBuilding $builder): self
+    public function withQueryBuilder(QueryBuilder $builder): self
     {
         return $this;
     }
@@ -27,10 +27,10 @@ class NoWrite implements Write, WithBuilders
     /**
      * Create a Writer service with a custom builder pipeline for save.
      *
-     * @param QueryBuilding $builder
+     * @param QueryBuilder $builder
      * @return $this
      */
-    public function withSaveQueryBuilder(QueryBuilding $builder): self
+    public function withSaveQueryBuilder(QueryBuilder $builder): self
     {
         return $this;
     }
@@ -38,10 +38,10 @@ class NoWrite implements Write, WithBuilders
     /**
      * Create a Writer service with a custom update query builder.
      *
-     * @param QueryBuilding $builder
+     * @param QueryBuilder $builder
      * @return $this
      */
-    public function withUpdateQueryBuilder(QueryBuilding $builder): self
+    public function withUpdateQueryBuilder(QueryBuilder $builder): self
     {
         return $this;
     }

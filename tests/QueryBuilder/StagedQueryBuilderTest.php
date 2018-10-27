@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\Tests\QueryBuilding;
+namespace Jasny\DB\Tests\QueryBuilder;
 
-use Jasny\DB\QueryBuilding\StagedQueryBuilder;
+use Jasny\DB\QueryBuilder\StagedQueryBuilder;
 use Jasny\TestHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryBuilding\StagedQueryBuilder
+ * @covers \Jasny\DB\QueryBuilder\StagedQueryBuilder
  */
 class StagedQueryBuilderTest extends TestCase
 {

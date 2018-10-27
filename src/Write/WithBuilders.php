@@ -2,7 +2,7 @@
 
 namespace Jasny\DB\Write;
 
-use Jasny\DB\QueryBuilding;
+use Jasny\DB\QueryBuilder;
 
 /**
  * Service has query builders for writing to data store.
@@ -12,24 +12,24 @@ interface WithBuilders
     /**
      * Create a Writer service with a custom filter query builder.
      *
-     * @param QueryBuilding $builder
+     * @param QueryBuilder $builder
      * @return static
      */
-    public function withQueryBuilder(QueryBuilding $builder);
+    public function withQueryBuilder(QueryBuilder $builder);
 
     /**
      * Create a Writer service with a custom builder pipeline for save.
      *
-     * @param QueryBuilding $builder
+     * @param QueryBuilder $builder
      * @return static
      */
-    public function withSaveQueryBuilder(QueryBuilding $builder);
+    public function withSaveQueryBuilder(QueryBuilder $builder);
 
     /**
      * Create a Writer service with a custom update query builder.
      *
-     * @param QueryBuilding $builder
+     * @param QueryBuilder $builder
      * @return static
      */
-    public function withUpdateQueryBuilder(QueryBuilding $builder);
+    public function withUpdateQueryBuilder(QueryBuilder $builder);
 }

@@ -5,7 +5,7 @@ namespace Jasny\DB;
 /**
  * Interface for service that can convert a filter to a database specific query.
  */
-interface QueryBuilding
+interface QueryBuilder
 {
     /**
      * Create the query from a filter

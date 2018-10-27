@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\QueryBuilding;
+namespace Jasny\DB\QueryBuilder;
 
 use Improved\IteratorPipeline\Pipeline;
-use Jasny\DB\QueryBuilding;
+use Jasny\DB\QueryBuilder;
 
 /**
  * Base class for service that can convert a filter to a database query.
  * @immutable
  */
-class StagedQueryBuilder implements QueryBuilding, Stages
+class StagedQueryBuilder implements QueryBuilder, Stages
 {
     /**
      * @var array<string, callable[]>

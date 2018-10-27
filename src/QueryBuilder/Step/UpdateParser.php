@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\QueryBuilding\Step;
+namespace Jasny\DB\QueryBuilder\Step;
 
 use Jasny\DB\Exception\InvalidUpdateOperationException;
 use Jasny\DB\Update\UpdateOperation;

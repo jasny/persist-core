@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\Tests\QueryBuilding\Step;
+namespace Jasny\DB\Tests\QueryBuilder\Step;
 
 use Improved as i;
-use Jasny\DB\QueryBuilding\Step\CustomFilter;
+use Jasny\DB\QueryBuilder\Step\CustomFilter;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryBuilding\Step\CustomFilter
+ * @covers \Jasny\DB\QueryBuilder\Step\CustomFilter
  */
 class CustomFilterTest extends TestCase
 {

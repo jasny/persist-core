@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Jasny\DB\Tests\QueryBuilding\Step;
+namespace Jasny\DB\Tests\QueryBuilder\Step;
 
 use Improved as i;
-use Jasny\DB\QueryBuilding\Step\FilterParser;
+use Jasny\DB\QueryBuilder\Step\FilterParser;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryBuilding\Step\FilterParser
+ * @covers \Jasny\DB\QueryBuilder\Step\FilterParser
  */
 class FilterParserTest extends TestCase
 {
