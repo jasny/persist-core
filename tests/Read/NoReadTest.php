@@ -3,7 +3,7 @@
 namespace Jasny\DB\Tests\Read;
 
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\QueryBuilder\QueryBuilding;
+use Jasny\DB\QueryBuilding\QueryBuilding;
 use Jasny\DB\Read\NoRead;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

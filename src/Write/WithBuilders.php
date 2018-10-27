@@ -2,7 +2,7 @@
 
 namespace Jasny\DB\Write;
 
-use Jasny\DB\QueryBuilder\QueryBuilding;
+use Jasny\DB\QueryBuilding\QueryBuilding;
 
 /**
  * Service has query builders for writing to data store.

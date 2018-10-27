@@ -3,7 +3,7 @@
 namespace Jasny\DB\Read;
 
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\QueryBuilder\QueryBuilding;
+use Jasny\DB\QueryBuilding\QueryBuilding;
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\Read;
 use Jasny\DB\Result;
