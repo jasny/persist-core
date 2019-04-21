@@ -1,7 +1,7 @@
 {
     "name": "jasny/db",
     "type": "library",
-    "description": "Adds modern OOP DB patterns by extending PHP extensions",
+    "description": "Service based DB abstraction layer",
     "keywords": ["database", "db"],
     "license": "MIT",
     "homepage": "http://jasny.github.com/db",
@@ -17,9 +17,9 @@
         "source": "https://github.com/jasny/db"
     },
     "require": {
-        "php": ">=7.1.0",
-        "improved/function": "dev-master",
-        "improved/iterable": "dev-master",
+        "php": ">=7.2.0",
+        "improved/function": "~1.0",
+        "improved/iterable": "~1.0",
         "jasny/php-functions": "dev-master as 4.2.0"
     },
     "require-dev": {
