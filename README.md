@@ -18,7 +18,7 @@ features that system has, and not for it to be abstracted away into a grey mass.
 
 With Jasny DB some basic logic is included. The rest needs to be defined by you as developer. If you need to switch DB,
 add cache etc, this custom logic might still need to be rewritten. But now it's all in one place instead spread over the
-app.  
+app.
 
 _All objects are immutable._
 
@@ -33,14 +33,14 @@ implementations. It serves as an abstract base for concrete libraries implemente
 
 ### Implementations
 
-* [Jasny\DB\PDO](http://github.com/jasny/db-pdo) for [PDO](https://http://php.net/pdo/)
+* _Jasny\DB\PDO_ for [PDO](https://http://php.net/pdo/) **TODO**
 * [Jasny\DB\Mongo](http://github.com/jasny/db-mongo) for [MongoDB](https://docs.mongodb.com/php-library/)
-* [Jasny\DB\Dynamo](http://github.com/jasny/db-dynamo) for
-    [DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.PHP.html)
-* [Jasny\DB\Elasticsearch](http://github.com/jasny/db-elasticsearch) for
-    [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/)
-* [Jasny\DB\REST](http://github.com/jasny/db-rest) for data sources implementing
-    [REST](http://en.wikipedia.org/wiki/Representational_state_transfer)
+* _Jasny\DB\Dynamo_ for [DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.PHP.html) 
+  **TODO**
+* _Jasny\DB\Elasticsearch_ for
+    [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/) **TODO**
+* _Jasny\DB\REST_ for data sources implementing
+    [REST](http://en.wikipedia.org/wiki/Representational_state_transfer) **TODO**
 
 Usage
 ---
