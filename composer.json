@@ -19,7 +19,7 @@
     "require": {
         "php": ">=7.2.0",
         "improved/iterable": "~0.1",
-        "improved/types": "~0.1"
+        "improved/type": "~0.1"
     },
     "require-dev": {
         "jasny/php-code-quality": "^2.5"
