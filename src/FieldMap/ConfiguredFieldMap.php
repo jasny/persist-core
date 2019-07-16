@@ -7,6 +7,7 @@ namespace Jasny\DB\FieldMap;
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\FieldMap;
+use RuntimeException;
 
 /**
  * Map DB field to PHP field or visa versa.
@@ -108,23 +109,23 @@ class ConfiguredFieldMap implements FieldMap
     /**
      * Check if a field is mapped.
      *
-     * @param string $field
+     * @param string|mixed $field
      * @return bool
      */
     public function offsetExists($field): bool
     {
-        return isset($this->map[$field]);
+        return is_string($field) && isset($this->map[$field]);
     }
 
     /**
      * Get the mapping for a field.
      *
-     * @param string $field
+     * @param string|mixed $field
      * @return string|null
      */
     public function offsetGet($field): ?string
     {
-        return $this->map[$field] ?? null;
+        return is_string($field) && isset($this->map[$field]) ? $this->map[$field] : null;
     }
 
     /**

@@ -43,7 +43,7 @@ class CustomFilter
     public function __invoke(iterable $filter): iterable
     {
         return Pipeline::with($filter)
-            ->map(function($orig, $info) {
+            ->map(function ($orig, $info) {
                 $field = is_array($info) ? ($info['field'] ?? null) : $info;
 
                 return ($field === $this->field ? $this->apply : $orig);
