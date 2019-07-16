@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB\FieldMap;
 
@@ -67,7 +69,10 @@ class ConfiguredFieldMap implements FieldMap
     }
 
     /**
-     * Apply mapping.
+     * Apply mapping to each key in the iterator/array.
+     *
+     * If the key is a string, it's replaced with the mapped field.
+     * If the key is an array with a 'field' item, the value of the `field` item is replaced.
      *
      * @param iterable $iterable
      * @return iterable
@@ -75,13 +80,13 @@ class ConfiguredFieldMap implements FieldMap
     protected function apply(iterable $iterable): iterable
     {
         return Pipeline::with($iterable)
-            ->mapKeys(function($_, $info) {
+            ->mapKeys(function ($_, $info) {
                 $field = is_array($info) ? ($info['field'] ?? null) : $info;
                 $newField = $this->map[$field] ?? ($this->dynamic ? $field : null);
 
                 return isset($newField) && is_array($info) ? ['field' => $newField] + $info : $newField;
             })
-            ->filter(function($_, $info) {
+            ->filter(function ($_, $info) {
                 return $info !== null;
             });
     }
@@ -125,19 +130,19 @@ class ConfiguredFieldMap implements FieldMap
     /**
      * @param mixed $field
      * @param mixed $value
-     * @throws \BadMethodCallException
+     * @throws \LogicException
      */
     public function offsetSet($field, $value): void
     {
-        throw new \BadMethodCallException("FieldMap is immutable");
+        throw new \LogicException("FieldMap is immutable");
     }
 
     /**
      * @param mixed $field
-     * @throws \BadMethodCallException
+     * @throws \LogicException
      */
     public function offsetUnset($field): void
     {
-        throw new \BadMethodCallException("FieldMap is immutable");
+        throw new \LogicException("FieldMap is immutable");
     }
 }

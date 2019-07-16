@@ -18,12 +18,11 @@
     },
     "require": {
         "php": ">=7.2.0",
-        "improved/function": "~1.0",
-        "improved/iterable": "~1.0",
-        "jasny/php-functions": "dev-master as 4.2.0"
+        "improved/iterable": "~0.1",
+        "improved/types": "~0.1"
     },
     "require-dev": {
-        "jasny/php-code-quality": "^2.3"
+        "jasny/php-code-quality": "^2.5"
     },
     "autoload": {
         "psr-4": {

@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB\QueryBuilder\Step;
 
+use Improved as i;
 use Jasny\DB\Exception\InvalidUpdateOperationException;
 use Jasny\DB\Update\UpdateOperation;
-use function Jasny\expect_type;
 
 /**
  * Convert update operations to iterator for query builder
@@ -19,9 +21,11 @@ class UpdateParser
      */
     public function __invoke(iterable $operations): \Generator
     {
+        $exception = new InvalidUpdateOperationException("Expected an UpdateOperation object; gotten %s");
+
         foreach ($operations as $operation) {
             /** @var UpdateOperation $operation */
-            expect_type($operation, UpdateOperation::class, InvalidUpdateOperationException::class);
+            i\type_check($operation, UpdateOperation::class, $exception);
 
             $field = $operation->getField();
             $operator = $operation->getOperator();

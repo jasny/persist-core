@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB\Tests\QueryBuilder\Step;
 
@@ -13,11 +15,12 @@ class CustomFilterTest extends TestCase
 {
     public function test()
     {
-        $fn = function() {};
+        $function = function () {
+        };
 
-        $filter = new CustomFilter('foo', $fn);
+        $filter = new CustomFilter('foo', $function);
 
-        $iterate = function(array $keys) {
+        $iterate = function (array $keys) {
             foreach ($keys as $key) {
                 yield ($key) => null;
             }
@@ -30,6 +33,6 @@ class CustomFilterTest extends TestCase
 
         $result = i\iterable_to_array($filtered, false);
 
-        $this->assertSame([$fn, null, $fn, null], $result);
+        $this->assertSame([$function, null, $function, null], $result);
     }
 }

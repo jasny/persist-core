@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB\Tests\FieldMap;
 
@@ -17,7 +19,7 @@ class ConfiguredFieldMapTest extends TestCase
      */
     protected $fieldMap;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->fieldMap = new ConfiguredFieldMap(['id' => '_id', 'foo' => 'foos', 'bar' => 'bor']);
     }
@@ -50,7 +52,7 @@ class ConfiguredFieldMapTest extends TestCase
 
     public function testInvoke()
     {
-        $mapped = i\function_call($this->fieldMap, [
+        $mapped = ($this->fieldMap)([
             'id' => 42,
             'bar' => 'man',
             'color' => 'red'
@@ -69,7 +71,7 @@ class ConfiguredFieldMapTest extends TestCase
     {
         $this->fieldMap = new ConfiguredFieldMap(['id' => '_id', 'foo' => 'foos', 'bar' => 'bor'], false);
 
-        $mapped = i\function_call($this->fieldMap, [
+        $mapped = ($this->fieldMap)([
             'id' => 42,
             'bar' => 'man',
             'color' => 'red'
@@ -93,7 +95,7 @@ class ConfiguredFieldMapTest extends TestCase
 
         $fields = Pipeline::with($inputFlipped)->flip();
 
-        $mapped = i\function_call($this->fieldMap, $fields);
+        $mapped = ($this->fieldMap)($fields);
         ['keys' => $keys, 'values' => $values] = i\iterable_separate($mapped);
 
         $expectedKeys = [
@@ -115,7 +117,7 @@ class ConfiguredFieldMapTest extends TestCase
             'color' => 'red'
         ]);
 
-        $mapped = i\function_call($this->fieldMap, $values);
+        $mapped = ($this->fieldMap)($values);
 
         $expected = [
             '_id' => 42,
@@ -140,19 +142,15 @@ class ConfiguredFieldMapTest extends TestCase
         $this->assertNull($this->fieldMap['color']);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testOffsetSet()
     {
+        $this->expectException(\LogicException::class);
         $this->fieldMap['zoo'] = 'ape';
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testOffsetUnset()
     {
+        $this->expectException(\LogicException::class);
         unset($this->fieldMap['bar']);
     }
 }

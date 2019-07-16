@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Read;
 
 use Improved\IteratorPipeline\PipelineBuilder;
+use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\QueryBuilder;
 use Jasny\DB\Read\NoRead;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -32,23 +35,19 @@ class NoReadTest extends TestCase
         $this->assertSame($base, $ret);
     }
 
-    /**
-     * @expectedException \Jasny\DB\Exception\UnsupportedFeatureException
-     */
     public function testFetch()
     {
-        $reader = new NoRead();
+        $this->expectException(UnsupportedFeatureException::class);
 
+        $reader = new NoRead();
         $reader->fetch([], ['id' => 42]);
     }
     
-    /**
-     * @expectedException \Jasny\DB\Exception\UnsupportedFeatureException
-     */
     public function testCount()
     {
-        $reader = new NoRead();
+        $this->expectException(UnsupportedFeatureException::class);
 
+        $reader = new NoRead();
         $reader->count([], ['id' => 42]);
     }
 }

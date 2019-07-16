@@ -1,10 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
-use function Jasny\expect_type;
+use LogicException;
+use UnexpectedValueException;
 
 /**
  * Query result
@@ -25,7 +28,7 @@ class Result extends Pipeline
      */
     public function __construct(iterable $iterable = [], $meta = [])
     {
-        expect_type($meta, ['array', 'callable']);
+        i\type_check($meta, ['array', 'callable']);
 
         parent::__construct($iterable);
 
@@ -40,7 +43,7 @@ class Result extends Pipeline
      */
     public function withMeta($meta): self
     {
-        expect_type($meta, ['array', 'callable']);
+        i\type_check($meta, ['array', 'callable']);
 
         $clone = clone $this;
         $clone->meta = $meta;
@@ -49,17 +52,17 @@ class Result extends Pipeline
     }
 
     /**
-     * Resolve metadata if it's still a Closure.
+     * Resolve metadata if it's still a callable.
      *
      * @return void
-     * @throws \UnexpectedValueException if metadata closure didn't return a positive integer
+     * @throws UnexpectedValueException if metadata closure didn't return an aray
      */
     protected function resolveMeta(): void
     {
-        expect_type($this->meta, 'callable', \BadMethodCallException::class);
+        i\type_check($this->meta, 'callable', new LogicException("Meta is not callable and thus can't be resolved"));
 
-        $meta = i\function_call($this->meta);
-        expect_type($meta, 'array', \UnexpectedValueException::class, "Failed to get meta: Expected %2\$s, got %1\$s");
+        $meta = ($this->meta)();
+        i\type_check($meta, 'array', new UnexpectedValueException("Failed to get meta: Expected %2\$s, got %1\$s"));
 
         $this->meta = $meta;
     }
@@ -68,7 +71,7 @@ class Result extends Pipeline
      * Get the metadata of the result
      *
      * @return array
-     * @throws \UnexpectedValueException if metadata closure didn't return an array or object
+     * @throws UnexpectedValueException if metadata closure didn't return an array or object
      */
     public function getMeta(): array
     {

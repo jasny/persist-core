@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB\Tests;
 
@@ -46,12 +48,11 @@ class ResultTest extends TestCase
         $this->assertEquals(['total' => 42], $result->getMeta());
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     * @expectedExceptionMessage Failed to get meta: Expected array, got string
-     */
     public function testGetMetaWithClosureString()
     {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage("Failed to get meta: Expected array, got string");
+
         $closure = $this->createCallbackMock($this->once(), [], 'foo');
 
         $result = new Result([], $closure);

@@ -1,8 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB\Update;
 
-use function Jasny\expect_type;
+use Improved as i;
 
 /**
  * Operation for update query
@@ -34,7 +36,7 @@ class UpdateOperation
      */
     public function __construct(string $operator, $field, $value)
     {
-        expect_type($field, ['string', 'array']);
+        i\type_check($field, ['string', 'array']);
 
         $this->operator = $operator;
         $this->field = $field;

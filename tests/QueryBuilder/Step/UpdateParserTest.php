@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB\Tests\QueryBuilder\Step;
 
@@ -34,12 +36,13 @@ class UpdateParserTest extends TestCase
             [['field' => 'color', 'operator' => 'set'], 'blue'],
             [['field' => 'age', 'operator' => 'set'], 21]
         ];
-        $i = 0;
+
+        $index = 0;
 
         foreach ($iterator as $key => $value) {
-            $this->assertEquals($expected[$i][0], $key);
-            $this->assertEquals($expected[$i][1], $value);
-            $i++;
+            $this->assertEquals($expected[$index][0], $key);
+            $this->assertEquals($expected[$index][1], $value);
+            $index++;
         }
     }
 }

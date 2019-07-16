@@ -1,11 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB\QueryBuilder\Step;
 
 use Improved as i;
 use Jasny\DB\Exception\InvalidFilterException;
-use function Jasny\array_only;
-use function Jasny\expect_type;
 
 /**
  * Parse a filter key, extracting the field and operator.
@@ -23,8 +23,10 @@ class FilterParser
      */
     public function __invoke(iterable $filter): iterable
     {
-        return i\iterable_map_keys($filter, function($_, $key) {
-            expect_type($key, 'string', InvalidFilterException::class);
+        $exception = new InvalidFilterException("Expected filter key to be a string: %s given");
+
+        return i\iterable_map_keys($filter, function ($_, $key) use ($exception) {
+            i\type_check($key, 'string', $exception);
             return $this->parse($key);
         });
     }
@@ -45,6 +47,6 @@ class FilterParser
             throw new InvalidFilterException("Invalid filter item '$key': Bad use of parentheses");
         }
 
-        return array_only($matches, ['field', 'operator']) + ['operator' => ''];
+        return ['field' => $matches['field'], 'operator' => $matches['operator'] ?? ''];
     }
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB\QueryBuilder;
 
@@ -12,7 +14,7 @@ use Jasny\DB\QueryBuilder;
 class StagedQueryBuilder implements QueryBuilder, Stages
 {
     /**
-     * @var array<string, callable[]>
+     * @var array
      */
     protected $stages = [
         'prepare' => [],
@@ -123,7 +125,7 @@ class StagedQueryBuilder implements QueryBuilder, Stages
     {
         return Pipeline::with($this->stages)
             ->flatten()
-            ->reduce(function($data, callable $step) use ($opts) {
+            ->reduce(function ($data, callable $step) use ($opts) {
                 return $step($data, $opts);
             }, $filter);
     }

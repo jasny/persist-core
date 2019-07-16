@@ -1,8 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Jasny\DB\Update;
 
-use function Jasny\expect_type;
+use Improved as i;
 
 /**
  * Set a field to a value
@@ -13,7 +15,7 @@ use function Jasny\expect_type;
  */
 function set($field, $value = null)
 {
-    expect_type($field, func_num_args() === 1 ? 'array' : 'string');
+    i\type_check($field, func_num_args() === 1 ? 'array' : 'string');
     return new UpdateOperation('set', $field, $value);
 }
 
@@ -26,7 +28,7 @@ function set($field, $value = null)
  */
 function patch(string $field, $value)
 {
-    expect_type($value, ['array', 'object']);
+    i\type_check($value, ['array', 'object']);
     return new UpdateOperation('patch', $field, $value);
 }
 
@@ -39,7 +41,7 @@ function patch(string $field, $value)
  */
 function inc(string $field, $value = 1)
 {
-    expect_type($value, ['int', 'float']);
+    i\type_check($value, ['int', 'float']);
     return new UpdateOperation('inc', $field, $value);
 }
 
@@ -52,7 +54,7 @@ function inc(string $field, $value = 1)
  */
 function dec(string $field, $value = 1)
 {
-    expect_type($value, ['int', 'float']);
+    i\type_check($value, ['int', 'float']);
     return new UpdateOperation('dec', $field, $value);
 }
 
@@ -65,7 +67,7 @@ function dec(string $field, $value = 1)
  */
 function mul(string $field, $value)
 {
-    expect_type($value, ['int', 'float']);
+    i\type_check($value, ['int', 'float']);
     return new UpdateOperation('mul', $field, $value);
 }
 
@@ -78,7 +80,7 @@ function mul(string $field, $value)
  */
 function div(string $field, $value)
 {
-    expect_type($value, ['int', 'float']);
+    i\type_check($value, ['int', 'float']);
     return new UpdateOperation('div', $field, $value);
 }
 
@@ -91,7 +93,7 @@ function div(string $field, $value)
  */
 function mod(string $field, $value)
 {
-    expect_type($value, ['int', 'float']);
+    i\type_check($value, ['int', 'float']);
     return new UpdateOperation('mod', $field, $value);
 }
 
