@@ -21,9 +21,9 @@ class UpdateParserTest extends TestCase
     public function test()
     {
         $operations = [
-            $this->createUpdateOperationMock(['getOperator' => 'set', 'getField' => 'foo', 'getValue' => 42]),
-            $this->createUpdateOperationMock(['getOperator' => 'add', 'getField' => 'bar', 'getValue' => 99]),
-            $this->createUpdateOperationMock(['getOperator' => 'set', 'getField' => ['color' => 'blue', 'age' => 21]])
+            $this->createUpdateOperationMock(['getOperator' => 'set', 'getPairs' => ['foo' => 42]]),
+            $this->createUpdateOperationMock(['getOperator' => 'add', 'getPairs' => ['bar' => 99]]),
+            $this->createUpdateOperationMock(['getOperator' => 'set', 'getPairs' => ['color' => 'blue', 'age' => 21]])
         ];
 
         $parse = new UpdateParser();
@@ -42,6 +42,7 @@ class UpdateParserTest extends TestCase
         foreach ($iterator as $key => $value) {
             $this->assertEquals($expected[$index][0], $key);
             $this->assertEquals($expected[$index][1], $value);
+
             $index++;
         }
     }

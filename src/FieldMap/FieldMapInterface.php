@@ -2,17 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB;
+namespace Jasny\DB\FieldMap;
 
 /**
- * Map MongoDB field to PHP field or visa versa
+ * Map MongoDB field to PHP field or visa versa.
  */
-interface FieldMap extends \ArrayAccess
+interface FieldMapInterface extends \ArrayAccess
 {
     /**
      * Allow properties that are not mapped?
-     *
-     * @return bool
      */
     public function isDynamic(): bool;
 

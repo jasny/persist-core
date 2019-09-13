@@ -4,73 +4,54 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Update;
 
-use Improved as i;
-
 /**
  * Operation for update query
  */
 class UpdateOperation
 {
-    /**
-     * @var string
-     */
-    protected $operator;
+    const SUPPORTED_OPERATIONS = [
+        'set',
+        'patch',
+        'inc',
+        'mul',
+        'div',
+        'mod',
+        'pull',
+        'push',
+    ];
 
-    /**
-     * @var string|array
-     */
-    protected $field;
-
-    /**
-     * @var mixed
-     */
-    protected $value;
-
+    protected string $operator;
+    protected array $pairs;
 
     /**
      * Class constructor.
      *
-     * @param string       $operator
-     * @param string|array $field
-     * @param mixed        $value
+     * @param string              $operator  Update operator
+     * @param array<string,mixed> $pairs     field/value pairs
      */
-    public function __construct(string $operator, $field, $value)
+    public function __construct(string $operator, array $pairs)
     {
-        i\type_check($field, ['string', 'array']);
+        if (!in_array($operator, static::SUPPORTED_OPERATIONS, true)) {
+            throw new \InvalidArgumentException("Unsupported update operator '$operator'");
+        }
 
         $this->operator = $operator;
-        $this->field = $field;
-        $this->value = $value;
+        $this->pairs = $pairs;
     }
-
 
     /**
      * Get the operator.
-     *
-     * @return string
      */
-    public function getOperator()
+    public function getOperator(): string
     {
         return $this->operator;
     }
 
     /**
-     * Get the field name.
-     *
-     * @return string|array
+     * Get the field/value pairs.
      */
-    public function getField()
+    public function getPairs(): array
     {
-        return $this->field;
-    }
-
-    /**
-     * Get the operator value.
-     *
-     * @return mixed
-     */
-    public function getValue()
-    {
-        return $this->value;
+        return $this->pairs;
     }
 }

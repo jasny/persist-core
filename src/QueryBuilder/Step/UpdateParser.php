@@ -9,7 +9,7 @@ use Jasny\DB\Exception\InvalidUpdateOperationException;
 use Jasny\DB\Update\UpdateOperation;
 
 /**
- * Convert update operations to iterator for query builder
+ * Convert update operations to iterator for query builder.
  */
 class UpdateParser
 {
@@ -27,17 +27,12 @@ class UpdateParser
             /** @var UpdateOperation $operation */
             i\type_check($operation, UpdateOperation::class, $exception);
 
-            $field = $operation->getField();
             $operator = $operation->getOperator();
+            $pairs = $operation->getPairs();
 
-            if (is_array($field)) {
-                foreach ($field as $key => $value) {
-                    $info = ['field' => $key, 'operator' => $operator];
-                    yield $info => $value;
-                }
-            } else {
+            foreach ($pairs as $field => $value) {
                 $info = ['field' => $field, 'operator' => $operator];
-                yield $info => $operation->getValue();
+                yield $info => $value;
             }
         }
     }

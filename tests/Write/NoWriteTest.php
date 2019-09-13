@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\Tests\Write;
 
 use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\QueryBuilder;
+use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Write\NoWrite;
 use PHPUnit\Framework\TestCase;
 
@@ -14,12 +14,19 @@ use PHPUnit\Framework\TestCase;
  */
 class NoWriteTest extends TestCase
 {
+    public function testGetStorage()
+    {
+        $writer = new NoWrite();
+        $this->assertNull($writer->getStorage());
+    }
+
+
     public function queryBuilderMethodProvider()
     {
         return [
             ['withQueryBuilder'],
             ['withSaveQueryBuilder'],
-            ['withUpdateQueryBuilder']
+            ['withUpdateQueryBuilder'],
         ];
     }
 
@@ -28,7 +35,7 @@ class NoWriteTest extends TestCase
      */
     public function testWithQueryBuilder($method)
     {
-        $builder = $this->createMock(QueryBuilder::class);
+        $builder = $this->createMock(QueryBuilderInterface::class);
 
         $base = new NoWrite();
         $ret = ([$base, $method])($builder);

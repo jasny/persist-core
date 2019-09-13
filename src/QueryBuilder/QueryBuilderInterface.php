@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB;
+namespace Jasny\DB\QueryBuilder;
 
 /**
  * Interface for service that can convert a filter to a database specific query.
  */
-interface QueryBuilder
+interface QueryBuilderInterface
 {
     /**
      * Create the query from a filter

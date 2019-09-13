@@ -15,7 +15,7 @@ namespace Jasny\DB\QueryBuilder;
  *
  * Each stage can have 0 or more callables. The callables of all stages are run consecutively.
  */
-interface Stages
+interface StagesInterface
 {
     /**
      * Return a query builder with some steps removed.

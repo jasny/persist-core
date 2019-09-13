@@ -6,10 +6,11 @@ namespace Jasny\DB\QueryBuilder\Step;
 
 use Improved as i;
 use Jasny\DB\Exception\InvalidFilterException;
+use Spatie\Regex\Regex;
 
 /**
- * Parse a filter key, extracting the field and operator.
- * This turns the key into ['field' => string, 'operator' => string]
+ * Parse a filter key into a basic filter by extracting the field and operator.
+ * Format is "key" or "key (operator)".
  */
 class FilterParser
 {
@@ -17,9 +18,6 @@ class FilterParser
 
     /**
      * Invoke the parser
-     *
-     * @param iterable $filter
-     * @return iterable
      */
     public function __invoke(iterable $filter): iterable
     {
@@ -34,8 +32,7 @@ class FilterParser
     /**
      * Parse the key into field and operator.
      *
-     * @param string $key
-     * @return array
+     * @return array{field:string, operator:string}
      */
     protected function parse(string $key): array
     {
@@ -43,10 +40,15 @@ class FilterParser
             return ['field' => trim($key), 'operator' => ''];
         }
 
-        if (!preg_match(static::REGEXP, $key, $matches)) {
+        $result = Regex::match(static::REGEXP, $key);
+
+        if (!$result->hasMatch()) {
             throw new InvalidFilterException("Invalid filter item '$key': Bad use of parentheses");
         }
 
-        return ['field' => $matches['field'], 'operator' => $matches['operator'] ?? ''];
+        return [
+            'field' => $result->group('field'),
+            'operator' => $result->groupOr('operator', ''),
+        ];
     }
 }

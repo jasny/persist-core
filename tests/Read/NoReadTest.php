@@ -6,7 +6,7 @@ namespace Jasny\DB\Tests\Read;
 
 use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\QueryBuilder;
+use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Read\NoRead;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -16,10 +16,16 @@ use PHPUnit\Framework\TestCase;
  */
 class NoReadTest extends TestCase
 {
+    public function testGetStorage()
+    {
+        $reader = new NoRead();
+        $this->assertNull($reader->getStorage());
+    }
+
     public function testWithQueryBuilder()
     {
-        /** @var QueryBuilder|MockObject $builder */
-        $builder = $this->createMock(QueryBuilder::class);
+        /** @var QueryBuilderInterface|MockObject $builder */
+        $builder = $this->createMock(QueryBuilderInterface::class);
 
         $base = new NoRead();
         $ret = $base->withQueryBuilder($builder);

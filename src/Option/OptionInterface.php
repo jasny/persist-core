@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB;
+namespace Jasny\DB\Option;
 
 /**
  * Options processed by the query builder
  */
-interface Option
+interface OptionInterface
 {
 }

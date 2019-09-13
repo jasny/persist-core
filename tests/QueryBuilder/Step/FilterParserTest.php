@@ -36,6 +36,7 @@ class FilterParserTest extends TestCase
         $result = [];
 
         foreach ($iterator as $info => $value) {
+            $this->assertIsArray($info);
             $result[] = $info + compact('value');
         }
 

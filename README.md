@@ -320,17 +320,15 @@ $writer->update($users, ['id' => 10], [update\set('last_login', new DateTime()),
 The `$changes` argument must be one or more `UpdateOperation` objects. Rather than creating such an object by hand, the
 following helper functions exist in the `Jasny\DB\Update` namespace:
 
-* `set(string $field, $value)` or `set(iterable $values)`
+* `set(iterable $values)`
+* `set(string $field, $value)`
 * `patch(string $field, array|object $value)`
 * `inc(string $field, int|float value = 1)`
 * `dec(string $field, int|float value = 1)`
-* `mul(string $field, int|float value)`
-* `div(string $field, int|float value)`
-* `mod(string $field, int|float value)`
 
 If the field is an array, the following operations are also available
-* `add(string $field, $value)`
-* `rem(string $field, $value)`
+* `push(string $field, $value, ...)` - Add elements to the array
+* `pull(string $field, $value, ...)` - Remove elements from the array
 
 To prevent accidentally swapping the changes and filter, passing a normal associative array is not allowed. Instead use
 `update\set($values)`, where values are all values that need to be set.
@@ -371,7 +369,7 @@ do not have to correspond to one field, but can closely match the business logic
 
 ```php
 use Jasny\DB\QueryBuilder\StagedQueryBuilder;
-use Jasny\DB\QueryBuilder\CustomFilter;
+use Jasny\DB\QueryBuilder\Step\CustomFilter;
 use Jasny\DB\Mongo\Read\MongoReader;
 use Jasny\DB\Mongo\QueryBuilder\Query;
 

@@ -13,14 +13,21 @@ use PHPUnit\Framework\TestCase;
  */
 class FieldsOptionTest extends TestCase
 {
-    public function test()
+    public function testBasic()
     {
-        $option = new FieldsOption('do', ['foo', 'bar', 'color.red']);
+        $option = new FieldsOption(['foo', 'bar', 'color.red']);
 
-        $this->assertEquals('do', $option->getType());
         $this->assertEquals(['foo', 'bar', 'color.red'], $option->getFields());
+        $this->assertFalse($option->isNegated());
     }
 
+    public function testNegated()
+    {
+        $option = new FieldsOption(['foo', 'bar', 'color.red'], true);
+
+        $this->assertEquals(['foo', 'bar', 'color.red'], $option->getFields());
+        $this->assertTrue($option->isNegated());
+    }
 
     /**
      * @covers \Jasny\DB\Option\fields
@@ -30,8 +37,8 @@ class FieldsOptionTest extends TestCase
         $option = opt\fields('foo', 'bar', 'color.red');
 
         $this->assertInstanceOf(FieldsOption::class, $option);
-        $this->assertEquals('fields', $option->getType());
         $this->assertEquals(['foo', 'bar', 'color.red'], $option->getFields());
+        $this->assertFalse($option->isNegated());
     }
 
     /**
@@ -42,19 +49,7 @@ class FieldsOptionTest extends TestCase
         $option = opt\omit('foo', 'bar', 'color.red');
 
         $this->assertInstanceOf(FieldsOption::class, $option);
-        $this->assertEquals('omit', $option->getType());
         $this->assertEquals(['foo', 'bar', 'color.red'], $option->getFields());
-    }
-
-    /**
-     * @covers \Jasny\DB\Option\sort
-     */
-    public function testSortFunction()
-    {
-        $option = opt\sort('foo', '~bar', 'color.red');
-
-        $this->assertInstanceOf(FieldsOption::class, $option);
-        $this->assertEquals('sort', $option->getType());
-        $this->assertEquals(['foo', '~bar', 'color.red'], $option->getFields());
+        $this->assertTrue($option->isNegated());
     }
 }

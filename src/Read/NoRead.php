@@ -5,61 +5,64 @@ declare(strict_types=1);
 namespace Jasny\DB\Read;
 
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\QueryBuilder;
 use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\Read;
+use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Result;
 
 /**
  * Reading from storage is not supported.
  */
-class NoRead implements Read, WithBuilders
+class NoRead implements ReadInterface
 {
     /**
-     * Create a CRUD service with a custom query builder.
+     * Get underlying storage object.
      *
-     * @param QueryBuilder $queryBuilder
-     * @return mixed
+     * @return null
      */
-    public function withQueryBuilder(QueryBuilder $queryBuilder)
+    public function getStorage()
+    {
+        return null;
+    }
+
+    /**
+     * Does nothing.
+     *
+     * @param QueryBuilderInterface $queryBuilder
+     * @return $this
+     */
+    public function withQueryBuilder(QueryBuilderInterface $queryBuilder): ReadInterface
     {
         return $this;
     }
 
     /**
-     * Create a reader with a custom result builder.
+     * Does nothing.
      *
      * @param PipelineBuilder $resultBuilder
-     * @return mixed
+     * @return $this
      */
-    public function withResultBuilder(PipelineBuilder $resultBuilder)
+    public function withResultBuilder(PipelineBuilder $resultBuilder): ReadInterface
     {
         return $this;
     }
 
 
     /**
-     * Fetch is not supported
+     * Fetch is not supported.
      *
-     * @param mixed $storage
-     * @param array $filter
-     * @param array $opts
-     * @return Result
+     * @throws UnsupportedFeatureException
      */
-    public function fetch($storage, array $filter = null, array $opts = []): Result
+    public function fetch(array $filter = null, array $opts = []): Result
     {
         throw new UnsupportedFeatureException("Reading from storage is not supported");
     }
 
     /**
-     * Count is not supported
+     * Count is not supported.
      *
-     * @param mixed $storage
-     * @param array $filter
-     * @param array $opts
-     * @return int
+     * @throws UnsupportedFeatureException
      */
-    public function count($storage, array $filter = null, array $opts = []): int
+    public function count(array $filter = null, array $opts = []): int
     {
         throw new UnsupportedFeatureException("Reading from storage is not supported");
     }

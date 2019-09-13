@@ -9,14 +9,17 @@ use Improved as i;
 /**
  * Set a field to a value
  *
- * @param string|array $field
+ * @param string|array $fieldOrPairs
  * @param mixed        $value
  * @return UpdateOperation
  */
-function set($field, $value = null)
+function set($fieldOrPairs, $value = null)
 {
-    i\type_check($field, func_num_args() === 1 ? 'array' : 'string');
-    return new UpdateOperation('set', $field, $value);
+    $pairs = func_num_args() === 1
+        ? i\type_check($fieldOrPairs, 'array')
+        : [$fieldOrPairs => $value];
+
+    return new UpdateOperation('set', $pairs);
 }
 
 /**
@@ -29,7 +32,8 @@ function set($field, $value = null)
 function patch(string $field, $value)
 {
     i\type_check($value, ['array', 'object']);
-    return new UpdateOperation('patch', $field, $value);
+
+    return new UpdateOperation('patch', [$field => $value]);
 }
 
 /**
@@ -42,7 +46,7 @@ function patch(string $field, $value)
 function inc(string $field, $value = 1)
 {
     i\type_check($value, ['int', 'float']);
-    return new UpdateOperation('inc', $field, $value);
+    return new UpdateOperation('inc', [$field => $value]);
 }
 
 /**
@@ -55,7 +59,7 @@ function inc(string $field, $value = 1)
 function dec(string $field, $value = 1)
 {
     i\type_check($value, ['int', 'float']);
-    return new UpdateOperation('dec', $field, $value);
+    return new UpdateOperation('inc', [$field => -1 * $value]);
 }
 
 /**
@@ -68,7 +72,7 @@ function dec(string $field, $value = 1)
 function mul(string $field, $value)
 {
     i\type_check($value, ['int', 'float']);
-    return new UpdateOperation('mul', $field, $value);
+    return new UpdateOperation('mul', [$field => $value]);
 }
 
 /**
@@ -81,7 +85,7 @@ function mul(string $field, $value)
 function div(string $field, $value)
 {
     i\type_check($value, ['int', 'float']);
-    return new UpdateOperation('div', $field, $value);
+    return new UpdateOperation('div', [$field => $value]);
 }
 
 /**
@@ -94,30 +98,30 @@ function div(string $field, $value)
 function mod(string $field, $value)
 {
     i\type_check($value, ['int', 'float']);
-    return new UpdateOperation('mod', $field, $value);
+    return new UpdateOperation('mod', [$field => $value]);
 }
 
 
 /**
- * Add a value to an array field.
+ * Add a value / values to an array field.
  *
  * @param string $field
- * @param mixed  $value
+ * @param mixed  ...$value
  * @return UpdateOperation
  */
-function push(string $field, $value)
+function push(string $field, ...$value)
 {
-    return new UpdateOperation('push', $field, $value);
+    return new UpdateOperation('push', [$field => $value]);
 }
 
 /**
- * Remove an value from an array field.
+ * Remove a value / values from an array field.
  *
  * @param string $field
- * @param mixed  $value
+ * @param mixed  ...$value
  * @return UpdateOperation
  */
-function pull(string $field, $value)
+function pull(string $field, ...$value)
 {
-    return new UpdateOperation('pull', $field, $value);
+    return new UpdateOperation('pull', [$field => $value]);
 }

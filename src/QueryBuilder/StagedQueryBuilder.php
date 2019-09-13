@@ -5,45 +5,20 @@ declare(strict_types=1);
 namespace Jasny\DB\QueryBuilder;
 
 use Improved\IteratorPipeline\Pipeline;
-use Jasny\DB\QueryBuilder;
 
 /**
  * Base class for service that can convert a filter to a database query.
  * @immutable
  */
-class StagedQueryBuilder implements QueryBuilder, Stages
+class StagedQueryBuilder implements QueryBuilderInterface, StagesInterface
 {
-    /**
-     * @var array
-     */
-    protected $stages = [
+    protected array $stages = [
         'prepare' => [],
         'compose' => [],
         'build' => [],
         'finalize' => []
     ];
 
-
-    /**
-     * Create a clone with a new step
-     *
-     * @param string   $stage
-     * @param callable $step
-     * @param bool     $replace
-     * @return static
-     */
-    protected function withAddedStep(string $stage, callable $step, bool $replace = false)
-    {
-        $clone = clone $this;
-
-        if ($replace) {
-            $clone->stages[$stage] = [];
-        }
-
-        $clone->stages[$stage][] = $step;
-
-        return $clone;
-    }
 
     /**
      * Return a query builder with some steps removed.
@@ -72,7 +47,7 @@ class StagedQueryBuilder implements QueryBuilder, Stages
      * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    public function onPrepare(callable $step, bool $replace = false)
+    final public function onPrepare(callable $step, bool $replace = false)
     {
         return $this->withAddedStep('prepare', $step, $replace);
     }
@@ -84,7 +59,7 @@ class StagedQueryBuilder implements QueryBuilder, Stages
      * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    public function onCompose(callable $step, bool $replace = false)
+    final public function onCompose(callable $step, bool $replace = false)
     {
         return $this->withAddedStep('compose', $step, $replace);
     }
@@ -96,7 +71,7 @@ class StagedQueryBuilder implements QueryBuilder, Stages
      * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    public function onBuild(callable $step, bool $replace = false)
+    final public function onBuild(callable $step, bool $replace = false)
     {
         return $this->withAddedStep('build', $step, $replace);
     }
@@ -108,9 +83,30 @@ class StagedQueryBuilder implements QueryBuilder, Stages
      * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    public function onFinalize(callable $step, bool $replace = false)
+    final public function onFinalize(callable $step, bool $replace = false)
     {
         return $this->withAddedStep('finalize', $step, $replace);
+    }
+
+    /**
+     * Create a clone with a new step
+     *
+     * @param string   $stage
+     * @param callable $step
+     * @param bool     $replace
+     * @return static
+     */
+    protected function withAddedStep(string $stage, callable $step, bool $replace = false)
+    {
+        $clone = clone $this;
+
+        if ($replace) {
+            $clone->stages[$stage] = [$step];
+        } else {
+            $clone->stages[$stage][] = $step;
+        }
+
+        return $clone;
     }
 
 

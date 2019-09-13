@@ -6,25 +6,16 @@ namespace Jasny\DB\FieldMap;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
-use Jasny\DB\FieldMap;
-use RuntimeException;
 
 /**
  * Map DB field to PHP field or visa versa.
  * Also works for parsed filters.
+ * @immutable
  */
-class ConfiguredFieldMap implements FieldMap
+class ConfiguredFieldMap implements FieldMapInterface
 {
-    /**
-     * @var array
-     */
-    protected $map;
-
-    /**
-     * @var bool
-     */
-    protected $dynamic;
-
+    protected array $map;
+    protected bool $dynamic;
 
     /**
      * Class constructor.
@@ -40,8 +31,6 @@ class ConfiguredFieldMap implements FieldMap
 
     /**
      * Allow properties that are not mapped?
-     *
-     * @return bool
      */
     public function isDynamic(): bool
     {
@@ -49,9 +38,7 @@ class ConfiguredFieldMap implements FieldMap
     }
 
     /**
-     * Get field map as associative array
-     *
-     * @return array
+     * Get field map as associative array.
      */
     public function toArray(): array
     {
@@ -64,7 +51,7 @@ class ConfiguredFieldMap implements FieldMap
      *
      * @return static
      */
-    public function flip(): self
+    public function flip()
     {
         return new static(array_flip($this->map), $this->dynamic);
     }
@@ -74,9 +61,6 @@ class ConfiguredFieldMap implements FieldMap
      *
      * If the key is a string, it's replaced with the mapped field.
      * If the key is an array with a 'field' item, the value of the `field` item is replaced.
-     *
-     * @param iterable $iterable
-     * @return iterable
      */
     protected function apply(iterable $iterable): iterable
     {
@@ -94,9 +78,6 @@ class ConfiguredFieldMap implements FieldMap
 
     /**
      * Invoke field map to apply mapping.
-     *
-     * @param iterable $iterable
-     * @return iterable
      */
     public function __invoke(iterable $iterable): iterable
     {
@@ -129,6 +110,7 @@ class ConfiguredFieldMap implements FieldMap
     }
 
     /**
+     * @internal
      * @param mixed $field
      * @param mixed $value
      * @throws \LogicException
@@ -139,6 +121,7 @@ class ConfiguredFieldMap implements FieldMap
     }
 
     /**
+     * @internal
      * @param mixed $field
      * @throws \LogicException
      */

@@ -4,22 +4,13 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Option;
 
-use Jasny\DB\Option;
-
 /**
  * Limit the query result.
  */
-class LimitOption implements Option
+class LimitOption implements OptionInterface
 {
-    /**
-     * @var int
-     */
-    protected $limit;
-
-    /**
-     * @var int
-     */
-    protected $offset;
+    protected int $limit;
+    protected int $offset;
 
     /**
      * Class constructor.
@@ -33,11 +24,8 @@ class LimitOption implements Option
         $this->offset = $offset;
     }
 
-
     /**
      * Get the limit.
-     *
-     * @return int
      */
     public function getLimit(): int
     {
@@ -46,8 +34,6 @@ class LimitOption implements Option
 
     /**
      * Get the offset.
-     *
-     * @return int
      */
     public function getOffset(): int
     {

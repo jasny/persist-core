@@ -7,20 +7,12 @@ namespace Jasny\DB\QueryBuilder\Step;
 use Improved\IteratorPipeline\Pipeline;
 
 /**
- * Custom filter for query builder compose step
+ * Custom filter for query builder compose step.
  */
 class CustomFilter
 {
-    /**
-     * @var string
-     */
-    protected $field;
-
-    /**
-     * @var callable
-     */
-    protected $apply;
-
+    protected string $field;
+    protected \Closure $apply;
 
     /**
      * Create a query builder with a custom filter criteria.
@@ -31,7 +23,7 @@ class CustomFilter
     public function __construct(string $field, callable $apply)
     {
         $this->field = $field;
-        $this->apply = $apply;
+        $this->apply = \Closure::fromCallable($apply);
     }
 
     /**

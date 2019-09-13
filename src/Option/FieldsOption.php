@@ -4,44 +4,25 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Option;
 
-use Jasny\DB\Option;
-
 /**
- * Only return the specified fields.
+ * Only return specified fields.
+ * @immutable
  */
-class FieldsOption implements Option
+class FieldsOption implements OptionInterface
 {
-    /**
-     * @var string
-     */
-    protected $type;
-
-    /**
-     * @var string[]
-     */
-    protected $fields;
+    protected array $fields;
+    protected bool $negate;
 
     /**
      * Class constructor.
      *
-     * @param string   $type
      * @param string[] $fields
+     * @param bool     $negate  Exclude the fields instead.
      */
-    public function __construct(string $type, array $fields)
+    public function __construct(array $fields, bool $negate = false)
     {
-        $this->type = $type;
         $this->fields = $fields;
-    }
-
-
-    /**
-     * Get the option type
-     *
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
+        $this->negate = $negate;
     }
 
     /**
@@ -52,5 +33,13 @@ class FieldsOption implements Option
     public function getFields(): array
     {
         return $this->fields;
+    }
+
+    /**
+     * The fields should be excluded instead of included.
+     */
+    public function isNegated(): bool
+    {
+        return $this->negate;
     }
 }
