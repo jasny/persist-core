@@ -22,8 +22,7 @@ app.
 
 _All objects are immutable._
 
-This library doesn't do ORM / ODM. For that take a look at [Jasny Entity Mapper](https://github.com/jasny/entity-mapper)
-and [Jasny DB Gateway](https://github.com/jasny/db-gateway).
+For ORM / ODM use [Jasny Persist](https://github.com/jasny/persist).
 
 Installation
 ---
@@ -45,20 +44,19 @@ implementations. It serves as an abstract base for concrete libraries implemente
 Usage
 ---
 
-#### Fetch a list
+### Fetch a list
 
 ```php
 use Jasny\DB\Option as opts;
 use Jasny\DB\Mongo\Read\MongoReader;
 
-$users = (new MongoDB\Client)->test->users;
-$reader = new MongoReader;
+$collection = (new MongoDB\Client)->test->users;
+$reader = new MongoReader($collection);
 
 $list = $reader
     ->fetch(
-        $users,
         [
-            'invite.group' => 'A team',
+            'invite.group' => 'the A-Team',
             'activation_date (min)' => new DateTime(),
             'role (any)' => ['user', 'admin', 'super']
         ],
@@ -72,41 +70,42 @@ $list = $reader
     });
 ```
 
-#### Read and write
+### Read and write
 
 ```php
 use Jasny\DB\Mongo\Read\MongoReader;
 use Jasny\DB\Mongo\Write\MongoWriter;
 
-$users = (new MongoDB\Client)->test->users;
-$reader = new MongoReader;
-$writer = new MongoWriter;
+$collection = (new MongoDB\Client)->test->users;
+$reader = new MongoReader($collection);
+$writer = new MongoWriter($collection);
 
-$user = $reader->fetch($users, ['id' => '12345'])->first();
+$user = $reader->fetch(['id' => '12345'])->first();
 $user->count = "bar";
 
-$writer->save($users, [$user]);
+$writer->save([$user]);
 ```
 
-#### Update multiple
+### Update multiple
 
 ```php
 use Jasny\DB\Update as update;
 use Jasny\DB\Mongo\Write\MongoWriter;
 
-$users = (new MongoDB\Client)->test->users;
-$writer = new MongoWriter;
+$collection = (new MongoDB\Client)->test->users;
+$writer = new MongoWriter($collection);
 
 $writer->update(
-    $users,
     ['type' => 'admin'],
     [update\inc('reward', 100), update\set('rewarded', new DateTime())
 ]);
 ```
 
-_**Jasny DB makes extensive use of iterators and generators.** It's important to understand what they are and how they
-work. If you're not familiar with this concept, first read
-"[What are iterators?](https://github.com/improved-php-library/iterable#what-are-iterators)"._
+### Iterators and generators
+
+Jasny DB uses PHP iterators and generators. It's important to understand what they are and how they work. If you're
+not familiar with this concept, first read
+"[What are iterators?](https://github.com/improved-php-library/iterable#what-are-iterators)".
 
 ## Filters
 

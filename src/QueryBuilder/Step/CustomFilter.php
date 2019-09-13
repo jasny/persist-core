@@ -8,6 +8,7 @@ use Improved\IteratorPipeline\Pipeline;
 
 /**
  * Custom filter for query builder compose step.
+ * @immutable
  */
 class CustomFilter
 {

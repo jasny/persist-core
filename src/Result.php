@@ -6,33 +6,28 @@ namespace Jasny\DB;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
-use LogicException;
 use UnexpectedValueException;
 
 /**
  * Query result
+ * @immutable
  */
 class Result extends Pipeline
 {
-    /**
-     * @var array|\Closure
-     */
-    protected $meta;
-
+    protected array $meta;
+    protected ?\Closure $metaFn;
 
     /**
      * Result constructor.
      *
      * @param iterable       $iterable
-     * @param array|callable $meta
+     * @param array|\Closure $meta
      */
     public function __construct(iterable $iterable = [], $meta = [])
     {
-        i\type_check($meta, ['array', 'callable']);
-
         parent::__construct($iterable);
 
-        $this->meta = $meta;
+        $this->setMeta($meta);
     }
 
     /**
@@ -43,40 +38,46 @@ class Result extends Pipeline
      */
     public function withMeta($meta): self
     {
-        i\type_check($meta, ['array', 'callable']);
-
         $clone = clone $this;
-        $clone->meta = $meta;
+        $clone->setMeta($meta);
 
         return $clone;
     }
 
     /**
-     * Resolve metadata if it's still a callable.
+     * Set the meta data.
      *
-     * @return void
-     * @throws UnexpectedValueException if metadata closure didn't return an aray
+     * @param array|callable $meta
      */
-    protected function resolveMeta(): void
+    protected function setMeta($meta): void
     {
-        i\type_check($this->meta, 'callable', new LogicException("Meta is not callable and thus can't be resolved"));
+        i\type_check($meta, ['array', \Closure::class]);
 
-        $meta = ($this->meta)();
-        i\type_check($meta, 'array', new UnexpectedValueException("Failed to get meta: Expected %2\$s, got %1\$s"));
+        unset($this->meta);
+        $this->metaFn = null;
 
-        $this->meta = $meta;
+        if (is_array($meta)) {
+            $this->meta = $meta;
+        } else {
+            $this->metaFn = $meta;
+        }
     }
 
     /**
      * Get the metadata of the result
      *
-     * @return array
      * @throws UnexpectedValueException if metadata closure didn't return an array or object
      */
     public function getMeta(): array
     {
-        if (!is_array($this->meta)) {
-            $this->resolveMeta();
+        if (isset($this->metaFn)) {
+            $this->meta = i\type_check(
+                ($this->metaFn)(),
+                'array',
+                new UnexpectedValueException("Failed to get meta: Expected %2\$s, got %1\$s")
+            );
+
+            $this->metaFn = null;
         }
 
         return $this->meta;

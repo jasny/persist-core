@@ -7,6 +7,7 @@ namespace Jasny\DB\Option;
 /**
  * Sort on specified fields.
  * Prepend field with `~` for descending order.
+ * @immutable
  */
 class SortOption implements OptionInterface
 {

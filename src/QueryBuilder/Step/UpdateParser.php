@@ -10,6 +10,7 @@ use Jasny\DB\Update\UpdateOperation;
 
 /**
  * Convert update operations to iterator for query builder.
+ * @immutable
  */
 class UpdateParser
 {

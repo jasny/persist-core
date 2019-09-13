@@ -12,6 +12,7 @@ use Jasny\DB\Update\UpdateOperation;
 
 /**
  * Writing to storage is not supported.
+ * @immutable
  */
 class NoWrite implements WriteInterface
 {

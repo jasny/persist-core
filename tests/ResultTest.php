@@ -38,9 +38,9 @@ class ResultTest extends TestCase
 
     public function testGetMetaWithClosure()
     {
-        $closure = $this->createCallbackMock($this->once(), [], ['total' => 42]);
+        $callback = $this->createCallbackMock($this->once(), [], ['total' => 42]);
 
-        $result = new Result([], $closure);
+        $result = new Result([], \Closure::fromCallable($callback));
 
         $this->assertEquals(['total' => 42], $result->getMeta());
 
@@ -53,9 +53,9 @@ class ResultTest extends TestCase
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage("Failed to get meta: Expected array, got string");
 
-        $closure = $this->createCallbackMock($this->once(), [], 'foo');
+        $callback = $this->createCallbackMock($this->once(), [], 'foo');
 
-        $result = new Result([], $closure);
+        $result = new Result([], \Closure::fromCallable($callback));
         $result->getMeta();
     }
 

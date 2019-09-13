@@ -11,6 +11,7 @@ use Spatie\Regex\Regex;
 /**
  * Parse a filter key into a basic filter by extracting the field and operator.
  * Format is "key" or "key (operator)".
+ * @immutable
  */
 class FilterParser
 {

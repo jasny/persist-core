@@ -11,6 +11,7 @@ use Jasny\DB\Result;
 
 /**
  * Reading from storage is not supported.
+ * @immutable
  */
 class NoRead implements ReadInterface
 {
