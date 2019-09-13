@@ -17,19 +17,19 @@ class FilterParserTest extends TestCase
     public function provider()
     {
         return [
-            [['foo' => 42], 'foo', '', 42],
-            [['foo(min)' => 42], 'foo', 'min', 42],
-            [['foo (min)' => 42], 'foo', 'min', 42],
-            [[' foo ( min ) ' => 42], 'foo', 'min', 42],
-            [['foo ( )' => 42], 'foo', '', 42],
-            [['foo-bar' => [1, 2]], 'foo-bar', '', [1, 2]],
+            'foo'          => [['foo' => 42], 'foo', '', 42],
+            'foo(min)'     => [['foo(min)' => 42], 'foo', 'min', 42],
+            'foo (min)'    => [['foo (min)' => 42], 'foo', 'min', 42],
+            ' foo ( min )' => [[' foo ( min ) ' => 42], 'foo', 'min', 42],
+            'foo ( )'      => [['foo ( )' => 42], 'foo', '', 42],
+            'foos'         => [['foos' => [1, 2]], 'foos', '', [1, 2]],
         ];
     }
 
     /**
      * @dataProvider provider
      */
-    public function test(array $filter, string $field, string $operator, $value)
+    public function testParse(array $filter, string $field, string $operator, $value)
     {
         $parser = new FilterParser();
         $iterator = $parser($filter);
@@ -48,11 +48,11 @@ class FilterParserTest extends TestCase
     public function invalidParenthesesProvider()
     {
         return [
-            [['foo (' => 42]],
-            [['foo )' => 42]],
-            [['foo )(' => 42]],
-            [['foo ()(' => 42]],
-            [['foo ((max))' => 42]],
+            'foo ('       => [['foo (' => 42]],
+            'foo )'       => [['foo )' => 42]],
+            'foo )('      => [['foo )(' => 42]],
+            'foo ()('     => [['foo ()(' => 42]],
+            'foo ((max))' => [['foo ((max))' => 42]],
         ];
     }
 

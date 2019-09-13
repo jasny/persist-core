@@ -15,9 +15,12 @@ use Improved as i;
  */
 function set($fieldOrPairs, $value = null)
 {
-    $pairs = func_num_args() === 1
-        ? i\type_check($fieldOrPairs, 'array')
-        : [$fieldOrPairs => $value];
+    if (func_num_args() === 1) {
+        $pairs = i\type_check($fieldOrPairs, 'array');
+    } else {
+        $field = i\type_check($fieldOrPairs, 'string');
+        $pairs = [$field => $value];
+    }
 
     return new UpdateOperation('set', $pairs);
 }

@@ -21,27 +21,36 @@ class NoWriteTest extends TestCase
     }
 
 
-    public function queryBuilderMethodProvider()
-    {
-        return [
-            ['withQueryBuilder'],
-            ['withSaveQueryBuilder'],
-            ['withUpdateQueryBuilder'],
-        ];
-    }
-
-    /**
-     * @dataProvider queryBuilderMethodProvider
-     */
-    public function testWithQueryBuilder($method)
+    public function testWithQueryBuilder()
     {
         $builder = $this->createMock(QueryBuilderInterface::class);
 
-        $base = new NoWrite();
-        $ret = ([$base, $method])($builder);
+        $writer = new NoWrite();
+        $ret = $writer->withQueryBuilder($builder);
 
-        $this->assertSame($base, $ret);
+        $this->assertSame($writer, $ret);
     }
+
+    public function testWithSaveQueryBuilder()
+    {
+        $builder = $this->createMock(QueryBuilderInterface::class);
+
+        $writer = new NoWrite();
+        $ret = $writer->withSaveQueryBuilder($builder);
+
+        $this->assertSame($writer, $ret);
+    }
+
+    public function testWithUpdateQueryBuilder()
+    {
+        $builder = $this->createMock(QueryBuilderInterface::class);
+
+        $writer = new NoWrite();
+        $ret = $writer->withUpdateQueryBuilder($builder);
+
+        $this->assertSame($writer, $ret);
+    }
+
 
     public function testSave()
     {

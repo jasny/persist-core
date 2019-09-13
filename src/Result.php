@@ -33,7 +33,7 @@ class Result extends Pipeline
     /**
      * Get a copy with new meta data.
      *
-     * @param array|callable $meta
+     * @param array|\Closure $meta
      * @return static
      */
     public function withMeta($meta): self
@@ -47,7 +47,7 @@ class Result extends Pipeline
     /**
      * Set the meta data.
      *
-     * @param array|callable $meta
+     * @param array|\Closure $meta
      */
     protected function setMeta($meta): void
     {

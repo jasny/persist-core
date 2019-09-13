@@ -73,10 +73,10 @@ class UpdateOperationTest extends TestCase
     public function numberProvider()
     {
         return [
-            ['-1' => -1],
-            ['0' => 0],
-            ['1' => 1],
-            ['2.14' => 2.14],
+            '-1 (int)'     => [-1],
+            '0 (int)'      => [0],
+            '1 (int)'      => [1],
+            '2.14 (float)' => [2.14],
         ];
     }
 

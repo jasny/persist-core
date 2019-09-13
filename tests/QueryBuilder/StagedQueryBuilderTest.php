@@ -18,8 +18,8 @@ class StagedQueryBuilderTest extends TestCase
     public function abProvider()
     {
         return [
-            ['A'],
-            ['B']
+            'buildQuery()' => ['method'],
+            '__invoke()' => ['invoke'],
         ];
     }
 
@@ -27,7 +27,7 @@ class StagedQueryBuilderTest extends TestCase
      * @dataProvider abProvider
      * Testing all 'on*' methods at once. The importance is that they're executed in the correct order.
      */
-    public function test($ab)
+    public function testBuild($ab)
     {
         $builder = (new StagedQueryBuilder)
             ->onPrepare($this->createCallbackMock(
@@ -61,7 +61,7 @@ class StagedQueryBuilderTest extends TestCase
                 ['color: red', 'shape: square', 'abc: 123']
             ));
 
-        $result = ($ab === 'A')
+        $result = ($ab === 'method')
             ? $builder->buildQuery(['foo' => 1, 'bar' => 10], ['limit' => 5])
             : $builder(['foo' => 1, 'bar' => 10], ['limit' => 5]);
 
@@ -85,7 +85,7 @@ class StagedQueryBuilderTest extends TestCase
             ->onBuild($this->createCallbackMock($this->once()))
             ->onFinalize($this->createCallbackMock($this->once()));
 
-        $builder = $base->withFilteredSteps(function($stage, $callback) use ($remove) {
+        $builder = $base->withFilteredSteps(function ($stage, $callback) use ($remove) {
             return $remove[$stage] !== $callback;
         });
 
