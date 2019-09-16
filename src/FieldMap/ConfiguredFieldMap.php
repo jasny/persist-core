@@ -71,9 +71,7 @@ class ConfiguredFieldMap implements FieldMapInterface
 
                 return isset($newField) && is_array($info) ? ['field' => $newField] + $info : $newField;
             })
-            ->filter(function ($_, $info) {
-                return $info !== null;
-            });
+            ->filter(fn($_, $info) => $info !== null);
     }
 
     /**
@@ -117,7 +115,7 @@ class ConfiguredFieldMap implements FieldMapInterface
      */
     public function offsetSet($field, $value): void
     {
-        throw new \LogicException("FieldMap is immutable");
+        throw new \LogicException("Field map is immutable");
     }
 
     /**
@@ -127,6 +125,6 @@ class ConfiguredFieldMap implements FieldMapInterface
      */
     public function offsetUnset($field): void
     {
-        throw new \LogicException("FieldMap is immutable");
+        throw new \LogicException("Field map is immutable");
     }
 }

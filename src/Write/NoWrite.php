@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Write;
 
+use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Exception\UnsupportedFeatureException;
@@ -55,6 +56,17 @@ class NoWrite implements WriteInterface
      * @return $this
      */
     public function withUpdateQueryBuilder(QueryBuilderInterface $builder): WriteInterface
+    {
+        return $this;
+    }
+
+    /**
+     * Create a Writer service with a custom update query builder.
+     *
+     * @param PipelineBuilder $builder
+     * @return $this
+     */
+    public function withResultBuilder(PipelineBuilder $builder): WriteInterface
     {
         return $this;
     }

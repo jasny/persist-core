@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Write;
 
+use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Write\NoWrite;
@@ -47,6 +48,16 @@ class NoWriteTest extends TestCase
 
         $writer = new NoWrite();
         $ret = $writer->withUpdateQueryBuilder($builder);
+
+        $this->assertSame($writer, $ret);
+    }
+
+    public function testWithResultBuilder()
+    {
+        $builder = $this->createMock(PipelineBuilder::class);
+
+        $writer = new NoWrite();
+        $ret = $writer->withResultBuilder($builder);
 
         $this->assertSame($writer, $ret);
     }

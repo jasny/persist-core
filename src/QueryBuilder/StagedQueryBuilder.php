@@ -31,9 +31,7 @@ class StagedQueryBuilder implements QueryBuilderInterface, StagesInterface
         $clone = clone $this;
 
         foreach ($clone->stages as $stage => &$steps) {
-            $steps = array_filter($steps, function ($step) use ($matcher, $stage) {
-                return $matcher($stage, $step);
-            });
+            $steps = array_filter($steps, fn($step) => $matcher($stage, $step));
         }
 
         return $clone;
@@ -121,9 +119,7 @@ class StagedQueryBuilder implements QueryBuilderInterface, StagesInterface
     {
         return Pipeline::with($this->stages)
             ->flatten()
-            ->reduce(function ($data, callable $step) use ($opts) {
-                return $step($data, $opts);
-            }, $filter);
+            ->reduce(fn($data, callable $step) => $step($data, $opts), $filter);
     }
 
     /**

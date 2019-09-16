@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Write;
 
+use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Update\UpdateOperation;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
@@ -36,6 +37,11 @@ interface WriteInterface
      * Create a Writer service with a custom update query builder.
      */
     public function withUpdateQueryBuilder(QueryBuilderInterface $builder): self;
+
+    /**
+     * Create a Writer service with a custom update query builder.
+     */
+    public function withResultBuilder(PipelineBuilder $builder): self;
 
 
     /**
