@@ -20,6 +20,7 @@
         "php": ">=7.4.0",
         "improved/iterable": "~0.1",
         "improved/type": "~0.1",
+        "psr/log": "^1.1",
         "spatie/regex": "^1.4"
     },
     "require-dev": {

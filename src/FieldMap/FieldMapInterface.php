@@ -24,8 +24,9 @@ interface FieldMapInterface extends \ArrayAccess
     /**
      * Apply mapping.
      *
-     * @param iterable $iterable
-     * @return iterable
+     * @template T of iterable|object
+     * @param T $subject
+     * @return T
      */
-    public function __invoke(iterable $iterable): iterable;
+    public function __invoke($subject);
 }

@@ -10,18 +10,24 @@ use Improved\IteratorPipeline\Pipeline;
 /**
  * Map DB field to PHP field or visa versa.
  * Also works for parsed filters.
+ *
+ * For results, the result builder should map each item to the field map.
+ *
  * @immutable
  */
 class ConfiguredFieldMap implements FieldMapInterface
 {
+    /**
+     * @var array<string, string>
+     */
     protected array $map;
     protected bool $dynamic;
 
     /**
      * Class constructor.
      *
-     * @param array $map
-     * @param bool  $dynamic Allow properties that are not mapped?
+     * @param array<string, string> $map
+     * @param bool                  $dynamic  Allow properties that are not mapped?
      */
     public function __construct(array $map, bool $dynamic = true)
     {
@@ -56,13 +62,90 @@ class ConfiguredFieldMap implements FieldMapInterface
         return new static(array_flip($this->map), $this->dynamic);
     }
 
+
+    /**
+     * Invoke field map to apply mapping.
+     *
+     * @template T of iterable|object
+     * @param T $subject
+     * @return T
+     */
+    public function __invoke($subject)
+    {
+        if (is_array($subject) || $subject instanceof \ArrayObject) {
+            return $this->applyToArray($subject);
+        }
+
+        if (is_iterable($subject)) {
+            return $this->applyToIterator($subject);
+        }
+
+        if (is_object($subject)) {
+            return $this->applyToObject($subject);
+        }
+
+        return $subject;
+    }
+
+    /**
+     * Apply mapping to each key.
+     *
+     * @param array|ArrayObject $subject
+     * @return array|ArrayObject
+     */
+    protected function applyToArray($subject)
+    {
+        if (!$this->dynamic) {
+            $remove = array_diff_key(
+                $subject instanceof \ArrayObject ? $subject->getArrayCopy() : $subject,
+                $this->map
+            );
+
+            foreach ($remove as $key) {
+                unset($subject[$key]);
+            }
+        }
+
+        foreach ($this->map as $field => $newField) {
+            if (isset($subject[$field])) {
+                $subject[$newField] = $subject[$field];
+                unset($subject[$field]);
+            }
+        }
+
+        return $subject;
+    }
+
+    /**
+     * Apply mapping to each property.
+     */
+    protected function applyToObject(object $subject): object
+    {
+        if (!$this->dynamic) {
+            $remove = array_diff_key(get_object_vars($subject), $this->map);
+
+            foreach ($remove as $prop) {
+                unset($subject->{$prop});
+            }
+        }
+
+        foreach ($this->map as $field => $newField) {
+            if (isset($subject[$field])) {
+                $subject->{$newField} = $subject->{$field};
+                unset($subject->{$field});
+            }
+        }
+
+        return $subject;
+    }
+
     /**
      * Apply mapping to each key in the iterator/array.
      *
      * If the key is a string, it's replaced with the mapped field.
      * If the key is an array with a 'field' item, the value of the `field` item is replaced.
      */
-    protected function apply(iterable $iterable): iterable
+    protected function applyToIterator(iterable $iterable): iterable
     {
         return Pipeline::with($iterable)
             ->mapKeys(function ($_, $info) {
@@ -72,16 +155,6 @@ class ConfiguredFieldMap implements FieldMapInterface
                 return isset($newField) && is_array($info) ? ['field' => $newField] + $info : $newField;
             })
             ->filter(fn($_, $info) => $info !== null);
-    }
-
-    /**
-     * Invoke field map to apply mapping.
-     */
-    public function __invoke(iterable $iterable): iterable
-    {
-        $mapped = $this->apply($iterable);
-
-        return is_array($iterable) ? i\iterable_to_array($mapped, true) : $mapped;
     }
 
 

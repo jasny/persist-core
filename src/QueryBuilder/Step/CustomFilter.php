@@ -12,18 +12,23 @@ use Improved\IteratorPipeline\Pipeline;
  */
 class CustomFilter
 {
-    protected string $field;
+    protected \Closure $condition;
     protected \Closure $apply;
 
     /**
      * Create a query builder with a custom filter criteria.
      *
-     * @param string   $field
-     * @param callable $apply
+     * @param string|\Closure $fieldOrCondition
+     * @param callable        $apply
      */
-    public function __construct(string $field, callable $apply)
+    public function __construct($fieldOrCondition, callable $apply)
     {
-        $this->field = $field;
+        $this->condition = $fieldOrCondition instanceof \Closure
+            ? $fieldOrCondition
+            : function ($field) use ($fieldOrCondition) {
+                return $field === $fieldOrCondition;
+            };
+
         $this->apply = \Closure::fromCallable($apply);
     }
 
@@ -36,10 +41,11 @@ class CustomFilter
     public function __invoke(iterable $filter): iterable
     {
         return Pipeline::with($filter)
-            ->map(function ($orig, $info) {
+            ->map(function ($orig, $info): callable {
                 $field = is_array($info) ? ($info['field'] ?? null) : $info;
+                $operator = is_array($info) ? ($info['operator'] ?? null) : null;
 
-                return ($field === $this->field ? $this->apply : $orig);
+                return (($this->condition)($field, $operator) ? $this->apply : $orig);
             });
     }
 }
