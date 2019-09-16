@@ -66,20 +66,20 @@ class Result extends Pipeline
     /**
      * Get the metadata of the result
      *
+     * @param string|null $key
+     * @return array|mixed
      * @throws UnexpectedValueException if metadata closure didn't return an array or object
      */
-    public function getMeta(): array
+    public function getMeta(?string $key = null)
     {
         if (isset($this->metaFn)) {
-            $this->meta = i\type_check(
-                ($this->metaFn)(),
-                'array',
-                new UnexpectedValueException("Failed to get meta: Expected %2\$s, got %1\$s")
-            );
+            $meta = ($this->metaFn)();
+            i\type_check($meta, 'array', new UnexpectedValueException("Failed to get meta: Expected %2\$s, got %1\$s"));
 
+            $this->meta = $meta;
             $this->metaFn = null;
         }
 
-        return $this->meta;
+        return !isset($key) ? $this->meta : ($this->meta[$key] ?? null);
     }
 }

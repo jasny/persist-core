@@ -73,7 +73,7 @@ class NoWrite implements WriteInterface
 
 
     /**
-     * Update is not supported
+     * Update is not supported.
      *
      * @param array             $filter
      * @param UpdateOperation[] $changes

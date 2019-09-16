@@ -68,4 +68,15 @@ class ResultTest extends TestCase
         $this->assertNotSame($base, $result);
         $this->assertEquals(['total' => 42], $result->getMeta());
     }
+
+    public function testWithMetaUsingKey()
+    {
+        $base = new Result([]);
+
+        $result = $base->withMeta(['total' => 42]);
+
+        $this->assertNotSame($base, $result);
+        $this->assertEquals(42, $result->getMeta('total'));
+        $this->assertNull($result->getMeta('other'));
+    }
 }
