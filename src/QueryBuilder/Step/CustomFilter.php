@@ -41,11 +41,13 @@ class CustomFilter
     public function __invoke(iterable $filter): iterable
     {
         return Pipeline::with($filter)
-            ->map(function ($orig, $info): callable {
+            ->map(function ($orig, $info): ?callable {
                 $field = is_array($info) ? ($info['field'] ?? null) : $info;
                 $operator = is_array($info) ? ($info['operator'] ?? null) : null;
 
-                return (($this->condition)($field, $operator) ? $this->apply : $orig);
+                $matches = ($this->condition)($field, $operator);
+
+                return $matches ? $this->apply : $orig;
             });
     }
 }

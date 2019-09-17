@@ -20,13 +20,13 @@ class CustomFilterTest extends TestCase
 
         $filter = new CustomFilter('foo', $function);
 
-        $iterate = function (array $keys) {
+        $iterate = function (...$keys) {
             foreach ($keys as $key) {
                 yield ($key) => null;
             }
         };
 
-        $iterator = $iterate([['field' => 'foo'], ['wuz'], 'foo', ['field' => 'bar']]);
+        $iterator = $iterate(['field' => 'foo'], ['wuz'], 'foo', ['field' => 'bar']);
 
         $filtered = $filter($iterator);
         $this->assertInstanceOf(\Traversable::class, $iterator);

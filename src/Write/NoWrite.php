@@ -10,6 +10,7 @@ use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\Result;
 use Jasny\DB\Update\UpdateOperation;
+use Psr\Log\LoggerInterface;
 
 /**
  * Writing to storage is not supported.
@@ -25,6 +26,17 @@ class NoWrite implements WriteInterface
     public function getStorage()
     {
         return null;
+    }
+
+    /**
+     * Does nothing.
+     *
+     * @param LoggerInterface $logger
+     * @return $this
+     */
+    public function withLogging(LoggerInterface $logger)
+    {
+        return $this;
     }
 
     /**

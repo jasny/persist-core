@@ -8,6 +8,7 @@ use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Result;
+use Psr\Log\LoggerInterface;
 
 /**
  * Reading from storage is not supported.
@@ -28,10 +29,21 @@ class NoRead implements ReadInterface
     /**
      * Does nothing.
      *
+     * @param LoggerInterface $logger
+     * @return $this
+     */
+    public function withLogging(LoggerInterface $logger)
+    {
+        return $this;
+    }
+
+    /**
+     * Does nothing.
+     *
      * @param QueryBuilderInterface $queryBuilder
      * @return $this
      */
-    public function withQueryBuilder(QueryBuilderInterface $queryBuilder): ReadInterface
+    public function withQueryBuilder(QueryBuilderInterface $queryBuilder)
     {
         return $this;
     }
@@ -42,7 +54,7 @@ class NoRead implements ReadInterface
      * @param PipelineBuilder $resultBuilder
      * @return $this
      */
-    public function withResultBuilder(PipelineBuilder $resultBuilder): ReadInterface
+    public function withResultBuilder(PipelineBuilder $resultBuilder)
     {
         return $this;
     }
