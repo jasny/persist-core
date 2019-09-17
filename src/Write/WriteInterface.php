@@ -26,6 +26,8 @@ interface WriteInterface
 
     /**
      * Set logger to enable logging.
+     *
+     * @return static
      */
     public function withLogging(LoggerInterface $logger);
 
