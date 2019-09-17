@@ -29,7 +29,7 @@ interface WriteInterface
      */
     public function withLogging(LoggerInterface $logger);
 
-    
+
     /**
      * Create a Writer service with a custom filter query builder.
      *

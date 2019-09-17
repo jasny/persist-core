@@ -66,9 +66,8 @@ class ConfiguredFieldMap implements FieldMapInterface
     /**
      * Invoke field map to apply mapping.
      *
-     * @template T of iterable|object
-     * @param T $subject
-     * @return T
+     * @param iterable|object $subject
+     * @return iterable|object
      */
     public function __invoke($subject)
     {
@@ -90,16 +89,16 @@ class ConfiguredFieldMap implements FieldMapInterface
     /**
      * Apply mapping to each key.
      *
-     * @param array|ArrayObject $subject
-     * @return array|ArrayObject
+     * @param array|\ArrayObject $subject
+     * @return array|\ArrayObject
      */
     protected function applyToArray($subject)
     {
         if (!$this->dynamic) {
-            $remove = array_diff_key(
+            $remove = array_keys(array_diff_key(
                 $subject instanceof \ArrayObject ? $subject->getArrayCopy() : $subject,
                 $this->map
-            );
+            ));
 
             foreach ($remove as $key) {
                 unset($subject[$key]);
@@ -122,7 +121,7 @@ class ConfiguredFieldMap implements FieldMapInterface
     protected function applyToObject(object $subject): object
     {
         if (!$this->dynamic) {
-            $remove = array_diff_key(get_object_vars($subject), $this->map);
+            $remove = array_keys(array_diff_key(get_object_vars($subject), $this->map));
 
             foreach ($remove as $prop) {
                 unset($subject->{$prop});
