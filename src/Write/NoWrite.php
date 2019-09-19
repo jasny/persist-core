@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Write;
 
-use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\Result;
+use Jasny\DB\Result\Result;
+use Jasny\DB\Result\ResultBuilder;
 use Jasny\DB\Update\UpdateOperation;
 use Psr\Log\LoggerInterface;
 
@@ -34,7 +34,7 @@ class NoWrite implements WriteInterface
      * @param LoggerInterface $logger
      * @return $this
      */
-    public function withLogging(LoggerInterface $logger)
+    public function withLogging(LoggerInterface $logger): self
     {
         return $this;
     }
@@ -45,7 +45,7 @@ class NoWrite implements WriteInterface
      * @param QueryBuilderInterface $builder
      * @return $this
      */
-    public function withQueryBuilder(QueryBuilderInterface $builder): WriteInterface
+    public function withQueryBuilder(QueryBuilderInterface $builder): self
     {
         return $this;
     }
@@ -56,7 +56,7 @@ class NoWrite implements WriteInterface
      * @param QueryBuilderInterface $builder
      * @return $this
      */
-    public function withSaveQueryBuilder(QueryBuilderInterface $builder): WriteInterface
+    public function withSaveQueryBuilder(QueryBuilderInterface $builder): self
     {
         return $this;
     }
@@ -67,7 +67,7 @@ class NoWrite implements WriteInterface
      * @param QueryBuilderInterface $builder
      * @return $this
      */
-    public function withUpdateQueryBuilder(QueryBuilderInterface $builder): WriteInterface
+    public function withUpdateQueryBuilder(QueryBuilderInterface $builder): self
     {
         return $this;
     }
@@ -75,10 +75,10 @@ class NoWrite implements WriteInterface
     /**
      * Create a Writer service with a custom update query builder.
      *
-     * @param PipelineBuilder $builder
+     * @param ResultBuilder $builder
      * @return $this
      */
-    public function withResultBuilder(PipelineBuilder $builder): WriteInterface
+    public function withResultBuilder(ResultBuilder $builder): self
     {
         return $this;
     }

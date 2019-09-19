@@ -6,9 +6,10 @@ namespace Jasny\DB\Write;
 
 use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Option\OptionInterface;
+use Jasny\DB\Result\ResultBuilder;
 use Jasny\DB\Update\UpdateOperation;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
-use Jasny\DB\Result;
+use Jasny\DB\Result\Result;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -29,7 +30,7 @@ interface WriteInterface
      *
      * @return static
      */
-    public function withLogging(LoggerInterface $logger);
+    public function withLogging(LoggerInterface $logger): self;
 
 
     /**
@@ -38,7 +39,7 @@ interface WriteInterface
      * @param QueryBuilderInterface $builder
      * @return static
      */
-    public function withQueryBuilder(QueryBuilderInterface $builder);
+    public function withQueryBuilder(QueryBuilderInterface $builder): self;
 
     /**
      * Create a Writer service with a custom builder pipeline for save.
@@ -46,7 +47,7 @@ interface WriteInterface
      * @param QueryBuilderInterface $builder
      * @return static
      */
-    public function withSaveQueryBuilder(QueryBuilderInterface $builder);
+    public function withSaveQueryBuilder(QueryBuilderInterface $builder): self;
 
     /**
      * Create a Writer service with a custom update query builder.
@@ -54,7 +55,7 @@ interface WriteInterface
      * @param QueryBuilderInterface $builder
      * @return static
      */
-    public function withUpdateQueryBuilder(QueryBuilderInterface $builder);
+    public function withUpdateQueryBuilder(QueryBuilderInterface $builder): self;
 
     /**
      * Create a Writer service with a custom update query builder.
@@ -62,7 +63,7 @@ interface WriteInterface
      * @param PipelineBuilder $builder
      * @return static
      */
-    public function withResultBuilder(PipelineBuilder $builder);
+    public function withResultBuilder(ResultBuilder $builder): self;
 
 
     /**

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Read;
 
-use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
-use Jasny\DB\Result;
+use Jasny\DB\Result\Result;
+use Jasny\DB\Result\ResultBuilder;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -28,7 +28,7 @@ interface ReadInterface
      *
      * @return static
      */
-    public function withLogging(LoggerInterface $logger);
+    public function withLogging(LoggerInterface $logger): self;
 
 
     /**
@@ -36,14 +36,14 @@ interface ReadInterface
      *
      * @return static
      */
-    public function withQueryBuilder(QueryBuilderInterface $queryBuilder);
+    public function withQueryBuilder(QueryBuilderInterface $queryBuilder): self;
 
     /**
      * Create a reader with a custom result builder.
      *
      * @return static
      */
-    public function withResultBuilder(PipelineBuilder $resultBuilder);
+    public function withResultBuilder(ResultBuilder $resultBuilder): self;
 
 
     /**

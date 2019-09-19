@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB;
+namespace Jasny\DB\Result;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
@@ -64,9 +64,9 @@ class Result extends Pipeline
     }
 
     /**
-     * Get the metadata of the result
+     * Get the metadata of the result.
      *
-     * @param string|null $key
+     * @param null|string $key  Omit the key to get all metadata.
      * @return array|mixed
      * @throws UnexpectedValueException if metadata closure didn't return an array or object
      */

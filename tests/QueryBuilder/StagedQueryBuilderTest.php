@@ -29,7 +29,7 @@ class StagedQueryBuilderTest extends TestCase
      */
     public function testBuild($ab)
     {
-        $builder = (new StagedQueryBuilder)
+        $builder = (new StagedQueryBuilder())
             ->onPrepare($this->createCallbackMock(
                 $this->once(),
                 [['foo' => 1, 'bar' => 10], ['limit' => 5]],
@@ -77,7 +77,7 @@ class StagedQueryBuilderTest extends TestCase
             'finalize' => null
         ];
 
-        $base = (new StagedQueryBuilder)
+        $base = (new StagedQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->once()))
             ->onPrepare($remove['prepare'])
             ->onCompose($this->createCallbackMock($this->once()))
@@ -85,7 +85,7 @@ class StagedQueryBuilderTest extends TestCase
             ->onBuild($this->createCallbackMock($this->once()))
             ->onFinalize($this->createCallbackMock($this->once()));
 
-        $builder = $base->withFilteredSteps(function ($stage, $callback) use ($remove) {
+        $builder = $base->withoutSteps(function ($stage, $callback) use ($remove) {
             return $remove[$stage] !== $callback;
         });
 
@@ -94,7 +94,7 @@ class StagedQueryBuilderTest extends TestCase
 
     public function testReplace()
     {
-        $builder = (new StagedQueryBuilder)
+        $builder = (new StagedQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->never()))
             ->onCompose($this->createCallbackMock($this->never()))
             ->onBuild($this->createCallbackMock($this->never()))

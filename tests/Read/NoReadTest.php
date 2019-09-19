@@ -4,56 +4,70 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Read;
 
-use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Read\NoRead;
+use Jasny\DB\Result\ResultBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @covers \Jasny\DB\Read\NoRead
  */
 class NoReadTest extends TestCase
 {
+    protected NoRead $reader;
+
+    public function setUp(): void
+    {
+        $this->reader = new NoRead();
+    }
+
+    
     public function testGetStorage()
     {
-        $reader = new NoRead();
-        $this->assertNull($reader->getStorage());
+        $this->assertNull($this->reader->getStorage());
+    }
+
+    public function testWithLogging()
+    {
+        /** @var LoggerInterface|MockObject $builder */
+        $logger = $this->createMock(LoggerInterface::class);
+        $ret = $this->reader->withLogging($logger);
+
+        $this->assertSame($this->reader, $ret);
+    }
+
+    public function testWithResultBuilder()
+    {
+        /** @var ResultBuilder|MockObject $builder */
+        $builder = $this->createMock(ResultBuilder::class);
+        $ret = $this->reader->withResultBuilder($builder);
+
+        $this->assertSame($this->reader, $ret);
     }
 
     public function testWithQueryBuilder()
     {
         /** @var QueryBuilderInterface|MockObject $builder */
         $builder = $this->createMock(QueryBuilderInterface::class);
+        $ret = $this->reader->withQueryBuilder($builder);
 
-        $base = new NoRead();
-        $ret = $base->withQueryBuilder($builder);
-
-        $this->assertSame($base, $ret);
-    }
-
-    public function testWithResultBuilder()
-    {
-        $base = new NoRead();
-        $ret = $base->withResultBuilder(new PipelineBuilder());
-
-        $this->assertSame($base, $ret);
+        $this->assertSame($this->reader, $ret);
     }
 
     public function testFetch()
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $reader = new NoRead();
-        $reader->fetch([], ['id' => 42]);
+        $this->reader->fetch([], ['id' => 42]);
     }
     
     public function testCount()
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $reader = new NoRead();
-        $reader->count([], ['id' => 42]);
+        $this->reader->count([], ['id' => 42]);
     }
 }

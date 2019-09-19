@@ -49,14 +49,36 @@ class ConfiguredFieldMapTest extends TestCase
         $this->assertFalse($flipped->isDynamic());
     }
 
-
-    public function testInvoke()
+    public function subjectProvider()
     {
-        $mapped = ($this->fieldMap)([
+        $subject = [
             'id' => 42,
             'bar' => 'man',
             'color' => 'red'
-        ]);
+        ];
+
+        return [
+            'array' => [$subject, null, fn(array $arr) => $arr],
+            'iterator' => [
+                new \ArrayIterator($subject),
+                \Traversable::class,
+                fn(iterable $it) => i\iterable_to_array($it, true)
+            ],
+            'ArrayObject' => [
+                new \ArrayObject($subject),
+                \ArrayObject::class,
+                fn(\ArrayObject $ao) => $ao->getArrayCopy()
+            ],
+            'object' => [(object)$subject, \stdClass::class, fn(\stdClass $obj) => (array)$obj],
+        ];
+    }
+
+    /**
+     * @dataProvider subjectProvider
+     */
+    public function testInvokeDynamic($subject, ?string $class, callable $convert)
+    {
+        $mapped = ($this->fieldMap)($subject);
 
         $expected = [
             '_id' => 42,
@@ -64,25 +86,30 @@ class ConfiguredFieldMapTest extends TestCase
             'color' => 'red'
         ];
 
-        $this->assertEquals($expected, $mapped);
+        if ($class !== null) {
+            $this->assertInstanceOf($class, $mapped);
+        }
+        $this->assertEquals($expected, $convert($mapped));
     }
 
-    public function testInvokeStatic()
+    /**
+     * @dataProvider subjectProvider
+     */
+    public function testInvokeStatic($subject, ?string $class, callable $convert)
     {
         $this->fieldMap = new ConfiguredFieldMap(['id' => '_id', 'foo' => 'foos', 'bar' => 'bor'], false);
 
-        $mapped = ($this->fieldMap)([
-            'id' => 42,
-            'bar' => 'man',
-            'color' => 'red'
-        ]);
+        $mapped = ($this->fieldMap)($subject);
 
         $expected = [
             '_id' => 42,
             'bor' => 'man'
         ];
 
-        $this->assertEquals($expected, $mapped);
+        if ($class !== null) {
+            $this->assertInstanceOf($class, $mapped);
+        }
+        $this->assertEquals($expected, $convert($mapped));
     }
 
     public function testInvokeInfo()
@@ -109,26 +136,11 @@ class ConfiguredFieldMapTest extends TestCase
         $this->assertEquals($expectedValues, $values);
     }
 
-    public function testInvokeIterator()
+    public function testInvokeNoneIterable()
     {
-        $values = new \ArrayIterator([
-            'id' => 42,
-            'bar' => 'man',
-            'color' => 'red'
-        ]);
-
-        $mapped = ($this->fieldMap)($values);
-
-        $expected = [
-            '_id' => 42,
-            'bor' => 'man',
-            'color' => 'red'
-        ];
-
-        $this->assertInstanceOf(\Traversable::class, $mapped);
-        $this->assertEquals($expected, i\iterable_to_array($mapped, true));
+        $this->assertEquals(100, ($this->fieldMap)(100));
+        $this->assertEquals('hello', ($this->fieldMap)('hello'));
     }
-
 
     public function testArrayAccess()
     {

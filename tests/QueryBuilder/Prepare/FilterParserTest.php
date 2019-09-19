@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\QueryBuilder\Step;
+namespace Jasny\DB\Tests\QueryBuilder\Prepare;
 
 use Improved as i;
-use Jasny\DB\QueryBuilder\Step\FilterParser;
+use Jasny\DB\QueryBuilder\Prepare\FilterParser;
 use Jasny\DB\Exception\InvalidFilterException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryBuilder\Step\FilterParser
+ * @covers \Jasny\DB\QueryBuilder\Prepare\FilterParser
  */
 class FilterParserTest extends TestCase
 {

@@ -23,10 +23,10 @@ class StagedQueryBuilder implements QueryBuilderInterface, StagesInterface
     /**
      * Return a query builder with some steps removed.
      *
-     * @param callable $matcher
+     * @param callable(string,callable):bool $matcher
      * @return static
      */
-    public function withFilteredSteps(callable $matcher)
+    public function withoutSteps(callable $matcher): self
     {
         $clone = clone $this;
 
@@ -45,7 +45,7 @@ class StagedQueryBuilder implements QueryBuilderInterface, StagesInterface
      * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    final public function onPrepare(callable $step, bool $replace = false)
+    final public function onPrepare(callable $step, bool $replace = false): self
     {
         return $this->withAddedStep('prepare', $step, $replace);
     }
@@ -57,7 +57,7 @@ class StagedQueryBuilder implements QueryBuilderInterface, StagesInterface
      * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    final public function onCompose(callable $step, bool $replace = false)
+    final public function onCompose(callable $step, bool $replace = false): self
     {
         return $this->withAddedStep('compose', $step, $replace);
     }
@@ -69,7 +69,7 @@ class StagedQueryBuilder implements QueryBuilderInterface, StagesInterface
      * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    final public function onBuild(callable $step, bool $replace = false)
+    final public function onBuild(callable $step, bool $replace = false): self
     {
         return $this->withAddedStep('build', $step, $replace);
     }
@@ -81,7 +81,7 @@ class StagedQueryBuilder implements QueryBuilderInterface, StagesInterface
      * @param bool     $replace  Replace all steps of this stage
      * @return static
      */
-    final public function onFinalize(callable $step, bool $replace = false)
+    final public function onFinalize(callable $step, bool $replace = false): self
     {
         return $this->withAddedStep('finalize', $step, $replace);
     }
@@ -94,7 +94,7 @@ class StagedQueryBuilder implements QueryBuilderInterface, StagesInterface
      * @param bool     $replace
      * @return static
      */
-    protected function withAddedStep(string $stage, callable $step, bool $replace = false)
+    protected function withAddedStep(string $stage, callable $step, bool $replace = false): self
     {
         $clone = clone $this;
 

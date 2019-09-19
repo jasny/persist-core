@@ -23,7 +23,7 @@ interface StagesInterface
      * @param callable $matcher
      * @return static
      */
-    public function withFilteredSteps(callable $matcher);
+    public function withoutSteps(callable $matcher): self;
 
 
     /**
@@ -32,7 +32,7 @@ interface StagesInterface
      * @param callable $step
      * @return static
      */
-    public function onPrepare(callable $step);
+    public function onPrepare(callable $step): self;
 
     /**
      * Create a query builder with a custom compose step.
@@ -40,7 +40,7 @@ interface StagesInterface
      * @param callable $step
      * @return static
      */
-    public function onCompose(callable $step);
+    public function onCompose(callable $step): self;
 
     /**
      * Create a query builder with a custom build step.
@@ -48,7 +48,7 @@ interface StagesInterface
      * @param callable $step
      * @return static
      */
-    public function onBuild(callable $step);
+    public function onBuild(callable $step): self;
 
     /**
      * Create a query builder with a custom finalize step.
@@ -56,5 +56,5 @@ interface StagesInterface
      * @param callable $step
      * @return static
      */
-    public function onFinalize(callable $step);
+    public function onFinalize(callable $step): self;
 }

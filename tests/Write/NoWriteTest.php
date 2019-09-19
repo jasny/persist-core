@@ -4,62 +4,71 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Write;
 
-use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
+use Jasny\DB\Result\ResultBuilder;
 use Jasny\DB\Write\NoWrite;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * @covers \Jasny\DB\Write\NoWrite
  */
 class NoWriteTest extends TestCase
 {
+    protected NoWrite $writer;
+
+    public function setUp(): void
+    {
+        $this->writer = new NoWrite();
+    }
+
     public function testGetStorage()
     {
-        $writer = new NoWrite();
-        $this->assertNull($writer->getStorage());
+        $this->assertNull($this->writer->getStorage());
+    }
+
+    public function testWithLogging()
+    {
+        /** @var LoggerInterface|MockObject $builder */
+        $logger = $this->createMock(LoggerInterface::class);
+        $ret = $this->writer->withLogging($logger);
+
+        $this->assertSame($this->writer, $ret);
     }
 
 
     public function testWithQueryBuilder()
     {
         $builder = $this->createMock(QueryBuilderInterface::class);
+        $ret = $this->writer->withQueryBuilder($builder);
 
-        $writer = new NoWrite();
-        $ret = $writer->withQueryBuilder($builder);
-
-        $this->assertSame($writer, $ret);
+        $this->assertSame($this->writer, $ret);
     }
 
     public function testWithSaveQueryBuilder()
     {
         $builder = $this->createMock(QueryBuilderInterface::class);
+        $ret = $this->writer->withSaveQueryBuilder($builder);
 
-        $writer = new NoWrite();
-        $ret = $writer->withSaveQueryBuilder($builder);
-
-        $this->assertSame($writer, $ret);
+        $this->assertSame($this->writer, $ret);
     }
 
     public function testWithUpdateQueryBuilder()
     {
         $builder = $this->createMock(QueryBuilderInterface::class);
+        $ret = $this->writer->withUpdateQueryBuilder($builder);
 
-        $writer = new NoWrite();
-        $ret = $writer->withUpdateQueryBuilder($builder);
-
-        $this->assertSame($writer, $ret);
+        $this->assertSame($this->writer, $ret);
     }
 
     public function testWithResultBuilder()
     {
-        $builder = $this->createMock(PipelineBuilder::class);
+        $builder = $this->createMock(ResultBuilder::class);
+        $ret = $this->writer->withResultBuilder($builder);
 
-        $writer = new NoWrite();
-        $ret = $writer->withResultBuilder($builder);
-
-        $this->assertSame($writer, $ret);
+        $this->assertSame($this->writer, $ret);
     }
 
 
@@ -67,23 +76,20 @@ class NoWriteTest extends TestCase
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $writer = new NoWrite();
-        $writer->save([], [['id' => 42, 'foo' => 'bar']]);
+        $this->writer->save([], [['id' => 42, 'foo' => 'bar']]);
     }
 
     public function testUpdate()
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $writer = new NoWrite();
-        $writer->update([], ['id' => 42], []);
+        $this->writer->update([], ['id' => 42], []);
     }
 
     public function testDelete()
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $writer = new NoWrite();
-        $writer->delete([], ['id' => 42]);
+        $this->writer->delete([], ['id' => 42]);
     }
 }

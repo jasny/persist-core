@@ -370,7 +370,7 @@ do not have to correspond to one field, but can closely match the business logic
 
 ```php
 use Jasny\DB\QueryBuilder\StagedQueryBuilder;
-use Jasny\DB\QueryBuilder\Step\CustomFilter;
+use Jasny\DB\QueryBuilder\Prepare\CustomFilter;
 use Jasny\DB\Mongo\Read\MongoReader;
 use Jasny\DB\Mongo\QueryBuilder\Query;
 

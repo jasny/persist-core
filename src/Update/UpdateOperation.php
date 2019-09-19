@@ -10,7 +10,7 @@ namespace Jasny\DB\Update;
  */
 class UpdateOperation
 {
-    const SUPPORTED_OPERATIONS = [
+    protected const SUPPORTED_OPERATIONS = [
         'set',
         'patch',
         'inc',
@@ -27,8 +27,8 @@ class UpdateOperation
     /**
      * Class constructor.
      *
-     * @param string              $operator  Update operator
-     * @param array<string,mixed> $pairs     field/value pairs
+     * @param string               $operator  Update operator
+     * @param array<string, mixed> $pairs     field/value pairs
      */
     public function __construct(string $operator, array $pairs)
     {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\QueryBuilder\Step;
+namespace Jasny\DB\QueryBuilder\Prepare;
 
 use Improved as i;
 use Jasny\DB\Exception\InvalidUpdateOperationException;
@@ -32,8 +32,7 @@ class UpdateParser
             $pairs = $operation->getPairs();
 
             foreach ($pairs as $field => $value) {
-                $info = ['field' => $field, 'operator' => $operator];
-                yield $info => $value;
+                yield (['field' => $field, 'operator' => $operator]) => $value;
             }
         }
     }
