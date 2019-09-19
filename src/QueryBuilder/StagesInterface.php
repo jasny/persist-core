@@ -20,7 +20,7 @@ interface StagesInterface
     /**
      * Return a query builder with some steps removed.
      *
-     * @param callable $matcher
+     * @param callable(string,callable):bool $matcher
      * @return static
      */
     public function withoutSteps(callable $matcher): self;

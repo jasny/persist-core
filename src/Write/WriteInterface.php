@@ -60,7 +60,7 @@ interface WriteInterface
     /**
      * Create a Writer service with a custom update query builder.
      *
-     * @param PipelineBuilder $builder
+     * @param ResultBuilder $builder
      * @return static
      */
     public function withResultBuilder(ResultBuilder $builder): self;

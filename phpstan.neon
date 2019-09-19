@@ -2,5 +2,10 @@ parameters:
     level: 7
     paths:
         - src
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        -
+            message: /^Variable property access on object.$/
+            path: src/FieldMap/ConfiguredFieldMap.php
 includes:
   	- vendor/phpstan/phpstan-strict-rules/rules.neon

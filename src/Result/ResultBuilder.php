@@ -32,12 +32,12 @@ class ResultBuilder extends PipelineBuilder
      */
     public function with(iterable $iterable, $meta = []): Result
     {
-        $pipeline = new Result($iterable, $meta);
+        $result = new Result($iterable, $meta);
 
         foreach ($this->steps as [$callback, $args]) {
-            $pipeline = $pipeline->then($callback, ...$args);
+            $result->then($callback, ...$args);
         }
 
-        return $pipeline;
+        return $result;
     }
 }

@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Jasny\DB\FieldMap;
 
 /**
- * Map MongoDB field to PHP field or visa versa.
+ * Map DB field to PHP field or visa versa. Also works for parsed filters.
+ * For results, the result builder should map each item to the field map.
  */
 interface FieldMapInterface extends \ArrayAccess
 {
@@ -24,9 +25,8 @@ interface FieldMapInterface extends \ArrayAccess
     /**
      * Apply mapping.
      *
-     * @template T of iterable|object
-     * @param T $subject
-     * @return T
+     * @param mixed $subject
+     * @return mixed
      */
     public function __invoke($subject);
 }
