@@ -76,20 +76,27 @@ class NoWriteTest extends TestCase
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $this->writer->save([], [['id' => 42, 'foo' => 'bar']]);
+        $this->writer->save([]);
+    }
+
+    public function testSaveAll()
+    {
+        $this->expectException(UnsupportedFeatureException::class);
+
+        $this->writer->saveAll([[], []]);
     }
 
     public function testUpdate()
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $this->writer->update([], ['id' => 42], []);
+        $this->writer->update([], []);
     }
 
     public function testDelete()
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $this->writer->delete([], ['id' => 42]);
+        $this->writer->delete([]);
     }
 }

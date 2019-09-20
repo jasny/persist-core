@@ -99,7 +99,7 @@ class NoWrite implements WriteInterface
      * @inheritDoc
      * @throws UnsupportedFeatureException
      */
-    public function save(iterable $items, array $opts = []): Result
+    public function save($item, array $opts = []): Result
     {
         throw new UnsupportedFeatureException("Writing to storage is not supported");
     }

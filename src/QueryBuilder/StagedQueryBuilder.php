@@ -50,7 +50,7 @@ class StagedQueryBuilder implements QueryBuilderInterface
      * @param callable(iterable):iterable $step
      * @return static
      */
-    public function withAddedPrepare(callable $step): self
+    public function onPrepare(callable $step): self
     {
         return $this->withAddedStep('prepare', $step);
     }
@@ -73,7 +73,7 @@ class StagedQueryBuilder implements QueryBuilderInterface
      * @param callable(iterable):iterable $step
      * @return static
      */
-    public function withAddedCompose(callable $step): self
+    public function onCompose(callable $step): self
     {
         return $this->withAddedStep('compose', $step);
     }
@@ -95,7 +95,7 @@ class StagedQueryBuilder implements QueryBuilderInterface
      * @param callable $step
      * @return static
      */
-    public function withAddedBuild(callable $step): self
+    public function onBuild(callable $step): self
     {
         return $this->withAddedStep('build', $step);
     }
