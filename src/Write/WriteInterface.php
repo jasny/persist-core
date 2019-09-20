@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Write;
 
-use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Result\ResultBuilder;
 use Jasny\DB\Update\UpdateOperation;

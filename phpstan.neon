@@ -5,7 +5,10 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
         -
-            message: /^Variable property access on object.$/
+            message: /^Variable property access on/
             path: src/FieldMap/ConfiguredFieldMap.php
+        -
+            message: /^Variable property access on/
+            path: src/QueryBuilder/StagedQueryBuilder.php
 includes:
   	- vendor/phpstan/phpstan-strict-rules/rules.neon
