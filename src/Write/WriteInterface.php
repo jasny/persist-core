@@ -25,7 +25,7 @@ interface WriteInterface
     public function getStorage();
 
     /**
-     * Set logger to enable logging.
+     * Enable (debug) logging.
      *
      * @return static
      */
@@ -66,10 +66,24 @@ interface WriteInterface
 
 
     /**
-     * Save the data.
-     * Result contains generated properties for each item item.
+     * Save the one item.
+     * Result contains generated properties for the item.
+     *
+     * @param object|array      $item
+     * @param OptionInterface[] $opts
+     * @return Result
      */
-    public function save(iterable $items, array $opts = []): Result;
+    public function save($item, array $opts = []): Result;
+
+    /**
+     * Save the multiple items.
+     * Result contains generated properties for each item.
+     *
+     * @param iterable<object|array> $items
+     * @param OptionInterface[]      $opts
+     * @return Result
+     */
+    public function saveAll(iterable $items, array $opts = []): Result;
 
     /**
      * Query and update records.

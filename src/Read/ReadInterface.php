@@ -24,7 +24,7 @@ interface ReadInterface
     public function getStorage();
 
     /**
-     * Set logger to enable logging.
+     * Enable (debug) logging.
      *
      * @return static
      */

@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Write;
 
-use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\Result\Result;
 use Jasny\DB\Result\ResultBuilder;
-use Jasny\DB\Update\UpdateOperation;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -87,10 +85,7 @@ class NoWrite implements WriteInterface
     /**
      * Update is not supported.
      *
-     * @param array             $filter
-     * @param UpdateOperation[] $changes
-     * @param OptionInterface[] $opts
-     * @return Result
+     * @inheritDoc
      * @throws UnsupportedFeatureException
      */
     public function update(array $filter, array $changes, array $opts = []): Result
@@ -101,9 +96,7 @@ class NoWrite implements WriteInterface
     /**
      * Save is not supported
      *
-     * @param iterable $items
-     * @param array    $opts
-     * @return Result
+     * @inheritDoc
      * @throws UnsupportedFeatureException
      */
     public function save(iterable $items, array $opts = []): Result
@@ -112,11 +105,20 @@ class NoWrite implements WriteInterface
     }
 
     /**
+     * Save is not supported
+     *
+     * @inheritDoc
+     * @throws UnsupportedFeatureException
+     */
+    public function saveAll(iterable $items, array $opts = []): Result
+    {
+        throw new UnsupportedFeatureException("Writing to storage is not supported");
+    }
+
+    /**
      * Delete is not supported
      *
-     * @param array $filter
-     * @param array $opts
-     * @return Result
+     * @inheritDoc
      * @throws UnsupportedFeatureException
      */
     public function delete(array $filter, array $opts = []): Result
