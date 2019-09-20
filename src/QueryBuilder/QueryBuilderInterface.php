@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\QueryBuilder;
 
+use Jasny\DB\Exception\BuildQueryException;
 use Jasny\DB\Option\OptionInterface;
 
 /**
@@ -17,6 +18,7 @@ interface QueryBuilderInterface
      * @param iterable          $filter
      * @param OptionInterface[] $opts
      * @return mixed
+     * @throws BuildQueryException
      */
     public function buildQuery(iterable $filter, array $opts = []);
 
@@ -26,6 +28,7 @@ interface QueryBuilderInterface
      * @param iterable $filter
      * @param OptionInterface[] $opts
      * @return mixed
+     * @throws BuildQueryException
      */
     public function __invoke(iterable $filter, array $opts = []);
 }
