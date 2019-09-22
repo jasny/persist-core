@@ -9,7 +9,7 @@ use Jasny\DB\Exception\BuildQueryException;
 use Jasny\DB\Option\OptionInterface;
 
 /**
- * Query builder with customizable stages. The 3 stages are
+ * Query builder with customizable stages. The 4 stages are
  *
  * - prepare -> parse filters, mapping, casting
  *   The prepare steps are callables that takes an iterable and must return an iterable.
@@ -17,31 +17,36 @@ use Jasny\DB\Option\OptionInterface;
  * - compose -> create filter function per field
  *   The compose steps are callables that takes an iterable and must return an iterable with callables.
  *
- * - build -> reduce into a database query
- *   The build steps takes an iterable with callables and applies them, creating a database specific query object. The
- *   required arguments is db implementation specific.
+ * - build  -> reduce into a database query
+ *   The build step takes an iterable with callables and applies them to a database specific query object which
+ *   functions as accumulator.
  *
- * The steps of all stages are called consecutively as pipeline; the return value is passed as first argument of the
- * next step. The second argument is always the set of options.
+ * - finalize -> modify the database query
+ *   Apply additional logic based to modify the database query object.
  *
  * @immutable
  */
 class StagedQueryBuilder implements QueryBuilderInterface
 {
     /**
-     * @var array<int,callable(iterable,array):iterable>
+     * @var array<int,callable(iterable,OptionInterface[]):iterable>
      */
     protected array $prepareSteps = [];
 
     /**
-     * @var array<int,callable(iterable,array):iterable>
+     * @var array<int,callable(iterable,OptionInterface[]):iterable>
      */
     protected array $composeSteps = [];
 
     /**
-     * @var array<int,callable>
+     * @var callable(object,iterable,OptionInterface[]):void
      */
-    protected array $buildSteps = [];
+    protected $buildStep;
+
+    /**
+     * @var array<int,callable(object,OptionInterface[]):void>
+     */
+    protected array $finalizeSteps = [];
 
 
     /**
@@ -97,18 +102,54 @@ class StagedQueryBuilder implements QueryBuilderInterface
      */
     public function onBuild(callable $step): self
     {
-        return $this->withAddedStep('build', $step);
+        if (isset($this->buildStep)) {
+            throw new \LogicException("Query builder can only have one build step");
+        }
+
+        $clone = clone $this;
+        $clone->buildStep = $step;
+
+        return $clone;
     }
 
     /**
-     * Return a query builder with some or all compose steps removed.
+     * Return a query builder with the build step removed.
+     *
+     * @return static
+     */
+    public function withoutBuild(): self
+    {
+        if (!isset($this->buildStep)) {
+            return $this;
+        }
+
+        $clone = clone $this;
+        unset($clone->buildStep);
+
+        return $clone;
+    }
+
+
+    /**
+     * Return a query builder with an additional finalize step.
+     *
+     * @param callable $step
+     * @return static
+     */
+    public function onFinalize(callable $step): self
+    {
+        return $this->withAddedStep('finalize', $step);
+    }
+
+    /**
+     * Return a query builder with some or all finalize steps removed.
      *
      * @param null|callable(string,callable):bool $matcher  Return `true` to remove the step.
      * @return static
      */
-    public function withoutBuild(?callable $matcher = null): self
+    public function withoutFinalize(?callable $matcher = null): self
     {
-        return $this->withoutSteps('build', $matcher);
+        return $this->withoutSteps('finalize', $matcher);
     }
 
 
@@ -148,31 +189,30 @@ class StagedQueryBuilder implements QueryBuilderInterface
     /**
      * Create the query from a filter.
      *
+     * @param object            $accumulator  Database specific query object.
      * @param iterable          $filter
      * @param OptionInterface[] $opts
-     * @return mixed
      * @throws BuildQueryException
      */
-    public function buildQuery(iterable $filter, array $opts = [])
+    public function apply(object $accumulator, iterable $filter, array $opts = []): void
     {
         $prepared = $this->prepare($filter, $opts);
         $compose = $this->compose($prepared, $opts);
-        $query = $this->build($compose, $opts);
-
-        return $query;
+        $this->build($accumulator, $compose, $opts);
+        $this->finalize($accumulator, $opts);
     }
 
     /**
-     * Alias of `buildQuery()`.
+     * Alias of `apply()`.
      *
+     * @param object            $accumulator  Database specific query object.
      * @param iterable          $filter
      * @param OptionInterface[] $opts
-     * @return mixed
      * @throws BuildQueryException
      */
-    final public function __invoke(iterable $filter, array $opts = [])
+    final public function __invoke(object $accumulator, iterable $filter, array $opts = []): void
     {
-        return $this->buildQuery($filter, $opts);
+        $this->apply($accumulator, $filter, $opts);
     }
 
     /**
@@ -183,7 +223,7 @@ class StagedQueryBuilder implements QueryBuilderInterface
      * @return iterable
      * @throws BuildQueryException
      */
-    protected function prepare(iterable $payload, array $opts = []): iterable
+    protected function prepare(iterable $payload, array &$opts = []): iterable
     {
         if ($this->prepareSteps === []) {
             throw new \LogicException("Unusable query builder; no prepare step");
@@ -220,17 +260,11 @@ class StagedQueryBuilder implements QueryBuilderInterface
 
         foreach ($this->composeSteps as $i => $step) {
             try {
+                $unexpectedItemException = new \UnexpectedValueException("Not all items created in compose step "
+                    . ($i + 1) . " (" . i\type_describe($step) . ") are callable, got %s");
+
                 $iterator = i\type_check($step($payload, $opts), 'iterable', $unexpectedException);
-
-                $type = i\type_describe($step);
-
-                $payload = i\iterable_type_check(
-                    $iterator,
-                    'callable',
-                    new \UnexpectedValueException(
-                        "Not all items created in compose step " . ($i + 1) . " ($type) are callable, got %s"
-                    )
-                );
+                $payload = i\iterable_type_check($iterator, 'callable', $unexpectedItemException);
             } catch (\Throwable $exception) {
                 throw $this->buildException('compose', $i, $exception);
             }
@@ -242,38 +276,52 @@ class StagedQueryBuilder implements QueryBuilderInterface
     /**
      * Create a database specific query object, applying the callbacks created in the compose step.
      *
-     * @param iterable<callable> $payload
+     * @param object             $accumulator
+     * @param iterable<callable> $compose
      * @param OptionInterface[]  $opts
-     * @return mixed
      * @throws BuildQueryException
      */
-    protected function build(iterable $payload, array $opts = [])
+    protected function build(object $accumulator, iterable $compose, array $opts = []): void
     {
-        if ($this->buildSteps === []) {
+        if (!isset($this->buildStep)) {
             throw new \LogicException("Unusable query builder; no build step");
         }
 
-        foreach ($this->buildSteps as $i => $step) {
+        try {
+            ($this->buildStep)($accumulator, $compose, $opts);
+        } catch (\Throwable $exception) {
+            throw $this->buildException('build', null, $exception);
+        }
+    }
+
+    /**
+     * Modify the database specific query object.
+     *
+     * @param object             $accumulator
+     * @param OptionInterface[]  $opts
+     * @throws BuildQueryException
+     */
+    protected function finalize(object $accumulator, array $opts = []): void
+    {
+        foreach ($this->finalizeSteps as $i => $step) {
             try {
-                $payload = $step($payload, $opts);
+                $step($accumulator, $opts);
             } catch (\Throwable $exception) {
-                throw $this->buildException('build', $i, $exception);
+                throw $this->buildException('finalize', $i, $exception);
             }
         }
-
-        return $payload;
     }
 
     /**
      * Create a build exception.
      */
-    protected function buildException(string $stage, int $stepNr, \Throwable $previous): BuildQueryException
+    protected function buildException(string $stage, ?int $stepNr, \Throwable $previous): BuildQueryException
     {
-        $prop = $stage . 'Steps';
+        $prop = $stage . ($stepNr === null ? 'Step' : 'Steps');
 
-        $pos = ($stepNr + 1) . ' of ' . count($this->{$prop});
-        $type = i\type_describe($this->{$prop}[$stepNr]);
+        $step = $stepNr !== null ? 'step ' . ($stepNr + 1) . ' of ' . count($this->{$prop}) : 'step';
+        $type = i\type_describe($stepNr !== null ? $this->{$prop}[$stepNr] : $this->{$prop});
 
-        return new BuildQueryException("Query builder failed in {$stage} step {$pos} ($type)", 0, $previous);
+        return new BuildQueryException("Query builder failed in {$stage} {$step} ($type)", 0, $previous);
     }
 }

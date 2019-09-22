@@ -8,27 +8,27 @@ use Jasny\DB\Exception\BuildQueryException;
 use Jasny\DB\Option\OptionInterface;
 
 /**
- * Interface for service that can convert a filter to a database specific query.
+ * Interface for service that can apply instructions to a database specific query.
  */
 interface QueryBuilderInterface
 {
     /**
-     * Create the query from a filter.
+     * Apply instructions to given query.
      *
-     * @param iterable          $filter
+     * @param object            $accumulator  Database specific query object.
+     * @param iterable          $iterable
      * @param OptionInterface[] $opts
-     * @return mixed
      * @throws BuildQueryException
      */
-    public function buildQuery(iterable $filter, array $opts = []);
+    public function apply(object $accumulator, iterable $iterable, array $opts = []): void;
 
     /**
-     * Alias of `buildQuery()`.
+     * Alias of `apply()`.
      *
-     * @param iterable $filter
+     * @param object            $accumulator  Database specific query object.
+     * @param iterable          $iterable
      * @param OptionInterface[] $opts
-     * @return mixed
      * @throws BuildQueryException
      */
-    public function __invoke(iterable $filter, array $opts = []);
+    public function __invoke(object $accumulator, iterable $iterable, array $opts = []): void;
 }
