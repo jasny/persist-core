@@ -10,17 +10,6 @@ namespace Jasny\DB\Update;
  */
 class UpdateOperation
 {
-    protected const SUPPORTED_OPERATIONS = [
-        'set',
-        'patch',
-        'inc',
-        'mul',
-        'div',
-        'mod',
-        'pull',
-        'push',
-    ];
-
     protected string $operator;
     protected array $pairs;
 
@@ -32,10 +21,6 @@ class UpdateOperation
      */
     public function __construct(string $operator, array $pairs)
     {
-        if (!in_array($operator, static::SUPPORTED_OPERATIONS, true)) {
-            throw new \InvalidArgumentException("Unsupported update operator '$operator'");
-        }
-
         $this->operator = $operator;
         $this->pairs = $pairs;
     }

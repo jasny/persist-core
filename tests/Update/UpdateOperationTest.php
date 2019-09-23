@@ -29,12 +29,12 @@ class UpdateOperationTest extends TestCase
         $this->assertEquals(['foo' => 42, 'bar' => 99], $operation->getPairs());
     }
 
-    public function testUnknownOperator()
+    public function testCustomOperator()
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("Unsupported update operator 'unknown'");
+        $operation = new UpdateOperation('custom', ['foo' => 42, 'bar' => 99]);
 
-        new UpdateOperation('unknown', ['foo' => 42, 'bar' => 99]);
+        $this->assertEquals('custom', $operation->getOperator());
+        $this->assertEquals(['foo' => 42, 'bar' => 99], $operation->getPairs());
     }
 
     /**
