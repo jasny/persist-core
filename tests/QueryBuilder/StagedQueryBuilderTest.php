@@ -95,14 +95,9 @@ class StagedQueryBuilderTest extends TestCase
         $composeCallbacks = [fn() => 1, fn() => 2];
 
         $builder = (new StagedQueryBuilder())
-            ->onPrepare($this->createCallbackMock(
-                $this->once(),
-                [['foo' => 1, 'bar' => 10], $opts],
-                ['foo' => 2, 'bar' => 10]
-            ))
             ->onCompose($this->createCallbackMock(
                 $this->once(),
-                [['foo' => 2, 'bar' => 10], $opts],
+                [['foo' => 1, 'bar' => 10], $opts],
                 $composeCallbacks
             ))
             ->onBuild($this->createCallbackMock( /* 4 */
@@ -378,16 +373,6 @@ class StagedQueryBuilderTest extends TestCase
             ->onBuild(fn() => null);
 
         $builder->onBuild(fn() => null);
-    }
-
-    public function testBuildWithoutPrepareStep()
-    {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Unusable query builder; no prepare step');
-
-        $builder = new StagedQueryBuilder();
-
-        $builder->apply((object)[], []);
     }
 
     public function testBuildWithoutComposeStep()

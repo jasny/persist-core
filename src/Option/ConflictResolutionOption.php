@@ -16,6 +16,8 @@ namespace Jasny\DB\Option;
  */
 class ConflictResolutionOption implements OptionInterface
 {
+    public const SUPPORTED = ['conflict', 'ignore', 'replace', 'update'];
+
     protected string $resolution;
 
     /**
@@ -23,6 +25,10 @@ class ConflictResolutionOption implements OptionInterface
      */
     public function __construct(string $resolution)
     {
+        if (!in_array($resolution, self::SUPPORTED, true)) {
+            throw new \UnexpectedValueException("Unsupported conflict resolution option '$resolution'");
+        }
+
         $this->resolution = $resolution;
     }
 
@@ -30,14 +36,6 @@ class ConflictResolutionOption implements OptionInterface
      * Get the conflict resolution.
      */
     public function getResolution(): string
-    {
-        return $this->resolution;
-    }
-
-    /**
-     * Cast to a string.
-     */
-    public function __toString(): string
     {
         return $this->resolution;
     }

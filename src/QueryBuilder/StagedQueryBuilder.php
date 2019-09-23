@@ -217,10 +217,6 @@ class StagedQueryBuilder implements QueryBuilderInterface
      */
     protected function prepare(iterable $payload, array &$opts = []): iterable
     {
-        if ($this->prepareSteps === []) {
-            throw new \LogicException("Unusable query builder; no prepare step");
-        }
-
         $unexpectedException = new \UnexpectedValueException('Expected %2$s, %1$s returned');
 
         foreach ($this->prepareSteps as $i => $step) {
