@@ -14,9 +14,7 @@ use Improved\IteratorPipeline\Pipeline;
  */
 class ConfiguredFieldMap implements FieldMapInterface
 {
-    /**
-     * @var array<string, string>
-     */
+    /** @var array<string, string> */
     protected array $map;
     protected bool $dynamic;
 

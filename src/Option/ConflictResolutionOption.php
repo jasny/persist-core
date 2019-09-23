@@ -11,6 +11,8 @@ namespace Jasny\DB\Option;
  * - ignore   - skip existing
  * - replace  - replace existing, missing fields are removed or set to default value
  * - update   - update existing, missing fields are not changed
+ *
+ * @immutable
  */
 class ConflictResolutionOption implements OptionInterface
 {

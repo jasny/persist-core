@@ -28,24 +28,16 @@ use Jasny\DB\Option\OptionInterface;
  */
 class StagedQueryBuilder implements QueryBuilderInterface
 {
-    /**
-     * @var array<int,callable(iterable,OptionInterface[]):iterable>
-     */
+    /** @var array<int,callable(iterable,OptionInterface[]):iterable> */
     protected array $prepareSteps = [];
 
-    /**
-     * @var array<int,callable(iterable,OptionInterface[]):iterable>
-     */
+    /** @var array<int,callable(iterable,OptionInterface[]):iterable> */
     protected array $composeSteps = [];
 
-    /**
-     * @var callable(object,iterable,OptionInterface[]):void
-     */
+    /** @var callable(object,iterable,OptionInterface[]):void */
     protected $buildStep;
 
-    /**
-     * @var array<int,callable(object,OptionInterface[]):void>
-     */
+    /** @var array<int,callable(object,OptionInterface[]):void> */
     protected array $finalizeSteps = [];
 
 

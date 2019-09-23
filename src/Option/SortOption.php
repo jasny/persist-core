@@ -11,9 +11,7 @@ namespace Jasny\DB\Option;
  */
 class SortOption implements OptionInterface
 {
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     protected array $fields;
 
     /**
