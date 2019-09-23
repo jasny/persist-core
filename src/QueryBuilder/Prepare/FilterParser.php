@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Jasny\DB\QueryBuilder\Prepare;
 
 use Improved as i;
-use Jasny\DB\Exception\InvalidFilterException;
 use Spatie\Regex\Regex;
 
 /**
@@ -22,7 +21,7 @@ class FilterParser
      */
     public function __invoke(iterable $filter): iterable
     {
-        $exception = new InvalidFilterException("Expected filter key to be a string: %s given");
+        $exception = new \InvalidArgumentException("Expected filter key to be a string: %s given");
 
         return i\iterable_map_keys($filter, function ($_, $key) use ($exception) {
             i\type_check($key, 'string', $exception);
@@ -44,7 +43,7 @@ class FilterParser
         $result = Regex::match(static::REGEXP, $key);
 
         if (!$result->hasMatch()) {
-            throw new InvalidFilterException("Invalid filter item '$key': Bad use of parentheses");
+            throw new \UnexpectedValueException("Invalid filter item '$key': Bad use of parentheses");
         }
 
         return [

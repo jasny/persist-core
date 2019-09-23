@@ -6,7 +6,6 @@ namespace Jasny\DB\Tests\QueryBuilder\Prepare;
 
 use Improved as i;
 use Jasny\DB\QueryBuilder\Prepare\FilterParser;
-use Jasny\DB\Exception\InvalidFilterException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -61,7 +60,7 @@ class FilterParserTest extends TestCase
      */
     public function testInvalidParentheses(array $filter)
     {
-        $this->expectException(InvalidFilterException::class);
+        $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage(sprintf("Invalid filter item '%s': Bad use of parentheses", key($filter)));
 
         $parser = new FilterParser();

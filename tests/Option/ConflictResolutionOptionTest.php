@@ -36,6 +36,9 @@ class ConflictResolutionOptionTest extends TestCase
         new ConflictResolutionOption('foo-bar');
     }
 
+    /**
+     * @covers \Jasny\DB\Option\existing
+     */
     public function testFunction()
     {
         $option = opts\existing('replace');

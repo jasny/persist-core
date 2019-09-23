@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Jasny\DB\QueryBuilder\Prepare;
 
 use Improved as i;
-use Jasny\DB\Exception\InvalidOperationException;
 use Jasny\DB\Update\UpdateOperation;
 
 /**
@@ -22,7 +21,7 @@ class UpdateParser
      */
     public function __invoke(iterable $operations): \Generator
     {
-        $exception = new InvalidOperationException("Expected an UpdateOperation object; gotten %s");
+        $exception = new \UnexpectedValueException("Expected an UpdateOperation object; gotten %s");
 
         foreach ($operations as $operation) {
             /** @var UpdateOperation $operation */
