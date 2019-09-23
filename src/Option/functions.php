@@ -30,7 +30,7 @@ function sort(string ...$fields): SortOption
 }
 
 /**
- * Limit the query result.
+ * Limit the query result / limit items written.
  */
 function limit(int $limit, int $offset = 0): LimitOption
 {
@@ -43,4 +43,18 @@ function limit(int $limit, int $offset = 0): LimitOption
 function page(int $page, int $pageSize): LimitOption
 {
     return new LimitOption($pageSize, ($page - 1) * $pageSize);
+}
+
+
+/**
+ * How to handle existing items for save queries?
+ *
+ * - conflict - results in db error
+ * - ignore   - skip existing
+ * - replace  - replace existing, missing fields are removed or set to default value
+ * - update   - update existing, missing fields are not changed
+ */
+function existing(string $resolution): ConflictResolutionOption
+{
+    return new ConflictResolutionOption($resolution);
 }
