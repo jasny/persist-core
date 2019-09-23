@@ -32,7 +32,7 @@ class CustomFilterTest extends TestCase
 
         $iterator = $iterate(['field' => 'foo'], ['wuz'], 'foo', ['field' => 'bar (any)']);
 
-        $filtered = $filter($iterator);
+        $filtered = $filter($iterator, []);
         $this->assertInstanceOf(\Traversable::class, $iterator);
 
         $result = i\iterable_to_array($filtered, false);
@@ -68,7 +68,7 @@ class CustomFilterTest extends TestCase
             ['field' => 'bar', 'operator' => 'any']
         );
 
-        $filtered = $filter($iterator);
+        $filtered = $filter($iterator, []);
         $this->assertInstanceOf(\Traversable::class, $iterator);
 
         $result = i\iterable_to_array($filtered, false);

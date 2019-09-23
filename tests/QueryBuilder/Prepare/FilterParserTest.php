@@ -31,7 +31,7 @@ class FilterParserTest extends TestCase
     public function testParse(array $filter, string $field, string $operator, $value)
     {
         $parser = new FilterParser();
-        $iterator = $parser($filter);
+        $iterator = $parser($filter, []);
         $result = [];
 
         foreach ($iterator as $info => $value) {
@@ -64,7 +64,7 @@ class FilterParserTest extends TestCase
         $this->expectExceptionMessage(sprintf("Invalid filter item '%s': Bad use of parentheses", key($filter)));
 
         $parser = new FilterParser();
-        $iterator = $parser($filter);
+        $iterator = $parser($filter, []);
 
         i\iterable_walk($iterator);
     }

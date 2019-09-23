@@ -6,6 +6,7 @@ namespace Jasny\DB\QueryBuilder\Compose;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
+use Jasny\DB\Option\OptionInterface;
 
 /**
  * Custom filter for query builder compose step.
@@ -46,12 +47,13 @@ class CustomFilter
     }
 
     /**
-     * Invoke the filter
+     * Replace basic filters with custom filters.
      *
-     * @param iterable $filter
+     * @param iterable          $filter
+     * @param OptionInterface[] $opts
      * @return iterable
      */
-    public function __invoke(iterable $filter): iterable
+    public function __invoke(iterable $filter, array $opts): iterable
     {
         return Pipeline::with($filter)
             ->map(function ($orig, $info): ?callable {

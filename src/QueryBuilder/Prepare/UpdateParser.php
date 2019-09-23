@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\QueryBuilder\Prepare;
 
 use Improved as i;
+use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Update\UpdateOperation;
 
 /**
@@ -16,10 +17,11 @@ class UpdateParser
     /**
      * Convert an array of update operations into an iterable for the query builder.
      *
-     * @param iterable<UpdateOperation> $operations
+     * @param iterable          $operations
+     * @param OptionInterface[] $opts
      * @return \Generator
      */
-    public function __invoke(iterable $operations): \Generator
+    public function __invoke(iterable $operations, array $opts): \Generator
     {
         $exception = new \UnexpectedValueException("Expected an UpdateOperation object; gotten %s");
 

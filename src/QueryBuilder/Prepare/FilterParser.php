@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\QueryBuilder\Prepare;
 
 use Improved as i;
+use Jasny\DB\Option\OptionInterface;
 use Spatie\Regex\Regex;
 
 /**
@@ -18,8 +19,11 @@ class FilterParser
 
     /**
      * Invoke the parser
+     *
+     * @param iterable          $filter
+     * @param OptionInterface[] $opts
      */
-    public function __invoke(iterable $filter): iterable
+    public function __invoke(iterable $filter, array $opts): iterable
     {
         $exception = new \InvalidArgumentException("Expected filter key to be a string: %s given");
 

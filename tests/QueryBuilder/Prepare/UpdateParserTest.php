@@ -28,7 +28,7 @@ class UpdateParserTest extends TestCase
 
         $parse = new UpdateParser();
 
-        $iterator = $parse($operations);
+        $iterator = $parse($operations, []);
 
         $expected = [
             [['field' => 'foo', 'operator' => 'set'], 42],

@@ -7,6 +7,10 @@ namespace Jasny\DB\QueryBuilder;
 use Improved as i;
 use Jasny\DB\Exception\BuildQueryException;
 use Jasny\DB\Option\OptionInterface;
+use Jasny\DB\QueryBuilder\Build\BuildQuery;
+use Jasny\DB\QueryBuilder\Compose\CustomFilter;
+use Jasny\DB\QueryBuilder\Prepare\FilterParser;
+use Jasny\DB\QueryBuilder\Prepare\UpdateParser;
 
 /**
  * Query builder with customizable stages. The 4 stages are
@@ -34,12 +38,11 @@ class StagedQueryBuilder implements QueryBuilderInterface
     /** @var array<int,callable(iterable,OptionInterface[]):iterable> */
     protected array $composeSteps = [];
 
-    /** @var callable(object,iterable,OptionInterface[]):void */
+    /** @var callable(mixed,iterable,OptionInterface[]):void */
     protected $buildStep;
 
-    /** @var array<int,callable(object,OptionInterface[]):void> */
+    /** @var array<int,callable(mixed,OptionInterface[]):void> */
     protected array $finalizeSteps = [];
-
 
     /**
      * Return a query builder with an additional prepare step.
@@ -176,7 +179,6 @@ class StagedQueryBuilder implements QueryBuilderInterface
 
         return $clone;
     }
-
 
     /**
      * Create the query from a filter.
