@@ -7,6 +7,6 @@ namespace Jasny\DB\Exception;
 /**
  * Specified filter is not valid.
  */
-class InvalidFilterException extends \InvalidArgumentException
+class InvalidFilterException extends \UnexpectedValueException
 {
 }

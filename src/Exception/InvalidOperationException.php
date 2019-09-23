@@ -7,6 +7,6 @@ namespace Jasny\DB\Exception;
 /**
  * Specified update operation is not valid.
  */
-class InvalidUpdateOperationException extends \InvalidArgumentException
+class InvalidOperationException extends \UnexpectedValueException
 {
 }
