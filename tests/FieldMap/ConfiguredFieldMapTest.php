@@ -83,7 +83,7 @@ class ConfiguredFieldMapTest extends TestCase
         $expected = [
             '_id' => 42,
             'bor' => 'man',
-            'color' => 'red'
+            'color' => 'red',
         ];
 
         if ($class !== null) {
@@ -103,7 +103,7 @@ class ConfiguredFieldMapTest extends TestCase
 
         $expected = [
             '_id' => 42,
-            'bor' => 'man'
+            'bor' => 'man',
         ];
 
         if ($class !== null) {

@@ -15,7 +15,12 @@ class ConflictResolutionOptionTest extends TestCase
 {
     public function resolutionProvider()
     {
-        return array_map(fn($resolution) => [$resolution], ConflictResolutionOption::SUPPORTED);
+        return [
+            'conflict' => ['conflict'],
+            'ignore'   => ['ignore'],
+            'replace'  => ['replace'],
+            'update'   => ['update'],
+        ];
     }
 
     /**

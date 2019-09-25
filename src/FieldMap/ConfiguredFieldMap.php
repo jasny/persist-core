@@ -86,32 +86,26 @@ class ConfiguredFieldMap implements FieldMapInterface
     }
 
     /**
-     * Apply mapping to key of an associative array.
+     * Apply mapping to keys of an associative array.
+     * {@internal This method is optimized for performance, rather than readability.}}
      *
-     * @param array|\ArrayObject $subject
-     * @return array|\ArrayObject
+     * @param array<string, mixed> $subject
      */
-    protected function applyToArray($subject)
+    protected function applyToArray(array $subject): array
     {
-        if (!$this->dynamic) {
-            $remove = array_keys(array_diff_key(
-                $subject instanceof \ArrayObject ? $subject->getArrayCopy() : $subject,
-                $this->map
-            ));
-
-            foreach ($remove as $key) {
-                unset($subject[$key]);
-            }
-        }
+        $copy = $subject; // Make a copy to deal with potential cross reference.
+        $isChanged = false;
 
         foreach ($this->map as $field => $newField) {
-            if (isset($subject[$field])) {
-                $subject[$newField] = $subject[$field];
-                unset($subject[$field]);
+            if (array_key_exists($field, $copy)) {
+                $subject[$newField] = $copy[$field];
+                $isChanged = true;
             }
         }
 
-        return $subject;
+        return $this->dynamic
+            ? ($isChanged ? array_diff_key($subject, array_diff($this->map, array_flip($this->map))) : $subject)
+            : array_intersect_key($subject, array_flip($this->map));
     }
 
     /**
@@ -119,22 +113,20 @@ class ConfiguredFieldMap implements FieldMapInterface
      */
     protected function applyToObject(object $subject): object
     {
-        if (!$this->dynamic) {
-            $remove = array_diff(
-                array_keys(get_object_vars($subject)), // object property names
-                array_keys($this->map)                 // map keys
-            );
+        $copy = clone $subject; // Make a copy to deal with potential cross reference.
 
-            foreach ($remove as $prop) {
-                unset($subject->{$prop});
+        foreach ($this->map as $field => $newField) {
+            if (property_exists($copy, $field)) {
+                $subject->{$newField} = $copy->{$field};
             }
         }
 
-        foreach ($this->map as $field => $newField) {
-            if (isset($subject->{$field})) {
-                $subject->{$newField} = $subject->{$field};
-                unset($subject->{$field});
-            }
+        $remove = $this->dynamic
+            ? array_diff(array_keys($this->map), $this->map)
+            : array_diff(array_keys(get_object_vars($subject)), $this->map);
+
+        foreach ($remove as $prop) {
+            unset($subject->{$prop});
         }
 
         return $subject;
