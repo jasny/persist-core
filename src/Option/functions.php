@@ -47,7 +47,7 @@ function page(int $page, int $pageSize): LimitOption
 
 
 /**
- * How to handle existing items for save queries?
+ * How to handle existing items for save query?
  *
  * - conflict - results in db error
  * - ignore   - skip existing
@@ -57,4 +57,12 @@ function page(int $page, int $pageSize): LimitOption
 function existing(string $resolution): ConflictResolutionOption
 {
     return new ConflictResolutionOption($resolution);
+}
+
+/**
+ * Don't replace keys with items in save query.
+ */
+function preserve_keys(): FlagOption
+{
+    return new FlagOption('preserve_keys');
 }
