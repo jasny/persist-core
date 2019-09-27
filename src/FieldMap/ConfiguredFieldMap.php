@@ -36,7 +36,7 @@ class ConfiguredFieldMap implements FieldMapInterface
 
         if (count($this->map) !== count($this->inverse)) {
             $duplicates = array_filter(array_count_values($this->map), fn($count) => $count > 1);
-            throw new \UnexpectedValueException("Duplicate field in map: " . join(', ', $duplicates));
+            throw new \UnexpectedValueException("Duplicate field in map: " . join(', ', array_keys($duplicates)));
         }
 
         $this->dynamic = $dynamic;
@@ -76,7 +76,7 @@ class ConfiguredFieldMap implements FieldMapInterface
      */
     protected function getDeepMapping(string $field): ?string
     {
-        if (strpos($field, '.') !== false) {
+        if (strpos($field, '.') === false) {
             return $this->inverse[$field] ?? null;
         }
 
@@ -96,19 +96,19 @@ class ConfiguredFieldMap implements FieldMapInterface
     public function applyToFilter(array $filterItems): array
     {
         return Pipeline::with($filterItems)
-            ->map(function (FilterItem $item): FilterItem {
+            ->map(function (FilterItem $item): ?FilterItem {
                 $field = $item->getField();
                 $mapped = $this->getDeepMapping($field);
 
                 if ($mapped !== null) {
-                    return new FilterItem($field, $item->getOperator(), $item->getValue());
+                    return new FilterItem($mapped, $item->getOperator(), $item->getValue());
                 }
 
                 if ($this->dynamic) {
                     return $item;
                 }
 
-                trigger_error("Skipping filter on '{$field}': field not mapped", E_USER_NOTICE);
+                trigger_error("Ignoring filter on '{$field}': field not mapped", E_USER_NOTICE);
                 return null;
             })
             ->filter(fn($item) => $item !== null)
@@ -272,9 +272,13 @@ class ConfiguredFieldMap implements FieldMapInterface
      */
     public static function __set_state(array $data): self
     {
+        if (!isset($data['map'])) {
+            throw new \UnexpectedValueException("Unable to restore field map; corrupt data");
+        }
+
         if (!isset($data['inverse'])) {
             // Shouldn't really happen
-            return new static($data['map'] ?? [], $data['dynamic'] ?? true);
+            return new static($data['map'], $data['dynamic'] ?? true);
         }
 
         $fieldMap = new static([], $data['dynamic'] ?? true);

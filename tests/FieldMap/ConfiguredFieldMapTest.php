@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Jasny\DB\Tests\FieldMap;
 
 use Improved as i;
-use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\FieldMap\ConfiguredFieldMap;
+use Jasny\DB\Filter\FilterItem;
+use Jasny\DB\Update\UpdateInstruction;
+use Jasny\TestHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,155 +16,271 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfiguredFieldMapTest extends TestCase
 {
-    /**
-     * @var ConfiguredFieldMap
-     */
-    protected $fieldMap;
+    use TestHelper;
 
-    public function setUp(): void
+    protected const MAP = ['_id' => 'id', 'foos' => 'foo', 'bor' => 'bar'];
+
+
+    public function testInvalidMapException()
     {
-        $this->fieldMap = new ConfiguredFieldMap(['id' => '_id', 'foo' => 'foos', 'bar' => 'bor']);
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage("Duplicate field in map: foo, bar");
+
+        new ConfiguredFieldMap([
+            '_id' => 'id',
+            'abc' => 'foo',
+            'def' => 'bar',
+            '123' => 'foo',
+            '789' => 'bar',
+        ]);
     }
 
 
-    public function testToArray()
+    public function testGetMap()
     {
-        $this->assertEquals(['id' => '_id', 'foo' => 'foos', 'bar' => 'bor'], $this->fieldMap->toArray());
+        $fieldMap = new ConfiguredFieldMap(self::MAP);
+        $this->assertEquals(self::MAP, $fieldMap->getMap());
     }
 
-    public function testFlip()
+    public function testGetInverseMap()
     {
-        $flipped = $this->fieldMap->flip();
-
-        $this->assertInstanceOf(ConfiguredFieldMap::class, $flipped);
-        $this->assertEquals(['_id' => 'id', 'foos' => 'foo', 'bor' => 'bar'], $flipped->toArray());
-        $this->assertTrue($flipped->isDynamic());
+        $fieldMap = new ConfiguredFieldMap(self::MAP);
+        $this->assertEquals(['id' => '_id', 'foo' => 'foos', 'bar' => 'bor'], $fieldMap->getInverseMap());
     }
 
-    public function testFlipStatic()
+    public function testIsDynamic()
     {
-        $this->fieldMap = new ConfiguredFieldMap(['foo' => 'bar'], false);
-        $flipped = $this->fieldMap->flip();
+        $dynamic = new ConfiguredFieldMap(['foo' => 'bar'], true);
+        $this->assertTrue($dynamic->isDynamic());
 
-        $this->assertInstanceOf(ConfiguredFieldMap::class, $flipped);
-        $this->assertEquals(['bar' => 'foo'], $flipped->toArray());
-        $this->assertFalse($flipped->isDynamic());
+        $static = new ConfiguredFieldMap(['foo' => 'bar'], false);
+        $this->assertFalse($static->isDynamic());
     }
 
-    public function subjectProvider()
+
+    public function testApplyToFilter()
     {
-        $subject = [
-            'id' => 42,
-            'bar' => 'man',
-            'color' => 'red'
+        $filter = [
+            new FilterItem('id', 'not', 42),
+            new FilterItem('id', 'min', 1),
+            new FilterItem('bar', '', 'hello'),
+            new FilterItem('color', 'in', ['blue', 'green']),
         ];
+
+        $fieldMap = new ConfiguredFieldMap(self::MAP);
+        $mapped = $fieldMap->applyToFilter($filter);
+
+        $this->assertCount(4, $mapped);
+
+        $this->assertEquals(new FilterItem('_id', 'not', 42), $mapped[0]);
+        $this->assertEquals(new FilterItem('_id', 'min', 1), $mapped[1]);
+        $this->assertEquals(new FilterItem('bor', '', 'hello'), $mapped[2]);
+        $this->assertSame($filter[3], $mapped[3]);
+    }
+
+    public function testApplyToFilterWithStaticFieldMap()
+    {
+        $filter = [
+            new FilterItem('id', 'not', 42),
+            new FilterItem('id', 'min', 1),
+            new FilterItem('bar', '', 'hello'),
+            new FilterItem('color', 'in', ['blue', 'green']),
+        ];
+
+        $fieldMap = new ConfiguredFieldMap(self::MAP, false);
+        $mapped = @$fieldMap->applyToFilter($filter);
+
+        $this->assertLastError(E_USER_NOTICE, "Ignoring filter on 'color': field not mapped");
+
+        $this->assertCount(3, $mapped);
+
+        $this->assertEquals(new FilterItem('_id', 'not', 42), $mapped[0]);
+        $this->assertEquals(new FilterItem('_id', 'min', 1), $mapped[1]);
+        $this->assertEquals(new FilterItem('bor', '', 'hello'), $mapped[2]);
+    }
+
+    public function testApplyToFilterWithNestedField()
+    {
+        $filter = [
+            new FilterItem('foo.bar.qux', '', 1),
+        ];
+
+        $fieldMap = new ConfiguredFieldMap(self::MAP);
+        $mapped = $fieldMap->applyToFilter($filter);
+
+        $this->assertCount(1, $mapped);
+        $this->assertEquals(new FilterItem('foos.bar.qux', '', 1), $mapped[0]);
+    }
+
+
+    public function testApplyToUpdate()
+    {
+        $instructions = [
+            new UpdateInstruction('set', ['id' => 42, 'bar' => 'hello']),
+            new UpdateInstruction('inc', ['id' => 1, 'foo.bar.qux' => 9]),
+            new UpdateInstruction('set', ['color' => 'green']),
+        ];
+
+        $fieldMap = new ConfiguredFieldMap(self::MAP);
+        $mapped = $fieldMap->applyToUpdate($instructions);
+
+        $this->assertCount(3, $mapped);
+
+        $this->assertEquals(new UpdateInstruction('set', ['_id' => 42, 'bor' => 'hello']), $mapped[0]);
+        $this->assertEquals(new UpdateInstruction('inc', ['_id' => 1, 'foos.bar.qux' => 9]), $mapped[1]);
+        $this->assertSame($instructions[2], $mapped[2]);
+    }
+
+    public function testApplyToUpdateWithStaticFieldMapOne()
+    {
+        $instructions = [
+            new UpdateInstruction('set', ['id' => 42, 'bar' => 'hello']),
+            new UpdateInstruction('inc', ['id' => 1, 'foo.bar.qux' => 9]),
+            new UpdateInstruction('set', ['color' => 'green']),
+        ];
+
+        $fieldMap = new ConfiguredFieldMap(self::MAP, false);
+        $mapped = @$fieldMap->applyToUpdate($instructions);
+
+        $this->assertCount(2, $mapped);
+
+        $this->assertEquals(new UpdateInstruction('set', ['_id' => 42, 'bor' => 'hello']), $mapped[0]);
+        $this->assertEquals(new UpdateInstruction('inc', ['_id' => 1, 'foos.bar.qux' => 9]), $mapped[1]);
+    }
+
+    public function testApplyToUpdateWithStaticFieldMapTwo()
+    {
+        $instructions = [
+            new UpdateInstruction('set', ['id' => 42, 'color' => 'green']),
+        ];
+
+        $fieldMap = new ConfiguredFieldMap(self::MAP, false);
+        $mapped = @$fieldMap->applyToUpdate($instructions);
+
+        $this->assertCount(1, $mapped);
+
+        $this->assertEquals(new UpdateInstruction('set', ['_id' => 42]), $mapped[0]);
+    }
+
+
+    public function dynamicProvider()
+    {
+        $fnWithoutColor = static function ($expected) {
+            unset($expected['color']);
+            return $expected;
+        };
 
         return [
-            'array' => [$subject, null, fn(array $arr) => $arr],
-            'iterator' => [
-                new \ArrayIterator($subject),
-                \Traversable::class,
-                fn(iterable $it) => i\iterable_to_array($it, true)
-            ],
-            'ArrayObject' => [
-                new \ArrayObject($subject),
-                \ArrayObject::class,
-                fn(\ArrayObject $ao) => $ao->getArrayCopy()
-            ],
-            'object' => [(object)$subject, \stdClass::class, fn(\stdClass $obj) => (array)$obj],
+            'dynamic' => [true, fn($expected) => $expected],
+            'static' => [false, $fnWithoutColor],
         ];
     }
 
     /**
-     * @dataProvider subjectProvider
+     * @dataProvider dynamicProvider
      */
-    public function testInvokeDynamic($subject, ?string $class, callable $convert)
+    public function testApplyToResult(bool $dynamic, callable $expect)
     {
-        $mapped = ($this->fieldMap)($subject);
+        $items = new \ArrayIterator([
+            'array' => ['_id' => 42, 'bor' => 'man', 'color' => 'red'],
+            'ArrayObject' => new \ArrayObject(['_id' => 43, 'bor' => 'pop', 'color' => 'green']),
+            'object' => (object)['_id' => 50, 'bor' => 'kol', 'color' => 'blue'],
+            'string' => 'hello',
+        ]);
 
-        $expected = [
-            '_id' => 42,
-            'bor' => 'man',
-            'color' => 'red',
-        ];
+        $fieldMap = new ConfiguredFieldMap(self::MAP, $dynamic);
 
-        if ($class !== null) {
-            $this->assertInstanceOf($class, $mapped);
-        }
-        $this->assertEquals($expected, $convert($mapped));
+        $iterator = $fieldMap->applyToResult($items);
+        $mapped = i\iterable_to_array($iterator, true);
+
+        $this->assertArrayHasKey('array', $mapped);
+        $this->assertEquals($expect(['id' => 42, 'bar' => 'man', 'color' => 'red']), $mapped['array']);
+
+        $this->assertArrayHasKey('ArrayObject', $mapped);
+        $this->assertInstanceOf(\ArrayObject::class, $mapped['ArrayObject']);
+        $this->assertEquals(
+            $expect(['id' => 43, 'bar' => 'pop', 'color' => 'green']),
+            $mapped['ArrayObject']->getArrayCopy()
+        );
+
+        $this->assertArrayHasKey('object', $mapped);
+        $this->assertEquals((object)$expect(['id' => 50, 'bar' => 'kol', 'color' => 'blue']), $mapped['object']);
+
+        $this->assertArrayHasKey('string', $mapped);
+        $this->assertEquals('hello', $mapped['string']);
+
+        $this->assertCount(4, $mapped);
     }
 
     /**
-     * @dataProvider subjectProvider
+     * @dataProvider dynamicProvider
      */
-    public function testInvokeStatic($subject, ?string $class, callable $convert)
+    public function testApplyInverse(bool $dynamic, callable $expect)
     {
-        $this->fieldMap = new ConfiguredFieldMap(['id' => '_id', 'foo' => 'foos', 'bar' => 'bor'], false);
+        $items = new \ArrayIterator([
+            'array' => ['id' => 42, 'bar' => 'man', 'color' => 'red'],
+            'ArrayObject' => new \ArrayObject(['id' => 43, 'bar' => 'pop', 'color' => 'green']),
+            'object' => (object)['id' => 50, 'bar' => 'kol', 'color' => 'blue'],
+            'string' => 'hello',
+        ]);
 
-        $mapped = ($this->fieldMap)($subject);
+        $fieldMap = new ConfiguredFieldMap(self::MAP, $dynamic);
 
-        $expected = [
-            '_id' => 42,
-            'bor' => 'man',
-        ];
+        $iterator = $fieldMap->applyInverse($items);
+        $mapped = i\iterable_to_array($iterator, true);
 
-        if ($class !== null) {
-            $this->assertInstanceOf($class, $mapped);
-        }
-        $this->assertEquals($expected, $convert($mapped));
+        $this->assertArrayHasKey('array', $mapped);
+        $this->assertEquals($expect(['_id' => 42, 'bor' => 'man', 'color' => 'red']), $mapped['array']);
+
+        $this->assertArrayHasKey('ArrayObject', $mapped);
+        $this->assertInstanceOf(\ArrayObject::class, $mapped['ArrayObject']);
+        $this->assertEquals(
+            $expect(['_id' => 43, 'bor' => 'pop', 'color' => 'green']),
+            $mapped['ArrayObject']->getArrayCopy()
+        );
+
+        $this->assertArrayHasKey('object', $mapped);
+        $this->assertEquals((object)$expect(['_id' => 50, 'bor' => 'kol', 'color' => 'blue']), $mapped['object']);
+
+        $this->assertArrayHasKey('string', $mapped);
+        $this->assertEquals('hello', $mapped['string']);
+
+        $this->assertCount(4, $mapped);
     }
 
-    public function testInvokeInfo()
+
+    /**
+     * @dataProvider dynamicProvider
+     */
+    public function testSetStateViaVarExport(bool $dynamic)
     {
-        $inputFlipped = [
-            42 => ['field' => 'id', 'operator' => ''],
-            'man' => ['field' => 'bar', 'operator' => 'not'],
-            'red' => ['field' => 'color', 'operator' => ''],
-        ];
+        $fieldMap = new ConfiguredFieldMap(self::MAP, $dynamic);
 
-        $fields = Pipeline::with($inputFlipped)->flip();
+        $code = var_export($fieldMap, true);
+        $copy = eval("return {$code};");
 
-        $mapped = ($this->fieldMap)($fields);
-        ['keys' => $keys, 'values' => $values] = i\iterable_separate($mapped);
-
-        $expectedKeys = [
-            ['field' => '_id', 'operator' => ''],
-            ['field' => 'bor', 'operator' => 'not'],
-            ['field' => 'color', 'operator' => '']
-        ];
-        $expectedValues = [42, 'man', 'red'];
-
-        $this->assertEquals($expectedKeys, $keys);
-        $this->assertEquals($expectedValues, $values);
+        $this->assertEquals($fieldMap, $copy);
     }
 
-    public function testInvokeNoneIterable()
+    public function testSetStateWithoutInverse()
     {
-        $this->assertEquals(100, ($this->fieldMap)(100));
-        $this->assertEquals('hello', ($this->fieldMap)('hello'));
+        $copy = ConfiguredFieldMap::__set_state(['map' => self::MAP]);
+        $this->assertEquals(new ConfiguredFieldMap(self::MAP), $copy);
     }
 
-    public function testArrayAccess()
+    public function testSetStateWithIncorrectReverse()
     {
-        $this->assertTrue(isset($this->fieldMap['id']));
-        $this->assertEquals('_id', $this->fieldMap['id']);
+        $copy = ConfiguredFieldMap::__set_state(['map' => self::MAP, 'inverse' => ['foo' => 'bar']]);
 
-        $this->assertTrue(isset($this->fieldMap['bar']));
-        $this->assertEquals('bor', $this->fieldMap['bar']);
-
-        $this->assertFalse(isset($this->fieldMap['color']));
-        $this->assertNull($this->fieldMap['color']);
+        $this->assertEquals(self::MAP, $copy->getMap());
+        $this->assertEquals(['foo' => 'bar'], $copy->getInverseMap());
     }
 
-    public function testOffsetSet()
+    public function testSetStateWithoutMap()
     {
-        $this->expectException(\LogicException::class);
-        $this->fieldMap['zoo'] = 'ape';
-    }
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage("Unable to restore field map; corrupt data");
 
-    public function testOffsetUnset()
-    {
-        $this->expectException(\LogicException::class);
-        unset($this->fieldMap['bar']);
+        ConfiguredFieldMap::__set_state([]);
     }
 }

@@ -12,7 +12,6 @@ use Jasny\DB\QueryBuilder\Preparation\PrepareFilter;
 use Jasny\DB\QueryBuilder\Preparation\PrepareUpdate;
 use Jasny\DB\Update\UpdateInstruction;
 use Jasny\Immutable;
-use UnexpectedValueException;
 
 /**
  * Query builder for update queries.
@@ -20,7 +19,6 @@ use UnexpectedValueException;
  */
 class UpdateQueryBuilder implements QueryBuilderInterface
 {
-    use Immutable\NoDynamicProperties;
     use Immutable\With;
 
     /** @var PrepareFilter|callable */
@@ -127,7 +125,7 @@ class UpdateQueryBuilder implements QueryBuilderInterface
     public function apply($accumulator, iterable $update, array $opts = []): void
     {
         $updateArr = Pipeline::with($update)
-            ->typeCheck(UpdateInstruction::class, new UnexpectedValueException())
+            ->typeCheck(UpdateInstruction::class, new \UnexpectedValueException())
             ->toArray();
 
         $prepare = $this->getPreparation();

@@ -18,7 +18,6 @@ use Jasny\Immutable;
  */
 class FilterQueryBuilder implements QueryBuilderInterface
 {
-    use Immutable\NoDynamicProperties;
     use Immutable\With;
 
     /** @var FilterParser|callable */

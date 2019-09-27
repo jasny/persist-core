@@ -7,7 +7,7 @@ namespace Jasny\DB\Update;
 use Improved as i;
 
 /**
- * Set a field to a value
+ * Set a field to a value.
  *
  * @param string|array $fieldOrPairs
  * @param mixed        $value
@@ -23,6 +23,19 @@ function set($fieldOrPairs, $value = null)
     }
 
     return new UpdateInstruction('set', $pairs);
+}
+
+/**
+ * Unset a field.
+ *
+ * @param string ...$fields
+ * @return UpdateInstruction
+ */
+function clear(string ...$fields)
+{
+    $pairs = array_fill_keys($fields, null);
+
+    return new UpdateInstruction('clear', $pairs);
 }
 
 /**
