@@ -153,7 +153,8 @@ class UpdateQueryBuilder implements QueryBuilderInterface
         }
 
         return static function ($accumulator, $update, $opts) use ($operatorLogic, $defaultLogic) {
-            return $operatorLogic($accumulator, $update, $opts, $defaultLogic);
+            $next = fn($nextUpdate) => $defaultLogic($accumulator, $nextUpdate, $opts);
+            return $operatorLogic($accumulator, $update, $opts, $next);
         };
     }
 }

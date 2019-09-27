@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\QueryBuilder;
 
-use Improved as i;
-use Improved\Iterator\CombineIterator;
-use Jasny\DB\Exception\BuildQueryException;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\QueryBuilder\FilterQueryBuilder;

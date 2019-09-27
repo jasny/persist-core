@@ -195,7 +195,7 @@ class FilterQueryBuilder implements QueryBuilderInterface
     private function nestCustomFilterCallback(callable $outer, callable $inner): \Closure
     {
         return static function ($accumulator, $item, $opts) use ($outer, $inner) {
-            $next = fn($modItem) => $inner($accumulator, $modItem, $opts);
+            $next = fn($nextItem) => $inner($accumulator, $nextItem, $opts);
 
             return $outer($accumulator, $item, $opts, $next);
         };
