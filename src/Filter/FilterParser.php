@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\QueryBuilder\Prepare;
+namespace Jasny\DB\Filter;
 
-use Improved as i;
 use Jasny\DB\Option\OptionInterface;
 use Spatie\Regex\Regex;
 
@@ -22,15 +21,18 @@ class FilterParser
      *
      * @param iterable          $filter
      * @param OptionInterface[] $opts
+     * @return FilterItem[]
      */
-    public function __invoke(iterable $filter, array $opts): iterable
+    public function __invoke(iterable $filter, array $opts): array
     {
-        $exception = new \InvalidArgumentException("Expected filter key to be a string: %s given");
+        $filterItems = [];
 
-        return i\iterable_map_keys($filter, function ($_, $key) use ($exception) {
-            i\type_check($key, 'string', $exception);
-            return $this->parse($key);
-        });
+        foreach ($filter as $key => $value) {
+            ['field' => $field, 'operator' => $operator] = $this->parse($key);
+            $filterItems[] = new FilterItem($field, $operator, $value);
+        }
+
+        return $filterItems;
     }
 
     /**

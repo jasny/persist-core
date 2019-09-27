@@ -6,7 +6,7 @@ namespace Jasny\DB\Write;
 
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Result\ResultBuilder;
-use Jasny\DB\Update\UpdateOperation;
+use Jasny\DB\Update\UpdateInstruction;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Result\Result;
 use Psr\Log\LoggerInterface;
@@ -89,7 +89,7 @@ interface WriteInterface
      * Query and update records.
      *
      * @param array<string, mixed> $filter
-     * @param UpdateOperation[]    $changes
+     * @param UpdateInstruction[]    $changes
      * @param OptionInterface[]    $opts
      * @return Result
      */

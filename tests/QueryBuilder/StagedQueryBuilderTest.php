@@ -7,7 +7,7 @@ namespace Jasny\DB\Tests\QueryBuilder;
 use Improved as i;
 use Jasny\DB\Exception\BuildQueryException;
 use Jasny\DB\Option\OptionInterface;
-use Jasny\DB\QueryBuilder\StagedQueryBuilder;
+use Jasny\DB\QueryBuilder\FilterQueryBuilder;
 use Jasny\TestHelper;
 use PHPUnit\Framework\Constraint\Exception as ExceptionConstraint;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
@@ -15,7 +15,7 @@ use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryBuilder\StagedQueryBuilder
+ * @covers \Jasny\DB\QueryBuilder\FilterQueryBuilder
  */
 class StagedQueryBuilderTest extends TestCase
 {
@@ -44,7 +44,7 @@ class StagedQueryBuilderTest extends TestCase
 
         $composeCallbacks = [fn() => 1, fn() => 2];
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($this->createCallbackMock( /* 1 */
                 $this->once(),
                 [['foo' => 1, 'bar' => 10], $opts],
@@ -94,7 +94,7 @@ class StagedQueryBuilderTest extends TestCase
 
         $composeCallbacks = [fn() => 1, fn() => 2];
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onCompose($this->createCallbackMock(
                 $this->once(),
                 [['foo' => 1, 'bar' => 10], $opts],
@@ -117,7 +117,7 @@ class StagedQueryBuilderTest extends TestCase
 
     public function testWithoutSteps()
     {
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->never()))
             ->onPrepare($this->createCallbackMock($this->never()))
             ->onCompose($this->createCallbackMock($this->never()))
@@ -142,7 +142,7 @@ class StagedQueryBuilderTest extends TestCase
     {
         $never = $this->createCallbackMock($this->never());
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($never)
             ->onPrepare($this->createCallbackMock($this->once(), [], []))
             ->onCompose($never)
@@ -174,7 +174,7 @@ class StagedQueryBuilderTest extends TestCase
             $exception
         );
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->once(), [], []))
             ->onPrepare($callback)
             ->onPrepare($this->createCallbackMock($this->never()))
@@ -199,7 +199,7 @@ class StagedQueryBuilderTest extends TestCase
             $exception
         );
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->once(), [], []))
             ->onCompose($callback)
             ->onCompose($this->createCallbackMock($this->never()))
@@ -223,7 +223,7 @@ class StagedQueryBuilderTest extends TestCase
             $exception
         );
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->once(), [], []))
             ->onCompose($this->createCallbackMock($this->once(), [], []))
             ->onBuild($callback)
@@ -246,7 +246,7 @@ class StagedQueryBuilderTest extends TestCase
             $exception
         );
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->once(), [], []))
             ->onCompose($this->createCallbackMock($this->once(), [], []))
             ->onBuild($this->createCallbackMock($this->once(), []))
@@ -264,7 +264,7 @@ class StagedQueryBuilderTest extends TestCase
         $build = fn() => [];
         $finalize = fn() => null;
 
-        $empty = new StagedQueryBuilder();
+        $empty = new FilterQueryBuilder();
         $base = $empty
             ->onPrepare($prepare)
             ->onCompose($compose)
@@ -311,7 +311,7 @@ class StagedQueryBuilderTest extends TestCase
             new \UnexpectedValueException('Expected iterable, string(5) "hello" returned')
         );
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->once(), function (InvocationMocker $invoke) {
                 $invoke->willReturn('hello');
             }))
@@ -330,7 +330,7 @@ class StagedQueryBuilderTest extends TestCase
             new \UnexpectedValueException('Expected iterable, string(5) "hello" returned')
         );
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->once(), [], []))
             ->onCompose($this->createCallbackMock($this->once(), function (InvocationMocker $invoke) {
                 $invoke->willReturn('hello');
@@ -354,7 +354,7 @@ class StagedQueryBuilderTest extends TestCase
                 . ' callable, got string(14) "not_a_callable"', get_class($callback)))
         );
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->once(), [], []))
             ->onCompose($callback)
             ->onBuild(fn(object $accumulator, iterable $compose) => i\iterable_to_array($compose))
@@ -369,7 +369,7 @@ class StagedQueryBuilderTest extends TestCase
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage("Query builder can only have one build step");
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onBuild(fn() => null);
 
         $builder->onBuild(fn() => null);
@@ -380,7 +380,7 @@ class StagedQueryBuilderTest extends TestCase
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Unusable query builder; no compose step');
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->once(), [], []))
         ;
 
@@ -392,7 +392,7 @@ class StagedQueryBuilderTest extends TestCase
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Unusable query builder; no build step');
 
-        $builder = (new StagedQueryBuilder())
+        $builder = (new FilterQueryBuilder())
             ->onPrepare($this->createCallbackMock($this->once(), [], []))
             ->onCompose($this->createCallbackMock($this->once(), [], []))
         ;

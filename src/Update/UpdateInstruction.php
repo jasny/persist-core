@@ -8,7 +8,7 @@ namespace Jasny\DB\Update;
  * Operation for update query
  * @immutable
  */
-class UpdateOperation
+class UpdateInstruction
 {
     protected string $operator;
     protected array $pairs;

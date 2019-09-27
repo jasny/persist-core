@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Jasny\DB\Tests\QueryBuilder\Prepare;
 
 use Improved as i;
-use Jasny\DB\QueryBuilder\Prepare\FilterParser;
+use Jasny\DB\QueryBuilder\Parser\FilterParser;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryBuilder\Prepare\FilterParser
+ * @covers \Jasny\DB\QueryBuilder\Parser\FilterParser
  */
 class FilterParserTest extends TestCase
 {

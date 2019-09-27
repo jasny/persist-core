@@ -7,11 +7,11 @@ namespace Jasny\DB\Tests\QueryBuilder\Prepare;
 use Improved as i;
 use Jasny\DB\Option\FlagOption;
 use Jasny\DB\Option\OptionInterface;
-use Jasny\DB\QueryBuilder\Prepare\ItemAsKey;
+use Jasny\DB\QueryBuilder\Parser\ItemAsKey;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryBuilder\Prepare\ItemAsKey
+ * @covers \Jasny\DB\QueryBuilder\Parser\ItemAsKey
  */
 class ItemAsKeyTest extends TestCase
 {

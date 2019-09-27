@@ -21,14 +21,4 @@ interface QueryBuilderInterface
      * @throws BuildQueryException
      */
     public function apply(object $accumulator, iterable $iterable, array $opts = []): void;
-
-    /**
-     * Alias of `apply()`.
-     *
-     * @param object            $accumulator  Database specific query object.
-     * @param iterable          $iterable
-     * @param OptionInterface[] $opts
-     * @throws BuildQueryException
-     */
-    public function __invoke(object $accumulator, iterable $iterable, array $opts = []): void;
 }

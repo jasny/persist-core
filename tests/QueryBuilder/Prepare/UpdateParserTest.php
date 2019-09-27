@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\QueryBuilder\Prepare;
 
-use Jasny\DB\QueryBuilder\Prepare\UpdateParser;
-use Jasny\DB\Update\UpdateOperation;
+use Jasny\DB\QueryBuilder\Parser\UpdateParser;
+use Jasny\DB\Update\UpdateInstruction;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryBuilder\Prepare\UpdateParser
+ * @covers \Jasny\DB\QueryBuilder\Parser\UpdateParser
  */
 class UpdateParserTest extends TestCase
 {
     protected function createUpdateOperationMock(array $config)
     {
-        return $this->createConfiguredMock(UpdateOperation::class, $config);
+        return $this->createConfiguredMock(UpdateInstruction::class, $config);
     }
 
     public function test()

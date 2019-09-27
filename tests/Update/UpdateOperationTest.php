@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Jasny\DB\Tests\Update;
 
 use Jasny\DB\Update as update;
-use Jasny\DB\Update\UpdateOperation;
+use Jasny\DB\Update\UpdateInstruction;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Update\UpdateOperation
+ * @covers \Jasny\DB\Update\UpdateInstruction
  */
 class UpdateOperationTest extends TestCase
 {
     public function testBasic()
     {
-        $operation = new UpdateOperation('set', ['foo' => 42]);
+        $operation = new UpdateInstruction('set', ['foo' => 42]);
 
         $this->assertEquals('set', $operation->getOperator());
         $this->assertEquals(['foo' => 42], $operation->getPairs());
@@ -23,7 +23,7 @@ class UpdateOperationTest extends TestCase
 
     public function testWithMultiplePairs()
     {
-        $operation = new UpdateOperation('set', ['foo' => 42, 'bar' => 99]);
+        $operation = new UpdateInstruction('set', ['foo' => 42, 'bar' => 99]);
 
         $this->assertEquals('set', $operation->getOperator());
         $this->assertEquals(['foo' => 42, 'bar' => 99], $operation->getPairs());
@@ -31,7 +31,7 @@ class UpdateOperationTest extends TestCase
 
     public function testCustomOperator()
     {
-        $operation = new UpdateOperation('custom', ['foo' => 42, 'bar' => 99]);
+        $operation = new UpdateInstruction('custom', ['foo' => 42, 'bar' => 99]);
 
         $this->assertEquals('custom', $operation->getOperator());
         $this->assertEquals(['foo' => 42, 'bar' => 99], $operation->getPairs());
