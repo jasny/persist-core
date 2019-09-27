@@ -19,7 +19,7 @@ class ResultBuilder extends PipelineBuilder
     public function __construct(?FieldMapInterface $fieldMap = null)
     {
         if (isset($fieldMap)) {
-            $this->steps[] = [[$fieldMap, 'applyToResult']];
+            $this->steps[] = [[$fieldMap, 'applyToResult'], []];
         }
     }
 

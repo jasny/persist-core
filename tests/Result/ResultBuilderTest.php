@@ -41,9 +41,9 @@ class ResultBuilderTest extends TestCase
         ];
 
         $fieldMap = $this->createMock(FieldMapInterface::class);
-        $fieldMap->expects($this->exactly(2))->method('__invoke')
-            ->withConsecutive([$records[0]], [$records[1]])
-            ->willReturnOnConsecutiveCalls(...$expected);
+        $fieldMap->expects($this->once())->method('applyToResult')
+            ->with($records)
+            ->willReturn($expected);
 
         $builder = new ResultBuilder($fieldMap);
         $result = $builder->with($records);
