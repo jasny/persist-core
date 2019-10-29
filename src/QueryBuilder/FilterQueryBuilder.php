@@ -28,7 +28,7 @@ class FilterQueryBuilder implements QueryBuilderInterface
     /** @var Finalize|callable */
     protected $finalize;
 
-    /** @var callable(mixed,FilterItem[],OptionInterface[]):void */
+    /** @var callable(mixed,FilterItem,OptionInterface[]):void */
     protected $defaultLogic;
     /** @var array<string,callable> */
     protected array $fieldLogic = [];
@@ -39,7 +39,7 @@ class FilterQueryBuilder implements QueryBuilderInterface
     /**
      * FilterQueryBuilder constructor.
      *
-     * @param callable(mixed,FilterItem[],OptionInterface[]):void $apply
+     * @param callable(mixed,FilterItem,OptionInterface[]):void   $apply
      * @param null|callable(array,OptionInterface[]):FilterItem[] $parser    Defaults to a `FilterParser`.
      */
     public function __construct(callable $apply, ?callable $parser = null)

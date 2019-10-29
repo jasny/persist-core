@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Write;
+namespace Jasny\DB;
 
 use Jasny\DB\Option\OptionInterface;
-use Jasny\DB\Result\ResultBuilder;
 use Jasny\DB\Update\UpdateInstruction;
-use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Result\Result;
 use Psr\Log\LoggerInterface;
 
@@ -30,39 +28,6 @@ interface WriteInterface
      * @return static
      */
     public function withLogging(LoggerInterface $logger): self;
-
-
-    /**
-     * Create a Writer service with a custom filter query builder.
-     *
-     * @param QueryBuilderInterface $builder
-     * @return static
-     */
-    public function withQueryBuilder(QueryBuilderInterface $builder): self;
-
-    /**
-     * Create a Writer service with a custom builder pipeline for save.
-     *
-     * @param QueryBuilderInterface $builder
-     * @return static
-     */
-    public function withSaveQueryBuilder(QueryBuilderInterface $builder): self;
-
-    /**
-     * Create a Writer service with a custom update query builder.
-     *
-     * @param QueryBuilderInterface $builder
-     * @return static
-     */
-    public function withUpdateQueryBuilder(QueryBuilderInterface $builder): self;
-
-    /**
-     * Create a Writer service with a custom update query builder.
-     *
-     * @param ResultBuilder $builder
-     * @return static
-     */
-    public function withResultBuilder(ResultBuilder $builder): self;
 
 
     /**
@@ -89,7 +54,7 @@ interface WriteInterface
      * Query and update records.
      *
      * @param array<string, mixed> $filter
-     * @param UpdateInstruction[]    $changes
+     * @param UpdateInstruction[]  $changes
      * @param OptionInterface[]    $opts
      * @return Result
      */

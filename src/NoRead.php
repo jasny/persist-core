@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Read;
+namespace Jasny\DB;
 
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\QueryBuilder\QueryBuilderInterface;
@@ -33,28 +33,6 @@ class NoRead implements ReadInterface
      * @return $this
      */
     public function withLogging(LoggerInterface $logger): self
-    {
-        return $this;
-    }
-
-    /**
-     * Does nothing.
-     *
-     * @param QueryBuilderInterface $builder
-     * @return $this
-     */
-    public function withQueryBuilder(QueryBuilderInterface $builder): self
-    {
-        return $this;
-    }
-
-    /**
-     * Does nothing.
-     *
-     * @param ResultBuilder $builder
-     * @return $this
-     */
-    public function withResultBuilder(ResultBuilder $builder): self
     {
         return $this;
     }

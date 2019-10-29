@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Write;
+namespace Jasny\DB;
 
-use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\Result\Result;
-use Jasny\DB\Result\ResultBuilder;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -33,50 +31,6 @@ class NoWrite implements WriteInterface
      * @return $this
      */
     public function withLogging(LoggerInterface $logger): self
-    {
-        return $this;
-    }
-
-    /**
-     * Create a Writer service with a custom filter query builder.
-     *
-     * @param QueryBuilderInterface $builder
-     * @return $this
-     */
-    public function withQueryBuilder(QueryBuilderInterface $builder): self
-    {
-        return $this;
-    }
-
-    /**
-     * Create a Writer service with a custom builder pipeline for save.
-     *
-     * @param QueryBuilderInterface $builder
-     * @return $this
-     */
-    public function withSaveQueryBuilder(QueryBuilderInterface $builder): self
-    {
-        return $this;
-    }
-
-    /**
-     * Create a Writer service with a custom update query builder.
-     *
-     * @param QueryBuilderInterface $builder
-     * @return $this
-     */
-    public function withUpdateQueryBuilder(QueryBuilderInterface $builder): self
-    {
-        return $this;
-    }
-
-    /**
-     * Create a Writer service with a custom update query builder.
-     *
-     * @param ResultBuilder $builder
-     * @return $this
-     */
-    public function withResultBuilder(ResultBuilder $builder): self
     {
         return $this;
     }
