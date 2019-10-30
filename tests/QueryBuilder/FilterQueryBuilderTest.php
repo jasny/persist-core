@@ -181,8 +181,8 @@ class FilterQueryBuilderTest extends TestCase
         );
 
         $builder = (new FilterQueryBuilder($defaultLogic))
-            ->withCustomFilterOperator('top', $customTop)
-            ->withCustomFilterOperator('<>', $customBetween);
+            ->withCustomOperator('top', $customTop)
+            ->withCustomOperator('<>', $customBetween);
 
         $builder->apply($this->acc, ['foo' => 1, 'bar(top)' => 42, 'qux (<>)' => [1, 2]], $this->opts);
     }
@@ -205,9 +205,9 @@ class FilterQueryBuilderTest extends TestCase
         $customBetween = $this->createCallbackMock($this->never());
 
         $builder = (new FilterQueryBuilder($defaultLogic))
-            ->withCustomFilterOperator('top', $customTop)
-            ->withCustomFilterOperator('<>', $customBetween)
-            ->withoutCustomFilterOperator('<>');
+            ->withCustomOperator('top', $customTop)
+            ->withCustomOperator('<>', $customBetween)
+            ->withoutCustomOperator('<>');
 
         $builder->apply($this->acc, ['foo' => 1, 'bar(top)' => 42, 'qux (<>)' => [1, 2]], $this->opts);
     }
@@ -247,7 +247,7 @@ class FilterQueryBuilderTest extends TestCase
 
         $builder = (new FilterQueryBuilder($defaultLogic))
             ->withCustomFilter('bar', $customBar)
-            ->withCustomFilterOperator('top', $customTop);
+            ->withCustomOperator('top', $customTop);
 
         $builder->apply($this->acc, ['bar(top)' => 1], $this->opts);
 

@@ -4,37 +4,19 @@ declare(strict_types=1);
 
 namespace Jasny\DB\QueryBuilder;
 
-use Jasny\DB\Exception\BuildQueryException;
+use Improved as i;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Filter\FilterParser;
-use Jasny\DB\QueryBuilder\Finalization\Finalize;
-use Jasny\DB\QueryBuilder\Preparation\PrepareFilter;
-use Jasny\Immutable;
 
 /**
  * Query builder for filter queries.
  * @immutable
  */
-class FilterQueryBuilder implements QueryBuilderInterface
+class FilterQueryBuilder extends AbstractQueryBuilder
 {
-    use Immutable\With;
-
     /** @var FilterParser|callable */
     protected $parser;
-
-    /** @var PrepareFilter|callable */
-    protected $prepare;
-    /** @var Finalize|callable */
-    protected $finalize;
-
-    /** @var callable(mixed,FilterItem,OptionInterface[]):void */
-    protected $defaultLogic;
-    /** @var array<string,callable> */
-    protected array $fieldLogic = [];
-    /** @var array<string,callable> */
-    protected array $operatorLogic = [];
-
 
     /**
      * FilterQueryBuilder constructor.
@@ -45,19 +27,18 @@ class FilterQueryBuilder implements QueryBuilderInterface
     public function __construct(callable $apply, ?callable $parser = null)
     {
         $this->parser = $parser ?? new FilterParser();
-        $this->defaultLogic = $apply;
+
+        parent::__construct($apply);
     }
 
 
     /**
      * Get the prepare logic of the query builder.
      *
-     * @return PrepareFilter|callable(FilterItem[],OptionInterface[]):FilterItem[]
+     * @return callable(FilterItem[],OptionInterface[]):FilterItem[]
      */
     public function getPreparation(): callable
     {
-        $this->prepare ??= new PrepareFilter();
-
         return $this->prepare;
     }
 
@@ -70,29 +51,6 @@ class FilterQueryBuilder implements QueryBuilderInterface
     public function withPreparation(callable $prepare): self
     {
         return $this->withProperty('prepare', $prepare);
-    }
-
-    /**
-     * Get the finalize logic of the query builder.
-     *
-     * @return Finalize|callable(mixed,OptionInterface[]):void
-     */
-    public function getFinalization(): callable
-    {
-        $this->finalize ??= new Finalize();
-
-        return $this->finalize;
-    }
-
-    /**
-     * Set the finalize logic of the query builder.
-     *
-     * @param callable(mixed,OptionInterface[]):void $finalize
-     * @return static
-     */
-    public function withFinalization(callable $finalize): self
-    {
-        return $this->withProperty('finalize', $finalize);
     }
 
 
@@ -128,7 +86,7 @@ class FilterQueryBuilder implements QueryBuilderInterface
      * @param callable(mixed,FilterItem,OptionInterface[],callable):void $apply
      * @return static
      */
-    public function withCustomFilterOperator(string $operator, callable $apply): self
+    public function withCustomOperator(string $operator, callable $apply): self
     {
         return $this->withPropertyKey('operatorLogic', $operator, $apply);
     }
@@ -139,7 +97,7 @@ class FilterQueryBuilder implements QueryBuilderInterface
      * @param string $operator
      * @return static
      */
-    public function withoutCustomFilterOperator(string $operator): self
+    public function withoutCustomOperator(string $operator): self
     {
         return $this->withoutPropertyKey('operatorLogic', $operator);
     }
@@ -151,29 +109,21 @@ class FilterQueryBuilder implements QueryBuilderInterface
      * @param mixed             $accumulator  Database specific query object.
      * @param iterable          $filter
      * @param OptionInterface[] $opts
-     * @throws BuildQueryException
      */
     public function apply($accumulator, iterable $filter, array $opts = []): void
     {
         $parsedFilter = ($this->parser)($filter, $opts);
 
-        $prepare = $this->getPreparation();
-        $filterItems = $prepare($parsedFilter, $opts);
-
-        foreach ($filterItems as $filterItem) {
-            $apply = $this->getLogicFor($filterItem);
-            $apply($accumulator, $filterItem, $opts);
-        }
-
-        $finalize = $this->getFinalization();
-        $finalize($accumulator, $opts);
+        parent::apply($accumulator, $parsedFilter, $opts);
     }
 
     /**
      * Get a default or custom logic for a filter item.
      */
-    protected function getLogicFor(FilterItem $item): callable
+    protected function getLogicFor(object $item): callable
     {
+        i\type_check($item, FilterItem::class);
+
         $logic = $this->defaultLogic;
 
         $operatorLogic = $this->operatorLogic[$item->getOperator()] ?? null;

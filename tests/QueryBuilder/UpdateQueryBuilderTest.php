@@ -127,8 +127,8 @@ class UpdateQueryBuilderTest extends TestCase
         );
 
         $builder = (new UpdateQueryBuilder($defaultLogic))
-            ->withCustomUpdateOperator('pike', $customPike)
-            ->withCustomUpdateOperator('swap', $customSwap);
+            ->withCustomOperator('pike', $customPike)
+            ->withCustomOperator('swap', $customSwap);
 
         $builder->apply($this->acc, $update, $this->opts);
     }
@@ -157,9 +157,9 @@ class UpdateQueryBuilderTest extends TestCase
         );
 
         $builder = (new UpdateQueryBuilder($defaultLogic))
-            ->withCustomUpdateOperator('pike', $customPike)
-            ->withCustomUpdateOperator('swap', $customSwap)
-            ->withoutCustomUpdateOperator('pike');
+            ->withCustomOperator('pike', $customPike)
+            ->withCustomOperator('swap', $customSwap)
+            ->withoutCustomOperator('pike');
 
         $builder->apply($this->acc, $update, $this->opts);
     }
@@ -188,7 +188,7 @@ class UpdateQueryBuilderTest extends TestCase
         };
 
         $builder = (new UpdateQueryBuilder($defaultLogic))
-            ->withCustomUpdateOperator('pike', $customPike);
+            ->withCustomOperator('pike', $customPike);
 
         $builder->apply($this->acc, [new UpdateInstruction('pike', ['foo' => 42])], $this->opts);
 
