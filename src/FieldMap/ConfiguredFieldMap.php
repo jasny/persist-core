@@ -56,6 +56,24 @@ class ConfiguredFieldMap implements FieldMapInterface
 
 
     /**
+     * Map an app field name to a DB field name.
+     * Field name use dot notation.
+     */
+    public function toDB(string $appField): string
+    {
+        return $this->getDeepMapping($appField) ?? $appField;
+    }
+
+    /**
+     * Map a DB field name to an app field name.
+     */
+    public function fromDB(string $dbField): string
+    {
+        return $this->map[$dbField] ?? $dbField;
+    }
+
+
+    /**
      * Get mapping for a nested field.
      *
      * @param string $field
@@ -91,7 +109,6 @@ class ConfiguredFieldMap implements FieldMapInterface
                     ? new FilterItem($mapped, $item->getOperator(), $item->getValue())
                     : $item;
             })
-            ->filter(fn($item) => $item !== null)
             ->toArray();
     }
 
@@ -151,12 +168,13 @@ class ConfiguredFieldMap implements FieldMapInterface
      * @param iterable<array|object> $items
      * @return iterable<array|object>
      */
-    public function applyInverse(iterable $items): iterable
+    public function applyToItems(iterable $items): iterable
     {
         foreach ($items as $key => $item) {
             yield $key => $this->applyMapToValue($this->inverse, $item);
         }
     }
+
 
     /**
      * Invoke field map to apply mapping.
@@ -165,7 +183,7 @@ class ConfiguredFieldMap implements FieldMapInterface
      * @param mixed $subject
      * @return mixed
      */
-    public function applyMapToValue(array $map, $subject)
+    protected function applyMapToValue(array $map, $subject)
     {
         switch (true) {
             case is_array($subject):

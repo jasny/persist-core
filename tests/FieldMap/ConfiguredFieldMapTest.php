@@ -135,7 +135,7 @@ class ConfiguredFieldMapTest extends TestCase
         $this->assertCount(4, $mapped);
     }
 
-    public function testApplyInverse()
+    public function testApplyToItems()
     {
         $items = new \ArrayIterator([
             'array' => ['id' => 42, 'bar' => 'man', 'color' => 'red'],
@@ -146,7 +146,7 @@ class ConfiguredFieldMapTest extends TestCase
 
         $fieldMap = new ConfiguredFieldMap(self::MAP);
 
-        $iterator = $fieldMap->applyInverse($items);
+        $iterator = $fieldMap->applyToItems($items);
         $mapped = i\iterable_to_array($iterator, true);
 
         $this->assertArrayHasKey('array', $mapped);
