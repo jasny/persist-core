@@ -13,12 +13,6 @@ use Jasny\DB\Update\UpdateInstruction;
 interface FieldMapInterface
 {
     /**
-     * Allow properties that are not mapped?
-     */
-    public function isDynamic(): bool;
-
-
-    /**
      * Apply mapping to filter items.
      *
      * @param FilterItem[] $filterItems

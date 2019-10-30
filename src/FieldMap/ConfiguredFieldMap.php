@@ -21,15 +21,12 @@ class ConfiguredFieldMap implements FieldMapInterface
     /** @var array<string, string> */
     protected array $inverse;
 
-    protected bool $dynamic;
-
     /**
      * Class constructor.
      *
      * @param array<string, string> $map
-     * @param bool                  $dynamic  Allow properties that are not mapped?
      */
-    public function __construct(array $map, bool $dynamic = true)
+    public function __construct(array $map)
     {
         $this->map = $map;
         $this->inverse = array_flip($map);
@@ -38,8 +35,6 @@ class ConfiguredFieldMap implements FieldMapInterface
             $duplicates = array_filter(array_count_values($this->map), fn($count) => $count > 1);
             throw new \UnexpectedValueException("Duplicate field in map: " . join(', ', array_keys($duplicates)));
         }
-
-        $this->dynamic = $dynamic;
     }
 
 
@@ -57,14 +52,6 @@ class ConfiguredFieldMap implements FieldMapInterface
     public function getInverseMap(): array
     {
         return $this->inverse;
-    }
-
-    /**
-     * Allow properties that are not mapped?
-     */
-    public function isDynamic(): bool
-    {
-        return $this->dynamic;
     }
 
 
@@ -100,16 +87,9 @@ class ConfiguredFieldMap implements FieldMapInterface
                 $field = $item->getField();
                 $mapped = $this->getDeepMapping($field);
 
-                if ($mapped !== null) {
-                    return new FilterItem($mapped, $item->getOperator(), $item->getValue());
-                }
-
-                if ($this->dynamic) {
-                    return $item;
-                }
-
-                trigger_error("Ignoring filter on '{$field}': field not mapped", E_USER_NOTICE);
-                return null;
+                return $mapped !== null
+                    ? new FilterItem($mapped, $item->getOperator(), $item->getValue())
+                    : $item;
             })
             ->filter(fn($item) => $item !== null)
             ->toArray();
@@ -139,14 +119,7 @@ class ConfiguredFieldMap implements FieldMapInterface
 
         foreach ($pairs as $field => $value) {
             $mapped = $this->getDeepMapping($field);
-
-            if ($mapped !== null) {
-                $mappedPairs[$mapped] = $value;
-            } elseif ($this->dynamic) {
-                $mappedPairs[$field] = $value;
-            } else {
-                trigger_error("Skipping update on '{$field}': field not mapped", E_USER_NOTICE);
-            }
+            $mappedPairs[$mapped ?? $field] = $value;
         }
 
         if ($mappedPairs === $pairs) {
@@ -230,9 +203,7 @@ class ConfiguredFieldMap implements FieldMapInterface
             }
         }
 
-        return $this->dynamic
-            ? ($isChanged ? array_diff_key($subject, array_diff($map, array_flip($map))) : $subject)
-            : array_intersect_key($subject, array_flip($map));
+        return $isChanged ? array_diff_key($subject, array_diff($map, array_flip($map))) : $subject;
     }
 
     /**
@@ -251,9 +222,7 @@ class ConfiguredFieldMap implements FieldMapInterface
             }
         }
 
-        $remove = $this->dynamic
-            ? array_diff(array_keys($map), $map)
-            : array_diff(array_keys(get_object_vars($subject)), $map);
+        $remove = array_diff(array_keys($map), $map);
 
         foreach ($remove as $prop) {
             unset($subject->{$prop});
@@ -278,10 +247,10 @@ class ConfiguredFieldMap implements FieldMapInterface
 
         if (!isset($data['inverse'])) {
             // Shouldn't really happen
-            return new static($data['map'], $data['dynamic'] ?? true);
+            return new static($data['map']);
         }
 
-        $fieldMap = new static([], $data['dynamic'] ?? true);
+        $fieldMap = new static([]);
         $fieldMap->map = $data['map'];
         $fieldMap->inverse = $data['inverse'];
 
