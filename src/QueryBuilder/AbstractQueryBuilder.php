@@ -48,8 +48,10 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
         $this->defaultLogic = $apply;
 
         // nop functions
-        $this->prepare = fn(array $filterItems, array $options): array => $filterItems;
-        $this->finalize = function ($accumulator, array $options): void {
+        $this->prepare = static function (array $filterItems, array $options): array {
+            return $filterItems;
+        };
+        $this->finalize = static function ($accumulator, array $options): void {
         };
     }
 
