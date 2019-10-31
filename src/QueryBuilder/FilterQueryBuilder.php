@@ -63,12 +63,12 @@ class FilterQueryBuilder extends AbstractQueryBuilder
      * The callable must accept the following arguments: ($accumulator, $filterItem, $opts, $next).
      *
      * @param string                                                     $field
-     * @param callable(mixed,FilterItem,OptionInterface[],callable):void $apply
+     * @param callable(mixed,FilterItem,OptionInterface[],callable):void $compose
      * @return static
      */
-    public function withCustomFilter(string $field, callable $apply): self
+    public function withCustomFilter(string $field, callable $compose): self
     {
-        return $this->withPropertyKey('fieldCompose', $field, $apply);
+        return $this->withPropertyKey('fieldCompose', $field, $compose);
     }
 
     /**
@@ -87,12 +87,12 @@ class FilterQueryBuilder extends AbstractQueryBuilder
      * The callable must accept the following arguments: ($accumulator, $filterItem, $opts, $next).
      *
      * @param string                                                     $operator
-     * @param callable(mixed,FilterItem,OptionInterface[],callable):void $apply
+     * @param callable(mixed,FilterItem,OptionInterface[],callable):void $compose
      * @return static
      */
-    public function withCustomOperator(string $operator, callable $apply): self
+    public function withCustomOperator(string $operator, callable $compose): self
     {
-        return $this->withPropertyKey('operatorCompose', $operator, $apply);
+        return $this->withPropertyKey('operatorCompose', $operator, $compose);
     }
 
     /**

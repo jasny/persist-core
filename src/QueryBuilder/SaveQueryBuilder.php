@@ -10,6 +10,16 @@ namespace Jasny\DB\QueryBuilder;
 class SaveQueryBuilder extends AbstractQueryBuilder
 {
     /**
+     * SaveQueryBuilder constructor.
+     *
+     * @param callable(object,array|object,mixed,OptionInterface[])
+     */
+    public function __construct(callable $compose)
+    {
+        parent::__construct($compose);
+    }
+
+    /**
      * Get the prepare logic of the query builder.
      *
      * @return callable(iterable,OptionInterface[]):iterable
@@ -35,8 +45,8 @@ class SaveQueryBuilder extends AbstractQueryBuilder
      */
     protected function applyCompose(object $accumulator, iterable $items, array $opts = []): void
     {
-        foreach ($items as $item) {
-            ($this->compose)($accumulator, $item, $opts);
+        foreach ($items as $index => $item) {
+            ($this->compose)($accumulator, $item, $index, $opts);
         }
     }
 }

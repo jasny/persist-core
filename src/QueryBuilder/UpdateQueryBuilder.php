@@ -17,6 +17,16 @@ class UpdateQueryBuilder extends AbstractQueryBuilder
     protected array $operatorCompose = [];
 
     /**
+     * UpdateQueryBuilder constructor.
+     *
+     * @param callable(object,UpdateInstruction,OptionInterface[])
+     */
+    public function __construct(callable $compose)
+    {
+        parent::__construct($compose);
+    }
+
+    /**
      * Get the prepare logic of the query builder.
      *
      * @return callable(UpdateInstruction[],OptionInterface[]):UpdateInstruction[]
