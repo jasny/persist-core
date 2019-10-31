@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Jasny\DB\QueryBuilder;
 
-use Improved as i;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Filter\FilterParser;
@@ -18,17 +17,22 @@ class FilterQueryBuilder extends AbstractQueryBuilder
     /** @var FilterParser|callable */
     protected $parser;
 
+    /** @var array<string,callable> */
+    protected array $fieldCompose = [];
+    /** @var array<string,callable> */
+    protected array $operatorCompose = [];
+
     /**
      * FilterQueryBuilder constructor.
      *
-     * @param callable(mixed,FilterItem,OptionInterface[]):void   $apply
+     * @param callable(mixed,FilterItem,OptionInterface[]):void   $compose
      * @param null|callable(array,OptionInterface[]):FilterItem[] $parser    Defaults to a `FilterParser`.
      */
-    public function __construct(callable $apply, ?callable $parser = null)
+    public function __construct(callable $compose, ?callable $parser = null)
     {
         $this->parser = $parser ?? new FilterParser();
 
-        parent::__construct($apply);
+        parent::__construct($compose);
     }
 
 
@@ -64,7 +68,7 @@ class FilterQueryBuilder extends AbstractQueryBuilder
      */
     public function withCustomFilter(string $field, callable $apply): self
     {
-        return $this->withPropertyKey('fieldLogic', $field, $apply);
+        return $this->withPropertyKey('fieldCompose', $field, $apply);
     }
 
     /**
@@ -75,7 +79,7 @@ class FilterQueryBuilder extends AbstractQueryBuilder
      */
     public function withoutCustomFilter(string $field): self
     {
-        return $this->withoutPropertyKey('fieldLogic', $field);
+        return $this->withoutPropertyKey('fieldCompose', $field);
     }
 
     /**
@@ -88,7 +92,7 @@ class FilterQueryBuilder extends AbstractQueryBuilder
      */
     public function withCustomOperator(string $operator, callable $apply): self
     {
-        return $this->withPropertyKey('operatorLogic', $operator, $apply);
+        return $this->withPropertyKey('operatorCompose', $operator, $apply);
     }
 
     /**
@@ -99,7 +103,7 @@ class FilterQueryBuilder extends AbstractQueryBuilder
      */
     public function withoutCustomOperator(string $operator): self
     {
-        return $this->withoutPropertyKey('operatorLogic', $operator);
+        return $this->withoutPropertyKey('operatorCompose', $operator);
     }
 
 
@@ -118,31 +122,40 @@ class FilterQueryBuilder extends AbstractQueryBuilder
     }
 
     /**
-     * Get a default or custom logic for a filter item.
+     * Apply each filter item to the accumulator.
      */
-    protected function getLogicFor(object $item): callable
+    protected function applyCompose(object $accumulator, iterable $filter, array $opts = []): void
     {
-        i\type_check($item, FilterItem::class);
+        foreach ($filter as $filterItem) {
+            $compose = $this->getComposer($filterItem);
+            $compose($accumulator, $filterItem, $opts);
+        }
+    }
 
-        $logic = $this->defaultLogic;
+    /**
+     * Get the default or a custom compose function for a filter item.
+     */
+    protected function getComposer(FilterItem $item): callable
+    {
+        $compose = $this->compose;
 
-        $operatorLogic = $this->operatorLogic[$item->getOperator()] ?? null;
-        if ($operatorLogic !== null) {
-            $logic = $this->nestCustomFilterCallback($operatorLogic, $logic);
+        $operatorCompose = $this->operatorCompose[$item->getOperator()] ?? null;
+        if ($operatorCompose !== null) {
+            $compose = $this->nestCallback($operatorCompose, $compose);
         }
 
-        $fieldLogic = $this->fieldLogic[$item->getField()] ?? null;
-        if ($fieldLogic !== null) {
-            $logic = $this->nestCustomFilterCallback($fieldLogic, $logic);
+        $fieldCompose = $this->fieldCompose[$item->getField()] ?? null;
+        if ($fieldCompose !== null) {
+            $compose = $this->nestCallback($fieldCompose, $compose);
         }
 
-        return $logic;
+        return $compose;
     }
 
     /**
      * Nest callback for custom filter.
      */
-    private function nestCustomFilterCallback(callable $outer, callable $inner): \Closure
+    private function nestCallback(callable $outer, callable $inner): \Closure
     {
         return static function ($accumulator, $item, $opts) use ($outer, $inner) {
             $next = fn($nextItem) => $inner($accumulator, $nextItem, $opts);

@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Jasny\DB\QueryBuilder;
 
-use Jasny\DB\Exception\BuildQueryException;
-use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\Immutable;
 
 /**
  * Base class for filter and update query builders.
  * @internal
+ *
+ * @method callable getPreparation()
+ * @method void withPreparation(callable $preparation)
  */
 abstract class AbstractQueryBuilder implements QueryBuilderInterface
 {
@@ -20,32 +21,22 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /** @var callable */
     protected $prepare;
     /** @var callable */
+    protected $compose;
+    /** @var callable */
     protected $finalize;
 
-    /** @var callable */
-    protected $defaultLogic;
-    /** @var array<string,callable> */
-    protected array $fieldLogic = [];
-    /** @var array<string,callable> */
-    protected array $operatorLogic = [];
+    /**
+     * Apply each element to the accumulator.
+     */
+    abstract protected function applyCompose(object $accumulator, iterable $iterable, array $opts = []): void;
 
 
     /**
-     * Get a default or custom logic update instruction.
-     *
-     * @param object $item
+     * AbstractQueryBuilder constructor.
      */
-    abstract protected function getLogicFor(object $item): callable;
-
-
-    /**
-     * FilterQueryBuilder constructor.
-     *
-     * @param callable(mixed,array,OptionInterface[]):void $apply
-     */
-    public function __construct(callable $apply)
+    public function __construct(callable $compose)
     {
-        $this->defaultLogic = $apply;
+        $this->compose = $compose;
 
         // nop functions
         $this->prepare = static function (array $filterItems, array $options): array {
@@ -81,19 +72,16 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * Apply instructions to given query.
      *
-     * @param mixed             $accumulator  Database specific query object.
-     * @param iterable          $instructions
+     * @param object            $accumulator  Database specific query object.
+     * @param iterable          $iterable
      * @param OptionInterface[] $opts
      */
-    public function apply($accumulator, iterable $instructions, array $opts = []): void
+    public function apply(object $accumulator, iterable $iterable, array $opts = []): void
     {
         $prepare = $this->getPreparation();
-        $instructions = $prepare($instructions, $opts);
+        $items = $prepare($iterable, $opts);
 
-        foreach ($instructions as $instruction) {
-            $apply = $this->getLogicFor($instruction);
-            $apply($accumulator, $instruction, $opts);
-        }
+        $this->applyCompose($accumulator, $items, $opts);
 
         $finalize = $this->getFinalization();
         $finalize($accumulator, $opts);

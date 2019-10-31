@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Jasny\DB\QueryBuilder;
 
-use Improved as i;
-use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Update\UpdateInstruction;
 
@@ -15,6 +13,9 @@ use Jasny\DB\Update\UpdateInstruction;
  */
 class UpdateQueryBuilder extends AbstractQueryBuilder
 {
+    /** @var array<string,callable> */
+    protected array $operatorCompose = [];
+
     /**
      * Get the prepare logic of the query builder.
      *
@@ -36,31 +37,6 @@ class UpdateQueryBuilder extends AbstractQueryBuilder
         return $this->withProperty('prepare', $prepare);
     }
 
-    
-    /**
-     * Specify a custom logic for a (virtual) filter field.
-     * The callable must accept the following arguments: ($accumulator, $filterItem, $opts, $next).
-     *
-     * @param string                                                     $field
-     * @param callable(mixed,FilterItem,OptionInterface[],callable):void $apply
-     * @return static
-     */
-    public function withCustomLogic(string $field, callable $apply): self
-    {
-        return $this->withPropertyKey('fieldLogic', $field, $apply);
-    }
-
-    /**
-     * Remove custom logic for a filter field.
-     *
-     * @param string $field
-     * @return static
-     */
-    public function withoutCustomLogic(string $field): self
-    {
-        return $this->withoutPropertyKey('fieldLogic', $field);
-    }
-
     /**
      * Specify a custom filter for an operator of an update instruction.
      * The callable must accept the following arguments: ($accumulator, $instruction, $opts, $next).
@@ -71,7 +47,7 @@ class UpdateQueryBuilder extends AbstractQueryBuilder
      */
     public function withCustomOperator(string $operator, callable $apply): self
     {
-        return $this->withPropertyKey('operatorLogic', $operator, $apply);
+        return $this->withPropertyKey('operatorCompose', $operator, $apply);
     }
 
     /**
@@ -82,53 +58,37 @@ class UpdateQueryBuilder extends AbstractQueryBuilder
      */
     public function withoutCustomOperator(string $operator): self
     {
-        return $this->withoutPropertyKey('operatorLogic', $operator);
+        return $this->withoutPropertyKey('operatorCompose', $operator);
     }
 
 
     /**
-     * Apply instructions to given query.
-     *
-     * @param mixed             $accumulator  Database specific query object.
-     * @param iterable          $update
-     * @param OptionInterface[] $opts
+     * Apply each update instruction to the accumulator.
      */
-    public function apply($accumulator, iterable $update, array $opts = []): void
+    protected function applyCompose(object $accumulator, iterable $instructions, array $opts = []): void
     {
-        $updateArr = Pipeline::with($update)
-            ->typeCheck(UpdateInstruction::class, new \UnexpectedValueException())
-            ->toArray();
-
-        $prepare = $this->getPreparation();
-        $instructions = $prepare($updateArr, $opts);
-
         foreach ($instructions as $instruction) {
-            $apply = $this->getLogicFor($instruction);
-            $apply($accumulator, $instruction, $opts);
+            $compose = $this->getComposer($instruction);
+            $compose($accumulator, $instruction, $opts);
         }
-
-        $finalize = $this->getFinalization();
-        $finalize($accumulator, $opts);
     }
 
     /**
      * Get a default or custom logic update instruction.
      */
-    protected function getLogicFor(object $item): callable
+    protected function getComposer(UpdateInstruction $item): callable
     {
-        i\type_check($item, UpdateInstruction::class);
+        $defaultCompose = $this->compose;
+        $operatorCompose = $this->operatorCompose[$item->getOperator()] ?? null;
 
-        $defaultLogic = $this->defaultLogic;
-        $operatorLogic = $this->operatorLogic[$item->getOperator()] ?? null;
-
-        /** @var callable|null $operatorLogic */
-        if ($operatorLogic === null) {
-            return $defaultLogic;
+        /** @var callable|null $operatorCompose */
+        if ($operatorCompose === null) {
+            return $defaultCompose;
         }
 
-        return static function ($accumulator, $update, $opts) use ($operatorLogic, $defaultLogic) {
-            $next = fn($nextUpdate) => $defaultLogic($accumulator, $nextUpdate, $opts);
-            return $operatorLogic($accumulator, $update, $opts, $next);
+        return static function ($accumulator, $update, $opts) use ($operatorCompose, $defaultCompose) {
+            $next = fn($nextUpdate) => $defaultCompose($accumulator, $nextUpdate, $opts);
+            return $operatorCompose($accumulator, $update, $opts, $next);
         };
     }
 }
