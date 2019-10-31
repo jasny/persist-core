@@ -15,7 +15,7 @@ use Improved as i;
  *
  * @immutable
  */
-class SettingOption
+class SettingOption implements OptionInterface
 {
     protected string $name;
 
