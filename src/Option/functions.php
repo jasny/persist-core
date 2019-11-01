@@ -66,11 +66,12 @@ function existing(string $resolution): SettingOption
 }
 
 /**
- * Don't replace keys with items in save query.
+ * Update the items with generated ids for save action.
+ * Result contains the updated items instead of only generated ids.
  */
-function preserve_keys(): FlagOption
+function return_items(): FlagOption
 {
-    return new FlagOption('preserve_keys');
+    return new FlagOption('return_items');
 }
 
 
