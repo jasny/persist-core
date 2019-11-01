@@ -232,21 +232,21 @@ class ConfiguredFieldMap implements FieldMapInterface
      */
     protected function applyMapToObject(array $map, object $subject): object
     {
-        $copy = clone $subject; // Make a copy to deal with potential cross reference.
+        $target = clone $subject;
 
         foreach ($map as $field => $newField) {
-            if (property_exists($copy, $field)) {
-                $subject->{$newField} = $copy->{$field};
+            if (property_exists($subject, $field)) {
+                $target->{$newField} = $subject->{$field};
             }
         }
 
         $remove = array_diff(array_keys($map), $map);
 
         foreach ($remove as $prop) {
-            unset($subject->{$prop});
+            unset($target->{$prop});
         }
 
-        return $subject;
+        return $target;
     }
 
 
