@@ -6,6 +6,7 @@ namespace Jasny\DB\Result;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
+use stdClass;
 use UnexpectedValueException;
 use function Jasny\object_get_properties;
 use function Jasny\object_set_properties;
@@ -67,7 +68,7 @@ class Result extends Pipeline
             if (is_array($item)) {
                 return array_merge($item, $doc);
             } else {
-                object_set_properties($item, $doc);
+                object_set_properties($item, $doc, $item instanceof stdClass);
                 return $item;
             }
         });
