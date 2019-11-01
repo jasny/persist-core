@@ -69,9 +69,9 @@ function existing(string $resolution): SettingOption
  * Update the items with generated ids for save action.
  * Result contains the updated items instead of only generated ids.
  */
-function return_items(): FlagOption
+function apply_result(): FlagOption
 {
-    return new FlagOption('return_items');
+    return new FlagOption('apply_result');
 }
 
 
