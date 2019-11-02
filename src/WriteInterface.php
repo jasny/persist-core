@@ -53,12 +53,12 @@ interface WriteInterface
     /**
      * Query and update records.
      *
-     * @param array<string, mixed> $filter
-     * @param UpdateInstruction[]  $changes
-     * @param OptionInterface[]    $opts
+     * @param array<string, mixed>                  $filter
+     * @param UpdateInstruction|UpdateInstruction[] $instructions
+     * @param OptionInterface[]                     $opts
      * @return Result
      */
-    public function update(array $filter, array $changes, array $opts = []): Result;
+    public function update(array $filter, $instructions, array $opts = []): Result;
 
     /**
      * Query and delete records.
