@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB;
+namespace Jasny\DB\Writer;
 
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Update\UpdateInstruction;
@@ -27,7 +27,7 @@ interface WriteInterface
      *
      * @return static
      */
-    public function withLogging(LoggerInterface $logger): self;
+    public function withLogging(LoggerInterface $logger);
 
 
     /**

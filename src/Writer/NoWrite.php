@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB;
+namespace Jasny\DB\Writer;
 
 use Jasny\DB\Exception\UnsupportedFeatureException;
 use Jasny\DB\Result\Result;
+use Jasny\DB\Update\UpdateInstruction;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -30,7 +31,7 @@ class NoWrite implements WriteInterface
      * @param LoggerInterface $logger
      * @return $this
      */
-    public function withLogging(LoggerInterface $logger): self
+    public function withLogging(LoggerInterface $logger)
     {
         return $this;
     }
@@ -42,7 +43,7 @@ class NoWrite implements WriteInterface
      * @inheritDoc
      * @throws UnsupportedFeatureException
      */
-    public function update(array $filter, array $changes, array $opts = []): Result
+    public function update(array $filter, $instruction, array $opts = []): Result
     {
         throw new UnsupportedFeatureException("Writing to storage is not supported");
     }

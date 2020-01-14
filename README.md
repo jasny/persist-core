@@ -134,17 +134,17 @@ Key            | Value  | Description
 "field (any)"  | array  | Field is one of the values in the array
 "field (none)" | array  | Field is none of the values in the array
 
+To filter between two values, use both `(min)` and `(max)`.
+
 If the field is an array, you may use the following operators
 
-Key            | Value  | Description
--------------- | ------ | ---------------------------------------------------
-"field"        | scalar | The value is part of the field
-"field (not)"  | scalar | The value is not part of the field
-"field (any)"  | array  | Any of the values are part of the field
-"field (all)"  | array  | All of the values are part of the field
-"field (none)" | array  | None of the values are part of the field
-
-To filter between two values, use both `(min)` and `(max)`.
+Key                | Value  | Description
+------------------ | ------ | ---------------------------------------------------
+"field (has)"      | scalar | The value is part of the field
+"field (has-not)"  | scalar | The value is not part of the field
+"field (has-any)"  | array  | Any of the values are part of the field
+"field (has-all)"  | array  | All of the values are part of the field
+"field (has-none)" | array  | None of the values are part of the field
 
 For data stores that support structured data (as MongoDB) the field may use the dot notation to reference a deeper
 properties.
@@ -304,18 +304,18 @@ The method returns an array or other iterable with generated properties per entr
 
 ### update
 
-    void update($storage, array $filter, UpdateOperation|UpdateOperation[] $changes,, array $opts = [])
+    void update($storage, array $filter, UpdateInstruction|UpdateInstruction[] $changes, array $opts = [])
     
 Query and update records.
 
 ```php
 use Jasny\DB\Update as update;
-use Jasny\DB\Mongo\Write\MongoWriter;
+use Jasny\DB\Mongo\Writer as MongoWriter;
 
-$writer = new MongoWriter();
-$users = (MongoDB\Client)->tests->users;
+$userCollection = (MongoDB\Client())->tests->users;
+$writer = MongoWriter::basic()->forCollection($userCollection);
 
-$writer->update($users, ['id' => 10], [update\set('last_login', new DateTime()), update\inc('logins')]);
+$writer->update(['id' => 10], [update\set('last_login', new DateTime()), update\inc('logins')]);
 ```
 
 The `$changes` argument must be one or more `UpdateOperation` objects. Rather than creating such an object by hand, the
@@ -324,8 +324,10 @@ following helper functions exist in the `Jasny\DB\Update` namespace:
 * `set(iterable $values)`
 * `set(string $field, $value)`
 * `patch(string $field, array|object $value)`
-* `inc(string $field, int|float value = 1)`
-* `dec(string $field, int|float value = 1)`
+* `inc(string $field, int|float $value = 1)`
+* `dec(string $field, int|float $value = 1)`
+* `mul(string $field, int|float $value)`
+* `div(string $field, int|float $value)`
 
 If the field is an array, the following operations are also available
 * `push(string $field, $value, ...)` - Add elements to the array

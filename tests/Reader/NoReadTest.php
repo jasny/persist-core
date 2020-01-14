@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests;
+namespace Jasny\DB\Tests\Reader;
 
 use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\NoRead;
+use Jasny\DB\Reader\NoRead;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Jasny\DB\NoRead
+ * @covers \Jasny\DB\Reader\NoRead
  */
 class NoReadTest extends TestCase
 {

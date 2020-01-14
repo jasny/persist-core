@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB;
+namespace Jasny\DB\Reader;
 
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Result\Result;

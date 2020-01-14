@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests;
+namespace Jasny\DB\Tests\Writer;
 
 use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\NoWrite;
+use Jasny\DB\Writer\NoWrite;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Jasny\DB\NoWrite
+ * @covers \Jasny\DB\Writer\NoWrite
  */
 class NoWriteTest extends TestCase
 {
