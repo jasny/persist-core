@@ -35,7 +35,11 @@ interface ReadInterface
      *
      * @param array<string,mixed> $filter
      * @param OptionInterface[]   $opts
-     * @return Result<TValue>
+     * @return Result
+     *
+     * @phpstan-param array<string,mixed> $filter
+     * @phpstan-param OptionInterface[]   $opts
+     * @phpstan-return Result<TValue>
      */
     public function fetch(array $filter = [], array $opts = []): Result;
 

@@ -36,9 +36,13 @@ interface WriteInterface
      * Save the one item.
      * Result contains generated properties for the item.
      *
-     * @param TItem             $item
+     * @param array|object      $item
      * @param OptionInterface[] $opts
-     * @return Result<TItem|\stdClass>
+     * @return Result
+     *
+     * @phpstan-param TItem             $item
+     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-return Result<TItem|\stdClass>
      */
     public function save($item, array $opts = []): Result;
 
@@ -46,9 +50,13 @@ interface WriteInterface
      * Save the multiple items.
      * Result contains generated properties for each item.
      *
-     * @param iterable<TItem>   $items
+     * @param iterable<array|object> $items
      * @param OptionInterface[] $opts
-     * @return Result<TItem|\stdClass>
+     * @return Result
+     *
+     * @phpstan-param iterable<TItem>   $items
+     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-return Result<TItem|\stdClass>
      */
     public function saveAll(iterable $items, array $opts = []): Result;
 

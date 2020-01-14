@@ -28,11 +28,11 @@ class ResultBuilder extends PipelineBuilder
     /**
      * Create a result.
      *
-     * @param iterable<TValue>    $iterable
-     * @param array<string,mixed> $meta
-     * @return Result<TValue>
+     * @phpstan-param iterable<TValue>    $iterable
+     * @phpstan-param array<string,mixed> $meta
+     * @phpstan-return Result<TValue>
      */
-    public function with(iterable $iterable, $meta = []): Result
+    public function with(iterable $iterable, array $meta = []): Result
     {
         $result = new Result($iterable, $meta);
 

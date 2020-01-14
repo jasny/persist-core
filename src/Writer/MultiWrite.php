@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Jasny\DB\Writer;
 
 use Improved\IteratorPipeline\Pipeline;
-use Jasny\DB\Update\UpdateInstruction;
 use Jasny\Immutable;
 use Jasny\DB\Option as opts;
 use Jasny\DB\Option\OptionInterface;
@@ -23,14 +22,14 @@ class MultiWrite implements WriteInterface
 {
     use Immutable\With;
 
-    /** @var array<WriteInterface<TItem>> */
+    /** @phpstan-var array<WriteInterface<TItem>> */
     protected array $writers = [];
 
     /**
      * MultiWrite constructor.
      *
-     * @param WriteInterface<TItem> $main
-     * @param WriteInterface<TItem> ...$additional
+     * @phpstan-param WriteInterface<TItem> $main
+     * @phpstan-param WriteInterface<TItem> ...$additional
      */
     public function __construct(WriteInterface $main, WriteInterface ...$additional)
     {
@@ -40,7 +39,9 @@ class MultiWrite implements WriteInterface
     /**
      * Get underlying writers.
      *
-     * @return array<WriteInterface<TItem>>
+     * @return WriteInterface[]
+     *
+     * @phpstan-return array<WriteInterface<TItem>>
      */
     public function getWriters(): array
     {
@@ -77,9 +78,13 @@ class MultiWrite implements WriteInterface
      * Save the one item.
      * The use of the `apply_result` option is required.
      *
-     * @param TItem             $item
+     * @param array|object      $item
      * @param OptionInterface[] $opts
-     * @return Result<TItem>
+     * @return Result
+     *
+     * @phpstan-param TItem        $item
+     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-return Result<TItem>
      */
     public function save($item, array $opts = []): Result
     {
@@ -94,9 +99,13 @@ class MultiWrite implements WriteInterface
      * Save the multiple items.
      * The use of the `apply_result` option is required.
      *
-     * @param iterable<TItem>   $items
+     * @param iterable<array|object> $items
      * @param OptionInterface[] $opts
-     * @return Result<TItem>
+     * @return Result
+     *
+     * @phpstan-param iterable<TItem>   $items
+     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-return Result<TItem>
      */
     public function saveAll(iterable $items, array $opts = []): Result
     {
@@ -110,7 +119,7 @@ class MultiWrite implements WriteInterface
     /**
      * Save one or multiple items to each storage.
      *
-     * @return Result<TItem>
+     * @phpstan-return Result<TItem>
      */
     protected function saveEach(callable $fn): Result
     {
@@ -128,13 +137,7 @@ class MultiWrite implements WriteInterface
     }
 
     /**
-     * Query and update records.
-     * Returns the result of the main storage.
-     *
-     * @param array<string,mixed>                   $filter
-     * @param UpdateInstruction|UpdateInstruction[] $instructions
-     * @param OptionInterface[]                     $opts
-     * @return Result<TItem|\stdClass>
+     * @inheritDoc
      */
     public function update(array $filter, $instructions, array $opts = []): Result
     {
@@ -146,12 +149,7 @@ class MultiWrite implements WriteInterface
     }
 
     /**
-     * Query and delete records.
-     * Returns the result of the main storage.
-     *
-     * @param array<string, mixed> $filter
-     * @param OptionInterface[]    $opts
-     * @return Result<TItem|\stdClass>
+     * @inheritDoc
      */
     public function delete(array $filter, array $opts = []): Result
     {

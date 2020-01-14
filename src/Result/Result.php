@@ -48,8 +48,11 @@ class Result extends Pipeline
     /**
      * Apply result to given items.
      *
-     * @param array<mixed,TValue>|\ArrayAccess<mixed,TValue> $items
+     * @param array|\ArrayAccess $items
      * @return $this
+     *
+     * @phpstan-param array<mixed,TValue>|\ArrayAccess<mixed,TValue> $items
+     * @phpstan-return $this
      */
     public function applyTo($items): self
     {
