@@ -11,22 +11,24 @@ use Jasny\Immutable;
  * Base class for filter and update query builders.
  * @internal
  *
- * @method callable getPreparation()
- * @method void withPreparation(callable $preparation)
+ * @template TQueryItem
+ * @implements QueryBuilderInterface<TQueryItem>
  */
 abstract class AbstractQueryBuilder implements QueryBuilderInterface
 {
     use Immutable\With;
 
-    /** @var callable */
+    /** @var callable(iterable<TQueryItem>,OptionInterface[]):iterable<TQueryItem> */
     protected $prepare;
-    /** @var callable */
-    protected $compose;
-    /** @var callable */
+    /** @var callable(mixed,OptionInterface[]):void */
     protected $finalize;
 
     /**
      * Apply each element to the accumulator.
+     *
+     * @param object               $accumulator
+     * @param iterable<TQueryItem> $iterable
+     * @param OptionInterface[]    $opts
      */
     abstract protected function applyCompose(object $accumulator, iterable $iterable, array $opts = []): void;
 
@@ -34,16 +36,36 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * AbstractQueryBuilder constructor.
      */
-    public function __construct(callable $compose)
+    public function __construct()
     {
-        $this->compose = $compose;
-
         // nop functions
-        $this->prepare = static function (array $filterItems, array $options): array {
+        $this->prepare = static function ($filterItems, array $options) {
             return $filterItems;
         };
         $this->finalize = static function ($accumulator, array $options): void {
         };
+    }
+
+
+    /**
+     * Get the prepare logic of the query builder.
+     *
+     * @return callable(iterable<TQueryItem>,OptionInterface[]):iterable<TQueryItem>
+     */
+    public function getPreparation(): callable
+    {
+        return $this->prepare;
+    }
+
+    /**
+     * Set the prepare logic of the query builder.
+     *
+     * @param callable(iterable<TQueryItem>,OptionInterface[]):iterable<TQueryItem> $prepare
+     * @return static
+     */
+    public function withPreparation(callable $prepare): self
+    {
+        return $this->withProperty('prepare', $prepare);
     }
 
 
@@ -72,9 +94,9 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * Apply instructions to given query.
      *
-     * @param object            $accumulator  Database specific query object.
-     * @param iterable          $iterable
-     * @param OptionInterface[] $opts
+     * @param object               $accumulator  Database specific query object.
+     * @param iterable<TQueryItem> $iterable
+     * @param OptionInterface[]    $opts
      */
     public function apply(object $accumulator, iterable $iterable, array $opts = []): void
     {

@@ -5,5 +5,11 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
         - /^Variable property access/
+        -
+            message: "/^Parameter #\\d+ \\$\\w+ \\(iterable<TValue>\\) of method .*::with\\(\\) should be contravariant with parameter \\$\\w+ \\(iterable\\) of method .*PipelineBuilder::with\\(\\)/"
+            path: src/Result/ResultBuilder.php
+        -
+            message: "/^Return type \\(.+Result<TItem>\\) of method .+::\\w+\\(\\) should be compatible with return type \\(.+Result<stdClass\\|TItem>\\)/"
+            path: src/Writer/MultiWrite.php
 includes:
   	- vendor/phpstan/phpstan-strict-rules/rules.neon

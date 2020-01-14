@@ -14,17 +14,17 @@ use Jasny\DB\Update\UpdateInstruction;
  *
  * @immutable
  */
-class ConfiguredFieldMap implements FieldMapInterface
+final class ConfiguredFieldMap implements FieldMapInterface
 {
-    /** @var array<string, string> */
+    /** @var array<string,string> */
     protected array $map;
-    /** @var array<string, string> */
+    /** @var array<string,string> */
     protected array $inverse;
 
     /**
      * Class constructor.
      *
-     * @param array<string, string> $map
+     * @param array<string,string> $map
      */
     public function __construct(array $map)
     {
@@ -40,6 +40,8 @@ class ConfiguredFieldMap implements FieldMapInterface
 
     /**
      * Get field map as associative array.
+     *
+     * @return array<string,string>
      */
     public function getMap(): array
     {
@@ -48,6 +50,8 @@ class ConfiguredFieldMap implements FieldMapInterface
 
     /**
      * Get inverted field map as associative array.
+     *
+     * @return array<string,string>
      */
     public function getInverseMap(): array
     {
@@ -101,7 +105,7 @@ class ConfiguredFieldMap implements FieldMapInterface
     public function applyToFilter(array $filterItems): array
     {
         return Pipeline::with($filterItems)
-            ->map(function (FilterItem $item): ?FilterItem {
+            ->map(function (FilterItem $item): FilterItem {
                 $field = $item->getField();
                 $mapped = $this->getDeepMapping($field);
 
@@ -179,8 +183,8 @@ class ConfiguredFieldMap implements FieldMapInterface
     /**
      * Invoke field map to apply mapping.
      *
-     * @param array $map
-     * @param mixed $subject
+     * @param array<string,string> $map
+     * @param mixed                $subject
      * @return mixed
      */
     protected function applyMapToValue(array $map, $subject)
@@ -208,6 +212,7 @@ class ConfiguredFieldMap implements FieldMapInterface
      *
      * @param array<string,string> $map
      * @param array<string,mixed>  $subject
+     * @return array<string,mixed>
      */
     protected function applyMapToArray(array $map, array $subject): array
     {
@@ -229,6 +234,7 @@ class ConfiguredFieldMap implements FieldMapInterface
      *
      * @param array<string,string> $map
      * @param object               $subject
+     * @return object
      */
     protected function applyMapToObject(array $map, object $subject): object
     {
@@ -254,7 +260,7 @@ class ConfiguredFieldMap implements FieldMapInterface
      * Allow a field map to cached using `var_export()`.
      * This method assumes the inverse is correct. No additional checks are done.
      *
-     * @param array $data
+     * @param array<string,mixed> $data
      * @return static
      */
     public static function __set_state(array $data): self

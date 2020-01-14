@@ -4,44 +4,36 @@ declare(strict_types=1);
 
 namespace Jasny\DB\QueryBuilder;
 
+use Jasny\DB\Option\OptionInterface;
+
 /**
  * Query builder for save queries.
+ *
+ * @extends AbstractQueryBuilder<array<string,mixed>|object>
  */
 class SaveQueryBuilder extends AbstractQueryBuilder
 {
+    /** @var callable(object,array<string,mixed>|object,mixed,array<OptionInterface>):void */
+    protected $compose;
+
     /**
      * SaveQueryBuilder constructor.
      *
-     * @param callable(object,array|object,mixed,OptionInterface[])
+     * @param callable(object,array<string,mixed>|object,mixed,array<OptionInterface>):void $compose
      */
     public function __construct(callable $compose)
     {
-        parent::__construct($compose);
-    }
+        $this->compose = $compose;
 
-    /**
-     * Get the prepare logic of the query builder.
-     *
-     * @return callable(iterable,OptionInterface[]):iterable
-     */
-    public function getPreparation(): callable
-    {
-        return $this->prepare;
-    }
-
-    /**
-     * Set the prepare logic of the query builder.
-     *
-     * @param callable(iterable,OptionInterface[]):iterable $prepare
-     * @return static
-     */
-    public function withPreparation(callable $prepare): self
-    {
-        return $this->withProperty('prepare', $prepare);
+        parent::__construct();
     }
 
     /**
      * Apply each item to the accumulator.
+     *
+     * @param object                               $accumulator
+     * @param iterable<array<string,mixed>|object> $items
+     * @param OptionInterface[]                    $opts
      */
     protected function applyCompose(object $accumulator, iterable $items, array $opts = []): void
     {

@@ -11,6 +11,8 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Service to add, update, and delete data from a persistent data storage (DB table, collection, etc).
+ *
+ * @template TItem
  */
 interface WriteInterface
 {
@@ -34,9 +36,9 @@ interface WriteInterface
      * Save the one item.
      * Result contains generated properties for the item.
      *
-     * @param object|array      $item
+     * @param TItem             $item
      * @param OptionInterface[] $opts
-     * @return Result
+     * @return Result<TItem|\stdClass>
      */
     public function save($item, array $opts = []): Result;
 
@@ -44,19 +46,19 @@ interface WriteInterface
      * Save the multiple items.
      * Result contains generated properties for each item.
      *
-     * @param iterable<object|array> $items
-     * @param OptionInterface[]      $opts
-     * @return Result
+     * @param iterable<TItem>   $items
+     * @param OptionInterface[] $opts
+     * @return Result<TItem|\stdClass>
      */
     public function saveAll(iterable $items, array $opts = []): Result;
 
     /**
      * Query and update records.
      *
-     * @param array<string, mixed>                  $filter
+     * @param array<string,mixed>                   $filter
      * @param UpdateInstruction|UpdateInstruction[] $instructions
      * @param OptionInterface[]                     $opts
-     * @return Result
+     * @return Result<TItem|\stdClass>
      */
     public function update(array $filter, $instructions, array $opts = []): Result;
 
@@ -65,7 +67,7 @@ interface WriteInterface
      *
      * @param array<string, mixed> $filter
      * @param OptionInterface[]    $opts
-     * @return Result
+     * @return Result<TItem|\stdClass>
      */
     public function delete(array $filter, array $opts = []): Result;
 }

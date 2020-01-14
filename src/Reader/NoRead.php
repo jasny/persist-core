@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Jasny\DB\Reader;
 
 use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\QueryBuilder\QueryBuilderInterface;
 use Jasny\DB\Result\Result;
-use Jasny\DB\Result\ResultBuilder;
 use Psr\Log\LoggerInterface;
 
 /**
  * Reading from storage is not supported.
  * @immutable
+ *
+ * @implements ReadInterface<mixed>
  */
 class NoRead implements ReadInterface
 {
@@ -41,6 +41,7 @@ class NoRead implements ReadInterface
     /**
      * Fetch is not supported.
      *
+     * @inheritDoc
      * @throws UnsupportedFeatureException
      */
     public function fetch(array $filter = null, array $opts = []): Result
@@ -51,6 +52,7 @@ class NoRead implements ReadInterface
     /**
      * Count is not supported.
      *
+     * @inheritDoc
      * @throws UnsupportedFeatureException
      */
     public function count(array $filter = null, array $opts = []): int

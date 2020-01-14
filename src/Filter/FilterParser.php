@@ -19,8 +19,8 @@ class FilterParser
     /**
      * Invoke the parser
      *
-     * @param iterable          $filter
-     * @param OptionInterface[] $opts
+     * @param iterable<string,mixed>|iterable<FilterItem> $filter
+     * @param OptionInterface[]                           $opts
      * @return FilterItem[]
      */
     public function __invoke(iterable $filter, array $opts): array
@@ -28,8 +28,12 @@ class FilterParser
         $filterItems = [];
 
         foreach ($filter as $key => $value) {
-            ['field' => $field, 'operator' => $operator] = $this->parse($key);
-            $filterItems[] = new FilterItem($field, $operator, $value);
+            if ($value instanceof FilterItem) {
+                $filterItems[] = $value;
+            } else {
+                ['field' => $field, 'operator' => $operator] = $this->parse($key);
+                $filterItems[] = new FilterItem($field, $operator, $value);
+            }
         }
 
         return $filterItems;

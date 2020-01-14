@@ -9,8 +9,8 @@ use Improved as i;
 /**
  * Set a field to a value.
  *
- * @param string|array $fieldOrPairs
- * @param mixed        $value
+ * @param string|array<string,mixed> $fieldOrPairs
+ * @param mixed                      $value          Omit when using an array
  * @return UpdateInstruction
  */
 function set($fieldOrPairs, $value = null)
@@ -41,8 +41,8 @@ function clear(string ...$fields)
 /**
  * Set a field to a value, patching an existing object.
  *
- * @param string       $field
- * @param array|object $value
+ * @param string                     $field
+ * @param array<string,mixed>|object $value
  * @return UpdateInstruction
  */
 function patch(string $field, $value)

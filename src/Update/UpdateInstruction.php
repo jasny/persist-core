@@ -11,13 +11,15 @@ namespace Jasny\DB\Update;
 class UpdateInstruction
 {
     protected string $operator;
+
+    /** @var array<string,mixed> */
     protected array $pairs;
 
     /**
      * Class constructor.
      *
-     * @param string               $operator  Update operator
-     * @param array<string, mixed> $pairs     field/value pairs
+     * @param string              $operator  Update operator
+     * @param array<string,mixed> $pairs     field/value pairs
      */
     public function __construct(string $operator, array $pairs)
     {
@@ -35,6 +37,8 @@ class UpdateInstruction
 
     /**
      * Get the field/value pairs.
+     *
+     * @return array<string,mixed>
      */
     public function getPairs(): array
     {

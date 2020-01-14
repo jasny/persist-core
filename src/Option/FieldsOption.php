@@ -10,6 +10,7 @@ namespace Jasny\DB\Option;
  */
 class FieldsOption implements OptionInterface
 {
+    /** @var string[] */
     protected array $fields;
     protected bool $negate;
 

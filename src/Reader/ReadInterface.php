@@ -10,6 +10,8 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Service for full text search.
+ *
+ * @template TValue
  */
 interface ReadInterface
 {
@@ -31,17 +33,17 @@ interface ReadInterface
     /**
      * Query and fetch data.
      *
-     * @param array<string, mixed> $filter
-     * @param OptionInterface[]    $opts
-     * @return Result
+     * @param array<string,mixed> $filter
+     * @param OptionInterface[]   $opts
+     * @return Result<TValue>
      */
     public function fetch(array $filter = [], array $opts = []): Result;
 
     /**
      * Query and count result.
      *
-     * @param array<string, mixed> $filter
-     * @param OptionInterface[]    $opts
+     * @param array<string,mixed> $filter
+     * @param OptionInterface[]   $opts
      * @return int
      */
     public function count(array $filter = [], array $opts = []): int;

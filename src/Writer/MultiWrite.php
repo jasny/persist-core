@@ -15,26 +15,32 @@ use Psr\Log\LoggerInterface;
 /**
  * Write to multiple storage endpoints (sequentially).
  * @immutable
+ *
+ * @template TItem
+ * @implements WriteInterface<TItem>
  */
 class MultiWrite implements WriteInterface
 {
     use Immutable\With;
 
-    /** @var WriteInterface[] */
+    /** @var array<WriteInterface<TItem>> */
     protected array $writers = [];
 
     /**
      * MultiWrite constructor.
+     *
+     * @param WriteInterface<TItem> $main
+     * @param WriteInterface<TItem> ...$additional
      */
     public function __construct(WriteInterface $main, WriteInterface ...$additional)
     {
-        $this->writers = func_get_args();
+        $this->writers = array_merge([$main], $additional);
     }
 
     /**
      * Get underlying writers.
      *
-     * @return WriteInterface[]
+     * @return array<WriteInterface<TItem>>
      */
     public function getWriters(): array
     {
@@ -71,15 +77,15 @@ class MultiWrite implements WriteInterface
      * Save the one item.
      * The use of the `apply_result` option is required.
      *
-     * @param object|array      $item
+     * @param TItem             $item
      * @param OptionInterface[] $opts
-     * @return Result
+     * @return Result<TItem>
      */
     public function save($item, array $opts = []): Result
     {
         $this->assertApplyResult($opts);
 
-        return $this->saveEach(static function (WriteInterface $writer, ?Result $result) use ($item, $opts) {
+        return $this->saveEach(static function (WriteInterface $writer, ?Result $result) use ($item, $opts): Result {
             return $writer->save($result === null ? $item : $result->first(), $opts);
         });
     }
@@ -88,15 +94,15 @@ class MultiWrite implements WriteInterface
      * Save the multiple items.
      * The use of the `apply_result` option is required.
      *
-     * @param iterable<object|array> $items
-     * @param OptionInterface[]      $opts
-     * @return Result
+     * @param iterable<TItem>   $items
+     * @param OptionInterface[] $opts
+     * @return Result<TItem>
      */
     public function saveAll(iterable $items, array $opts = []): Result
     {
         $this->assertApplyResult($opts);
 
-        return $this->saveEach(static function (WriteInterface $writer, ?Result $result) use ($items, $opts) {
+        return $this->saveEach(static function (WriteInterface $writer, ?Result $result) use ($items, $opts): Result {
             return $writer->saveAll($result ?? $items, $opts);
         });
     }
@@ -104,10 +110,9 @@ class MultiWrite implements WriteInterface
     /**
      * Save one or multiple items to each storage.
      *
-     * @param callable(WriterInterface,?Result):Result $fn
-     * @return Result
+     * @return Result<TItem>
      */
-    protected function saveEach($fn): Result
+    protected function saveEach(callable $fn): Result
     {
         $result = null;
 
@@ -126,10 +131,10 @@ class MultiWrite implements WriteInterface
      * Query and update records.
      * Returns the result of the main storage.
      *
-     * @param array<string, mixed>                  $filter
+     * @param array<string,mixed>                   $filter
      * @param UpdateInstruction|UpdateInstruction[] $instructions
      * @param OptionInterface[]                     $opts
-     * @return Result
+     * @return Result<TItem|\stdClass>
      */
     public function update(array $filter, $instructions, array $opts = []): Result
     {
@@ -146,7 +151,7 @@ class MultiWrite implements WriteInterface
      *
      * @param array<string, mixed> $filter
      * @param OptionInterface[]    $opts
-     * @return Result
+     * @return Result<TItem|\stdClass>
      */
     public function delete(array $filter, array $opts = []): Result
     {

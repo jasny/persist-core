@@ -11,9 +11,13 @@ use Jasny\DB\Filter\FilterParser;
 /**
  * Query builder for filter queries.
  * @immutable
+ *
+ * @extends AbstractQueryBuilder<FilterItem>
  */
 class FilterQueryBuilder extends AbstractQueryBuilder
 {
+    /** @var callable(object,FilterItem,OptionInterface[]):void */
+    protected $compose;
     /** @var FilterParser|callable */
     protected $parser;
 
@@ -25,36 +29,15 @@ class FilterQueryBuilder extends AbstractQueryBuilder
     /**
      * FilterQueryBuilder constructor.
      *
-     * @param callable(mixed,FilterItem,OptionInterface[]):void   $compose
-     * @param null|callable(array,OptionInterface[]):FilterItem[] $parser    Defaults to a `FilterParser`.
+     * @param callable(object,FilterItem,OptionInterface[]):void                                             $compose
+     * @param null|callable(iterable<string,mixed>|iterable<FilterItem>,OptionInterface[]):array<FilterItem> $parser
      */
     public function __construct(callable $compose, ?callable $parser = null)
     {
+        $this->compose = $compose;
         $this->parser = $parser ?? new FilterParser();
 
-        parent::__construct($compose);
-    }
-
-
-    /**
-     * Get the prepare logic of the query builder.
-     *
-     * @return callable(FilterItem[],OptionInterface[]):FilterItem[]
-     */
-    public function getPreparation(): callable
-    {
-        return $this->prepare;
-    }
-
-    /**
-     * Set the prepare logic of the query builder.
-     *
-     * @param callable(FilterItem[],OptionInterface[]):FilterItem[] $prepare
-     * @return static
-     */
-    public function withPreparation(callable $prepare): self
-    {
-        return $this->withProperty('prepare', $prepare);
+        parent::__construct();
     }
 
 
@@ -87,7 +70,7 @@ class FilterQueryBuilder extends AbstractQueryBuilder
      * The callable must accept the following arguments: ($accumulator, $filterItem, $opts, $next).
      *
      * @param string                                                     $operator
-     * @param callable(mixed,FilterItem,OptionInterface[],callable):void $compose
+     * @param callable(object,FilterItem,OptionInterface[],callable):void $compose
      * @return static
      */
     public function withCustomOperator(string $operator, callable $compose): self
@@ -110,9 +93,9 @@ class FilterQueryBuilder extends AbstractQueryBuilder
     /**
      * Apply instructions to given query.
      *
-     * @param mixed             $accumulator  Database specific query object.
-     * @param iterable          $filter
-     * @param OptionInterface[] $opts
+     * @param mixed                                       $accumulator  Database specific query object.
+     * @param iterable<FilterItem>|iterable<string,mixed> $filter
+     * @param OptionInterface[]                           $opts
      */
     public function apply($accumulator, iterable $filter, array $opts = []): void
     {
@@ -123,6 +106,10 @@ class FilterQueryBuilder extends AbstractQueryBuilder
 
     /**
      * Apply each filter item to the accumulator.
+     *
+     * @param object               $accumulator
+     * @param iterable<FilterItem> $filter
+     * @param OptionInterface[]    $opts
      */
     protected function applyCompose(object $accumulator, iterable $filter, array $opts = []): void
     {
@@ -134,6 +121,9 @@ class FilterQueryBuilder extends AbstractQueryBuilder
 
     /**
      * Get the default or a custom compose function for a filter item.
+     *
+     * @param FilterItem $item
+     * @return callable(object,FilterItem,OptionInterface[]):void
      */
     protected function getComposer(FilterItem $item): callable
     {
@@ -154,13 +144,19 @@ class FilterQueryBuilder extends AbstractQueryBuilder
 
     /**
      * Nest callback for custom filter.
+     *
+     * @param callable $outer
+     * @param callable $inner
+     * @return \Closure&callable(object,FilterItem,array<OptionInterface>):void
      */
     private function nestCallback(callable $outer, callable $inner): \Closure
     {
-        return static function ($accumulator, $item, $opts) use ($outer, $inner) {
-            $next = fn($nextItem) => $inner($accumulator, $nextItem, $opts);
+        return static function (object $accumulator, FilterItem $item, array $opts) use ($outer, $inner): void {
+            $next = static function (FilterItem $nextItem) use ($inner, $accumulator, $opts): void {
+                $inner($accumulator, $nextItem, $opts);
+            };
 
-            return $outer($accumulator, $item, $opts, $next);
+            $outer($accumulator, $item, $opts, $next);
         };
     }
 }

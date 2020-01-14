@@ -10,6 +10,8 @@ use Jasny\DB\FieldMap\FieldMapInterface;
 /**
  * Pipeline builder for a query result.
  * @immutable
+ *
+ * @template TValue
  */
 class ResultBuilder extends PipelineBuilder
 {
@@ -26,9 +28,9 @@ class ResultBuilder extends PipelineBuilder
     /**
      * Create a result.
      *
-     * @param iterable       $iterable
-     * @param array|\Closure $meta
-     * @return Result
+     * @param iterable<TValue>    $iterable
+     * @param array<string,mixed> $meta
+     * @return Result<TValue>
      */
     public function with(iterable $iterable, $meta = []): Result
     {

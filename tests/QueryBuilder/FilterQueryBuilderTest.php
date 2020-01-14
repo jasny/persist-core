@@ -7,7 +7,7 @@ namespace Jasny\DB\Tests\QueryBuilder;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\QueryBuilder\FilterQueryBuilder;
-use Jasny\TestHelper;
+use Jasny\PHPUnit\CallbackMockTrait;
 use PHPUnit\Framework\Constraint\Exception as ExceptionConstraint;
 use PHPUnit\Framework\Constraint\ExceptionMessage;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  */
 class FilterQueryBuilderTest extends TestCase
 {
-    use TestHelper;
+    use CallbackMockTrait;
 
     protected object $acc;
     protected array $opts;

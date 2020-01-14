@@ -8,15 +8,17 @@ use Jasny\DB\Option\OptionInterface;
 
 /**
  * Interface for service that can apply instructions to a database specific query.
+ *
+ * @template TQueryItem
  */
 interface QueryBuilderInterface
 {
     /**
      * Apply instructions to given query.
      *
-     * @param object            $accumulator  Database specific query object.
-     * @param iterable          $iterable
-     * @param OptionInterface[] $opts
+     * @param object               $accumulator  Database specific query object.
+     * @param iterable<TQueryItem> $iterable
+     * @param OptionInterface[]    $opts
      */
     public function apply(object $accumulator, iterable $iterable, array $opts = []): void;
 }

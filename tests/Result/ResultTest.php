@@ -6,7 +6,6 @@ namespace Jasny\DB\Tests\Result;
 
 use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Result\Result;
-use Jasny\TestHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,8 +13,6 @@ use PHPUnit\Framework\TestCase;
  */
 class ResultTest extends TestCase
 {
-    use TestHelper;
-
     public function testPipeline()
     {
         $result = new Result([]);

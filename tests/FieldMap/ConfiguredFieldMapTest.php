@@ -8,7 +8,6 @@ use Improved as i;
 use Jasny\DB\FieldMap\ConfiguredFieldMap;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Update\UpdateInstruction;
-use Jasny\TestHelper;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,8 +15,6 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfiguredFieldMapTest extends TestCase
 {
-    use TestHelper;
-
     protected const MAP = ['_id' => 'id', 'foos' => 'foo', 'bor' => 'bar'];
 
 

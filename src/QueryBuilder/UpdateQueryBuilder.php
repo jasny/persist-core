@@ -10,41 +10,27 @@ use Jasny\DB\Update\UpdateInstruction;
 /**
  * Query builder for update queries.
  * @immutable
+ *
+ * @extends AbstractQueryBuilder<UpdateInstruction>
  */
 class UpdateQueryBuilder extends AbstractQueryBuilder
 {
+    /** @var callable(object,UpdateInstruction,array<OptionInterface>):void */
+    protected $compose;
+
     /** @var array<string,callable> */
     protected array $operatorCompose = [];
 
     /**
      * UpdateQueryBuilder constructor.
      *
-     * @param callable(object,UpdateInstruction,OptionInterface[])
+     * @param callable(object,UpdateInstruction,array<OptionInterface>):void $compose
      */
     public function __construct(callable $compose)
     {
-        parent::__construct($compose);
-    }
+        $this->compose = $compose;
 
-    /**
-     * Get the prepare logic of the query builder.
-     *
-     * @return callable(UpdateInstruction[],OptionInterface[]):UpdateInstruction[]
-     */
-    public function getPreparation(): callable
-    {
-        return $this->prepare;
-    }
-
-    /**
-     * Set the prepare logic of the query builder.
-     *
-     * @param callable(UpdateInstruction[],OptionInterface[]):UpdateInstruction[] $prepare
-     * @return static
-     */
-    public function withPreparation(callable $prepare): self
-    {
-        return $this->withProperty('prepare', $prepare);
+        parent::__construct();
     }
 
     /**
@@ -74,6 +60,10 @@ class UpdateQueryBuilder extends AbstractQueryBuilder
 
     /**
      * Apply each update instruction to the accumulator.
+     *
+     * @param object                      $accumulator
+     * @param iterable<UpdateInstruction> $instructions
+     * @param OptionInterface[]           $opts
      */
     protected function applyCompose(object $accumulator, iterable $instructions, array $opts = []): void
     {
@@ -85,20 +75,38 @@ class UpdateQueryBuilder extends AbstractQueryBuilder
 
     /**
      * Get a default or custom logic update instruction.
+     *
+     * @param UpdateInstruction $item
+     * @return callable(object,UpdateInstruction,array<OptionInterface>):void
      */
     protected function getComposer(UpdateInstruction $item): callable
     {
         $defaultCompose = $this->compose;
         $operatorCompose = $this->operatorCompose[$item->getOperator()] ?? null;
 
-        /** @var callable|null $operatorCompose */
         if ($operatorCompose === null) {
             return $defaultCompose;
         }
 
-        return static function ($accumulator, $update, $opts) use ($operatorCompose, $defaultCompose) {
-            $next = fn($nextUpdate) => $defaultCompose($accumulator, $nextUpdate, $opts);
-            return $operatorCompose($accumulator, $update, $opts, $next);
+        return $this->nestCallback($operatorCompose, $defaultCompose);
+    }
+
+
+    /**
+     * Nest callback for custom filter.
+     *
+     * @param callable $outer
+     * @param callable $inner
+     * @return \Closure&callable(object,UpdateInstruction,array<OptionInterface>):void
+     */
+    private function nestCallback(callable $outer, callable $inner): \Closure
+    {
+        return static function (object $accumulator, UpdateInstruction $item, array $opts) use ($outer, $inner): void {
+            $next = static function (UpdateInstruction $nextItem) use ($inner, $accumulator, $opts): void {
+                $inner($accumulator, $nextItem, $opts);
+            };
+
+            $outer($accumulator, $item, $opts, $next);
         };
     }
 }

@@ -6,24 +6,25 @@ namespace Jasny\DB\Result;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
-use stdClass;
-use UnexpectedValueException;
 use function Jasny\object_get_properties;
 use function Jasny\object_set_properties;
 
 /**
  * Query result.
  * @immutable
+ *
+ * @template TValue
  */
 class Result extends Pipeline
 {
+    /** @var array<string,mixed> */
     protected array $meta;
 
     /**
      * Result constructor.
      *
-     * @param iterable $iterable
-     * @param array    $meta
+     * @param iterable<object|array<string,mixed>> $iterable
+     * @param array<string,mixed>                  $meta
      */
     public function __construct(iterable $iterable = [], array $meta = [])
     {
@@ -47,18 +48,18 @@ class Result extends Pipeline
     /**
      * Apply result to given items.
      *
-     * @param array|\ArrayAccess $items
+     * @param array<mixed,TValue>|\ArrayAccess<mixed,TValue> $items
      * @return $this
      */
-    public function applyTo($items): Result
+    public function applyTo($items): self
     {
         i\type_check(
             $items,
             ['array', \ArrayAccess::class],
-            new UnexpectedValueException("Unable to apply result to items. Expected %2s, %1s given")
+            new \UnexpectedValueException("Unable to apply result to items. Expected %2s, %1s given")
         );
 
-        return $this->map(static function ($doc, $key) use ($items) {
+        $this->map(static function ($doc, $key) use ($items) {
             $item = $items[$key];
 
             if (is_object($doc)) {
@@ -66,11 +67,14 @@ class Result extends Pipeline
             }
 
             if (is_array($item)) {
-                return array_merge($item, $doc);
+                $item = array_merge($item, $doc);
             } else {
-                object_set_properties($item, $doc, $item instanceof stdClass);
-                return $item;
+                object_set_properties($item, $doc, $item instanceof \stdClass);
             }
+
+            return $item;
         });
+
+        return $this;
     }
 }
