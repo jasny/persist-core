@@ -43,11 +43,11 @@ class FlagOptionTest extends TestCase
     /**
      * @covers \Jasny\DB\Option\preserve_keys
      */
-    public function testPreserveKeysFunction()
+    public function testApplyResultFunction()
     {
-        $flag = opts\preserve_keys();
+        $flag = opts\apply_result();
 
         $this->assertInstanceOf(FlagOption::class, $flag);
-        $this->assertEquals('preserve_keys', $flag->getName());
+        $this->assertEquals('apply_result', $flag->getName());
     }
 }

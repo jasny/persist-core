@@ -74,7 +74,6 @@ function apply_result(): FlagOption
     return new FlagOption('apply_result');
 }
 
-
 /**
  * Generic flag for a query.
  */
