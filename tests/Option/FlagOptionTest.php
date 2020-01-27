@@ -41,7 +41,7 @@ class FlagOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\preserve_keys
+     * @covers \Jasny\DB\Option\apply_result
      */
     public function testApplyResultFunction()
     {

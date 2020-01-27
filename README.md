@@ -9,23 +9,6 @@ Jasny DB
 [![Packagist Stable Version](https://img.shields.io/packagist/v/jasny/db.svg)](https://packagist.org/packages/jasny/db)
 [![Packagist License](https://img.shields.io/packagist/l/jasny/db.svg)](https://packagist.org/packages/jasny/db)
 
-Database abstraction layer that doesn't wrap and shield underlying the PHP driver.
-
-The library provides services that allow the user to abstract DB access, while still having access to all capabilities
-of the underlying db / storage.
-
-Other abstraction layers force the user to use SQL like builders or (string) SQL dialects. These are only able to
-formulate very generic queries. When you actively choose for a DBMS (MongoDB, MySQL, Postgres) you want to use the
-features that system has, and not for it to be abstracted away into a grey mass.
-
-With Jasny DB some basic logic is included. The rest needs to be defined by you as developer. If you need to switch DB,
-add cache etc, this custom logic might still need to be rewritten. But now it's all in one place instead spread over the
-app.
-
-_All objects are immutable._
-
-For ORM / ODM use [Jasny Persist](https://github.com/jasny/persist).
-
 Installation
 ---
 
@@ -50,10 +33,10 @@ Usage
 
 ```php
 use Jasny\DB\Option as opts;
-use Jasny\DB\Mongo\Read\MongoReader;
+use Jasny\DB\Mongo\Reader;
 
 $collection = (new MongoDB\Client)->test->users;
-$reader = new MongoReader($collection);
+$reader = new Reader($collection);
 
 $list = $reader
     ->fetch(
@@ -75,12 +58,12 @@ $list = $reader
 ### Read and write
 
 ```php
-use Jasny\DB\Mongo\Read\MongoReader;
-use Jasny\DB\Mongo\Write\MongoWriter;
+use Jasny\DB\Mongo\Reader;
+use Jasny\DB\Mongo\Writer;
 
 $collection = (new MongoDB\Client)->test->users;
-$reader = new MongoReader($collection);
-$writer = new MongoWriter($collection);
+$reader = new Reader($collection);
+$writer = new Writer($collection);
 
 $user = $reader->fetch(['id' => '12345'])->first();
 $user->count = "bar";
@@ -92,10 +75,10 @@ $writer->save([$user]);
 
 ```php
 use Jasny\DB\Update as update;
-use Jasny\DB\Mongo\Write\MongoWriter;
+use Jasny\DB\Mongo\Writer;
 
 $collection = (new MongoDB\Client)->test->users;
-$writer = new MongoWriter($collection);
+$writer = new Writer($collection);
 
 $writer->update(
     ['type' => 'admin'],
@@ -159,10 +142,10 @@ loading related data, sorting, etc. These options are passed to the query builde
 
 ```php
 use Jasny\DB\Option as opts;
-use Jasny\DB\Mongo\Read\MongoReader;
+use Jasny\DB\Mongo\Reader;
 
 $users = (new MongoDB\Client)->test->users;
-$reader = new MongoReader;
+$reader = new Reader;
 
 $list = $reader
     ->fetch(
@@ -236,9 +219,9 @@ The read service has a `withResultBuilder()` which takes a `PipelineBuilder` obj
 are performed for every result.
 
 ```php
-use Jasny\DB\Mongo\Read\MongoReader;
+use Jasny\DB\Mongo\Reader;
 
-$reader = new MongoReader();
+$reader = new Reader();
 $resultBuilder = $reader->getResultBuilder()
     ->filter(function($value) {
         return $value !== null;
@@ -272,14 +255,14 @@ The builder must return a `Result` object. Use the `then()` method of your build
 
 ```php
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\Mongo\Read\MongoReader;
+use Jasny\DB\Mongo\Reader;
 
 $resultBuilder = (new PipelineBuilder)
     ->then(function(iterable $iterable) {
         return MyResult($iterable);
     });
 
-$reader = (new MongoReader)->withResultBuilder($resultBuilder);
+$reader = (new Reader)->withResultBuilder($resultBuilder);
 ```
 
 ## Write service
@@ -310,10 +293,10 @@ Query and update records.
 
 ```php
 use Jasny\DB\Update as update;
-use Jasny\DB\Mongo\Writer as MongoWriter;
+use Jasny\DB\Mongo\Writer as Writer;
 
 $userCollection = (MongoDB\Client())->tests->users;
-$writer = MongoWriter::basic()->forCollection($userCollection);
+$writer = Writer::basic()->forCollection($userCollection);
 
 $writer->update(['id' => 10], [update\set('last_login', new DateTime()), update\inc('logins')]);
 ```
@@ -356,7 +339,7 @@ use Jasny\DB\FieldMap\ConfiguredFieldMap;
 
 $fieldMap = new ConfiguredFieldMap(['ref' => 'reference', 'foo_bar_setting' => 'foo_bar']);
 
-$reader = new MongoReader();
+$reader = new Reader();
 $queryBuilder = $reader->getQueryBuilder()->onPrepare($fieldMap);
 $resultBuilder = $reader->getResultBuilder()->then($fieldMap->flip());
 
@@ -373,11 +356,11 @@ do not have to correspond to one field, but can closely match the business logic
 ```php
 use Jasny\DB\QueryBuilder\StagedQueryBuilder;
 use Jasny\DB\QueryBuilder\Prepare\CustomFilter;
-use Jasny\DB\Mongo\Read\MongoReader;
+use Jasny\DB\Mongo\Reader;
 use Jasny\DB\Mongo\QueryBuilder\Query;
 
 $clients = (new MongoDB\Client)->test->clients; 
-$reader = new MongoReader();
+$reader = new Reader();
 
 $queryBuilder = (new StagedQueryBuilder)
     ->onCompose(new CustomFilter('prominent', function(Query $query, string $field, string $operator, $value) {
@@ -402,7 +385,7 @@ Custom filters are DB specific as the accumulator (first argument) is DB specifi
 It's possible to create a custom query builder from scratch. You class needs to implement the `QueryBuilding`.
 
 ```php
-$reader = (new MongoReader)->withQueryBuilder(new MyQueryBuilder());
+$reader = (new Reader)->withQueryBuilder(new MyQueryBuilder());
 ```
 
 ### Staged query builder
@@ -503,7 +486,7 @@ use Jasny\DB\FieldMap\ConfiguredFieldMap;
 
 $fieldMap = new ConfiguredFieldMap(['ref' => 'reference', 'foo_bar_setting' => 'foo_bar']);
 
-$writer = new MongoWriter();
+$writer = new Writer();
 $queryBuilder = $writer->getSaveQueryBuilder()->onPrepare(function(iterable $items) use ($fieldMap) {
     return i\iterable_map($items, $fieldMap);
 });

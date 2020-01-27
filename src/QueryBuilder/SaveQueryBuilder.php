@@ -9,7 +9,8 @@ use Jasny\DB\Option\OptionInterface;
 /**
  * Query builder for save queries.
  *
- * @extends AbstractQueryBuilder<array<string,mixed>|object>
+ * @template TQuery of object
+ * @extends AbstractQueryBuilder<TQuery,array<string,mixed>|object>
  */
 class SaveQueryBuilder extends AbstractQueryBuilder
 {

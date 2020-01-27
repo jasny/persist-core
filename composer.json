@@ -26,8 +26,7 @@
         "spatie/regex": "^1.4"
     },
     "require-dev": {
-        "jasny/php-code-quality": "^2.5",
-        "squizlabs/php_codesniffer": "dev-master#c436252a6edc2cd3c9ce3a846ae3ba0f52d30815 as 3.5.0"
+        "jasny/php-code-quality": "2.6.*"
     },
     "autoload": {
         "psr-4": {

@@ -11,24 +11,36 @@ use Jasny\Immutable;
  * Base class for filter and update query builders.
  * @internal
  *
+ * @template TQuery
  * @template TQueryItem
- * @implements QueryBuilderInterface<TQueryItem>
+ * @implements QueryBuilderInterface<TQuery,TQueryItem>
  */
 abstract class AbstractQueryBuilder implements QueryBuilderInterface
 {
     use Immutable\With;
 
-    /** @var callable(iterable<TQueryItem>,OptionInterface[]):iterable<TQueryItem> */
+    /**
+     * @var callable
+     * @phpstan-var callable(iterable<TQueryItem>,OptionInterface[]):iterable<TQueryItem>
+     */
     protected $prepare;
-    /** @var callable(mixed,OptionInterface[]):void */
+
+    /**
+     * @var callable
+     * @phpstan-var callable(TQuery,OptionInterface[]):void
+     */
     protected $finalize;
 
     /**
      * Apply each element to the accumulator.
      *
-     * @param object               $accumulator
-     * @param iterable<TQueryItem> $iterable
-     * @param OptionInterface[]    $opts
+     * @param object            $accumulator
+     * @param iterable          $iterable
+     * @param OptionInterface[] $opts
+     *
+     * @phpstan-param TQuery               $accumulator
+     * @phpstan-param iterable<TQueryItem> $iterable
+     * @phpstan-param OptionInterface[]    $opts
      */
     abstract protected function applyCompose(object $accumulator, iterable $iterable, array $opts = []): void;
 
@@ -50,7 +62,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * Get the prepare logic of the query builder.
      *
-     * @return callable(iterable<TQueryItem>,OptionInterface[]):iterable<TQueryItem>
+     * @phpstan-return callable(iterable<TQueryItem>,OptionInterface[]):iterable<TQueryItem>
      */
     public function getPreparation(): callable
     {
@@ -60,8 +72,11 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * Set the prepare logic of the query builder.
      *
-     * @param callable(iterable<TQueryItem>,OptionInterface[]):iterable<TQueryItem> $prepare
+     * @param callable
      * @return static
+     *
+     * @phpstan-param callable(iterable<TQueryItem>,OptionInterface[]):iterable<TQueryItem> $prepare
+     * @phpstan-return static
      */
     public function withPreparation(callable $prepare): self
     {
@@ -72,7 +87,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * Get the finalize logic of the query builder.
      *
-     * @return callable(mixed,OptionInterface[]):void
+     * @phpstan-return callable(mixed,OptionInterface[]):void
      */
     public function getFinalization(): callable
     {
@@ -82,8 +97,11 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * Set the finalize logic of the query builder.
      *
-     * @param callable(mixed,OptionInterface[]):void $finalize
+     * @param callable
      * @return static
+     *
+     * @phpstan-param callable(mixed,OptionInterface[]):void $finalize
+     * @phpstan-return static
      */
     public function withFinalization(callable $finalize): self
     {
@@ -94,9 +112,13 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * Apply instructions to given query.
      *
-     * @param object               $accumulator  Database specific query object.
-     * @param iterable<TQueryItem> $iterable
-     * @param OptionInterface[]    $opts
+     * @param object            $accumulator  Database specific query object.
+     * @param iterable          $iterable
+     * @param OptionInterface[] $opts
+     *
+     * @phpstan-param TQuery               $accumulator
+     * @phpstan-param iterable<TQueryItem> $iterable
+     * @phpstan-param OptionInterface[]    $opts
      */
     public function apply(object $accumulator, iterable $iterable, array $opts = []): void
     {

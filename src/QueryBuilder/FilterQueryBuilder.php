@@ -12,18 +12,30 @@ use Jasny\DB\Filter\FilterParser;
  * Query builder for filter queries.
  * @immutable
  *
- * @extends AbstractQueryBuilder<FilterItem>
+ * @template TQuery of object
+ * @extends AbstractQueryBuilder<TQuery,FilterItem>
  */
 class FilterQueryBuilder extends AbstractQueryBuilder
 {
-    /** @var callable(object,FilterItem,OptionInterface[]):void */
+    /**
+     * @var callable
+     * @phpstan-var callable(TQuery,FilterItem,OptionInterface[]):void
+     */
     protected $compose;
-    /** @var FilterParser|callable */
+
+    /**
+     * @var FilterParser|callable
+     */
     protected $parser;
 
-    /** @var array<string,callable> */
+    /**
+     * @var array<string,callable>
+     */
     protected array $fieldCompose = [];
-    /** @var array<string,callable> */
+
+    /**
+     * @var array<string,callable>
+     */
     protected array $operatorCompose = [];
 
     /**

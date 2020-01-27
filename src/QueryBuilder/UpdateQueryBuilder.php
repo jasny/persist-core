@@ -11,15 +11,23 @@ use Jasny\DB\Update\UpdateInstruction;
  * Query builder for update queries.
  * @immutable
  *
- * @extends AbstractQueryBuilder<UpdateInstruction>
+ * @template TQuery of object
+ * @extends AbstractQueryBuilder<TQuery,UpdateInstruction>
  */
 class UpdateQueryBuilder extends AbstractQueryBuilder
 {
-    /** @var callable(object,UpdateInstruction,array<OptionInterface>):void */
+    /**
+     * @var callable
+     * @phpstan-param callable(TQuery,UpdateInstruction,array<OptionInterface>):void
+     */
     protected $compose;
 
-    /** @var array<string,callable> */
+    /**
+     * @var array<string,callable>
+     * @phpstan-param array<string,callable(TQuery,UpdateInstruction,array<OptionInterface>,callable):void>
+     */
     protected array $operatorCompose = [];
+
 
     /**
      * UpdateQueryBuilder constructor.
@@ -37,9 +45,13 @@ class UpdateQueryBuilder extends AbstractQueryBuilder
      * Specify a custom filter for an operator of an update instruction.
      * The callable must accept the following arguments: ($accumulator, $instruction, $opts, $next).
      *
-     * @param string                                                            $operator
-     * @param callable(mixed,UpdateInstruction,OptionInterface[],callable):void $apply
+     * @param string   $operator
+     * @param callable $apply
      * @return static
+     *
+     * @phpstan-param string                                                             $operator
+     * @phpstan-param callable(TQuery,UpdateInstruction,OptionInterface[],callable):void $apply
+     * @phpstan-return static
      */
     public function withCustomOperator(string $operator, callable $apply): self
     {
