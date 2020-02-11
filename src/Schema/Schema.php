@@ -6,6 +6,7 @@ namespace Jasny\DB\Schema;
 
 use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Map\ConfiguredMap;
+use Jasny\DB\Map\FieldMap;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\SchemaMap;
 use Jasny\DB\Map\NoMap;
@@ -39,7 +40,7 @@ class Schema implements SchemaInterface
     /**
      * Get a copy with a default field map.
      *
-     * @param MapInterface|array<string,string|false|array> $map
+     * @param MapInterface|array<string,string|false> $map
      * @return static
      */
     public function withDefaultMap($map): self
@@ -50,8 +51,8 @@ class Schema implements SchemaInterface
     /**
      * Get a copy with a field map for a collection.
      *
-     * @param string                                        $collection  Collection or table name
-     * @param MapInterface|array<string,string|false|array> $map
+     * @param string                                  $collection  Collection or table name
+     * @param MapInterface|array<string,string|false> $map
      * @return static
      */
     public function withMap(string $collection, $map): self
@@ -62,13 +63,12 @@ class Schema implements SchemaInterface
     /**
      * Create a map.
      *
-     * @param MapInterface|array<string,string|false|array> $map
+     * @param MapInterface|array<string,string|false> $map
      * @return MapInterface
      */
     protected function createMap($map): MapInterface
     {
-        $map = $map instanceof MapInterface ? $map : new ConfiguredMap($map);
-        return $map instanceof ConfiguredMap ? $map->getInnerMap() : $map;
+        return $map instanceof MapInterface ? $map : new FieldMap($map);
     }
 
     /**

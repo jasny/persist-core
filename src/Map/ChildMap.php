@@ -35,7 +35,7 @@ class ChildMap implements MapInterface
         $this->isForMany = str_ends_with($field, '[]');
         $this->field = $this->isForMany ? substr($field, 0, -2) : $field;
 
-        $this->map = $map instanceof MapInterface ? $map : (new ConfiguredMap($map))->getInnerMap();
+        $this->map = $map instanceof MapInterface ? $map : new FieldMap($map);
     }
 
     /**
@@ -87,24 +87,37 @@ class ChildMap implements MapInterface
     protected function applyToFilter(callable $applyTo, iterable $filterItems): iterable
     {
         foreach ($filterItems as $item) {
-            if (!str_starts_with($item->getField(), $this->field . '.')) {
+            $field = $item->getField();
+
+            if (str_starts_with($field, $this->field . '.')) {
+                yield from $this->applyToFilterField($applyTo, $item);
+            } else {
                 yield $item;
+            }
+        }
+    }
+
+    /**
+     * Apply mapping to the field of the filter item.
+     *
+     * @param callable $applyTo
+     * @param FilterItem $item
+     * @return \Generator
+     */
+    protected function applyToFilterField(callable $applyTo, FilterItem $item): \Generator
+    {
+        $childField = substr($item->getField(), strlen($this->field) + 1);
+        $childItem = new FilterItem($childField, $item->getOperator(), $item->getValue());
+
+        /** @var FilterItem $mappedItem */
+        foreach ($applyTo([$childItem]) as $mappedItem) {
+            if ($mappedItem === $childItem) {
+                yield $item; // No change to child, can yield original
                 continue;
             }
 
-            $childField = substr($item->getField(), strlen($this->field) + 1);
-            $childItem = new FilterItem($childField, $item->getOperator(), $item->getValue());
-
-            /** @var FilterItem $mappedItem */
-            foreach ($applyTo([$childItem]) as $mappedItem) {
-                if ($mappedItem === $childItem) {
-                    yield $item; // No change to child, can yield original
-                    continue;
-                }
-
-                $parentField = $this->field . '.' . $mappedItem->getField();
-                yield new FilterItem($parentField, $childItem->getOperator(), $childItem->getValue());
-            }
+            $parentField = $this->field . '.' . $mappedItem->getField();
+            yield new FilterItem($parentField, $childItem->getOperator(), $childItem->getValue());
         }
     }
 
@@ -198,7 +211,11 @@ class ChildMap implements MapInterface
             $value = DotKey::on($item)->get($this->field);
             $newValue = $applyTo($value);
 
-            if ($value !== $newValue) {
+            if ($value === $newValue) {
+                // Not changed or value is an object
+            } elseif ($value instanceof \ArrayObject) {
+                $value->exchangeArray(i\iterable_to_array($newValue));
+            } else {
                 DotKey::on($item)->set($this->field, $newValue);
             }
 

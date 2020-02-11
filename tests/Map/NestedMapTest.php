@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Jasny\DB\Tests\Map;
 
 use Improved as i;
+use Jasny\DB\Map\ChildMap;
+use Jasny\DB\Map\FieldMap;
 use Jasny\DB\Map\NestedMap;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Update\UpdateInstruction;
@@ -14,36 +16,77 @@ use function Jasny\objectify;
 
 /**
  * @covers \Jasny\DB\Map\NestedMap
+ * @covers \Jasny\DB\Map\ChildMap
  * @covers \Jasny\DB\Map\Traits\CombineTrait
  */
 class NestedMapTest extends TestCase
 {
     protected const EXPECTED_MAPPING = [
-        'one'                 => 'uno',
-        'one.shape'           => 'uno.forma',
-        'one.shape.x'         => 'uno.forma.x',
+        'one'            => 'uno',
+        'one.color'      => 'uno.color',
+        'one.color.red'  => 'uno.color.roja',
 
-        'two.info'            => 'dos',
-        'two.info.items'      => 'dos.items',
-        'two.info.items.type' => 'dos.items.type',
-        'two.info.items.foo'  => 'dos.items.oof',
+        'two'            => 'dos',
+        'two.type'       => 'dos.type',
+        'two.foo'        => 'dos.oof',
+        'two.qul'        => false,
 
-        'zero'                => 'zero',
-        'zero.banana'         => 'zero.radish',
+        'zero'           => 'zero',
+        'zero.banana'    => 'zero.radish',
     ];
 
     protected NestedMap $map;
 
     public function setUp(): void
     {
-        $this->map = (new NestedMap(['one' => 'uno', 'two/info' => 'dos']))
-            ->withMappedField('one', [
-                'shape' => 'forma',
-                'red' => 'color/roja',
-                'blue' => 'color/azul',
-            ])
-            ->withMappedField('two.info.items[]', ['foo' => 'oof', 'bar' => 'rab'])
+        $this->map = (new NestedMap(['one' => 'uno', 'two' => 'dos']))
+            ->withMappedField('one.color', ['red' => 'roja', 'blue' => 'azul'])
+            ->withMappedField('two[]', ['foo' => 'oof', 'bar' => 'rab', 'qul' => false])
             ->withMappedField('zero', ['banana' => 'radish']);
+    }
+
+    public function testInnerMap()
+    {
+        $inner = $this->map->getInnerMaps();
+
+        $this->assertCount(4, $inner);
+
+        $this->assertArrayHasKey('', $inner);
+        $this->assertEquals(new FieldMap(['one' => 'uno', 'two' => 'dos']), $inner['']);
+
+        $this->assertArrayHasKey('one.color', $inner);
+        $this->assertInstanceOf(ChildMap::class, $inner['one.color']);
+        $this->assertEquals(new FieldMap(['red' => 'roja', 'blue' => 'azul']), $inner['one.color']->getInnerMap());
+        $this->assertFalse($inner['one.color']->isForMany());
+
+        $this->assertArrayHasKey('two', $inner);
+        $this->assertInstanceOf(ChildMap::class, $inner['two']);
+        $this->assertEquals(new FieldMap(['foo' => 'oof', 'bar' => 'rab', 'qul' => false]), $inner['two']->getInnerMap());
+        $this->assertTrue($inner['two']->isForMany());
+
+        $this->assertArrayHasKey('zero', $inner);
+        $this->assertInstanceOf(ChildMap::class, $inner['zero']);
+        $this->assertEquals(new FieldMap(['banana' => 'radish']), $inner['zero']->getInnerMap());
+        $this->assertFalse($inner['zero']->isForMany());
+    }
+
+    public function fieldProvider()
+    {
+        $provider = [];
+
+        foreach (self::EXPECTED_MAPPING as $appField => $dbField) {
+            $provider[$appField] = [$appField, $dbField];
+        }
+
+        return $provider;
+    }
+
+    /**
+     * @dataProvider fieldProvider
+     */
+    public function testToDB($field, $expected)
+    {
+        $this->assertSame($expected, $this->map->toDB($field));
     }
 
     public function testForFilter()
@@ -52,6 +95,8 @@ class NestedMapTest extends TestCase
         $expected = [];
 
         foreach (self::EXPECTED_MAPPING as $appField => $dbField) {
+            $dbField = $dbField !== false ? $dbField : 'dos.qul';
+
             $filter[] = new FilterItem($appField, '', 1);
             $expected[] = new FilterItem($dbField, '', 1);
         }
@@ -69,7 +114,9 @@ class NestedMapTest extends TestCase
 
         foreach (self::EXPECTED_MAPPING as $appField => $dbField) {
             $update[] = new UpdateInstruction('set', [$appField => 1]);
-            $expected[] = new UpdateInstruction('set', [$dbField => 1]);
+            if ($dbField !== false) {
+                $expected[] = new UpdateInstruction('set', [$dbField => 1]);
+            }
         }
 
         $applyTo = $this->map->forUpdate();
@@ -85,7 +132,9 @@ class NestedMapTest extends TestCase
 
         foreach (self::EXPECTED_MAPPING as $appField => $dbField) {
             $update[$appField] = 1;
-            $expected[$dbField] = 1;
+            if ($dbField !== false) {
+                $expected[$dbField] = 1;
+            }
         }
 
         $applyTo = $this->map->forUpdate();
@@ -100,42 +149,25 @@ class NestedMapTest extends TestCase
         $items = [
             [
                 'zero' => ['banana' => '€', 'peanuts' => '€€'],
-                'one' => ['shape' => ['x' => 10, 'y' => 7], 'red' => 77, 'blue' => 0, 'weight' => 101],
+                'one' => ['color' => ['red' => 77, 'blue' => 0], 'weight' => 101],
                 'two' => [
-                    'info' => [
-                        'pop' => 4,
-                        'items' => [
-                            ['type' => 'A', 'foo' => 'i'],
-                            ['type' => 'A', 'foo' => 'o'],
-                        ]
-                    ],
-                    'meta' => ['a' => 'b'],
+                    ['type' => 'A', 'foo' => 'i'],
+                    ['type' => 'A', 'foo' => 'o'],
                 ],
                 'ten' => 'birds',
             ],
             [
                 'zero' => ['grape' => '€€'],
-                'one' => ['shape' => ['x' => 5, 'y' => 23], 'red' => 281, 'blue' => 30, 'weight' => 72],
+                'one' => ['color' => ['red' => 281, 'blue' => 30], 'weight' => 72],
                 'two' => [
-                    'info' => [
-                        'items' => [
-                            ['type' => 'A', 'foo' => 'r'],
-                            ['type' => 'B', 'foo' => 't'],
-                        ]
-                    ],
-                    'meta' => [],
+                    ['type' => 'A', 'foo' => 'r'],
+                    ['type' => 'B', 'foo' => 't'],
                 ],
                 'ten' => 'bees',
             ],
             [
-                'zero' => ['banana' => '€€', 'grape' => '€€€€'],
-                'one' => ['shape' => ['x' => 51, 'y' => 21], 'red' => 0, 'blue' => 99, 'weight' => 123],
-                'two' => [
-                    'info' => [
-                        'items' => []
-                    ],
-                    'meta' => [],
-                ],
+                'one' => ['color' => ['red' => 0, 'blue' => 99], 'weight' => 123],
+                'two' => [],
                 'ten' => 'trees',
             ],
         ];
@@ -143,7 +175,7 @@ class NestedMapTest extends TestCase
         $results = [
             [
                 'zero' => ['radish' => '€', 'peanuts' => '€€'],
-                'uno' => ['forma' => ['x' => 10, 'y' => 7], 'color' => ['roja' => 77, 'azul' => 0], 'weight' => 101],
+                'uno' => ['color' => ['roja' => 77, 'azul' => 0], 'weight' => 101],
                 'dos' => [
                     ['type' => 'A', 'oof' => 'i'],
                     ['type' => 'A', 'oof' => 'o'],
@@ -152,7 +184,7 @@ class NestedMapTest extends TestCase
             ],
             [
                 'zero' => ['grape' => '€€'],
-                'one' => ['forma' => ['x' => 5, 'y' => 23], 'color' => ['roja' => 281, 'azul' => 30], 'weight' => 72],
+                'uno' => ['color' => ['roja' => 281, 'azul' => 30], 'weight' => 72],
                 'dos' => [
                     ['type' => 'A', 'oof' => 'r'],
                     ['type' => 'B', 'oof' => 't'],
@@ -160,8 +192,7 @@ class NestedMapTest extends TestCase
                 'ten' => 'bees',
             ],
             [
-                'zero' => ['radish' => '€€', 'grape' => '€€€€'],
-                'one' => ['forma' => ['x' => 51, 'y' => 21], 'color' => ['roja' => 0, 'azul' => 99], 'weight' => 123],
+                'uno' => ['color' => ['roja' => 0, 'azul' => 99], 'weight' => 123],
                 'dos' => [],
                 'ten' => 'trees',
             ],
@@ -190,13 +221,6 @@ class NestedMapTest extends TestCase
      */
     public function testForResult($expected, $result)
     {
-        foreach ($expected as &$item) {
-            if (isset($item['two']['info']['pop'])) {
-                unset($item['two']['info']['pop']);
-            }
-            unset($item['two']['meta']);
-        }
-
         $applyTo = $this->map->forResult();
         $iterator = $applyTo($result);
 

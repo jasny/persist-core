@@ -5,17 +5,22 @@ declare(strict_types=1);
 namespace Jasny\DB\Tests\Map;
 
 use Improved as i;
-use Jasny\DB\Map\FlatMap;
+use Jasny\DB\Map\FieldMap;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Update\UpdateInstruction;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Map\FlatMap
+ * @covers \Jasny\DB\Map\FieldMap
  */
-class FlatMapTest extends TestCase
+class FieldMapTest extends TestCase
 {
-    protected const MAP = ['id' => '_id', 'foo' => 'foos', 'bar' => 'bor', 'skippy' => false];
+    protected const MAP = [
+        'id' => '_id',
+        'foo' => 'foos',
+        'bar' => 'bor',
+        'skippy' => false
+    ];
 
     public function fieldProvider()
     {
@@ -34,7 +39,7 @@ class FlatMapTest extends TestCase
      */
     public function testToDB(string $field, $expected)
     {
-        $map = new FlatMap(self::MAP);
+        $map = new FieldMap(self::MAP);
 
         $this->assertEquals($expected, $map->toDB($field));
     }
@@ -47,9 +52,10 @@ class FlatMapTest extends TestCase
             new FilterItem('bar', '', 'hello'),
             new FilterItem('numbers', 'in', [1, 2, 3]),
             new FilterItem('foo.bar.qux', '', 1),
+            new FilterItem('skippy', '', 100),
         ];
 
-        $map = new FlatMap(self::MAP);
+        $map = new FieldMap(self::MAP);
         $applyTo = $map->forFilter();
 
         $iterator = $applyTo($filter);
@@ -57,29 +63,14 @@ class FlatMapTest extends TestCase
         $this->assertIsIterable($iterator);
         $mapped = i\iterable_to_array($iterator, true);
 
-        $this->assertCount(5, $mapped);
+        $this->assertCount(6, $mapped);
 
         $this->assertEquals(new FilterItem('_id', 'not', 42), $mapped[0]);
         $this->assertEquals(new FilterItem('_id', 'min', 1), $mapped[1]);
         $this->assertEquals(new FilterItem('bor', '', 'hello'), $mapped[2]);
         $this->assertSame($filter[3], $mapped[3]);
         $this->assertEquals(new FilterItem('foos.bar.qux', '', 1), $mapped[4]);
-    }
-
-    public function testForFilterOnIgnored()
-    {
-        $filter = [new FilterItem('skippy', '', 100)];
-
-        $map = new FlatMap(self::MAP);
-        $applyTo = $map->forFilter();
-
-        $iterator = $applyTo($filter);
-
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage("Unable to filter on ignored field 'skippy'");
-
-        $this->assertIsIterable($iterator);
-        i\iterable_to_array($iterator, true);
+        $this->assertSame($filter[5], $mapped[5]);
     }
 
     public function testForUpdate()
@@ -90,7 +81,7 @@ class FlatMapTest extends TestCase
             new UpdateInstruction('set', ['number' => 3]),
         ];
 
-        $map = new FlatMap(self::MAP);
+        $map = new FieldMap(self::MAP);
         $applyTo = $map->forUpdate();
 
         $iterator = $applyTo($instructions);
@@ -114,7 +105,7 @@ class FlatMapTest extends TestCase
             'string' => 'hello',
         ]);
 
-        $map = new FlatMap(self::MAP);
+        $map = new FieldMap(self::MAP);
         $applyTo = $map->forResult();
 
         $iterator = $applyTo($items);
@@ -151,7 +142,7 @@ class FlatMapTest extends TestCase
             'string' => 'hello',
         ]);
 
-        $map = new FlatMap(self::MAP);
+        $map = new FieldMap(self::MAP);
         $applyTo = $map->forItems();
 
         $iterator = $applyTo($items);

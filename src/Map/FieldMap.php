@@ -12,7 +12,7 @@ use function Jasny\str_starts_with;
 /**
  * Simple field map.
  */
-final class FlatMap implements MapInterface
+final class FieldMap implements MapInterface
 {
     /** @var array<string,string|false> */
     protected array $map;
@@ -73,11 +73,7 @@ final class FlatMap implements MapInterface
             $field = $item->getField();
             $mappedField = $this->getMappedField($field);
 
-            if ($mappedField === false) {
-                throw new \RuntimeException("Unable to filter on ignored field '$field'");
-            }
-
-            yield $mappedField !== null
+            yield $mappedField !== null && $mappedField !== false
                 ? new FilterItem($mappedField, $item->getOperator(), $item->getValue())
                 : $item;
         };

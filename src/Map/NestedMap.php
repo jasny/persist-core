@@ -21,7 +21,7 @@ final class NestedMap implements MapInterface
      */
     public function __construct($map)
     {
-        $this->maps[''] = $map instanceof MapInterface ? $map : (new ConfiguredMap($map))->getInnerMap();
+        $this->maps[''] = $map instanceof MapInterface ? $map : new FieldMap($map);
     }
 
     /**
