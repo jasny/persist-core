@@ -4,7 +4,6 @@
     "description": "Service based DB abstraction layer",
     "keywords": ["database", "db"],
     "license": "MIT",
-    "homepage": "http://jasny.github.com/db",
     "authors": [
         {
             "name": "Arnold Daniels",
@@ -18,8 +17,11 @@
     },
     "require": {
         "php": ">=7.4.0",
+        "ext-json": "*",
+        "improved/function": "^0.1.2",
         "improved/iterable": "~0.1",
         "improved/type": "~0.1",
+        "jasny/dotkey": "dev-master as 2.0",
         "jasny/immutable": "^2.0",
         "jasny/php-functions": "^4.1",
         "psr/log": "^1.1",

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Result;
 
-use Jasny\DB\FieldMap\FieldMapInterface;
+use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Result\Result;
 use Jasny\DB\Result\ResultBuilder;
 use PHPUnit\Framework\TestCase;
@@ -40,7 +40,7 @@ class ResultBuilderTest extends TestCase
             ['NAME' => 'bar', 'nmbr' => 42],
         ];
 
-        $fieldMap = $this->createMock(FieldMapInterface::class);
+        $fieldMap = $this->createMock(MapInterface::class);
         $fieldMap->expects($this->once())->method('applyToResult')
             ->with($records)
             ->willReturn($expected);

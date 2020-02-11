@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Jasny\DB\Map;
+
+use Jasny\Immutable;
+
+/**
+ * Field map for data structure (with embedded or child objects).
+ */
+final class NestedMap implements MapInterface
+{
+    use Immutable\With;
+    use Traits\CombineTrait;
+
+    /**
+     * StructuredFieldMap constructor.
+     *
+     * @param MapInterface|array<string,mixed> $map  Base map
+     */
+    public function __construct($map)
+    {
+        $this->maps[''] = $map instanceof MapInterface ? $map : (new ConfiguredMap($map))->getInnerMap();
+    }
+
+    /**
+     * Get a copy with mapping for embedded items.
+     *
+     * @param string                                  $field
+     * @param MapInterface|array<string,string|false> $map
+     * @return static
+     */
+    public function withMappedField(string $field, $map): self
+    {
+        $childMap = new ChildMap($field, $map);
+
+        $maps = $this->maps;
+        $maps[$childMap->getField()] = $childMap;
+        krsort($maps);
+
+        return $this->withProperty('maps', $maps);
+    }
+}

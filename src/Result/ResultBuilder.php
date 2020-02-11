@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\Result;
 
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\FieldMap\FieldMapInterface;
+use Jasny\DB\Map\MapInterface;
 
 /**
  * Pipeline builder for a query result.
@@ -18,7 +18,7 @@ class ResultBuilder extends PipelineBuilder
     /**
      * ResultBuilder constructor.
      */
-    public function __construct(?FieldMapInterface $fieldMap = null)
+    public function __construct(?MapInterface $fieldMap = null)
     {
         if (isset($fieldMap)) {
             $this->steps[] = [[$fieldMap, 'applyToResult'], []];
