@@ -6,6 +6,7 @@ namespace Jasny\DB\QueryBuilder;
 
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Update\UpdateInstruction;
+use Jasny\Immutable;
 
 /**
  * Query builder for update queries.
@@ -16,6 +17,8 @@ use Jasny\DB\Update\UpdateInstruction;
  */
 class UpdateQueryBuilder extends AbstractQueryBuilder
 {
+    use Immutable\With;
+
     /**
      * @var callable
      * @phpstan-param callable(TQuery,UpdateInstruction,array<OptionInterface>):void

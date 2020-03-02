@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Map;
 
+use Jasny\DB\Option\OptionInterface;
 use Jasny\Immutable;
 
 /**
@@ -22,6 +23,14 @@ final class NestedMap implements MapInterface
     public function __construct($map)
     {
         $this->maps[''] = $map instanceof MapInterface ? $map : new FieldMap($map);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withOpts(array $opts): MapInterface
+    {
+        return $this;
     }
 
     /**

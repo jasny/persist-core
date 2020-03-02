@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\Map;
 
 use Improved as i;
-use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Update\UpdateInstruction;
-
+use Improved\IteratorPipeline\Pipeline;
 use Jasny\DotKey\DotKey;
 use function Jasny\str_starts_with;
 use function Jasny\str_ends_with;
@@ -49,7 +47,7 @@ class ChildMap implements MapInterface
     /**
      * Get the map for the nested item.
      */
-    public function getInnerMap(): MapInterface
+    public function getInner(): MapInterface
     {
         return $this->map;
     }
@@ -66,212 +64,90 @@ class ChildMap implements MapInterface
     /**
      * @inheritDoc
      */
-    public function toDB(string $field)
+    public function withOpts(array $opts): MapInterface
+    {
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function applyToField(string $field)
     {
         if (!str_starts_with($field, $this->field . '.')) {
-            return $field;
+            return null;
         }
 
-        $mappedChildField = $this->map->toDB(substr($field, strlen($this->field) + 1));
+        $mappedField = $this->map->applyToField(substr($field, strlen($this->field) + 1));
 
-        return $mappedChildField !== false ? $this->field . '.' . $mappedChildField : false;
-    }
-
-    /**
-     * Apply mapping to filter items.
-     *
-     * @param callable(iterable):iterable $applyTo
-     * @param iterable<FilterItem>        $filterItems
-     * @return iterable<FilterItem>
-     */
-    protected function applyToFilter(callable $applyTo, iterable $filterItems): iterable
-    {
-        foreach ($filterItems as $item) {
-            $field = $item->getField();
-
-            if (str_starts_with($field, $this->field . '.')) {
-                yield from $this->applyToFilterField($applyTo, $item);
-            } else {
-                yield $item;
-            }
-        }
-    }
-
-    /**
-     * Apply mapping to the field of the filter item.
-     *
-     * @param callable $applyTo
-     * @param FilterItem $item
-     * @return \Generator
-     */
-    protected function applyToFilterField(callable $applyTo, FilterItem $item): \Generator
-    {
-        $childField = substr($item->getField(), strlen($this->field) + 1);
-        $childItem = new FilterItem($childField, $item->getOperator(), $item->getValue());
-
-        /** @var FilterItem $mappedItem */
-        foreach ($applyTo([$childItem]) as $mappedItem) {
-            if ($mappedItem === $childItem) {
-                yield $item; // No change to child, can yield original
-                continue;
-            }
-
-            $parentField = $this->field . '.' . $mappedItem->getField();
-            yield new FilterItem($parentField, $childItem->getOperator(), $childItem->getValue());
-        }
-    }
-
-    /**
-     * Apply mapping to update operations.
-     *
-     * @param callable(UpdateInstruction):UpdateInstruction $applyTo
-     * @param iterable<UpdateInstruction>                   $update
-     * @return iterable<UpdateInstruction>
-     */
-    protected function applyToUpdate(callable $applyTo, iterable $update): iterable
-    {
-        foreach ($update as $instruction) {
-            [$parentPairs, $childPairs] = $this->splitUpdatePairs($instruction->getPairs());
-
-            if ($childPairs === []) {
-                yield $instruction;
-                continue;
-            }
-
-            $childInstruction = new UpdateInstruction($instruction->getOperator(), $childPairs);
-            $mappedInstruction = $applyTo($childInstruction);
-
-            if ($mappedInstruction === null) {
-                continue;
-            }
-
-            yield $mappedInstruction === $childInstruction
-                ? $instruction // No changes to the child fields, so we can yield the original
-                : $this->createUpdateInstruction($mappedInstruction, $parentPairs);
-        }
-    }
-
-    /**
-     * Split pairs of update instruction into child and parent pairs.
-     *
-     * @param array<string,mixed> $pairs
-     * @return array{array<string,mixed>,array<string,mixed>}
-     */
-    protected function splitUpdatePairs(array $pairs)
-    {
-        $parentPairs = [];
-        $childPairs = [];
-
-        foreach ($pairs as $field => $value) {
-            if (!str_starts_with($field, $this->field . '.')) {
-                $parentPairs[$field] = $value;
-            } else {
-                $childField = substr($field, strlen($this->field) + 1);
-                $childPairs[$childField] = $value;
-            }
-        }
-
-        return [$parentPairs, $childPairs];
-    }
-
-    /**
-     * Apply mapping to a single update instruction.
-     *
-     * @param UpdateInstruction   $instruction
-     * @param array<string,mixed> $parentPairs
-     * @return UpdateInstruction|null
-     */
-    protected function createUpdateInstruction(UpdateInstruction $instruction, array $parentPairs): ?UpdateInstruction
-    {
-        foreach ($instruction->getPairs() as $childField => $value) {
-            $parentPairs[$this->field . '.' . $childField] = $value;
-        }
-
-        return $parentPairs !== []
-            ? new UpdateInstruction($instruction->getOperator(), $parentPairs)
-            : null;
-    }
-
-
-    /**
-     * Apply mapping to items (from DB or to DB).
-     *
-     * @param callable        $applyTo
-     * @param iterable<mixed> $items
-     * @return iterable<mixed>
-     */
-    protected function applyToItems(callable $applyTo, iterable $items): iterable
-    {
-        foreach ($items as $key => $item) {
-            if ((!is_array($item) && !is_object($item)) || !DotKey::on($item)->exists($this->field)) {
-                yield $key => $item; // Field not present
-                continue;
-            }
-
-            $value = DotKey::on($item)->get($this->field);
-            $newValue = $applyTo($value);
-
-            if ($value === $newValue) {
-                // Not changed or value is an object
-            } elseif ($value instanceof \ArrayObject) {
-                $value->exchangeArray(i\iterable_to_array($newValue));
-            } else {
-                DotKey::on($item)->set($this->field, $newValue);
-            }
-
-            yield $item;
-        }
-    }
-
-
-    /**
-     * @inheritDoc
-     */
-    public function forFilter(): callable
-    {
-        $applyTo = $this->map->forFilter();
-        return fn(iterable $filter): iterable => $this->applyToFilter($applyTo, $filter);
+        return is_string($mappedField) ? $this->field . '.' . $mappedField : $mappedField;
     }
 
     /**
      * @inheritDoc
      */
-    public function forUpdate(): callable
+    public function apply($item)
     {
-        $applyToIterable = $this->map->forUpdate();
-        $applyTo = fn(UpdateInstruction $instruction) => i\iterable_first($applyToIterable([$instruction]));
-
-        return fn(iterable $update): iterable => $this->applyToUpdate($applyTo, $update);
+        return $this->applyToItem(
+            $item,
+            fn($value) => is_array($value) || is_object($value) ? $this->map->apply($value) : $value
+        );
     }
 
     /**
      * @inheritDoc
      */
-    public function forResult(): callable
+    public function applyInverse($item)
     {
-        return $this->forItemsApplyToChild($this->map->forResult());
+        return $this->applyToItem(
+            $item,
+            fn($value) => is_array($value) || is_object($value) ? $this->map->applyInverse($value) : $value
+        );
     }
 
     /**
-     * @inheritDoc
-     */
-    public function forItems(): callable
-    {
-        return $this->forItemsApplyToChild($this->map->forItems());
-    }
-
-    /**
-     * Return callback to apply function to each child.
+     * Apply map or inverse map to item.
      *
-     * @param callable $applyToIterable
-     * @return \Closure
+     * @param array|object                 $item
+     * @param callable(mixed $value):mixed $apply
+     * @return array|object
      */
-    private function forItemsApplyToChild(callable $applyToIterable)
+    protected function applyToItem($item, callable $apply)
     {
-        $applyTo = $this->isForMany
-            ? fn($items) => i\iterable_to_array($applyToIterable($items), true)
-            : fn($item) => i\iterable_first($applyToIterable([$item]));
+        if (!DotKey::on($item)->exists($this->field)) {
+            return $item;
+        }
 
-        return fn(iterable $result): iterable => $this->applyToItems($applyTo, $result);
+        if ($this->isForMany) {
+            $apply = fn($value) => is_iterable($value) ? Pipeline::with($value)->map($apply)->toArray() : $value;
+        }
+
+        $value = DotKey::on($item)->get($this->field);
+        $newValue = $apply($value);
+
+        $this->updateItem($item, $value, $newValue);
+
+        return $item;
+    }
+
+    /**
+     * Set new value for item, if value has changed.
+     *
+     * @param array|object $item
+     * @param mixed        $value
+     * @param mixed        $newValue
+     */
+    protected function updateItem(&$item, $value, $newValue): void
+    {
+        // Not changed or same object
+        if ($value === $newValue) {
+            return;
+        }
+
+        if ($value instanceof \ArrayObject) {
+            $value->exchangeArray(i\iterable_to_array($newValue));
+        } else {
+            DotKey::on($item)->set($this->field, $newValue);
+        }
     }
 }

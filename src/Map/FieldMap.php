@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\Map;
 
 use Jasny\DB\Filter\FilterItem;
+use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Update\UpdateInstruction;
 use Jasny\DotKey\DotKey;
 use function Jasny\str_starts_with;
@@ -31,24 +32,17 @@ final class FieldMap implements MapInterface
     }
 
     /**
-     * Map App field to DB field.
-     *
-     * @param string $field
-     * @return string|false
+     * @inheritDoc
      */
-    public function toDB(string $field)
+    public function withOpts(array $opts): MapInterface
     {
-        return $this->getMappedField($field) ?? $field;
+        return $this;
     }
 
     /**
-     * Get mapped field.
-     * Return null if not mapped.
-     *
-     * @param string $field
-     * @return string|false|null
+     * @inheritDoc
      */
-    private function getMappedField(string $field)
+    public function applyToField(string $field)
     {
         [$top, $rest] = explode('.', $field, 2) + [1 => null];
 
@@ -62,63 +56,19 @@ final class FieldMap implements MapInterface
     }
 
     /**
-     * Apply mapping to filter items.
-     *
-     * @param iterable<FilterItem> $filterItems
-     * @return iterable<FilterItem>
+     * @inheritDoc
      */
-    protected function applyToFilter(iterable $filterItems): iterable
+    public function apply($item)
     {
-        foreach ($filterItems as $item) {
-            $field = $item->getField();
-            $mappedField = $this->getMappedField($field);
-
-            yield $mappedField !== null && $mappedField !== false
-                ? new FilterItem($mappedField, $item->getOperator(), $item->getValue())
-                : $item;
-        };
+        return $this->applyMap($this->map, $item);
     }
 
     /**
-     * Apply mapping to update operations.
-     *
-     * @param iterable<UpdateInstruction> $update
-     * @return iterable<UpdateInstruction>
+     * @inheritDoc
      */
-    protected function applyToUpdate(iterable $update): iterable
+    public function applyInverse($item)
     {
-        foreach ($update as $instruction) {
-            $instruction = $this->applyToUpdateInstruction($instruction);
-
-            if ($instruction !== null) {
-                yield $instruction;
-            }
-        }
-    }
-
-    /**
-     * Apply mapping to a single update instruction.
-     */
-    protected function applyToUpdateInstruction(UpdateInstruction $instruction): ?UpdateInstruction
-    {
-        $pairs = $instruction->getPairs();
-        $mappedPairs = [];
-
-        foreach ($pairs as $field => $value) {
-            $mappedField = $this->getMappedField($field) ?? $field;
-
-            if ($mappedField !== false) {
-                $mappedPairs[$mappedField] = $value;
-            }
-        }
-
-        if ($mappedPairs === $pairs) {
-            return $instruction;
-        }
-
-        return $mappedPairs !== []
-            ? new UpdateInstruction($instruction->getOperator(), $mappedPairs)
-            : null;
+        return $this->applyMap($this->inverse, $item);
     }
 
     /**
@@ -126,73 +76,37 @@ final class FieldMap implements MapInterface
      * Returns `null` if there are no changes.
      *
      * @param array<string,string|false> $map
-     * @param iterable<mixed>            $items
-     * @return iterable<mixed>
+     * @param array|object               $item
+     * @return array|object
+     *
+     * @template TItem
+     * @phpstan-param array<string,string|false> $map
+     * @phpstan-param TItem&(array|object)       $item
+     * @phpstan-return TItem
      */
-    protected function applyToItems(array $map, iterable $items): iterable
+    protected function applyMap(array $map, $item)
     {
-        foreach ($items as $key => $item) {
-            if (!is_array($item) && !is_object($item)) {
-                yield $key => $item;
+        $set = [];
+        $remove = [];
+
+        foreach ($map as $field => $newField) {
+            if (!DotKey::on($item)->exists($field)) {
                 continue;
             }
 
-            $set = [];
-            $remove = [];
-
-            foreach ($map as $field => $newField) {
-                if (!DotKey::on($item)->exists($field)) {
-                    continue;
-                }
-
-                if ($newField !== false) {
-                    $set[$newField] = DotKey::on($item)->get($field);
-                }
-                $remove[] = $field;
+            if ($newField !== false) {
+                $set[$newField] = DotKey::on($item)->get($field);
             }
-
-            foreach ($remove as $field) {
-                DotKey::on($item)->remove($field);
-            }
-            foreach ($set as $field => $value) {
-                DotKey::on($item)->put($field, $value);
-            }
-
-            yield $key => $item;
+            $remove[] = $field;
         }
-    }
 
-    /**
-     * @inheritDoc
-     */
-    public function forFilter(): callable
-    {
-        return \Closure::fromCallable([$this, 'applyToFilter']);
-    }
+        foreach ($remove as $field) {
+            DotKey::on($item)->remove($field);
+        }
+        foreach ($set as $field => $value) {
+            DotKey::on($item)->put($field, $value);
+        }
 
-    /**
-     * @inheritDoc
-     */
-    public function forUpdate(): callable
-    {
-        return \Closure::fromCallable([$this, 'applyToUpdate']);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function forResult(): callable
-    {
-        $map = $this->inverse;
-        return fn(iterable $result) => $this->applyToItems($map, $result);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function forItems(): callable
-    {
-        $map = $this->map;
-        return fn(iterable $items) => $this->applyToItems($map, $items);
+        return $item;
     }
 }

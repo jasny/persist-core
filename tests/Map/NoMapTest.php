@@ -21,40 +21,25 @@ class NoMapTest extends TestCase
         $this->map = new NoMap();
     }
 
-    public function testToDB()
+    public function testWithOpts()
     {
-        $this->assertEquals('foo', $this->map->toDB('foo'));
+        $this->assertSame($this->map, $this->map->withOpts([]));
     }
 
-    public function testForFilter()
+    public function testApplyToField()
     {
-        $applyTo = $this->map->forFilter();
+        $this->assertNull($this->map->applyToField('foo'));
+    }
 
+    public function testApply()
+    {
         $array = [new FilterItem('foo', '', 1)];
-        $this->assertSame($array, $applyTo($array));
+        $this->assertSame($array, $this->map->apply($array));
     }
 
-    public function testForUpdate()
+    public function testApplyInverse()
     {
-        $applyTo = $this->map->forUpdate();
-
         $array = [new UpdateInstruction('set', ['foo' => 1])];
-        $this->assertEquals($array, $applyTo($array));
-    }
-
-    public function testForResult()
-    {
-        $applyTo = $this->map->forResult();
-
-        $array = [(object)['foo' => 1]];
-        $this->assertEquals($array, $applyTo($array));
-    }
-
-    public function testForItems()
-    {
-        $applyTo = $this->map->forItems();
-
-        $array = [(object)['foo' => 1]];
-        $this->assertEquals($array, $applyTo($array));
+        $this->assertEquals($array, $this->map->applyInverse($array));
     }
 }

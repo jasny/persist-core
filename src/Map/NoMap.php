@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Map;
 
+use Jasny\DB\Option\OptionInterface;
+
 /**
  * Null object for map.
  * @immutable
@@ -11,54 +13,34 @@ namespace Jasny\DB\Map;
 final class NoMap implements MapInterface
 {
     /**
-     * Return input.
-     *
-     * @template TIterable of iterable
-     * @phpstan-param TIterable $iterable
-     * @phpstan-return TIterable
+     * @inheritDoc
      */
-    protected function nop(iterable $iterable): iterable
+    public function withOpts(array $opts): MapInterface
     {
-        return $iterable;
+        return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function toDB(string $field)
+    public function applyToField(string $field)
     {
-        return $field;
+        return null;
     }
 
     /**
      * @inheritDoc
      */
-    public function forFilter(): callable
+    public function applyInverse($item)
     {
-        return \Closure::fromCallable([$this, 'nop']);
+        return $item;
     }
 
     /**
      * @inheritDoc
      */
-    public function forUpdate(): callable
+    public function apply($item)
     {
-        return \Closure::fromCallable([$this, 'nop']);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function forResult(): callable
-    {
-        return \Closure::fromCallable([$this, 'nop']);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function forItems(): callable
-    {
-        return \Closure::fromCallable([$this, 'nop']);
+        return $item;
     }
 }

@@ -6,7 +6,7 @@ namespace Jasny\DB\Writer;
 
 use Improved\IteratorPipeline\Pipeline;
 use Jasny\Immutable;
-use Jasny\DB\Option as opts;
+use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Result\Result;
 use Psr\Log\LoggerInterface;

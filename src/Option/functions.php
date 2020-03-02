@@ -2,7 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Option;
+namespace Jasny\DB\Option\Functions;
+
+use Jasny\DB\Option\FieldsOption;
+use Jasny\DB\Option\FlagOption;
+use Jasny\DB\Option\LimitOption;
+use Jasny\DB\Option\LookupOption;
+use Jasny\DB\Option\SettingOption;
+use Jasny\DB\Option\SortOption;
 
 /**
  * Only return the specified fields.
@@ -43,6 +50,27 @@ function limit(int $limit, int $offset = 0): LimitOption
 function page(int $page, int $pageSize): LimitOption
 {
     return new LimitOption($pageSize, ($page - 1) * $pageSize);
+}
+
+
+/**
+ * Expand a field, loading data from related collection.
+ */
+function expand(string $field): LookupOption
+{
+    return new LookupOption($field);
+}
+
+/**
+ * Expand a field, loading data from related collection.
+ * Uses collection name as field name, this can be changed with `as()`.
+ *
+ * @param string               $related
+ * @param string|string[]|null $relatedField  Relationship should be through this field.
+ */
+function lookup(string $related, $relatedField = null): LookupOption
+{
+    return new LookupOption($related, $related, $relatedField);
 }
 
 

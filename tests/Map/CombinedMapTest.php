@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Map;
 
-use Improved as i;
-use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Map\CombinedMap;
 use Jasny\DB\Map\MapInterface;
-use Jasny\DB\Update\UpdateInstruction;
 use Jasny\PHPUnit\CallbackMockTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -35,104 +32,71 @@ class CombinedMapTest extends TestCase
         $this->map = new CombinedMap(...$this->inner);
     }
 
-
-    public function testToDB()
+    public function testWithOpts()
     {
-        $this->inner[0]->expects($this->once())->method('toDB')->with('a')->willReturn('b');
-        $this->inner[1]->expects($this->once())->method('toDB')->with('b')->willReturn('c');
-        $this->inner[2]->expects($this->once())->method('toDB')->with('c')->willReturn('d');
-
-        $this->assertEquals('d', $this->map->toDB('a'));
+        $this->assertSame($this->map, $this->map->withOpts([]));
     }
 
-    public function testToDBWithIgnoredField()
+    public function testGetInner()
     {
-        $this->inner[0]->expects($this->once())->method('toDB')->with('a')->willReturn('b');
-        $this->inner[1]->expects($this->once())->method('toDB')->with('b')->willReturn(false);
-        $this->inner[2]->expects($this->never())->method('toDB');
-
-        $this->assertFalse($this->map->toDB('a'));
+        $this->assertSame($this->inner, $this->map->getInner());
     }
 
-    public function testForFilter()
+    public function testApplyToField()
     {
-        $filterItems = [
-            [new FilterItem('a', '', 0)],
-            [new FilterItem('b', '', 0)],
-            [new FilterItem('c', '', 0)],
-            [new FilterItem('d', '', 0)],
-        ];
+        $this->inner[0]->expects($this->once())->method('applyToField')->with('a')->willReturn('b');
+        $this->inner[1]->expects($this->once())->method('applyToField')->with('b')->willReturn('c');
+        $this->inner[2]->expects($this->once())->method('applyToField')->with('c')->willReturn('d');
 
-        foreach ($this->inner as $i => $inner) {
-            $callback = $this->createCallbackMock($this->once(), [$filterItems[$i]], $filterItems[$i + 1]);
-            $inner->expects($this->once())->method('forFilter')->willReturn($callback);
-        }
-
-        $applyTo = $this->map->forFilter();
-        $result = $applyTo($filterItems[0]);
-
-        $this->assertSame($filterItems[3], $result);
+        $this->assertEquals('d', $this->map->applyToField('a'));
     }
 
-    public function testForUpdate()
+    public function testApplyToFieldWithIgnoredField()
     {
-        $instructions = [
-            [new UpdateInstruction('set', ['a' => 1])],
-            [new UpdateInstruction('set', ['b' => 1])],
-            [new UpdateInstruction('set', ['c' => 1])],
-            [new UpdateInstruction('set', ['d' => 1])],
-        ];
+        $this->inner[0]->expects($this->once())->method('applyToField')->with('a')->willReturn('b');
+        $this->inner[1]->expects($this->once())->method('applyToField')->with('b')->willReturn(false);
+        $this->inner[2]->expects($this->never())->method('applyToField');
 
-        foreach ($this->inner as $i => $inner) {
-            $callback = $this->createCallbackMock($this->once(), [$instructions[$i]], $instructions[$i + 1]);
-            $inner->expects($this->once())->method('forUpdate')->willReturn($callback);
-        }
-
-        $applyTo = $this->map->forUpdate();
-        $result = $applyTo($instructions[0]);
-
-        $this->assertSame($instructions[3], $result);
+        $this->assertFalse($this->map->applyToField('a'));
     }
 
-    public function testForResult()
+    public function testApply()
     {
         $items = [
-            [(object)['a' => 1]],
-            [(object)['b' => 1]],
-            [(object)['c' => 1]],
-            [(object)['d' => 1]],
+            (object)['a' => 1],
+            (object)['b' => 1],
+            (object)['c' => 1],
+            (object)['d' => 1],
         ];
 
         foreach ($this->inner as $i => $inner) {
-            $match = $this->callback(fn($a) => is_iterable($a) && i\iterable_to_array($a, true) === $items[$i + 1]);
-            $callback = $this->createCallbackMock($this->once(), [$match], $items[$i]);
-            $inner->expects($this->once())->method('forResult')->willReturn($callback);
+            $inner->expects($this->once())->method('apply')
+                ->with($this->identicalTo($items[$i]))
+                ->willReturn($items[$i + 1]);
         }
 
-        $applyTo = $this->map->forResult();
-        $result = $applyTo($items[3]);
+        $mapped = $this->map->apply($items[0]);
 
-        $this->assertSame($items[0], $result);
+        $this->assertSame($items[3], $mapped);
     }
 
-    public function testForItems()
+    public function testApplyInverse()
     {
         $items = [
-            [(object)['a' => 1]],
-            [(object)['b' => 1]],
-            [(object)['c' => 1]],
-            [(object)['d' => 1]],
+            (object)['a' => 1],
+            (object)['b' => 1],
+            (object)['c' => 1],
+            (object)['d' => 1],
         ];
 
         foreach ($this->inner as $i => $inner) {
-            $match = $this->callback(fn($a) => is_iterable($a) && i\iterable_to_array($a, true) === $items[$i]);
-            $callback = $this->createCallbackMock($this->once(), [$match], $items[$i + 1]);
-            $inner->expects($this->once())->method('forItems')->willReturn($callback);
+            $inner->expects($this->once())->method('applyInverse')
+                ->with($this->identicalTo($items[$i + 1]))
+                ->willReturn($items[$i]);
         }
 
-        $applyTo = $this->map->forItems();
-        $result = $applyTo($items[0]);
+        $mapped = $this->map->applyInverse($items[3]);
 
-        $this->assertSame($items[3], $result);
+        $this->assertSame($items[0], $mapped);
     }
 }

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Map\Traits;
 
-use Improved as i;
-use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Map\MapInterface;
 
 /**
@@ -17,91 +15,72 @@ trait CombineTrait
     protected array $maps;
 
     /**
-     * Get the maps that are combined.
+     * Get wrapped maps.
      *
      * @return MapInterface[]
      */
-    public function getInnerMaps(): array
+    public function getInner(): array
     {
         return $this->maps;
     }
 
     /**
      * Map App field to DB field.
+     * Returns null if field isn't mapped and false if field is omitted.
      *
-     * @param string $field
-     * @return string|false
+     * @param string $appField
+     * @return string|false|null
      */
-    public function toDB(string $field)
+    public function applyToField(string $appField)
     {
+        $field = $appField;
+
         foreach ($this->maps as $map) {
-            $field = $map->toDB($field);
+            $field = $map->applyToField($field) ?? $field;
 
             if ($field === false) {
                 break;
             }
         }
 
-        return $field;
-    }
-
-    /**
-     * Get function to apply mapping to filter items.
-     *
-     * @return callable(iterable<FilterItem>):iterable<FilterItem>
-     */
-    public function forFilter(): callable
-    {
-        return $this->pipe($this->maps, fn(MapInterface $map) => $map->forFilter());
-    }
-
-    /**
-     * Get function to apply mapping to update operations.
-     *
-     * @return callable(iterable<UpdateInstruction>):iterable<UpdateInstruction>
-     */
-    public function forUpdate(): callable
-    {
-        return $this->pipe($this->maps, fn(MapInterface $map) => $map->forUpdate());
-    }
-
-    /**
-     * Get function to apply mapping to query result.
-     *
-     * @return callable(iterable):iterable
-     *
-     * @template TItem
-     * @phpstan-return callable(iterable<TItem>):iterable<TItem>
-     */
-    public function forResult(): callable
-    {
-        return $this->pipe(array_reverse($this->maps), fn(MapInterface $map) => $map->forResult());
+        return $field !== $appField ? $field : null;
     }
 
     /**
      * Get function to apply mapping to items, so the data can be used by the DB.
      *
-     * @return callable(iterable):iterable
+     * @param array|object $item
+     * @return array|object
      *
      * @template TItem
-     * @phpstan-return callable(iterable<TItem>):iterable<TItem>
+     * @phpstan-param TItem&(array|object) $item
+     * @phpstan-return TItem
      */
-    public function forItems(): callable
+    public function apply($item)
     {
-        return $this->pipe($this->maps, fn(MapInterface $map) => $map->forItems());
+        foreach ($this->maps as $map) {
+            $item = $map->apply($item);
+        }
+
+        return $item;
     }
 
     /**
-     * Return a pipelined function for all maps.
+     * Get function to apply mapping to items of query result.
      *
-     * @param array<MapInterface> $maps
-     * @param callable            $fn
-     * @return callable
+     * @param array|object $item
+     * @return array|object
+     *
+     * @template TItem
+     * @phpstan-param TItem&(array|object) $item
+     * @phpstan-return TItem
      */
-    private function pipe(array $maps, callable $fn): callable
+    public function applyInverse($item)
     {
-        $functions = Pipeline::with($maps)->map($fn)->values()->toArray();
+        foreach (array_reverse($this->maps) as $map) {
+            $item = $map->applyInverse($item);
+        }
 
-        return i\function_pipe(...$functions);
+        return $item;
     }
 }

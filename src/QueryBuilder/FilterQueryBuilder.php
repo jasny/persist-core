@@ -7,6 +7,7 @@ namespace Jasny\DB\QueryBuilder;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Filter\FilterParser;
+use Jasny\Immutable;
 
 /**
  * Query builder for filter queries.
@@ -17,6 +18,8 @@ use Jasny\DB\Filter\FilterParser;
  */
 class FilterQueryBuilder extends AbstractQueryBuilder
 {
+    use Immutable\With;
+
     /**
      * @var callable
      * @phpstan-var callable(TQuery,FilterItem,OptionInterface[]):void

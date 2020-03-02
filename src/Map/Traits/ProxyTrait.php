@@ -14,69 +14,52 @@ trait ProxyTrait
     protected MapInterface $inner;
 
     /**
-     * Map App field to DB field.
-     *
-     * @param string $field
-     * @return string|false
+     * Get wrapped map.
      */
-    public function toDB(string $field)
-    {
-        return $this->inner->toDB($field);
-    }
-
-    /**
-     * Get the map that's being proxied.
-     *
-     * @return MapInterface
-     */
-    public function getInnerMap()
+    public function getInner(): MapInterface
     {
         return $this->inner;
     }
 
     /**
-     * Get function to apply mapping to filter items.
+     * Map App field to DB field.
+     * Returns null if field isn't mapped and false if field is omitted.
      *
-     * @return callable(iterable<FilterItem>):iterable<FilterItem>
+     * @param string $field
+     * @return string|false|null
      */
-    public function forFilter(): callable
+    public function applyToField(string $field)
     {
-        return $this->inner->forFilter();
-    }
-
-    /**
-     * Get function to apply mapping to update operations.
-     *
-     * @return callable(iterable<UpdateInstruction>):iterable<UpdateInstruction>
-     */
-    public function forUpdate(): callable
-    {
-        return $this->inner->forUpdate();
-    }
-
-    /**
-     * Get function to apply mapping to query result.
-     *
-     * @return callable(iterable):iterable
-     *
-     * @template TItem
-     * @phpstan-return callable(iterable<TItem>):iterable<TItem>
-     */
-    public function forResult(): callable
-    {
-        return $this->inner->forResult();
+        return $this->inner->applyToField($field);
     }
 
     /**
      * Get function to apply mapping to items, so the data can be used by the DB.
      *
-     * @return callable(iterable):iterable
+     * @param array|object $item
+     * @return array|object
      *
      * @template TItem
-     * @phpstan-return callable(iterable<TItem>):iterable<TItem>
+     * @phpstan-param TItem&(array|object) $item
+     * @phpstan-return TItem
      */
-    public function forItems(): callable
+    public function apply($item)
     {
-        return $this->inner->forItems();
+        return $this->inner->apply($item);
+    }
+
+    /**
+     * Get function to apply mapping to items of query result.
+     *
+     * @param array|object $item
+     * @return array|object
+     *
+     * @template TItem
+     * @phpstan-param TItem&(array|object) $item
+     * @phpstan-return TItem
+     */
+    public function applyInverse($item)
+    {
+        return $this->inner->applyInverse($item);
     }
 }

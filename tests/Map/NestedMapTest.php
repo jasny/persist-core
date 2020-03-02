@@ -4,50 +4,38 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Map;
 
-use Improved as i;
+use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Map\ChildMap;
 use Jasny\DB\Map\FieldMap;
 use Jasny\DB\Map\NestedMap;
-use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Update\UpdateInstruction;
 use PHPUnit\Framework\TestCase;
 
 use function Jasny\objectify;
 
 /**
  * @covers \Jasny\DB\Map\NestedMap
- * @covers \Jasny\DB\Map\ChildMap
  * @covers \Jasny\DB\Map\Traits\CombineTrait
  */
 class NestedMapTest extends TestCase
 {
-    protected const EXPECTED_MAPPING = [
-        'one'            => 'uno',
-        'one.color'      => 'uno.color',
-        'one.color.red'  => 'uno.color.roja',
-
-        'two'            => 'dos',
-        'two.type'       => 'dos.type',
-        'two.foo'        => 'dos.oof',
-        'two.qul'        => false,
-
-        'zero'           => 'zero',
-        'zero.banana'    => 'zero.radish',
-    ];
-
     protected NestedMap $map;
 
     public function setUp(): void
     {
         $this->map = (new NestedMap(['one' => 'uno', 'two' => 'dos']))
-            ->withMappedField('one.color', ['red' => 'roja', 'blue' => 'azul'])
+            ->withMappedField('one.color', ['red' => 'rojo', 'blue' => 'azul'])
             ->withMappedField('two[]', ['foo' => 'oof', 'bar' => 'rab', 'qul' => false])
             ->withMappedField('zero', ['banana' => 'radish']);
     }
 
-    public function testInnerMap()
+    public function testWithOpts()
     {
-        $inner = $this->map->getInnerMaps();
+        $this->assertSame($this->map, $this->map->withOpts([]));
+    }
+
+    public function tetGetInner()
+    {
+        $inner = $this->map->getInner();
 
         $this->assertCount(4, $inner);
 
@@ -56,12 +44,12 @@ class NestedMapTest extends TestCase
 
         $this->assertArrayHasKey('one.color', $inner);
         $this->assertInstanceOf(ChildMap::class, $inner['one.color']);
-        $this->assertEquals(new FieldMap(['red' => 'roja', 'blue' => 'azul']), $inner['one.color']->getInnerMap());
+        $this->assertEquals(new FieldMap(['red' => 'rojo', 'blue' => 'azul']), $inner['one.color']->getInnerMap());
         $this->assertFalse($inner['one.color']->isForMany());
 
         $this->assertArrayHasKey('two', $inner);
         $this->assertInstanceOf(ChildMap::class, $inner['two']);
-        $this->assertEquals(new FieldMap(['foo' => 'oof', 'bar' => 'rab', 'qul' => false]), $inner['two']->getInnerMap());
+        $this->assertEquals(new FieldMap(['foo' => 'oof', 'bar' => 'rab', 'qul' => false]), $inner['two']->getInner());
         $this->assertTrue($inner['two']->isForMany());
 
         $this->assertArrayHasKey('zero', $inner);
@@ -72,9 +60,23 @@ class NestedMapTest extends TestCase
 
     public function fieldProvider()
     {
+        $expected = [
+            'one'            => 'uno',
+            'one.color'      => 'uno.color',
+            'one.color.red'  => 'uno.color.rojo',
+
+            'two'            => 'dos',
+            'two.type'       => 'dos.type',
+            'two.foo'        => 'dos.oof',
+            'two.qul'        => false,
+
+            'zero'           => null,
+            'zero.banana'    => 'zero.radish',
+        ];
+
         $provider = [];
 
-        foreach (self::EXPECTED_MAPPING as $appField => $dbField) {
+        foreach ($expected as $appField => $dbField) {
             $provider[$appField] = [$appField, $dbField];
         }
 
@@ -84,65 +86,10 @@ class NestedMapTest extends TestCase
     /**
      * @dataProvider fieldProvider
      */
-    public function testToDB($field, $expected)
+    public function testApplyToField($field, $expected)
     {
-        $this->assertSame($expected, $this->map->toDB($field));
+        $this->assertSame($expected, $this->map->applyToField($field));
     }
-
-    public function testForFilter()
-    {
-        $filter = [];
-        $expected = [];
-
-        foreach (self::EXPECTED_MAPPING as $appField => $dbField) {
-            $dbField = $dbField !== false ? $dbField : 'dos.qul';
-
-            $filter[] = new FilterItem($appField, '', 1);
-            $expected[] = new FilterItem($dbField, '', 1);
-        }
-
-        $applyTo = $this->map->forFilter();
-        $result = i\iterable_to_array($applyTo($filter), true);
-
-        $this->assertEquals($expected, $result);
-    }
-
-    public function testForUpdateWithManyInstructions()
-    {
-        $update = [];
-        $expected = [];
-
-        foreach (self::EXPECTED_MAPPING as $appField => $dbField) {
-            $update[] = new UpdateInstruction('set', [$appField => 1]);
-            if ($dbField !== false) {
-                $expected[] = new UpdateInstruction('set', [$dbField => 1]);
-            }
-        }
-
-        $applyTo = $this->map->forUpdate();
-        $result = i\iterable_to_array($applyTo($update));
-
-        $this->assertEquals($expected, $result);
-    }
-
-    public function testForUpdateWithSingleInstruction()
-    {
-        $update = [];
-        $expected = [];
-
-        foreach (self::EXPECTED_MAPPING as $appField => $dbField) {
-            $update[$appField] = 1;
-            if ($dbField !== false) {
-                $expected[$dbField] = 1;
-            }
-        }
-
-        $applyTo = $this->map->forUpdate();
-        $result = i\iterable_to_array($applyTo([new UpdateInstruction('set', $update)]));
-
-        $this->assertEquals([new UpdateInstruction('set', $expected)], $result);
-    }
-
 
     public function dataProvider()
     {
@@ -175,7 +122,7 @@ class NestedMapTest extends TestCase
         $results = [
             [
                 'zero' => ['radish' => '€', 'peanuts' => '€€'],
-                'uno' => ['color' => ['roja' => 77, 'azul' => 0], 'weight' => 101],
+                'uno' => ['color' => ['rojo' => 77, 'azul' => 0], 'weight' => 101],
                 'dos' => [
                     ['type' => 'A', 'oof' => 'i'],
                     ['type' => 'A', 'oof' => 'o'],
@@ -184,7 +131,7 @@ class NestedMapTest extends TestCase
             ],
             [
                 'zero' => ['grape' => '€€'],
-                'uno' => ['color' => ['roja' => 281, 'azul' => 30], 'weight' => 72],
+                'uno' => ['color' => ['rojo' => 281, 'azul' => 30], 'weight' => 72],
                 'dos' => [
                     ['type' => 'A', 'oof' => 'r'],
                     ['type' => 'B', 'oof' => 't'],
@@ -192,7 +139,7 @@ class NestedMapTest extends TestCase
                 'ten' => 'bees',
             ],
             [
-                'uno' => ['color' => ['roja' => 0, 'azul' => 99], 'weight' => 123],
+                'uno' => ['color' => ['rojo' => 0, 'azul' => 99], 'weight' => 123],
                 'dos' => [],
                 'ten' => 'trees',
             ],
@@ -219,32 +166,24 @@ class NestedMapTest extends TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function testForResult($expected, $result)
+    public function testApply($items, $expected)
     {
-        $applyTo = $this->map->forResult();
-        $iterator = $applyTo($result);
+        $result = Pipeline::with($items)
+            ->map(fn($item) => $this->map->apply($item))
+            ->toArray();
 
-        $this->assertIsIterable($iterator);
-        $this->assertIsNotArray($iterator);
-
-        $items = i\iterable_to_array($iterator, true);
-
-        $this->assertEquals($expected, $items);
+        $this->assertEquals($expected, $result);
     }
 
     /**
      * @dataProvider dataProvider
      */
-    public function testForItems($items, $expected)
+    public function testApplyInverse($expected, $result)
     {
-        $applyTo = $this->map->forItems();
-        $iterator = $applyTo($items);
+        $items = Pipeline::with($result)
+            ->map(fn($item) => $this->map->applyInverse($item))
+            ->toArray();
 
-        $this->assertIsIterable($iterator);
-        $this->assertIsNotArray($iterator);
-
-        $result = i\iterable_to_array($iterator, true);
-
-        $this->assertEquals($expected, $result);
+        $this->assertEquals($expected, $items);
     }
 }

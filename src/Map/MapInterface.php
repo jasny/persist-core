@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Map;
 
-use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Update\UpdateInstruction;
+use Jasny\DB\Option\OptionInterface;
 
 /**
  * Map DB fields to App fields and visa versa.
@@ -13,44 +12,43 @@ use Jasny\DB\Update\UpdateInstruction;
 interface MapInterface
 {
     /**
+     * Apply options to map.
+     *
+     * @param OptionInterface[] $opts
+     * @return MapInterface
+     */
+    public function withOpts(array $opts): self;
+
+    /**
      * Map App field to DB field.
+     * Returns null if field isn't mapped and false if field is omitted.
      *
      * @param string $field
-     * @return string|false
+     * @return string|false|null
      */
-    public function toDB(string $field);
+    public function applyToField(string $field);
 
     /**
-     * Get function to apply mapping to filter items.
+     * Get function to apply mapping to items, so the data can be used by the DB
      *
-     * @return callable(iterable<FilterItem>):iterable<FilterItem>
-     */
-    public function forFilter(): callable;
-
-    /**
-     * Get function to apply mapping to update operations.
-     *
-     * @return callable(iterable<UpdateInstruction>):iterable<UpdateInstruction>
-     */
-    public function forUpdate(): callable;
-
-    /**
-     * Get function to apply mapping to query result.
-     *
-     * @return callable(iterable):iterable
+     * @param array|object $item
+     * @return array|object
      *
      * @template TItem
-     * @phpstan-return callable(iterable<TItem>):iterable<TItem>
+     * @phpstan-param TItem&(array|object) $item
+     * @phpstan-return TItem
      */
-    public function forResult(): callable;
+    public function apply($item);
 
     /**
-     * Get function to apply mapping to items, so the data can be used by the DB.
+     * Get function to apply mapping to items of query result.
      *
-     * @return callable(iterable):iterable
+     * @param array|object $item
+     * @return array|object
      *
      * @template TItem
-     * @phpstan-return callable(iterable<TItem>):iterable<TItem>
+     * @phpstan-param TItem&(array|object) $item
+     * @phpstan-return TItem
      */
-    public function forItems(): callable;
+    public function applyInverse($item);
 }
