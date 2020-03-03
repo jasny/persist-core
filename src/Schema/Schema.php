@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Jasny\DB\Schema;
 
 use Improved\IteratorPipeline\Pipeline;
-use Jasny\DB\Map\ConfiguredMap;
 use Jasny\DB\Map\FieldMap;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\SchemaMap;
@@ -153,7 +152,7 @@ class Schema implements SchemaInterface
 
 
     /**
-     * Get the schema mapped for the collection / table.
+     * Create a schema mapped of the collection / table.
      */
     public function map(string $collection): SchemaMap
     {
@@ -161,9 +160,9 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get the field map for the collection / table (without relationships).
+     * Get the field map of the collection / table (without relationships).
      */
-    public function getMap(string $collection): MapInterface
+    public function getMapOf(string $collection): MapInterface
     {
         return $this->maps[$collection] ?? $this->defaultMap;
     }
@@ -189,14 +188,18 @@ class Schema implements SchemaInterface
      * @return Relationship
      * @throws \UnexpectedValueException  If no or more than one relationship matches
      */
-    public function getRelationship(string $collection, $field, ?string $related, $relatedFields): Relationship
-    {
+    public function getRelationship(
+        string $collection,
+        $field,
+        ?string $related = null,
+        $relatedFields = null
+    ): Relationship {
         if ($related === null && $relatedFields !== null) {
             throw new \InvalidArgumentException("Unable to match related field if no related collection is specified");
         }
 
         /** @var Relationship[] $relationships */
-        $relationships = Pipeline::with($this->relationships[$collection])
+        $relationships = Pipeline::with($this->relationships[$collection] ?? [])
             ->filter(fn(Relationship $rel) => $rel->matches($collection, $field, $related, $relatedFields))
             ->values()
             ->toArray();
@@ -206,9 +209,9 @@ class Schema implements SchemaInterface
                 (count($relationships) === 0 ? "No relationship" : "Multiple relationships"),
                 $related === null ? " found for " : " found between ",
                 $collection,
-                $field !== null ? ' (' . json_encode($field) . ')' : '',
+                $field !== null ? ' (' . join(', ', (array)$field) . ')' : '',
                 $related !== null ? " and {$related}" : '',
-                $relatedFields !== null ? ' (' . json_encode($relatedFields) . ')' : '',
+                $relatedFields !== null ? ' (' . join(', ', (array)$relatedFields) . ')' : '',
             ]));
         }
 

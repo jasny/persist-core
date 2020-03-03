@@ -30,7 +30,7 @@ final class SchemaMap implements MapInterface
         $this->collection = $collection;
         $this->schema = $schema;
 
-        $this->inner = $schema->getMap($collection);
+        $this->inner = $schema->getMapOf($collection);
     }
 
     /**
@@ -42,7 +42,7 @@ final class SchemaMap implements MapInterface
      * @param string|string[]|null $relatedField  Fields of related collection
      * @return static
      */
-    public function withRelated(string $field, ?string $related, $relatedField): self
+    public function withRelated(string $field, ?string $related = null, $relatedField = null): self
     {
         $field = $related !== null ? $field : null;
         $relationship = $this->schema->getRelationship($this->collection, $field, $related, $relatedField);

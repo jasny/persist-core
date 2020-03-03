@@ -18,9 +18,13 @@ final class Relationship
     public const MANY_TO_MANY = 0b11;
 
     protected int $type;
+
     protected string $collection;
+    /** @var string[] */
     protected array $fields;
+
     protected string $relatedCollection;
+    /** @var string[] */
     protected array $relatedFields;
 
     /**
@@ -68,7 +72,6 @@ final class Relationship
     public function swapped(): self
     {
         $copy = clone $this;
-
         $copy->type = (($this->type << 1) & 3) | (($this->type >> 1) & 3); // swap bit 0 and 1
 
         $copy->collection = $this->relatedCollection;
@@ -85,18 +88,18 @@ final class Relationship
      * Null means "don't care".
      *
      * @param string|null          $collection
-     * @param string|string[]|null $field1
-     * @param string|null          $relatedCollection
-     * @param string|string[]|null $field2
+     * @param string|string[]|null $fields
+     * @param string|null          $relCollection
+     * @param string|string[]|null $relField
      * @return bool
      */
-    public function matches(?string $collection, $field1, ?string $relatedCollection, $field2): bool
+    public function matches(?string $collection, $fields, ?string $relCollection, $relField): bool
     {
         return
             ($collection === null || $this->collection === $collection) &&
-            ($relatedCollection === null || $this->relatedCollection === $relatedCollection) &&
-            ($field1 === null || $this->fields === is_array($field1) ? $field1 : [$field1]) &&
-            ($field2 === null || $this->relatedFields === is_array($field2) ? $field2 : [$field2]);
+            ($relCollection === null || $this->relatedCollection === $relCollection) &&
+            ($fields === null || $this->fields === (is_array($fields) ? $fields : [$fields])) &&
+            ($relField === null || $this->relatedFields === (is_array($relField) ? $relField : [$relField]));
     }
 
 

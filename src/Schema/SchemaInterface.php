@@ -13,14 +13,14 @@ use Jasny\DB\Map\SchemaMap;
 interface SchemaInterface
 {
     /**
-     * Get the schema mapped for the collection / table.
+     * Create a schema mapped for the collection / table.
      */
     public function map(string $collection): SchemaMap;
 
     /**
-     * Get the field map for the collection / table.
+     * Get the field map of the collection / table.
      */
-    public function getMap(string $collection): MapInterface;
+    public function getMapOf(string $collection): MapInterface;
 
     /**
      * Get all relationships of a collection / table.

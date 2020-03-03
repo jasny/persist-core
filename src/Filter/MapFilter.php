@@ -7,7 +7,7 @@ namespace Jasny\DB\Filter;
 use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option as opts;
+use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Option\OptionInterface;
 
 /**
