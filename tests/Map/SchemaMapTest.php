@@ -94,6 +94,7 @@ class SchemaMapTest extends TestCase
         $this->assertIsArray($nested);
         $this->assertArrayHasKey('', $nested);
         $this->assertSame($schema->getMapOf('foo'), $nested['']);
+
         $this->assertArrayHasKey('barId', $nested);
         $this->assertInstanceOf(ChildMap::class, $nested['barId']);
         $this->assertSame('barId', $nested['barId']->getField());

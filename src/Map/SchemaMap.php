@@ -44,14 +44,13 @@ final class SchemaMap implements MapInterface
      */
     public function withRelated(string $field, ?string $related = null, $relatedField = null): self
     {
-        $field = $related !== null ? $field : null;
         $relationship = $this->schema->getRelationship($this->collection, $field, $related, $relatedField);
-        $relatedMap = $this->schema->map($related);
-        $relatedField .= ($relationship->isFromMany() ? '[]' : '');
+        $relatedMap = $this->schema->getMapOf($relationship->getRelatedCollection());
+        $mappedField = $relationship->getField() . ($relationship->isFromMany() ? '[]' : '');
 
         $map = $this->inner instanceof NestedMap ? $this->inner : new NestedMap($this->inner);
 
-        return $this->withProperty('inner', $map->withMappedField($relatedField, $relatedMap));
+        return $this->withProperty('inner', $map->withMappedField($mappedField, $relatedMap));
     }
 
     /**

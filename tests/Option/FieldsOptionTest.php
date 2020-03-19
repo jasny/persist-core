@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Option;
 
-use Jasny\DB\Option as opt;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\FieldsOption;
 use PHPUnit\Framework\TestCase;
 
@@ -30,7 +30,7 @@ class FieldsOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\fields
+     * @covers \Jasny\DB\Option\Functions\fields
      */
     public function testFieldsFunction()
     {
@@ -42,7 +42,7 @@ class FieldsOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\omit
+     * @covers \Jasny\DB\Option\Functions\omit
      */
     public function testOmitFunction()
     {

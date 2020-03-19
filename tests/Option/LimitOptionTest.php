@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Option;
 
-use Jasny\DB\Option as opt;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\LimitOption;
 use PHPUnit\Framework\TestCase;
 
@@ -30,7 +30,7 @@ class LimitOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\limit
+     * @covers \Jasny\DB\Option\Functions\limit
      */
     public function testLimitFunction()
     {
@@ -42,7 +42,7 @@ class LimitOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\limit
+     * @covers \Jasny\DB\Option\Functions\limit
      */
     public function testLimitFunctionOffset()
     {
@@ -54,7 +54,7 @@ class LimitOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\page
+     * @covers \Jasny\DB\Option\Functions\page
      */
     public function testPageFunction()
     {

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Schema;
 
-use Improved as i;
-
 /**
  * Relationship between two classes.
  * @immutable
@@ -20,21 +18,19 @@ final class Relationship
     protected int $type;
 
     protected string $collection;
-    /** @var string[] */
-    protected array $fields;
+    protected string $field;
 
     protected string $relatedCollection;
-    /** @var string[] */
-    protected array $relatedFields;
+    protected string $relatedField;
 
     /**
-     * @param int             $type          One of the relationship constants
-     * @param string          $collection    Name of left hand table / collection
-     * @param string|string[] $field         Field(s) of left hand table / collection with primary or foreign key
-     * @param string          $related       Name of right hand table / collection
-     * @param string|string[] $relatedField  Field of right hand table / collection with primary or foreign key
+     * @param int    $type          One of the relationship constants
+     * @param string $collection    Name of left hand table / collection
+     * @param string $field         Field(s) of left hand table / collection with primary or foreign key
+     * @param string $related       Name of right hand table / collection
+     * @param string $relatedField  Field of right hand table / collection with primary or foreign key
      */
-    public function __construct(int $type, string $collection, $field, string $related, $relatedField)
+    public function __construct(int $type, string $collection, string $field, string $related, string $relatedField)
     {
         if ($type > 0b11) {
             throw new \InvalidArgumentException("Invalid relationship type '$type'; use one of the constants");
@@ -43,25 +39,10 @@ final class Relationship
         $this->type = $type;
 
         $this->collection = $collection;
-        $this->fields = $this->fieldToFields($field);
+        $this->field = $field;
 
         $this->relatedCollection = $related;
-        $this->relatedFields = $this->fieldToFields($relatedField);
-    }
-
-    /**
-     * @param string|string[] $field
-     * @return string[]
-     */
-    private function fieldToFields($field): array
-    {
-        if (is_array($field)) {
-            i\iterable_walk(i\iterable_type_check($field, 'string'));
-            return $field;
-        }
-
-        i\type_check($field, 'string');
-        return [$field];
+        $this->relatedField = $relatedField;
     }
 
     /**
@@ -75,10 +56,10 @@ final class Relationship
         $copy->type = (($this->type << 1) & 3) | (($this->type >> 1) & 3); // swap bit 0 and 1
 
         $copy->collection = $this->relatedCollection;
-        $copy->fields = $this->relatedFields;
+        $copy->field = $this->relatedField;
 
         $copy->relatedCollection = $this->collection;
-        $copy->relatedFields = $this->fields;
+        $copy->relatedField = $this->field;
 
         return $copy;
     }
@@ -86,20 +67,14 @@ final class Relationship
     /**
      * See if the relationship matches the search criteria.
      * Null means "don't care".
-     *
-     * @param string|null          $collection
-     * @param string|string[]|null $fields
-     * @param string|null          $relCollection
-     * @param string|string[]|null $relField
-     * @return bool
      */
-    public function matches(?string $collection, $fields, ?string $relCollection, $relField): bool
+    public function matches(?string $collection, ?string $field, ?string $related, ?string $relatedField): bool
     {
         return
             ($collection === null || $this->collection === $collection) &&
-            ($relCollection === null || $this->relatedCollection === $relCollection) &&
-            ($fields === null || $this->fields === (is_array($fields) ? $fields : [$fields])) &&
-            ($relField === null || $this->relatedFields === (is_array($relField) ? $relField : [$relField]));
+            ($related === null || $this->relatedCollection === $related) &&
+            ($field === null || $this->field === $field) &&
+            ($relatedField === null || $this->relatedField === $relatedField);
     }
 
 
@@ -139,13 +114,11 @@ final class Relationship
     }
 
     /**
-     * Get fields of the left hand table / collection.
-     *
-     * @return string[]
+     * Get field of the left hand table / collection.
      */
-    public function getFields(): array
+    public function getField(): string
     {
-        return $this->fields;
+        return $this->field;
     }
 
     /**
@@ -158,11 +131,9 @@ final class Relationship
 
     /**
      * Get fields of the right hand table / collection.
-     *
-     * @return string[]
      */
-    public function getRelatedFields(): array
+    public function getRelatedField(): string
     {
-        return $this->relatedFields;
+        return $this->relatedField;
     }
 }

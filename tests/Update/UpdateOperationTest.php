@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Update;
 
-use Jasny\DB\Update as update;
+use Jasny\DB\Update\Functions as update;
 use Jasny\DB\Update\UpdateInstruction;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +38,7 @@ class UpdateOperationTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Update\set
+     * @covers \Jasny\DB\Update\Functions\set
      */
     public function testSet()
     {
@@ -49,7 +49,7 @@ class UpdateOperationTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Update\set
+     * @covers \Jasny\DB\Update\Functions\set
      */
     public function testSetWithArray()
     {
@@ -60,7 +60,7 @@ class UpdateOperationTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Update\patch
+     * @covers \Jasny\DB\Update\Functions\patch
      */
     public function testPatch()
     {
@@ -81,7 +81,7 @@ class UpdateOperationTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Update\inc
+     * @covers \Jasny\DB\Update\Functions\inc
      */
     public function testInc()
     {
@@ -93,7 +93,7 @@ class UpdateOperationTest extends TestCase
 
     /**
      * @dataProvider numberProvider
-     * @covers \Jasny\DB\Update\inc
+     * @covers \Jasny\DB\Update\Functions\inc
      */
     public function testIncWithAValue($number)
     {
@@ -104,7 +104,7 @@ class UpdateOperationTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Update\dec
+     * @covers \Jasny\DB\Update\Functions\dec
      */
     public function testDec()
     {
@@ -116,7 +116,7 @@ class UpdateOperationTest extends TestCase
 
     /**
      * @dataProvider numberProvider
-     * @covers \Jasny\DB\Update\dec
+     * @covers \Jasny\DB\Update\Functions\dec
      */
     public function testDecWithAValue($number)
     {
@@ -128,7 +128,7 @@ class UpdateOperationTest extends TestCase
 
     /**
      * @dataProvider numberProvider
-     * @covers \Jasny\DB\Update\mul
+     * @covers \Jasny\DB\Update\Functions\mul
      */
     public function testMul($number)
     {
@@ -140,7 +140,7 @@ class UpdateOperationTest extends TestCase
 
     /**
      * @dataProvider numberProvider
-     * @covers \Jasny\DB\Update\div
+     * @covers \Jasny\DB\Update\Functions\div
      */
     public function testDiv($number)
     {
@@ -152,7 +152,7 @@ class UpdateOperationTest extends TestCase
 
     /**
      * @dataProvider numberProvider
-     * @covers \Jasny\DB\Update\mod
+     * @covers \Jasny\DB\Update\Functions\mod
      */
     public function testMod($number)
     {
@@ -163,7 +163,7 @@ class UpdateOperationTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Update\push
+     * @covers \Jasny\DB\Update\Functions\push
      */
     public function testPush()
     {
@@ -174,7 +174,7 @@ class UpdateOperationTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Update\push
+     * @covers \Jasny\DB\Update\Functions\push
      */
     public function testPushMultiple()
     {
@@ -185,7 +185,7 @@ class UpdateOperationTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Update\pull
+     * @covers \Jasny\DB\Update\Functions\pull
      */
     public function testPull()
     {
@@ -196,7 +196,7 @@ class UpdateOperationTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Update\pull
+     * @covers \Jasny\DB\Update\Functions\pull
      */
     public function testPullMultiple()
     {

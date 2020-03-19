@@ -41,9 +41,9 @@ class ResultBuilderTest extends TestCase
         ];
 
         $fieldMap = $this->createMock(MapInterface::class);
-        $fieldMap->expects($this->once())->method('applyToResult')
-            ->with($records)
-            ->willReturn($expected);
+        $fieldMap->expects($this->exactly(2))->method('applyInverse')
+            ->withConsecutive(...array_map(fn($record) => [$record], $records))
+            ->willReturn(...$expected);
 
         $builder = new ResultBuilder($fieldMap);
         $result = $builder->with($records);

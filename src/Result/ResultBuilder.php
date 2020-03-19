@@ -21,7 +21,7 @@ class ResultBuilder extends PipelineBuilder
     public function __construct(?MapInterface $fieldMap = null)
     {
         if (isset($fieldMap)) {
-            $this->steps[] = [[$fieldMap, 'applyToResult'], []];
+            $this->steps = $this->map([$fieldMap, 'applyInverse'])->steps;
         }
     }
 

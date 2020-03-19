@@ -89,13 +89,13 @@ class Schema implements SchemaInterface
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string          $collection1  Name of left hand table / collection
-     * @param string|string[] $field1       Field(s) of left hand table / collection with primary or foreign id
-     * @param string          $collection2  Name of right hand table / collection
-     * @param string|string[] $field2       Field of right hand table / collection with primary or foreign id
+     * @param string $collection1  Name of left hand table / collection
+     * @param string $field1       Field(s) of left hand table / collection with primary or foreign id
+     * @param string $collection2  Name of right hand table / collection
+     * @param string $field2       Field of right hand table / collection with primary or foreign id
      * @return static
      */
-    final public function withOneToOne(string $collection1, $field1, string $collection2, $field2): self
+    final public function withOneToOne(string $collection1, string $field1, string $collection2, string $field2): self
     {
         return $this->withRelationship(
             new Relationship(Relationship::ONE_TO_ONE, $collection1, $field1, $collection2, $field2)
@@ -105,13 +105,13 @@ class Schema implements SchemaInterface
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string          $collection1  Name of left hand table / collection
-     * @param string|string[] $field1       Field(s) of left hand table / collection with primary or foreign id
-     * @param string          $collection2  Name of right hand table / collection
-     * @param string|string[] $field2       Field of right hand table / collection with primary or foreign id
+     * @param string $collection1  Name of left hand table / collection
+     * @param string $field1       Field(s) of left hand table / collection with primary or foreign id
+     * @param string $collection2  Name of right hand table / collection
+     * @param string $field2       Field of right hand table / collection with primary or foreign id
      * @return static
      */
-    final public function withOneToMany(string $collection1, $field1, string $collection2, $field2): self
+    final public function withOneToMany(string $collection1, string $field1, string $collection2, string $field2): self
     {
         return $this->withRelationship(
             new Relationship(Relationship::ONE_TO_MANY, $collection1, $field1, $collection2, $field2)
@@ -121,13 +121,13 @@ class Schema implements SchemaInterface
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string          $collection1  Name of left hand table / collection
-     * @param string|string[] $field1       Field(s) of left hand table / collection with primary or foreign id
-     * @param string          $collection2  Name of right hand table / collection
-     * @param string|string[] $field2       Field of right hand table / collection with primary or foreign id
+     * @param string $collection1  Name of left hand table / collection
+     * @param string $field1       Field(s) of left hand table / collection with primary or foreign id
+     * @param string $collection2  Name of right hand table / collection
+     * @param string $field2       Field of right hand table / collection with primary or foreign id
      * @return static
      */
-    final public function withManyToOne(string $collection1, $field1, string $collection2, $field2): self
+    final public function withManyToOne(string $collection1, string $field1, string $collection2, string $field2): self
     {
         return $this->withRelationship(
             new Relationship(Relationship::MANY_TO_ONE, $collection1, $field1, $collection2, $field2)
@@ -137,13 +137,13 @@ class Schema implements SchemaInterface
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string          $collection1  Name of left hand table / collection
-     * @param string|string[] $field1       Field(s) of left hand table / collection with primary or foreign id
-     * @param string          $collection2  Name of right hand table / collection
-     * @param string|string[] $field2       Field of right hand table / collection with primary or foreign id
+     * @param string $collection1  Name of left hand table / collection
+     * @param string $field1       Field(s) of left hand table / collection with primary or foreign id
+     * @param string $collection2  Name of right hand table / collection
+     * @param string $field2       Field of right hand table / collection with primary or foreign id
      * @return static
      */
-    final public function withManyToMany(string $collection1, $field1, string $collection2, $field2): self
+    final public function withManyToMany(string $collection1, string $field1, string $collection2, string $field2): self
     {
         return $this->withRelationship(
             new Relationship(Relationship::MANY_TO_MANY, $collection1, $field1, $collection2, $field2)
@@ -152,7 +152,7 @@ class Schema implements SchemaInterface
 
 
     /**
-     * Create a schema mapped of the collection / table.
+     * @inheritDoc
      */
     public function map(string $collection): SchemaMap
     {
@@ -160,7 +160,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get the field map of the collection / table (without relationships).
+     * @inheritDoc
      */
     public function getMapOf(string $collection): MapInterface
     {
@@ -168,10 +168,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get all relationships of a collection / table.
-     *
-     * @param string $collection
-     * @return array
+     * @inheritDoc
      */
     public function getRelationships(string $collection): array
     {
@@ -179,28 +176,21 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get single relationship for a field.
-     *
-     * @param string               $collection
-     * @param string|string[]|null $field
-     * @param string|null          $related
-     * @param string|string[]|null $relatedFields
-     * @return Relationship
-     * @throws \UnexpectedValueException  If no or more than one relationship matches
+     * @inheritDoc
      */
     public function getRelationship(
         string $collection,
-        $field,
+        ?string $field,
         ?string $related = null,
-        $relatedFields = null
+        ?string $relField = null
     ): Relationship {
-        if ($related === null && $relatedFields !== null) {
+        if ($related === null && $relField !== null) {
             throw new \InvalidArgumentException("Unable to match related field if no related collection is specified");
         }
 
         /** @var Relationship[] $relationships */
         $relationships = Pipeline::with($this->relationships[$collection] ?? [])
-            ->filter(fn(Relationship $rel) => $rel->matches($collection, $field, $related, $relatedFields))
+            ->filter(fn(Relationship $rel) => $rel->matches($collection, $field, $related, $relField))
             ->values()
             ->toArray();
 
@@ -209,9 +199,9 @@ class Schema implements SchemaInterface
                 (count($relationships) === 0 ? "No relationship" : "Multiple relationships"),
                 $related === null ? " found for " : " found between ",
                 $collection,
-                $field !== null ? ' (' . join(', ', (array)$field) . ')' : '',
+                $field !== null ? " ({$field})" : '',
                 $related !== null ? " and {$related}" : '',
-                $relatedFields !== null ? ' (' . join(', ', (array)$relatedFields) . ')' : '',
+                $relField !== null ? " ({$relField})" : '',
             ]));
         }
 

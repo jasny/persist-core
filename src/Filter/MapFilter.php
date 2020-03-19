@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Filter;
 
+use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\NoMap;
@@ -18,14 +19,18 @@ class MapFilter
     /**
      * Invoke the map.
      *
-     * @param FilterItem[] $filterItems
+     * @param FilterItem[]      $filterItems
      * @param OptionInterface[] $opts
      * @return FilterItem[]
      */
     public function __invoke(array $filterItems, array $opts): array
     {
-        /** @var MapInterface|null $map */
-        $map = opts\setting('map', null);
+        $map = opts\setting('map', null)->findIn($opts);
+
+        if ($map !== null && !$map instanceof MapInterface) {
+            trigger_error("'map' option isn't a Map object", E_USER_NOTICE);
+            $map = null;
+        }
 
         // Quick return if there is no map
         if ($map === null || $map instanceof NoMap) {

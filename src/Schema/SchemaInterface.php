@@ -33,12 +33,12 @@ interface SchemaInterface
     /**
      * Get single relationship for a field.
      *
-     * @param string          $collection
-     * @param string|string[] $field
-     * @param string          $related
-     * @param string|string[] $relatedFields
-     * @return Relationship
      * @throws \UnexpectedValueException  If no or more than one relationship matches
      */
-    public function getRelationship(string $collection, $field, string $related, $relatedFields): Relationship;
+    public function getRelationship(
+        string $collection,
+        ?string $field,
+        string $related,
+        ?string $relatedField
+    ): Relationship;
 }

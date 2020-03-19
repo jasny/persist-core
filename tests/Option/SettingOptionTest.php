@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Option;
 
-use Jasny\DB\Option as opts;
+use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Option\SettingOption;
 use Jasny\DB\Option\OptionInterface;
 use PHPUnit\Framework\TestCase;
@@ -22,6 +22,9 @@ class SettingOptionTest extends TestCase
         $this->assertEquals(234, $option->getValue());
     }
 
+    /**
+     * @covers \Jasny\DB\Option\Functions\setting
+     */
     public function testFunction()
     {
         $option = opts\setting('foo.bar', 234);
@@ -58,7 +61,7 @@ class SettingOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\existing
+     * @covers \Jasny\DB\Option\Functions\existing
      * @dataProvider resolutionProvider
      */
     public function testExistingFunction(string $resolution)
@@ -70,6 +73,9 @@ class SettingOptionTest extends TestCase
         $this->assertEquals($resolution, $option->getValue());
     }
 
+    /**
+     * @covers \Jasny\DB\Option\Functions\existing
+     */
     public function testExistingFunctionWithUnsupportedResolution()
     {
         $this->expectException(\UnexpectedValueException::class);

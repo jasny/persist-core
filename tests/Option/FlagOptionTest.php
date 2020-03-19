@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Option;
 
-use Jasny\DB\Option as opts;
+use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Option\FlagOption;
 use Jasny\DB\Option\OptionInterface;
 use PHPUnit\Framework\TestCase;
@@ -41,7 +41,7 @@ class FlagOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\apply_result
+     * @covers \Jasny\DB\Option\Functions\apply_result
      */
     public function testApplyResultFunction()
     {

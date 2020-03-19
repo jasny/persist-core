@@ -25,7 +25,7 @@ class MapUpdate
     public function __invoke(array $update, array $opts): array
     {
         /** @var MapInterface|null $map */
-        $map = opts\setting('map', null);
+        $map = opts\setting('map', null)->findIn($opts);
 
         // Quick return if there is no map
         if ($map === null || $map instanceof NoMap) {

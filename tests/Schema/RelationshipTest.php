@@ -55,19 +55,9 @@ class RelationshipTest extends TestCase
         $relationship = new Relationship(Relationship::ONE_TO_ONE, 'foo', 'x', 'bar', 'y');
 
         $this->assertEquals('foo', $relationship->getCollection());
-        $this->assertEquals(['x'], $relationship->getFields());
+        $this->assertEquals('x', $relationship->getField());
         $this->assertEquals('bar', $relationship->getRelatedCollection());
-        $this->assertEquals(['y'], $relationship->getRelatedFields());
-    }
-
-    public function testGetMultiFields()
-    {
-        $relationship = new Relationship(Relationship::ONE_TO_ONE, 'foo', ['a', 'b'], 'bar', ['d', 'e']);
-
-        $this->assertEquals('foo', $relationship->getCollection());
-        $this->assertEquals(['a', 'b'], $relationship->getFields());
-        $this->assertEquals('bar', $relationship->getRelatedCollection());
-        $this->assertEquals(['d', 'e'], $relationship->getRelatedFields());
+        $this->assertEquals('y', $relationship->getRelatedField());
     }
 
     public function swappedProvider()
@@ -91,10 +81,10 @@ class RelationshipTest extends TestCase
         $this->assertEquals($expectedType, $swapped->getType());
 
         $this->assertEquals('bar', $swapped->getCollection());
-        $this->assertEquals(['y'], $swapped->getFields());
+        $this->assertEquals('y', $swapped->getField());
 
         $this->assertEquals('foo', $swapped->getRelatedCollection());
-        $this->assertEquals(['x'], $swapped->getRelatedFields());
+        $this->assertEquals('x', $swapped->getRelatedField());
     }
 
     public function testMatches()

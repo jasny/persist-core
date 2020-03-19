@@ -200,17 +200,9 @@ class SchemaTest extends TestCase
                 ['foo', 'x', null, null],
                 'No relationship found for foo (x)',
             ],
-            'foo (a, b, c)' => [
-                ['foo', ['a', 'b', 'c'], null, null],
-                'No relationship found for foo (a, b, c)',
-            ],
             'foo - bar (x)' => [
                 ['foo', null, 'bar', 'x'],
                 'No relationship found between foo and bar (x)',
-            ],
-            'foo - bar (a, b, c)' => [
-                ['foo', null, 'bar', ['a', 'b', 'c']],
-                'No relationship found between foo and bar (a, b, c)',
             ],
         ];
     }
