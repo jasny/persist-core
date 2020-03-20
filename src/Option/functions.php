@@ -54,9 +54,9 @@ function page(int $page, int $pageSize): LimitOption
 
 
 /**
- * Expand a field, loading data from related collection.
+ * Hydrate a field, loading data from related collection.
  */
-function expand(string $field): LookupOption
+function hydrate(string $field): LookupOption
 {
     return new LookupOption($field);
 }
@@ -65,10 +65,10 @@ function expand(string $field): LookupOption
  * Expand a field, loading data from related collection.
  * Uses collection name as field name, this can be changed with `as()`.
  *
- * @param string               $related
- * @param string|string[]|null $relatedField  Relationship should be through this field.
+ * @param string      $related
+ * @param string|null $relatedField  Relationship should be through this field.
  */
-function lookup(string $related, $relatedField = null): LookupOption
+function lookup(string $related, ?string $relatedField = null): LookupOption
 {
     return new LookupOption($related, $related, $relatedField);
 }

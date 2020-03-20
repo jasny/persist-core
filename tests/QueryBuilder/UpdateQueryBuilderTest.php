@@ -8,12 +8,11 @@ use Jasny\DB\Update\UpdateInstruction;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\QueryBuilder\UpdateQueryBuilder;
 use Jasny\PHPUnit\CallbackMockTrait;
-use PHPUnit\Framework\Constraint\Exception as ExceptionConstraint;
-use PHPUnit\Framework\Constraint\ExceptionMessage;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @covers \Jasny\DB\QueryBuilder\AbstractQueryBuilder
  * @covers \Jasny\DB\QueryBuilder\UpdateQueryBuilder
  */
 class UpdateQueryBuilderTest extends TestCase
@@ -44,7 +43,7 @@ class UpdateQueryBuilderTest extends TestCase
             $invoke->withConsecutive(
                 [$this->identicalTo($this->acc), $this->identicalTo($update[0]), $this->identicalTo($this->opts)],
                 [$this->identicalTo($this->acc), $this->identicalTo($update[1]), $this->identicalTo($this->opts)],
-                [$this->identicalTo($this->acc), $this->identicalTo($update[2]), $this->identicalTo($this->opts)]
+                [$this->identicalTo($this->acc), $this->identicalTo($update[2]), $this->identicalTo($this->opts)],
             );
         };
         $defaultLogic = $this->createCallbackMock($this->exactly(3), $invocation);
@@ -193,27 +192,5 @@ class UpdateQueryBuilderTest extends TestCase
         $builder->apply($this->acc, [new UpdateInstruction('pike', ['foo' => 42])], $this->opts);
 
         $this->assertEquals(['pike' => true, 'default' => true], (array)$this->acc);
-    }
-
-
-    /**
-     * Similar to expectException, but also checks previous.
-     */
-    private function tryExpect(callable $fn, \Exception $expectedException)
-    {
-        try {
-            $fn();
-            $this->assertThat(null, new ExceptionConstraint(get_class($expectedException)));
-        } catch (\Exception $exception) {
-            $this->assertThat($exception, new ExceptionConstraint(get_class($expectedException)));
-            $this->assertThat($exception, new ExceptionMessage($expectedException->getMessage()));
-
-            $expectedPrevious = $expectedException->getPrevious();
-            $previous = $exception->getPrevious();
-            if ($expectedPrevious !== null) {
-                $this->assertThat($previous, new ExceptionConstraint(get_class($expectedPrevious)));
-                $this->assertThat($previous, new ExceptionMessage($expectedPrevious->getMessage()));
-            }
-        }
     }
 }

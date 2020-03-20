@@ -20,6 +20,9 @@ class FlagOptionTest extends TestCase
         $this->assertEquals('foo', $flag->getName());
     }
 
+    /**
+     * @covers \Jasny\DB\Option\Functions\flag
+     */
     public function testFunction()
     {
         $flag = opts\flag('foo');

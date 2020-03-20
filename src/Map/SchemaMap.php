@@ -34,24 +34,51 @@ final class SchemaMap implements MapInterface
     }
 
     /**
-     * Add a map for a relationship.
-     * If field maps to a single relationship, the related collection and fields don't have to be specified.
+     * Add a map for a relationship on the given field.
      *
-     * @param string               $field         Collection field name or alias
-     * @param string|null          $related       Related collection name
-     * @param string|string[]|null $relatedField  Fields of related collection
+     * @param string $field
      * @return static
      */
-    public function withRelated(string $field, ?string $related = null, $relatedField = null): self
+    public function withHydrated(string $field): self
     {
-        $relationship = $this->schema->getRelationship($this->collection, $field, $related, $relatedField);
-        $relatedMap = $this->schema->getMapOf($relationship->getRelatedCollection());
-        $mappedField = $relationship->getField() . ($relationship->isFromMany() ? '[]' : '');
+        $relationship = $this->schema->getRelationship($this->collection, $field);
+        $field .= $relationship->isFromMany() ? '[]' : '';
+
+        return $this->withNested($field, $relationship->getRelatedCollection());
+    }
+
+    /**
+     * Add a map for a relationship.
+     *
+     * @param string      $field
+     * @param string      $collection    Related collection name
+     * @param string|null $relatedField  Field of related collection
+     * @return static
+     */
+    public function withRelated(string $field, string $collection, ?string $relatedField = null): self
+    {
+        $relationship = $this->schema->getRelationship($this->collection, null, $collection, $relatedField);
+        $field .= $relationship->isFromMany() ? '[]' : '';
+
+        return $this->withNested($field, $relationship->getRelatedCollection());
+    }
+
+    /**
+     * Add a map for a nested field (without a predefined relationship).
+     *
+     * @param string $field       Field name; suffix with `[]` if field will contain many items.
+     * @param string $collection  Related collection name
+     * @return static
+     */
+    public function withNested(string $field, string $collection): self
+    {
+        $relatedMap = $this->schema->getMapOf($collection);
 
         $map = $this->inner instanceof NestedMap ? $this->inner : new NestedMap($this->inner);
 
-        return $this->withProperty('inner', $map->withMappedField($mappedField, $relatedMap));
+        return $this->withProperty('inner', $map->withMappedField($field, $relatedMap));
     }
+
 
     /**
      * Use `lookup` and `expand` query options on map.
@@ -63,9 +90,11 @@ final class SchemaMap implements MapInterface
     {
         $map = $this;
 
-        /** @var LookupOption $lookup */
         foreach (i\iterable_filter($opts, fn($opt) => $opt instanceof LookupOption) as $lookup) {
-            $map = $map->withRelated($lookup->getField(), ...$lookup->getRelated());
+            /** @var LookupOption $lookup */
+            $map = $lookup->getRelatedCollection() === null
+                ? $map->withHydrated($lookup->getField())
+                : $map->withRelated($lookup->getField(), $lookup->getRelatedCollection(), $lookup->getRelatedField());
         }
 
         return $map;

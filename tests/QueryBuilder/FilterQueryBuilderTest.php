@@ -8,12 +8,11 @@ use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\QueryBuilder\FilterQueryBuilder;
 use Jasny\PHPUnit\CallbackMockTrait;
-use PHPUnit\Framework\Constraint\Exception as ExceptionConstraint;
-use PHPUnit\Framework\Constraint\ExceptionMessage;
 use PHPUnit\Framework\MockObject\Builder\InvocationMocker;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * @covers \Jasny\DB\QueryBuilder\AbstractQueryBuilder
  * @covers \Jasny\DB\QueryBuilder\FilterQueryBuilder
  */
 class FilterQueryBuilderTest extends TestCase
@@ -252,27 +251,5 @@ class FilterQueryBuilderTest extends TestCase
         $builder->apply($this->acc, ['bar(top)' => 1], $this->opts);
 
         $this->assertEquals(['bar' => true, 'top' => true, 'default' => true], (array)$this->acc);
-    }
-
-
-    /**
-     * Similar to expectException, but also checks previous.
-     */
-    private function tryExpect(callable $fn, \Exception $expectedException)
-    {
-        try {
-            $fn();
-            $this->assertThat(null, new ExceptionConstraint(get_class($expectedException)));
-        } catch (\Exception $exception) {
-            $this->assertThat($exception, new ExceptionConstraint(get_class($expectedException)));
-            $this->assertThat($exception, new ExceptionMessage($expectedException->getMessage()));
-
-            $expectedPrevious = $expectedException->getPrevious();
-            $previous = $exception->getPrevious();
-            if ($expectedPrevious !== null) {
-                $this->assertThat($previous, new ExceptionConstraint(get_class($expectedPrevious)));
-                $this->assertThat($previous, new ExceptionMessage($expectedPrevious->getMessage()));
-            }
-        }
     }
 }

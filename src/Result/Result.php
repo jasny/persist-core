@@ -66,12 +66,14 @@ class Result extends Pipeline
             $item = $items[$key];
 
             if (is_object($doc)) {
-                $doc = object_get_properties($doc);
+                $doc = object_get_properties($doc, true);
             }
 
             if (is_array($item)) {
                 $item = array_merge($item, $doc);
-            } else {
+            } elseif (is_object($item) && is_callable([$item, '__unserialize'])) {
+                $item->__unserialize($doc);
+            } elseif (is_object($item)) {
                 object_set_properties($item, $doc, $item instanceof \stdClass);
             }
 

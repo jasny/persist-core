@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\QueryBuilder;
 
+use Improved as i;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\Immutable;
 
@@ -71,16 +72,20 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
 
     /**
      * Set the prepare logic of the query builder.
+     * Multiple callables may be provided, which will be piped.
      *
-     * @param callable
+     * @param callable ...$prepare
      * @return static
      *
-     * @phpstan-param callable(iterable<TQueryItem>,OptionInterface[]):iterable<TQueryItem> $prepare
+     * @phpstan-param callable(iterable<TQueryItem>,OptionInterface[]):iterable<TQueryItem> ...$prepare
      * @phpstan-return static
      */
-    public function withPreparation(callable $prepare): self
+    public function withPreparation(callable ...$prepare): self
     {
-        return $this->withProperty('prepare', $prepare);
+        return $this->withProperty(
+            'prepare',
+            count($prepare) === 1 ? $prepare[0] : i\function_pipe($prepare),
+        );
     }
 
 
@@ -96,16 +101,20 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
 
     /**
      * Set the finalize logic of the query builder.
+     * Multiple callables may be provided, which will be piped.
      *
-     * @param callable
+     * @param callable ...$finalize
      * @return static
      *
-     * @phpstan-param callable(mixed,OptionInterface[]):void $finalize
+     * @phpstan-param callable(mixed,OptionInterface[]):void ...$finalize
      * @phpstan-return static
      */
-    public function withFinalization(callable $finalize): self
+    public function withFinalization(callable ...$finalize): self
     {
-        return $this->withProperty('finalize', $finalize);
+        return $this->withProperty(
+            'finalize',
+            count($finalize) === 1 ? $finalize[0] : i\function_pipe($finalize),
+        );
     }
 
 

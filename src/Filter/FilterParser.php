@@ -30,10 +30,11 @@ class FilterParser
         foreach ($filter as $key => $value) {
             if ($value instanceof FilterItem) {
                 $filterItems[] = $value;
-            } else {
-                ['field' => $field, 'operator' => $operator] = $this->parse($key);
-                $filterItems[] = new FilterItem($field, $operator, $value);
+                continue;
             }
+
+            ['field' => $field, 'operator' => $operator] = $this->parse($key);
+            $filterItems[] = new FilterItem($field, $operator, $value);
         }
 
         return $filterItems;
@@ -42,7 +43,7 @@ class FilterParser
     /**
      * Parse the key into field and operator.
      *
-     * @return array{field:string, operator:string}
+     * @return array{field:string,operator:string}
      */
     protected function parse(string $key): array
     {

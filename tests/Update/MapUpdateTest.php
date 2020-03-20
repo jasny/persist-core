@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Update;
 
-use Improved as i;
+use Jasny\DB\Map\NoMap;
 use Jasny\DB\Update\MapUpdate;
 use Jasny\DB\Update\UpdateInstruction;
 use Jasny\DB\Option\Functions as opts;
@@ -35,15 +35,38 @@ class MapUpdateTest extends TestCase
         $opts = [opts\setting('map', $map)];
 
         $applyTo = new MapUpdate();
-        $iterator = $applyTo($instructions, $opts);
+        $mapped = $applyTo($instructions, $opts);
 
-        $this->assertIsIterable($iterator);
-        $mapped = i\iterable_to_array($iterator, true);
-
+        $this->assertIsArray($mapped);
         $this->assertCount(3, $mapped);
 
         $this->assertEquals(new UpdateInstruction('set', ['_id' => 42, 'bor' => 'hello']), $mapped[0]);
         $this->assertEquals(new UpdateInstruction('inc', ['_id' => 1, 'foos.bar.qux' => 9]), $mapped[1]);
         $this->assertSame($instructions[2], $mapped[2]);
+    }
+
+    public function noMapProvider()
+    {
+        return [
+            [[]],
+            [[opts\setting('map', new NoMap())]],
+        ];
+    }
+
+    /**
+     * @dataProvider noMapProvider
+     */
+    public function testNoMap(array $opts)
+    {
+        $instructions = [
+            new UpdateInstruction('set', ['id' => 42, 'bar' => 'hello']),
+            new UpdateInstruction('inc', ['id' => 1, 'foo.bar.qux' => 9]),
+            new UpdateInstruction('set', ['number' => 3]),
+        ];
+
+        $applyTo = new MapUpdate();
+        $mapped = $applyTo($instructions, $opts);
+
+        $this->assertSame($instructions, $mapped);
     }
 }

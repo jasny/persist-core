@@ -38,7 +38,7 @@ interface SchemaInterface
     public function getRelationship(
         string $collection,
         ?string $field,
-        string $related,
-        ?string $relatedField
+        ?string $related = null,
+        ?string $relatedField = null
     ): Relationship;
 }

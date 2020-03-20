@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \Jasny\DB\Update\UpdateInstruction
  */
-class UpdateOperationTest extends TestCase
+class UpdateInstructionTest extends TestCase
 {
     public function testBasic()
     {
@@ -46,6 +46,17 @@ class UpdateOperationTest extends TestCase
 
         $this->assertEquals('set', $operator->getOperator());
         $this->assertEquals(['foo' => 42], $operator->getPairs());
+    }
+
+    /**
+     * @covers \Jasny\DB\Update\Functions\clear
+     */
+    public function testClear()
+    {
+        $operator = update\clear("foo", "bar");
+
+        $this->assertEquals('clear', $operator->getOperator());
+        $this->assertEquals(['foo' => null, 'bar' => null], $operator->getPairs());
     }
 
     /**

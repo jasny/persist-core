@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Filter;
 
-use Improved as i;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Filter\FilterParser;
 use PHPUnit\Framework\TestCase;
@@ -61,7 +60,6 @@ class FilterParserTest extends TestCase
         $parser($filter, []);
     }
 
-
     public function testParseFilters()
     {
         $data = $this->provider();
@@ -72,5 +70,24 @@ class FilterParserTest extends TestCase
         $result = $parser($filter, []);
 
         $this->assertEquals($expected, $result);
+    }
+
+    public function testSkipFilterItem()
+    {
+        $filter = [
+            new FilterItem('a', '', null),
+            new FilterItem('b', '', null),
+            'foo' => 42,
+        ];
+
+        $parser = new FilterParser();
+        $result = $parser($filter, []);
+
+        $this->assertIsArray($result);
+        $this->assertCount(3, $result);
+
+        $this->assertSame($filter[0], $result[0]);
+        $this->assertSame($filter[1], $result[1]);
+        $this->assertEquals(new FilterItem('foo', '', 42), $result[2]);
     }
 }
