@@ -40,9 +40,9 @@ class FilterQueryBuilderTest extends TestCase
                 [$this->identicalTo($this->acc), new FilterItem('qux', '', [1, 2]), $this->identicalTo($this->opts)],
             );
         };
-        $defaultLogic = $this->createCallbackMock($this->exactly(3), $invocation);
+        $compose = $this->createCallbackMock($this->exactly(3), $invocation);
 
-        $builder = new FilterQueryBuilder($defaultLogic);
+        $builder = new FilterQueryBuilder($compose);
         $builder->apply($this->acc, ['foo' => 1, 'bar(min)' => 42, 'qux' => [1, 2]], $this->opts);
     }
 
@@ -61,12 +61,12 @@ class FilterQueryBuilderTest extends TestCase
                 [$this->identicalTo($this->acc), $this->identicalTo($filterItems[2]), $this->identicalTo($this->opts)],
             );
         };
-        $defaultLogic = $this->createCallbackMock($this->exactly(3), $invocation);
+        $compose = $this->createCallbackMock($this->exactly(3), $invocation);
 
         $filter = ['foo' => 1, 'bar:min' => 42, 'qux[0]' => 1, 'qux[2]' => 1];
         $parser = $this->createCallbackMock($this->once(), [$filter], $filterItems);
 
-        $builder = new FilterQueryBuilder($defaultLogic, $parser);
+        $builder = new FilterQueryBuilder($compose, $parser);
         $builder->apply($this->acc, $filter, $this->opts);
     }
 
@@ -78,7 +78,7 @@ class FilterQueryBuilderTest extends TestCase
                 [$this->identicalTo($this->acc), new FilterItem('QUX', '', [1, 2]), $this->identicalTo($this->opts)],
             );
         };
-        $defaultLogic = $this->createCallbackMock($this->exactly(2), $invocation);
+        $compose = $this->createCallbackMock($this->exactly(2), $invocation);
 
         $prepare = $this->createCallbackMock(
             $this->once(),
@@ -96,26 +96,79 @@ class FilterQueryBuilderTest extends TestCase
             ]
         );
 
-        $builder = (new FilterQueryBuilder($defaultLogic))->withPreparation($prepare);
+        $base = new FilterQueryBuilder($compose);
+
+        $builder = $base->withPreparation($prepare);
+        $this->assertInstanceOf(FilterQueryBuilder::class, $builder);
+        $this->assertNotSame($base, $builder);
+        $this->assertSame($prepare, $builder->getPreparation());
+
         $builder->apply($this->acc, ['foo' => 1, 'bar(min)' => 42, 'qux' => [1, 2]], $this->opts);
+    }
+    
+    public function testPreparationMultiple()
+    {
+        $filter1 = [new FilterItem('one', '', 1)];
+        $filter2 = [new FilterItem('two', '', 2)];
+        $filter3 = [new FilterItem('three', '', 3)];
+
+        $compose = $this->createCallbackMock(
+            $this->once(),
+            [$this->identicalTo($this->acc), $this->identicalTo($filter3[0]), $this->opts],
+        );
+
+        $prepare1 = $this->createCallbackMock(
+            $this->once(),
+            [$this->identicalTo($filter1), $this->opts],
+            $filter2,
+        );
+        $prepare2 = $this->createCallbackMock(
+            $this->once(),
+            [$this->identicalTo($filter2), $this->opts],
+            $filter3,
+        );
+
+        $builder = (new FilterQueryBuilder($compose))
+            ->withPreparation($prepare1, $prepare2);
+
+        $builder->apply($this->acc, $filter1, $this->opts);
     }
 
     public function testFinalization()
     {
-        $defaultLogic = $this->createCallbackMock($this->exactly(3), []);
+        $compose = $this->createCallbackMock($this->exactly(3), []);
 
         $finalize = $this->createCallbackMock(
             $this->once(),
             [$this->identicalTo($this->acc), $this->identicalTo($this->opts)]
         );
 
-        $builder = (new FilterQueryBuilder($defaultLogic))->withFinalization($finalize);
+        $builder = (new FilterQueryBuilder($compose))->withFinalization($finalize);
         $builder->apply($this->acc, ['foo' => 1, 'bar(min)' => 42, 'qux' => [1, 2]], $this->opts);
     }
 
+    public function testFinalizationMultiple()
+    {
+        $filter = [new FilterItem('one', '', 1)];
+
+        $compose = $this->createCallbackMock(
+            $this->once(),
+            [$this->identicalTo($this->acc), $this->identicalTo($filter[0]), $this->opts],
+        );
+
+        $finalize1 = $this->createCallbackMock($this->once(), [$this->identicalTo($this->acc), $this->opts]);
+        $finalize2 = $this->createCallbackMock($this->once(), [$this->identicalTo($this->acc), $this->opts]);
+
+        $builder = (new FilterQueryBuilder($compose))
+            ->withFinalization($finalize1, $finalize2);
+
+        $builder->apply($this->acc, $filter, $this->opts);
+    }
+
+
     public function testWithCustomFilter()
     {
-        $defaultLogic = $this->createCallbackMock(
+        $compose = $this->createCallbackMock(
             $this->once(),
             [$this->identicalTo($this->acc), new FilterItem('qux', '', [1, 2]), $this->identicalTo($this->opts)]
         );
@@ -130,7 +183,7 @@ class FilterQueryBuilderTest extends TestCase
             [$this->identicalTo($this->acc), new FilterItem('bar', 'min', 42), $this->identicalTo($this->opts)]
         );
 
-        $builder = (new FilterQueryBuilder($defaultLogic))
+        $builder = (new FilterQueryBuilder($compose))
             ->withCustomFilter('foo', $customFoo)
             ->withCustomFilter('bar', $customBar);
 
@@ -145,7 +198,7 @@ class FilterQueryBuilderTest extends TestCase
                 [$this->identicalTo($this->acc), new FilterItem('qux', '', [1, 2]), $this->identicalTo($this->opts)]
             );
         };
-        $defaultLogic = $this->createCallbackMock($this->exactly(2), $invocation);
+        $compose = $this->createCallbackMock($this->exactly(2), $invocation);
 
         $customFoo = $this->createCallbackMock($this->never());
 
@@ -154,7 +207,7 @@ class FilterQueryBuilderTest extends TestCase
             [$this->identicalTo($this->acc), new FilterItem('bar', 'min', 42), $this->identicalTo($this->opts)]
         );
 
-        $builder = (new FilterQueryBuilder($defaultLogic))
+        $builder = (new FilterQueryBuilder($compose))
             ->withCustomFilter('foo', $customFoo)
             ->withCustomFilter('bar', $customBar)
             ->withoutCustomFilter('foo');
@@ -164,7 +217,7 @@ class FilterQueryBuilderTest extends TestCase
 
     public function testWithCustomFilterOperator()
     {
-        $defaultLogic = $this->createCallbackMock(
+        $compose = $this->createCallbackMock(
             $this->once(),
             [$this->identicalTo($this->acc), new FilterItem('foo', '', 1), $this->identicalTo($this->opts)]
         );
@@ -179,7 +232,7 @@ class FilterQueryBuilderTest extends TestCase
             [$this->identicalTo($this->acc), new FilterItem('qux', '<>', [1, 2]), $this->identicalTo($this->opts)]
         );
 
-        $builder = (new FilterQueryBuilder($defaultLogic))
+        $builder = (new FilterQueryBuilder($compose))
             ->withCustomOperator('top', $customTop)
             ->withCustomOperator('<>', $customBetween);
 
@@ -194,7 +247,7 @@ class FilterQueryBuilderTest extends TestCase
                 [$this->identicalTo($this->acc), new FilterItem('qux', '<>', [1, 2]), $this->identicalTo($this->opts)]
             );
         };
-        $defaultLogic = $this->createCallbackMock($this->exactly(2), $invocation);
+        $compose = $this->createCallbackMock($this->exactly(2), $invocation);
 
         $customTop = $this->createCallbackMock(
             $this->once(),
@@ -203,7 +256,7 @@ class FilterQueryBuilderTest extends TestCase
 
         $customBetween = $this->createCallbackMock($this->never());
 
-        $builder = (new FilterQueryBuilder($defaultLogic))
+        $builder = (new FilterQueryBuilder($compose))
             ->withCustomOperator('top', $customTop)
             ->withCustomOperator('<>', $customBetween)
             ->withoutCustomOperator('<>');
@@ -216,7 +269,7 @@ class FilterQueryBuilderTest extends TestCase
      */
     public function testWithCustomFilterCombo()
     {
-        $defaultLogic = function ($acc, $item, $opts) {
+        $compose = function ($acc, $item, $opts) {
             $this->assertSame($this->acc, $acc);
             $this->assertEquals(new FilterItem('bar', 'max', 100), $item);
             $this->assertSame($this->opts, $opts);
@@ -244,7 +297,7 @@ class FilterQueryBuilderTest extends TestCase
             $next(new FilterItem('bar', 'max', 100));
         };
 
-        $builder = (new FilterQueryBuilder($defaultLogic))
+        $builder = (new FilterQueryBuilder($compose))
             ->withCustomFilter('bar', $customBar)
             ->withCustomOperator('top', $customTop);
 

@@ -52,8 +52,8 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     public function __construct()
     {
         // nop functions
-        $this->prepare = static function ($filterItems, array $options) {
-            return $filterItems;
+        $this->prepare = static function ($items, array $options) {
+            return $items;
         };
         $this->finalize = static function ($accumulator, array $options): void {
         };
@@ -82,10 +82,18 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
      */
     public function withPreparation(callable ...$prepare): self
     {
-        return $this->withProperty(
-            'prepare',
-            count($prepare) === 1 ? $prepare[0] : i\function_pipe($prepare),
-        );
+        if (count($prepare) === 1) {
+            $fn = $prepare[0];
+        } else {
+            $fn = static function (iterable $items, array $opts) use ($prepare) {
+                foreach ($prepare as $step) {
+                    $items = $step($items, $opts);
+                }
+                return $items;
+            };
+        }
+
+        return $this->withProperty('prepare', $fn);
     }
 
 
@@ -101,7 +109,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
 
     /**
      * Set the finalize logic of the query builder.
-     * Multiple callables may be provided, which will be piped.
+     * Multiple callables may be provided.
      *
      * @param callable ...$finalize
      * @return static
@@ -113,7 +121,7 @@ abstract class AbstractQueryBuilder implements QueryBuilderInterface
     {
         return $this->withProperty(
             'finalize',
-            count($finalize) === 1 ? $finalize[0] : i\function_pipe($finalize),
+            count($finalize) === 1 ? $finalize[0] : i\function_all(...$finalize),
         );
     }
 
