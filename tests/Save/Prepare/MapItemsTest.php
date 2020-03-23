@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Save;
+namespace Jasny\DB\Tests\Save\Prepare;
 
 use Improved as i;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\Save\MapItems;
+use Jasny\DB\Save\Prepare\MapItems;
 use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Map\FieldMap;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Save\MapItems
+ * @covers \Jasny\DB\Save\Prepare\MapItems
  */
 class MapItemsTest extends TestCase
 {

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Filter;
+namespace Jasny\DB\Tests\Filter\Prepare;
 
 use Improved as i;
 use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Filter\MapFilter;
+use Jasny\DB\Filter\Prepare\MapFilter;
 use Jasny\DB\Map\NoMap;
 use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Map\FieldMap;
@@ -14,7 +14,7 @@ use Jasny\PHPUnit\ExpectWarningTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Filter\MapFilter
+ * @covers \Jasny\DB\Filter\Prepare\MapFilter
  */
 class MapFilterTest extends TestCase
 {
@@ -62,35 +62,21 @@ class MapFilterTest extends TestCase
         $this->assertSame($filter[5], $mapped[5]);
     }
 
-    public function testWithoutMap()
+    public function noMapProvider()
     {
-        $filter = $this->createFilter();
-
-        $applyTo = new MapFilter();
-        $iterator = $applyTo($filter, []);
-
-        $this->assertSame($filter, $iterator);
+        return [
+            'without' => [[]],
+            'NoMap'   => [[opts\setting('map', new NoMap())]],
+            'invalid' => [[opts\setting('map', 'hello')]],
+        ];
     }
 
-    public function testWithoutNoMap()
+    /**
+     * @dataProvider noMapProvider
+     */
+    public function testNoMap(array $opts)
     {
         $filter = $this->createFilter();
-
-        $map = new NoMap();
-        $opts = [opts\setting('map', $map)];
-
-        $applyTo = new MapFilter();
-        $iterator = $applyTo($filter, $opts);
-
-        $this->assertSame($filter, $iterator);
-    }
-
-    public function testWithInvalidMapSettings()
-    {
-        $filter = $this->createFilter();
-        $opts = [opts\setting('map', 'hello')];
-
-        $this->expectNoticeMessage("'map' option isn't a Map object");
 
         $applyTo = new MapFilter();
         $iterator = $applyTo($filter, $opts);
