@@ -40,13 +40,30 @@ class SettingOptionTest extends TestCase
             $this->createMock(OptionInterface::class),
             new SettingOption('foo', 99),
             $this->createMock(OptionInterface::class),
-            new SettingOption('foo.bar', 234),
-            $this->createMock(OptionInterface::class),
             new SettingOption('foo.bar', 1), // Ignored
+            $this->createMock(OptionInterface::class),
+            new SettingOption('foo.bar', 234),
         ];
 
         $this->assertEquals(234, (new SettingOption('foo.bar', null))->findIn($opts));
         $this->assertEquals(42, (new SettingOption('zoo', 42))->findIn($opts));
+    }
+
+    public function testFindWithType()
+    {
+        $opts = [
+            $this->createMock(OptionInterface::class),
+            new SettingOption('foo', 'hello'),
+            new SettingOption('foo', 'world'),
+            new SettingOption('foo', (object)['a' => 'b']),
+            new SettingOption('foo', 1),
+        ];
+
+        $string = (new SettingOption('foo', null))->findIn($opts, 'string');
+        $this->assertEquals('world', $string);
+
+        $object = (new SettingOption('foo', null))->findIn($opts, \stdClass::class);
+        $this->assertEquals((object)['a' => 'b'], $object);
     }
 
 

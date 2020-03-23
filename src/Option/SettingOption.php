@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\Option;
 
 use Improved as i;
+use Improved\IteratorPipeline\Pipeline;
 
 /**
  * Generic setting for the query builder.
@@ -53,16 +54,23 @@ class SettingOption implements OptionInterface
     }
 
     /**
-     * Get the value of the setting from the set.
-     * Returns `null` if the setting isn't present in the set
+     * Get the value of the setting from opts.
+     *
+     * Returns `null` if the setting isn't present in opts.
+     * If a setting option with the name appears twice in opts, the last value is given.
      *
      * @param OptionInterface[] $opts
+     * @param string            $type  Value must be of this (internal) type or class name.
      * @return mixed
      */
-    public function findIn(array $opts)
+    public function findIn(array $opts, ?string $type = null)
     {
-        $opt = i\iterable_find($opts, (fn($opt) => $opt instanceof self && $opt->getName() === $this->name));
+        $value = Pipeline::with($opts)
+            ->filter(fn($opt) => $opt instanceof self && $opt->getName() === $this->name)
+            ->map(fn(self $opt) => $opt->getValue())
+            ->filter(fn($value) => $type === null || i\type_is($value, $type))
+            ->last();
 
-        return $opt !== null ? $opt->getValue() : $this->value;
+        return $value ?? $this->value;
     }
 }
