@@ -28,7 +28,8 @@ interface ReadInterface
      *
      * @return static
      */
-    public function withLogging(LoggerInterface $logger): self;
+    public function withLogging(LoggerInterface $logger);
+
 
     /**
      * Query and fetch data.
