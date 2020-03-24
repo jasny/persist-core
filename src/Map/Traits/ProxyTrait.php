@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\Map\Traits;
 
 use Jasny\DB\Map\MapInterface;
+use Jasny\DB\Option\OptionInterface;
 
 /**
  * Trait for maps that simply proxies to another map.
@@ -12,6 +13,26 @@ use Jasny\DB\Map\MapInterface;
 trait ProxyTrait
 {
     protected MapInterface $inner;
+
+    /**
+     * Apply options to map.
+     *
+     * @param OptionInterface[] $opts
+     * @return static&MapInterface
+     */
+    public function withOpts(array $opts): MapInterface
+    {
+        $inner = $this->inner->withOpts($opts);
+
+        if ($inner === $this->inner) {
+            return $this;
+        }
+
+        $copy = clone $this;
+        $copy->inner = $inner;
+
+        return $copy;
+    }
 
     /**
      * Get wrapped map.

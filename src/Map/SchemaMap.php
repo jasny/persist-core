@@ -17,7 +17,9 @@ use Jasny\Immutable;
 final class SchemaMap implements MapInterface
 {
     use Immutable\With;
-    use Traits\ProxyTrait;
+    use Traits\ProxyTrait {
+        withOpts as protected withInnerOpts;
+    }
 
     protected string $collection;
     protected SchemaInterface $schema;
@@ -88,7 +90,7 @@ final class SchemaMap implements MapInterface
      */
     public function withOpts(array $opts): self
     {
-        $map = $this;
+        $map = $this->withInnerOpts($opts);
 
         foreach (i\iterable_filter($opts, fn($opt) => $opt instanceof LookupOption) as $lookup) {
             /** @var LookupOption $lookup */
