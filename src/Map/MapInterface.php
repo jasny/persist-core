@@ -17,7 +17,7 @@ interface MapInterface
      * @param OptionInterface[] $opts
      * @return MapInterface
      */
-    public function withOpts(array $opts): self;
+    public function withOpts(array $opts): MapInterface;
 
     /**
      * Map App field to DB field.
