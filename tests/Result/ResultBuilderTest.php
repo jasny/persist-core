@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\Tests\Result;
 
 use Jasny\DB\Map\MapInterface;
+use Jasny\DB\Option\SettingOption;
 use Jasny\DB\Result\Result;
 use Jasny\DB\Result\ResultBuilder;
 use PHPUnit\Framework\TestCase;
@@ -40,12 +41,13 @@ class ResultBuilderTest extends TestCase
             ['NAME' => 'bar', 'nmbr' => 42],
         ];
 
-        $fieldMap = $this->createMock(MapInterface::class);
-        $fieldMap->expects($this->exactly(2))->method('applyInverse')
+        $map = $this->createMock(MapInterface::class);
+        $map->expects($this->exactly(2))->method('applyInverse')
             ->withConsecutive(...array_map(fn($record) => [$record], $records))
             ->willReturn(...$expected);
 
-        $builder = new ResultBuilder($fieldMap);
+        $builder = (new ResultBuilder())
+            ->withOpts([new SettingOption('map', $map)]);
         $result = $builder->with($records);
 
         $this->assertInstanceOf(Result::class, $result);

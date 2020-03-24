@@ -26,10 +26,10 @@ class MapUpdate
     public function __invoke(array $update, array $opts): array
     {
         /** @var MapInterface|null $map */
-        $map = opts\setting('map', null)->findIn($opts, MapInterface::class);
+        $map = opts\setting('map', new NoMap())->findIn($opts, MapInterface::class);
 
         // Quick return if there is no map
-        if ($map === null || $map instanceof NoMap) {
+        if ($map instanceof NoMap) {
             return $update;
         }
 

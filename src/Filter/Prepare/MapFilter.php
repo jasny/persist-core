@@ -25,10 +25,10 @@ class MapFilter
      */
     public function __invoke(array $filterItems, array $opts): array
     {
-        $map = opts\setting('map', null)->findIn($opts, MapInterface::class);
+        $map = opts\setting('map', new NoMap())->findIn($opts, MapInterface::class);
 
         // Quick return if there is no map
-        if ($map === null || $map instanceof NoMap) {
+        if ($map instanceof NoMap) {
             return $filterItems;
         }
 
