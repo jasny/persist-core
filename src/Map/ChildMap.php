@@ -125,9 +125,7 @@ class ChildMap implements MapInterface
         $value = DotKey::on($item)->get($this->field);
         $newValue = $apply($value);
 
-        $this->updateItem($item, $value, $newValue);
-
-        return $item;
+        return $this->updateItem($item, $value, $newValue);
     }
 
     /**
@@ -136,18 +134,23 @@ class ChildMap implements MapInterface
      * @param array|object $item
      * @param mixed        $value
      * @param mixed        $newValue
+     * @return array|object
      */
-    protected function updateItem(&$item, $value, $newValue): void
+    protected function updateItem($item, $value, $newValue)
     {
         // Not changed or same object
         if ($value === $newValue) {
-            return;
+            return $item;
         }
 
         if ($value instanceof \ArrayObject) {
-            $value->exchangeArray(i\iterable_to_array($newValue));
-        } else {
-            DotKey::on($item)->set($this->field, $newValue);
+            $array = i\iterable_to_array($newValue);
+            $newValue = clone $value;
+            $newValue->exchangeArray($array);
         }
+
+        DotKey::onCopy($item, $copy)->set($this->field, $newValue);
+
+        return $copy;
     }
 }

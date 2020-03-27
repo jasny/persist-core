@@ -21,7 +21,7 @@
         "improved/function": "^0.1.2",
         "improved/iterable": "~0.1",
         "improved/type": "~0.1",
-        "jasny/dotkey": "dev-master as 2.0",
+        "jasny/dotkey": "dev-master as 2.1",
         "jasny/immutable": "^2.0",
         "jasny/php-functions": "^4.1",
         "psr/log": "^1.1",

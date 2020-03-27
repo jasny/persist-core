@@ -67,6 +67,7 @@ class FieldMapTest extends TestCase
 
         $this->assertArrayHasKey('array', $mapped);
         $this->assertEquals(['_id' => 42, 'bor' => 'man', 'number' => 3], $mapped['array']);
+        $this->assertNotEquals($items['array'], $mapped['array']);
 
         $this->assertArrayHasKey('ArrayObject', $mapped);
         $this->assertInstanceOf(\ArrayObject::class, $mapped['ArrayObject']);
@@ -74,9 +75,11 @@ class FieldMapTest extends TestCase
             ['_id' => 43, 'bor' => 'pop', 'number' => 2],
             $mapped['ArrayObject']->getArrayCopy()
         );
+        $this->assertNotEquals($items['ArrayObject'], $mapped['ArrayObject']);
 
         $this->assertArrayHasKey('object', $mapped);
         $this->assertEquals((object)['_id' => 50, 'bor' => 'kol', 'number' => 1], $mapped['object']);
+        $this->assertNotEquals($items['object'], $mapped['object']);
 
         $this->assertCount(3, $mapped);
     }

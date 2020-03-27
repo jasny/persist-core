@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Map;
 
-use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Option\OptionInterface;
-use Jasny\DB\Update\UpdateInstruction;
 use Jasny\DotKey\DotKey;
-use function Jasny\str_starts_with;
 
 /**
  * Simple field map.
@@ -100,13 +96,16 @@ final class FieldMap implements MapInterface
             $remove[] = $field;
         }
 
+        $copy = $item;
+        $dotkey = new DotKey($copy, DotKey::COPY);
+
         foreach ($remove as $field) {
-            DotKey::on($item)->remove($field);
+            $dotkey->remove($field);
         }
         foreach ($set as $field => $value) {
-            DotKey::on($item)->put($field, $value);
+            $dotkey->put($field, $value);
         }
 
-        return $item;
+        return $copy;
     }
 }
