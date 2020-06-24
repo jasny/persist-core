@@ -354,10 +354,10 @@ The functionality of the basic filters is limited. With the query builder, custo
 do not have to correspond to one field, but can closely match the business logic.
 
 ```php
-use Jasny\DB\QueryBuilder\StagedQueryBuilder;
-use Jasny\DB\QueryBuilder\Prepare\CustomFilter;
+use Jasny\DB\QueryComposer\StagedQueryBuilder;
+use Jasny\DB\QueryComposer\Prepare\CustomFilter;
 use Jasny\DB\Mongo\Reader;
-use Jasny\DB\Mongo\QueryBuilder\Query;
+use Jasny\DB\Mongo\QueryComposer\Query;
 
 $clients = (new MongoDB\Client)->test->clients; 
 $reader = new Reader();

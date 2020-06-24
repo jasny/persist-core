@@ -5,6 +5,7 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
         - /^Variable property access/
+        - "/^Call to function is_callable\\(\\) with array\\(.+, '__unserialize'\\) will always evaluate to true/"
         -
             message: "/^Parameter #\\d+ \\$\\w+ \\(iterable<TValue>\\) of method .*::with\\(\\) should be contravariant with parameter \\$\\w+ \\(iterable\\) of method .*PipelineBuilder::with\\(\\)/"
             path: src/Result/ResultBuilder.php

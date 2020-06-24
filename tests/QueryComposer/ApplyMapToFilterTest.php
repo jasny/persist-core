@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Filter\Prepare;
+namespace Jasny\DB\Tests\QueryComposer;
 
 use Improved as i;
 use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Filter\Prepare\MapFilter;
 use Jasny\DB\Map\NoMap;
 use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Map\FieldMap;
+use Jasny\DB\QueryComposer\ApplyMapToFilter;
 use Jasny\PHPUnit\ExpectWarningTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Filter\Prepare\MapFilter
+ * @covers \Jasny\DB\QueryComposer\ApplyMapToFilter
  */
-class MapFilterTest extends TestCase
+class ApplyMapToFilterTest extends TestCase
 {
     use ExpectWarningTrait;
 
@@ -46,20 +46,19 @@ class MapFilterTest extends TestCase
         $map = new FieldMap(self::MAP);
         $opts = [opts\setting('map', $map)];
 
-        $applyTo = new MapFilter();
-        $iterator = $applyTo($filter, $opts);
+        $applyMap = new ApplyMapToFilter();
+        $iterator = $applyMap->prepare($filter, $opts);
 
         $this->assertIsIterable($iterator);
         $mapped = i\iterable_to_array($iterator, true);
 
-        $this->assertCount(6, $mapped);
+        $this->assertCount(5, $mapped);
 
         $this->assertEquals(new FilterItem('_id', 'not', 42), $mapped[0]);
         $this->assertEquals(new FilterItem('_id', 'min', 1), $mapped[1]);
         $this->assertEquals(new FilterItem('bor', '', 'hello'), $mapped[2]);
         $this->assertSame($filter[3], $mapped[3]);
         $this->assertEquals(new FilterItem('foos.bar.qux', '', 1), $mapped[4]);
-        $this->assertSame($filter[5], $mapped[5]);
     }
 
     public function noMapProvider()
@@ -78,8 +77,8 @@ class MapFilterTest extends TestCase
     {
         $filter = $this->createFilter();
 
-        $applyTo = new MapFilter();
-        $iterator = $applyTo($filter, $opts);
+        $applyMap = new ApplyMapToFilter();
+        $iterator = $applyMap->prepare($filter, $opts);
 
         $this->assertSame($filter, $iterator);
     }

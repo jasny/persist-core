@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Filter;
+namespace Jasny\DB\Tests\QueryComposer;
 
+use Improved as i;
 use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Filter\FilterParser;
+use Jasny\DB\QueryComposer\FilterParser;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Filter\FilterParser
+ * @covers \Jasny\DB\QueryComposer\FilterParser
  */
 class FilterParserTest extends TestCase
 {
@@ -31,7 +32,8 @@ class FilterParserTest extends TestCase
     public function testParse(array $filter, FilterItem $expected)
     {
         $parser = new FilterParser();
-        $result = $parser($filter, []);
+        $iterator = $parser->prepare($filter);
+        $result = i\iterable_to_array($iterator);
 
         $this->assertEquals([$expected], $result);
     }
@@ -53,11 +55,13 @@ class FilterParserTest extends TestCase
      */
     public function testInvalidParentheses(array $filter)
     {
+        $parser = new FilterParser();
+        $iterator = $parser->prepare($filter);
+
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage(sprintf("Invalid filter item '%s': Bad use of parentheses", key($filter)));
 
-        $parser = new FilterParser();
-        $parser($filter, []);
+        i\iterable_walk($iterator);
     }
 
     public function testParseFilters()
@@ -67,7 +71,8 @@ class FilterParserTest extends TestCase
         $expected = array_column($data, 1);
 
         $parser = new FilterParser();
-        $result = $parser($filter, []);
+        $iterator = $parser->prepare($filter);
+        $result = i\iterable_to_array($iterator);
 
         $this->assertEquals($expected, $result);
     }
@@ -81,7 +86,8 @@ class FilterParserTest extends TestCase
         ];
 
         $parser = new FilterParser();
-        $result = $parser($filter, []);
+        $iterator = $parser->prepare($filter);
+        $result = i\iterable_to_array($iterator);
 
         $this->assertIsArray($result);
         $this->assertCount(3, $result);

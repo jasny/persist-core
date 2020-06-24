@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Update\Prepare;
+namespace Jasny\DB\Tests\QueryComposer;
 
+use Improved as i;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\Update\Prepare\MapUpdate;
+use Jasny\DB\QueryComposer\ApplyMapToUpdate;
 use Jasny\DB\Update\UpdateInstruction;
 use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Map\FieldMap;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Update\Prepare\MapUpdate
+ * @covers \Jasny\DB\QueryComposer\ApplyMapToUpdate
  */
-class MapUpdateTest extends TestCase
+class ApplyMapToUpdateTest extends TestCase
 {
     protected const MAP = [
         'id' => '_id',
@@ -34,10 +35,10 @@ class MapUpdateTest extends TestCase
         $map = new FieldMap(self::MAP);
         $opts = [opts\setting('map', $map)];
 
-        $applyTo = new MapUpdate();
-        $mapped = $applyTo($instructions, $opts);
+        $applyMap = new ApplyMapToUpdate();
+        $iterator = $applyMap->prepare($instructions, $opts);
+        $mapped = i\iterable_to_array($iterator);
 
-        $this->assertIsArray($mapped);
         $this->assertCount(3, $mapped);
 
         $this->assertEquals(new UpdateInstruction('set', ['_id' => 42, 'bor' => 'hello']), $mapped[0]);
@@ -64,8 +65,8 @@ class MapUpdateTest extends TestCase
             new UpdateInstruction('set', ['number' => 3]),
         ];
 
-        $applyTo = new MapUpdate();
-        $mapped = $applyTo($instructions, $opts);
+        $applyMap = new ApplyMapToUpdate();
+        $mapped = $applyMap->prepare($instructions, $opts);
 
         $this->assertSame($instructions, $mapped);
     }

@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Save\Prepare;
+namespace Jasny\DB\Tests\QueryComposer;
 
 use Improved as i;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\Save\Prepare\MapItems;
+use Jasny\DB\QueryComposer\ApplyMapToItems;
 use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Map\FieldMap;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Save\Prepare\MapItems
+ * @covers \Jasny\DB\QueryComposer\ApplyMapToItems
  */
-class MapItemsTest extends TestCase
+class ApplyMapToItemsTest extends TestCase
 {
     protected const MAP = [
         'id' => '_id',
@@ -40,8 +40,8 @@ class MapItemsTest extends TestCase
         $map = new FieldMap(self::MAP);
         $opts = [opts\setting('map', $map)];
 
-        $applyTo = new MapItems();
-        $iterator = $applyTo($items, $opts);
+        $applyMap = new ApplyMapToItems();
+        $iterator = $applyMap->prepare($items, $opts);
 
         $this->assertIsIterable($iterator);
         $mapped = i\iterable_to_array($iterator, true);
@@ -70,8 +70,8 @@ class MapItemsTest extends TestCase
             ['id' => 3, 'name' => 'three', 'foo' => [], 'skippy' => 99],
         ];
 
-        $applyTo = new MapItems();
-        $mapped = $applyTo($items, $opts);
+        $applyMap = new ApplyMapToItems();
+        $mapped = $applyMap->prepare($items, $opts);
 
         $this->assertSame($items, $mapped);
     }
