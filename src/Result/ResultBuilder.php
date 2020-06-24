@@ -26,7 +26,7 @@ class ResultBuilder extends PipelineBuilder
      */
     public function withOpts(array $opts): self
     {
-        /** @var MapInterface|null $map */
+        /** @var MapInterface $map */
         $map = opts\setting('map', new NoMap())->findIn($opts, MapInterface::class);
 
         return !($map instanceof NoMap)

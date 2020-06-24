@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\QueryComposer;
 
-use Improved as i;
 use Jasny\DB\Option\OptionInterface;
-use Jasny\Immutable;
 
 /**
  * Base class for filter and update query builders.
@@ -19,7 +17,7 @@ use Jasny\Immutable;
 class Composer implements ComposerInterface
 {
     /**
-     * @var array<ComposerInterface<TQuery,TQueryItem>>
+     * @phpstan-var array<ComposerInterface<TQuery,TQueryItem>>
      */
     public array $steps;
 

@@ -66,7 +66,9 @@ interface WriteInterface
      * @param array<string,mixed>                   $filter
      * @param UpdateInstruction|UpdateInstruction[] $instructions
      * @param OptionInterface[]                     $opts
-     * @return Result<TItem|\stdClass>
+     * @return Result
+     *
+     * @phpstan-return Result<TItem|\stdClass>
      */
     public function update(array $filter, $instructions, array $opts = []): Result;
 
@@ -75,7 +77,9 @@ interface WriteInterface
      *
      * @param array<string, mixed> $filter
      * @param OptionInterface[]    $opts
-     * @return Result<TItem|\stdClass>
+     * @return Result
+     *
+     * @phpstan-return Result<TItem|\stdClass>
      */
     public function delete(array $filter, array $opts = []): Result;
 }
