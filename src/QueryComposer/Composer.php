@@ -7,8 +7,7 @@ namespace Jasny\DB\QueryComposer;
 use Jasny\DB\Option\OptionInterface;
 
 /**
- * Base class for filter and update query builders.
- * @internal
+ * Compound class for query composers.
  *
  * @template TQuery
  * @template TQueryItem
