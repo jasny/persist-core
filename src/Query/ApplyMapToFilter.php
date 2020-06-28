@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\QueryComposer;
+namespace Jasny\DB\Query;
 
 use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Filter\FilterItem;

@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\QueryComposer;
+namespace Jasny\DB\Tests\Query;
 
 use Improved as i;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Map\NoMap;
 use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Map\FieldMap;
-use Jasny\DB\QueryComposer\ApplyMapToFilter;
+use Jasny\DB\Query\ApplyMapToFilter;
 use Jasny\PHPUnit\ExpectWarningTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryComposer\ApplyMapToFilter
+ * @covers \Jasny\DB\Query\ApplyMapToFilter
  */
 class ApplyMapToFilterTest extends TestCase
 {

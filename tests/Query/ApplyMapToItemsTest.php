@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\QueryComposer;
+namespace Jasny\DB\Tests\Query;
 
 use Improved as i;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\QueryComposer\ApplyMapToItems;
+use Jasny\DB\Query\ApplyMapToItems;
 use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Map\FieldMap;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryComposer\ApplyMapToItems
+ * @covers \Jasny\DB\Query\ApplyMapToItems
  */
 class ApplyMapToItemsTest extends TestCase
 {

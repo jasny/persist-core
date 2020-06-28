@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\QueryComposer;
+namespace Jasny\DB\Tests\Query;
 
 use Improved as i;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\QueryComposer\ApplyMapToUpdate;
+use Jasny\DB\Query\ApplyMapToUpdate;
 use Jasny\DB\Update\UpdateInstruction;
 use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Map\FieldMap;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryComposer\ApplyMapToUpdate
+ * @covers \Jasny\DB\Query\ApplyMapToUpdate
  */
 class ApplyMapToUpdateTest extends TestCase
 {

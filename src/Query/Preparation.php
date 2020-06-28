@@ -2,22 +2,28 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\QueryComposer;
+namespace Jasny\DB\Query;
 
-use Improved as i;
-use Jasny\DB\Map\MapInterface;
-use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\OptionInterface;
 
 /**
- * Apply the field map to items.
+ * Custom preparation step when composing a query.
  *
- * @template TQuery
- * @template TItem
- * @implements ComposerInterface<TQuery,TItem>
+ * @template TQueryItem
+ * @implements ComposerInterface<object,TQueryItem>
  */
-class ApplyMapToItems implements ComposerInterface
+class Preparation implements ComposerInterface
 {
+    protected \Closure $callback;
+
+    /**
+     * @phpstan-param callable(TQuery,OptionInterface[]):void $callback
+     */
+    public function __construct(callable $callback)
+    {
+        $this->callback = \Closure::fromCallable($callback);
+    }
+
     /**
      * @inheritDoc
      * @throws \LogicException
@@ -32,15 +38,7 @@ class ApplyMapToItems implements ComposerInterface
      */
     public function prepare(iterable $items, array &$opts = []): iterable
     {
-        /** @var MapInterface $map */
-        $map = opts\setting('map', new NoMap())->findIn($opts, MapInterface::class);
-
-        // Quick return if there is no map
-        if ($map instanceof NoMap) {
-            return $items;
-        }
-
-        return i\iterable_map($items, [$map, 'apply']);
+        return ($this->callback)($items, $opts);
     }
 
     /**

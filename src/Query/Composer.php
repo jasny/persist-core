@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\QueryComposer;
+namespace Jasny\DB\Query;
 
+use Improved as i;
 use Jasny\DB\Option\OptionInterface;
 
 /**
@@ -41,7 +42,11 @@ class Composer implements ComposerInterface
     public function compose(object $accumulator, iterable $items, array $opts = []): void
     {
         $items = $this->prepare($items, $opts);
-        $this->apply($accumulator, $items, $opts);
+
+        i\iterable_walk(
+            $this->apply($accumulator, $items, $opts)
+        );
+
         $this->finalize($accumulator, $opts);
     }
 

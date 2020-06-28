@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\QueryComposer;
+namespace Jasny\DB\Tests\Query;
 
 use Improved as i;
 use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\QueryComposer\FilterParser;
+use Jasny\DB\Query\FilterParser;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\QueryComposer\FilterParser
+ * @covers \Jasny\DB\Query\FilterParser
  */
 class FilterParserTest extends TestCase
 {
