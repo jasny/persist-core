@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Schema;
 
+use Jasny\DB\Exception\NoRelationshipException;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\SchemaMap;
 
@@ -31,14 +32,20 @@ interface SchemaInterface
     public function getRelationships(string $collection): array;
 
     /**
-     * Get single relationship for a field.
+     * Get a single relationship between two collections / tables.
      *
-     * @throws \UnexpectedValueException  If no or more than one relationship matches
+     * @param string                    $collection  Name of left hand table / collection
+     * @param string                    $related     Name of right hand table / collection
+     * @param array<string,string>|null $match       Field pairs as ON in JOIN statement
+     * @return Relationship
+     * @throws NoRelationshipException  If no or more than one relationship matches
      */
-    public function getRelationship(
-        string $collection,
-        ?string $field,
-        ?string $related = null,
-        ?string $relatedField = null
-    ): Relationship;
+    public function getRelationship(string $collection, string $related, ?array $match = null): Relationship;
+
+    /**
+     * Get the relationship for a field of a collection.
+     *
+     * @throws NoRelationshipException  If no or more than one relationship matches
+     */
+    public function getRelationshipForField(string $collection, string $field): Relationship;
 }

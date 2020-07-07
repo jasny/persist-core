@@ -43,7 +43,7 @@ final class SchemaMap implements MapInterface
      */
     public function withHydrated(string $field): self
     {
-        $relationship = $this->schema->getRelationship($this->collection, $field);
+        $relationship = $this->schema->getRelationshipForField($this->collection, $field);
         $field .= $relationship->isFromMany() ? '[]' : '';
 
         return $this->withNested($field, $relationship->getRelatedCollection());
@@ -52,14 +52,14 @@ final class SchemaMap implements MapInterface
     /**
      * Add a map for a relationship.
      *
-     * @param string      $field
-     * @param string      $collection    Related collection name
-     * @param string|null $relatedField  Field of related collection
+     * @param string                    $field
+     * @param string                    $collection  Related collection name
+     * @param array<string,string>|null $match       Field pairs
      * @return static
      */
-    public function withRelated(string $field, string $collection, ?string $relatedField = null): self
+    public function withRelated(string $field, string $collection, ?array $match = null): self
     {
-        $relationship = $this->schema->getRelationship($this->collection, null, $collection, $relatedField);
+        $relationship = $this->schema->getRelationship($this->collection, $collection, $match);
         $field .= $relationship->isFromMany() ? '[]' : '';
 
         return $this->withNested($field, $relationship->getRelatedCollection());
@@ -75,7 +75,6 @@ final class SchemaMap implements MapInterface
     public function withNested(string $field, string $collection): self
     {
         $relatedMap = $this->schema->getMapOf($collection);
-
         $map = $this->inner instanceof NestedMap ? $this->inner : new NestedMap($this->inner);
 
         return $this->withProperty('inner', $map->withMappedField($field, $relatedMap));
@@ -96,7 +95,7 @@ final class SchemaMap implements MapInterface
             /** @var LookupOption $lookup */
             $map = $lookup->getRelatedCollection() === null
                 ? $map->withHydrated($lookup->getField())
-                : $map->withRelated($lookup->getField(), $lookup->getRelatedCollection(), $lookup->getRelatedField());
+                : $map->withRelated($lookup->getField(), $lookup->getRelatedCollection(), $lookup->getMatch());
         }
 
         return $map;

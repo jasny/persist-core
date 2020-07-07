@@ -15,21 +15,23 @@ class LookupOption
 
     protected string $field;
     protected ?string $related;
-    protected ?string $relatedField;
+
+    /** @var array<string,string>|null */
+    protected ?array $match;
 
     /**
      * Class constructor
      * If field maps to a single relationship, the related collection and fields don't have to be specified.
      *
-     * @param string      $field         Collection field name or alias
-     * @param string|null $related       Related collection name
-     * @param string|null $relatedField  Fields of related collection
+     * @param string                    $field    Collection field name or alias
+     * @param string|null               $related  Related collection name
+     * @param array<string,string>|null $match    Fields of related collection
      */
-    public function __construct(string $field, ?string $related = null, ?string $relatedField = null)
+    public function __construct(string $field, ?string $related = null, ?array $match = null)
     {
         $this->field = $field;
         $this->related = $related;
-        $this->relatedField = $relatedField;
+        $this->match = $match;
     }
 
     /**
@@ -65,10 +67,10 @@ class LookupOption
     /**
      * Get related field.
      *
-     * @return string|null
+     * @return array<string,string>|null
      */
-    public function getRelatedField(): ?string
+    public function getMatch(): ?array
     {
-        return $this->relatedField;
+        return $this->match;
     }
 }

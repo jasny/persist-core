@@ -82,7 +82,7 @@ class SchemaMapTest extends TestCase
         $schema = (new Schema())
             ->withMap('foo', $this->createMock(MapInterface::class))
             ->withMap('bar', $this->createMock(MapInterface::class))
-            ->withOneToMany('foo', 'our_bar', 'bar', 'id');
+            ->withOneToMany('foo', 'bar', ['our_bar' => 'id']);
 
         $map = new SchemaMap('foo', $schema);
         $this->assertSame($schema->getMapOf('foo'), $map->getInner());
@@ -111,7 +111,7 @@ class SchemaMapTest extends TestCase
         $schema = (new Schema())
             ->withMap('foo', $this->createMock(MapInterface::class))
             ->withMap('bar', $this->createMock(MapInterface::class))
-            ->withOneToMany('foo', 'our_bar', 'bar', 'id');
+            ->withOneToMany('foo', 'bar', ['our_bar' => 'id']);
 
         $map = new SchemaMap('bar', $schema);
         $this->assertSame($schema->getMapOf('bar'), $map->getInner());
@@ -141,14 +141,14 @@ class SchemaMapTest extends TestCase
         $schema = (new Schema())
             ->withMap('foo', $this->createMock(MapInterface::class))
             ->withMap('bar', $this->createMock(MapInterface::class))
-            ->withOneToMany('foo', 'our_bar', 'bar', 'id')
-            ->withOneToOne('foo', 'id', 'bar', 'default_foo');
+            ->withOneToMany('foo', 'bar', ['our_bar' => 'id'])
+            ->withOneToOne('foo', 'bar', ['id' => 'default_foo']);
 
         $map = new SchemaMap('bar', $schema);
         $this->assertSame($schema->getMapOf('bar'), $map->getInner());
 
         $mapWithBar = $map
-            ->withRelated('our_foos', 'foo', 'our_bar')
+            ->withRelated('our_foos', 'foo', ['id' => 'our_bar'])
             ->withHydrated('default_foo');
 
         $this->assertInstanceOf(NestedMap::class, $mapWithBar->getInner());
@@ -184,15 +184,15 @@ class SchemaMapTest extends TestCase
         $schema = (new Schema())
             ->withMap('foo', $fooMap)
             ->withMap('bar', $barMap)
-            ->withOneToMany('foo', 'our_bar', 'bar', 'id')
-            ->withOneToOne('foo', 'id', 'bar', 'default_foo');
+            ->withOneToMany('foo', 'bar', ['our_bar' => 'id'])
+            ->withOneToOne('foo', 'bar', ['id' => 'default_foo']);
 
         $map = new SchemaMap('bar', $schema);
         $this->assertSame($schema->getMapOf('bar'), $map->getInner());
 
         $opts = [
             $this->createMock(OptionInterface::class),
-            opts\lookup('foo', 'our_bar')->as('our_foos'),
+            opts\lookup('foo', ['id' => 'our_bar'])->as('our_foos'),
             opts\hydrate('default_foo'),
         ];
 
@@ -235,15 +235,15 @@ class SchemaMapTest extends TestCase
         $schema = (new Schema())
             ->withMap('foo', $fooMap)
             ->withMap('bar', $barMap)
-            ->withOneToMany('foo', 'our_bar', 'bar', 'id')
-            ->withOneToOne('foo', 'id', 'bar', 'default_foo');
+            ->withOneToMany('foo', 'bar', ['our_bar' => 'id'])
+            ->withOneToOne('foo', 'bar', ['id' => 'default_foo']);
 
         $map = new SchemaMap('bar', $schema);
         $this->assertSame($schema->getMapOf('bar'), $map->getInner());
 
         $opts = [
             $this->createMock(OptionInterface::class),
-            opts\lookup('foo', 'our_bar')->as('our_foos'),
+            opts\lookup('foo', ['id' => 'our_bar'])->as('our_foos'),
             opts\hydrate('default_foo'),
         ];
 

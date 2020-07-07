@@ -19,10 +19,10 @@ class RelationshipTest extends TestCase
 
     public function setUp(): void
     {
-        $this->oneToOne = new Relationship(Relationship::ONE_TO_ONE, 'foo', 'x', 'bar', 'y');
-        $this->oneToMany = new Relationship(Relationship::ONE_TO_MANY, 'foo', 'x', 'bar', 'y');
-        $this->manyToOne = new Relationship(Relationship::MANY_TO_ONE, 'foo', 'x', 'bar', 'y');
-        $this->manyToMany = new Relationship(Relationship::MANY_TO_MANY, 'foo', 'x', 'bar', 'y');
+        $this->oneToOne = new Relationship(Relationship::ONE_TO_ONE, 'foo', 'bar', ['x' => 'y']);
+        $this->oneToMany = new Relationship(Relationship::ONE_TO_MANY, 'foo', 'bar', ['x' => 'y']);
+        $this->manyToOne = new Relationship(Relationship::MANY_TO_ONE, 'foo', 'bar', ['x' => 'y']);
+        $this->manyToMany = new Relationship(Relationship::MANY_TO_MANY, 'foo', 'bar', ['x' => 'y']);
     }
 
     public function testGetType()
@@ -52,12 +52,11 @@ class RelationshipTest extends TestCase
 
     public function testGet()
     {
-        $relationship = new Relationship(Relationship::ONE_TO_ONE, 'foo', 'x', 'bar', 'y');
+        $relationship = new Relationship(Relationship::ONE_TO_ONE, 'foo', 'bar', ['x' => 'y']);
 
         $this->assertEquals('foo', $relationship->getCollection());
-        $this->assertEquals('x', $relationship->getField());
         $this->assertEquals('bar', $relationship->getRelatedCollection());
-        $this->assertEquals('y', $relationship->getRelatedField());
+        $this->assertEquals(['x' => 'y'], $relationship->getMatch());
     }
 
     public function swappedProvider()
@@ -75,47 +74,36 @@ class RelationshipTest extends TestCase
      */
     public function testSwapped(int $type, int $expectedType)
     {
-        $relationship = new Relationship($type, 'foo', 'x', 'bar', 'y');
+        $relationship = new Relationship($type, 'foo', 'bar', ['x' => 'y']);
         $swapped = $relationship->swapped();
 
         $this->assertEquals($expectedType, $swapped->getType());
 
         $this->assertEquals('bar', $swapped->getCollection());
-        $this->assertEquals('y', $swapped->getField());
-
         $this->assertEquals('foo', $swapped->getRelatedCollection());
-        $this->assertEquals('x', $swapped->getRelatedField());
+        $this->assertEquals(['y' => 'x'], $swapped->getMatch());
     }
 
     public function testMatches()
     {
-        $this->assertTrue($this->oneToOne->matches('foo', null, null, null));
-        $this->assertTrue($this->oneToOne->matches('foo', 'x', null, null));
-        $this->assertTrue($this->oneToOne->matches(null, null, 'bar', null));
-        $this->assertTrue($this->oneToOne->matches(null, null, 'bar', 'y'));
+        $this->assertTrue($this->oneToOne->matches('foo', null, null));
+        $this->assertTrue($this->oneToOne->matches(null, 'bar', null));
+        $this->assertTrue($this->oneToOne->matches('foo', 'bar', null));
+        $this->assertTrue($this->oneToOne->matches('foo', 'bar', ['x' => 'y']));
 
-        $this->assertTrue($this->oneToOne->matches('foo', null, 'bar', null));
-        $this->assertTrue($this->oneToOne->matches('foo', 'x', 'bar', null));
-        $this->assertTrue($this->oneToOne->matches('foo', null, 'bar', 'y'));
-        $this->assertTrue($this->oneToOne->matches('foo', 'x', 'bar', 'y'));
+        $this->assertFalse($this->oneToOne->matches('qux', null, null));
+        $this->assertFalse($this->oneToOne->matches('bar', null, null));
+        $this->assertFalse($this->oneToOne->matches(null, 'qux', null));
+        $this->assertFalse($this->oneToOne->matches(null, 'foo', null));
 
-        $this->assertFalse($this->oneToOne->matches('qux', null, null, null));
-        $this->assertFalse($this->oneToOne->matches('bar', null, null, null));
-        $this->assertFalse($this->oneToOne->matches('foo', 'a', null, null));
-        $this->assertFalse($this->oneToOne->matches(null, null, 'qux', null));
-        $this->assertFalse($this->oneToOne->matches(null, null, 'foo', null));
-        $this->assertFalse($this->oneToOne->matches(null, null, 'bar', 'b'));
-
-        $this->assertFalse($this->oneToOne->matches('foo', null, 'qux', null));
-        $this->assertFalse($this->oneToOne->matches('foo', 'a', 'bar', null));
-        $this->assertFalse($this->oneToOne->matches('foo', null, 'bar', 'b'));
-        $this->assertFalse($this->oneToOne->matches('foo', 'y', 'bar', 'x'));
+        $this->assertFalse($this->oneToOne->matches('foo', 'qux', null));
+        $this->assertFalse($this->oneToOne->matches('foo', 'bar', ['a' => 'b']));
     }
 
     public function testInvalidTypeInConstructor()
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        new Relationship(9999, 'foo', 'x', 'bar', 'y');
+        new Relationship(9999, 'foo', 'bar', ['x' => 'y']);
     }
 }

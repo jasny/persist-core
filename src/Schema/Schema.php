@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jasny\DB\Schema;
 
 use Improved\IteratorPipeline\Pipeline;
+use Jasny\DB\Exception\NoRelationshipException;
 use Jasny\DB\Map\FieldMap;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\SchemaMap;
@@ -89,64 +90,60 @@ class Schema implements SchemaInterface
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string $collection1  Name of left hand table / collection
-     * @param string $field1       Field(s) of left hand table / collection with primary or foreign id
-     * @param string $collection2  Name of right hand table / collection
-     * @param string $field2       Field of right hand table / collection with primary or foreign id
+     * @param string               $collection1  Name of left hand table / collection
+     * @param string               $collection2  Name of right hand table / collection
+     * @param array<string,string> $match        Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withOneToOne(string $collection1, string $field1, string $collection2, string $field2): self
+    final public function withOneToOne(string $collection1, string $collection2, array $match): self
     {
         return $this->withRelationship(
-            new Relationship(Relationship::ONE_TO_ONE, $collection1, $field1, $collection2, $field2)
+            new Relationship(Relationship::ONE_TO_ONE, $collection1, $collection2, $match)
         );
     }
 
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string $collection1  Name of left hand table / collection
-     * @param string $field1       Field(s) of left hand table / collection with primary or foreign id
-     * @param string $collection2  Name of right hand table / collection
-     * @param string $field2       Field of right hand table / collection with primary or foreign id
+     * @param string               $collection1  Name of left hand table / collection
+     * @param string               $collection2  Name of right hand table / collection
+     * @param array<string,string> $match        Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withOneToMany(string $collection1, string $field1, string $collection2, string $field2): self
+    final public function withOneToMany(string $collection1, string $collection2, array $match): self
     {
         return $this->withRelationship(
-            new Relationship(Relationship::ONE_TO_MANY, $collection1, $field1, $collection2, $field2)
+            new Relationship(Relationship::ONE_TO_MANY, $collection1, $collection2, $match)
         );
     }
 
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string $collection1  Name of left hand table / collection
-     * @param string $field1       Field(s) of left hand table / collection with primary or foreign id
-     * @param string $collection2  Name of right hand table / collection
-     * @param string $field2       Field of right hand table / collection with primary or foreign id
+     * @param string               $collection1  Name of left hand table / collection
+     * @param string               $collection2  Name of right hand table / collection
+     * @param array<string,string> $match        Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withManyToOne(string $collection1, string $field1, string $collection2, string $field2): self
+    final public function withManyToOne(string $collection1, string $collection2, array $match): self
     {
         return $this->withRelationship(
-            new Relationship(Relationship::MANY_TO_ONE, $collection1, $field1, $collection2, $field2)
+            new Relationship(Relationship::MANY_TO_ONE, $collection1, $collection2, $match)
         );
     }
 
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string $collection1  Name of left hand table / collection
-     * @param string $field1       Field(s) of left hand table / collection with primary or foreign id
-     * @param string $collection2  Name of right hand table / collection
-     * @param string $field2       Field of right hand table / collection with primary or foreign id
+     * @param string               $collection1  Name of left hand table / collection
+     * @param string               $collection2  Name of right hand table / collection
+     * @param array<string,string> $match        Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withManyToMany(string $collection1, string $field1, string $collection2, string $field2): self
+    final public function withManyToMany(string $collection1, string $collection2, array $match): self
     {
         return $this->withRelationship(
-            new Relationship(Relationship::MANY_TO_MANY, $collection1, $field1, $collection2, $field2)
+            new Relationship(Relationship::MANY_TO_MANY, $collection1, $collection2, $match)
         );
     }
 
@@ -178,31 +175,47 @@ class Schema implements SchemaInterface
     /**
      * @inheritDoc
      */
-    public function getRelationship(
-        string $collection,
-        ?string $field,
-        ?string $related = null,
-        ?string $relField = null
-    ): Relationship {
-        if ($related === null && $relField !== null) {
-            throw new \InvalidArgumentException("Unable to match related field if no related collection is specified");
-        }
-
+    public function getRelationship(string $collection, string $related, ?array $match = null): Relationship
+    {
         /** @var Relationship[] $relationships */
         $relationships = Pipeline::with($this->relationships[$collection] ?? [])
-            ->filter(fn(Relationship $rel) => $rel->matches($collection, $field, $related, $relField))
+            ->filter(fn(Relationship $rel) => $rel->matches($collection, $related, $match))
             ->values()
             ->toArray();
 
         if (count($relationships) !== 1) {
-            throw new \UnexpectedValueException(join("", [
-                (count($relationships) === 0 ? "No relationship" : "Multiple relationships"),
-                $related === null ? " found for " : " found between ",
-                $collection,
-                $field !== null ? " ({$field})" : '',
-                $related !== null ? " and {$related}" : '',
-                $relField !== null ? " ({$relField})" : '',
-            ]));
+            $matching = is_array($match)
+                ? Pipeline::with($match)
+                    ->map(fn($right, $left) => "{$collection}.{$left} = {$related}.{$right}")
+                    ->concat(' and ')
+                : null;
+
+            throw new NoRelationshipException(
+                (count($relationships) === 0 ? "No relationship" : "Multiple relationships") .
+                " found between {$collection} and {$related}" .
+                ($matching !== null ? " with ({$matching})" : '')
+            );
+        }
+
+        return $relationships[0];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRelationshipForField(string $collection, string $field): Relationship
+    {
+        /** @var Relationship[] $relationships */
+        $relationships = Pipeline::with($this->relationships[$collection] ?? [])
+            ->filter(fn(Relationship $rel) => array_keys($rel->getMatch()) === [$field])
+            ->values()
+            ->toArray();
+
+        if (count($relationships) !== 1) {
+            throw new NoRelationshipException(
+                (count($relationships) === 0 ? "No relationship" : "Multiple relationships") .
+                " found for {$collection} ({$field})"
+            );
         }
 
         return $relationships[0];

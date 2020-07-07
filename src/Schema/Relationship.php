@@ -18,19 +18,18 @@ final class Relationship
     protected int $type;
 
     protected string $collection;
-    protected string $field;
-
     protected string $relatedCollection;
-    protected string $relatedField;
+
+    /** @var array<string,string> */
+    protected array $match;
 
     /**
-     * @param int    $type          One of the relationship constants
-     * @param string $collection    Name of left hand table / collection
-     * @param string $field         Field(s) of left hand table / collection with primary or foreign key
-     * @param string $related       Name of right hand table / collection
-     * @param string $relatedField  Field of right hand table / collection with primary or foreign key
+     * @param int                  $type        One of the relationship constants
+     * @param string               $collection  Name of left hand table / collection
+     * @param string               $related     Name of right hand table / collection
+     * @param array<string,string> $match       Field pairs as ON in a JOIN statement
      */
-    public function __construct(int $type, string $collection, string $field, string $related, string $relatedField)
+    public function __construct(int $type, string $collection, string $related, array $match)
     {
         if ($type > 0b11) {
             throw new \InvalidArgumentException("Invalid relationship type '$type'; use one of the constants");
@@ -39,10 +38,8 @@ final class Relationship
         $this->type = $type;
 
         $this->collection = $collection;
-        $this->field = $field;
-
         $this->relatedCollection = $related;
-        $this->relatedField = $relatedField;
+        $this->match = $match;
     }
 
     /**
@@ -56,10 +53,9 @@ final class Relationship
         $copy->type = (($this->type << 1) & 3) | (($this->type >> 1) & 3); // swap bit 0 and 1
 
         $copy->collection = $this->relatedCollection;
-        $copy->field = $this->relatedField;
-
         $copy->relatedCollection = $this->collection;
-        $copy->relatedField = $this->field;
+
+        $copy->match = array_flip($this->match);
 
         return $copy;
     }
@@ -67,16 +63,27 @@ final class Relationship
     /**
      * See if the relationship matches the search criteria.
      * Null means "don't care".
+     *
+     * @param string|null               $collection
+     * @param string|null               $related
+     * @param array<string,string>|null $match
+     * @return bool
      */
-    public function matches(?string $collection, ?string $field, ?string $related, ?string $relatedField): bool
+    public function matches(?string $collection, ?string $related, ?array $match = null): bool
     {
         return
             ($collection === null || $this->collection === $collection) &&
             ($related === null || $this->relatedCollection === $related) &&
-            ($field === null || $this->field === $field) &&
-            ($relatedField === null || $this->relatedField === $relatedField);
+            (
+                $match === null ||
+                (count($match) === count($this->match) && array_diff_assoc($this->match, $match) === [])
+            );
     }
 
+    private function fieldsMatch(array $matches)
+    {
+
+    }
 
     /**
      * Get the relationship type.
@@ -114,14 +121,6 @@ final class Relationship
     }
 
     /**
-     * Get field of the left hand table / collection.
-     */
-    public function getField(): string
-    {
-        return $this->field;
-    }
-
-    /**
      * Get the right hand table / collection.
      */
     public function getRelatedCollection(): string
@@ -130,10 +129,12 @@ final class Relationship
     }
 
     /**
-     * Get fields of the right hand table / collection.
+     * Field pairs as ON in a JOIN statement
+     *
+     * @return array<string,string>
      */
-    public function getRelatedField(): string
+    public function getMatch(): array
     {
-        return $this->relatedField;
+        return $this->match;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Schema;
 
+use Jasny\DB\Exception\NoRelationshipException;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\NoMap;
 use Jasny\DB\Map\SchemaMap;
@@ -80,27 +81,27 @@ class SchemaTest extends TestCase
     public function testWithRelationship()
     {
         $schema = $this->schema
-            ->withRelationship(new Relationship(Relationship::ONE_TO_MANY, 'foo', 'id', 'bar', 'fooId'))
-            ->withRelationship(new Relationship(Relationship::MANY_TO_MANY, 'bar', 'x', 'qux', 'y'));
+            ->withRelationship(new Relationship(Relationship::ONE_TO_MANY, 'foo', 'bar', ['id' => 'fooId']))
+            ->withRelationship(new Relationship(Relationship::MANY_TO_MANY, 'bar', 'qux', ['x' => 'y']));
 
         $this->assertInstanceOf(Schema::class, $schema);
         $this->assertNotSame($this->schema, $schema);
 
         $this->assertEquals(
-            [new Relationship(Relationship::ONE_TO_MANY, 'foo', 'id', 'bar', 'fooId')],
+            [new Relationship(Relationship::ONE_TO_MANY, 'foo', 'bar', ['id' => 'fooId'])],
             $schema->getRelationships('foo')
         );
 
         $this->assertEquals(
             [
-                new Relationship(Relationship::MANY_TO_ONE, 'bar', 'fooId', 'foo', 'id'),
-                new Relationship(Relationship::MANY_TO_MANY, 'bar', 'x', 'qux', 'y')
+                new Relationship(Relationship::MANY_TO_ONE, 'bar', 'foo', ['fooId' => 'id']),
+                new Relationship(Relationship::MANY_TO_MANY, 'bar', 'qux', ['x' => 'y'])
             ],
             $schema->getRelationships('bar')
         );
 
         $this->assertEquals(
-            [new Relationship(Relationship::MANY_TO_MANY, 'qux', 'y', 'bar', 'x')],
+            [new Relationship(Relationship::MANY_TO_MANY, 'qux', 'bar', ['y' => 'x'])],
             $schema->getRelationships('qux')
         );
 
@@ -123,18 +124,18 @@ class SchemaTest extends TestCase
     public function testWithXtoY(string $method, int $typeFoo, int $typeBar)
     {
         /** @var Schema $schema */
-        $schema = $this->schema->{$method}('foo', 'x', 'bar', 'y');
+        $schema = $this->schema->{$method}('foo', 'bar', ['x' => 'y']);
 
         $this->assertInstanceOf(Schema::class, $schema);
         $this->assertNotSame($this->schema, $schema);
 
         $this->assertEquals(
-            [new Relationship($typeFoo, 'foo', 'x', 'bar', 'y')],
+            [new Relationship($typeFoo, 'foo', 'bar', ['x' => 'y'])],
             $schema->getRelationships('foo')
         );
 
         $this->assertEquals(
-            [new Relationship($typeBar, 'bar', 'y', 'foo', 'x')],
+            [new Relationship($typeBar, 'bar', 'foo', ['y' => 'x'])],
             $schema->getRelationships('bar')
         );
     }
@@ -142,30 +143,30 @@ class SchemaTest extends TestCase
     protected function createRelationshipSchema()
     {
         return $this->schema
-            ->withRelationship(new Relationship(Relationship::ONE_TO_MANY, 'foo', 'id', 'bar', 'fooId'))
-            ->withRelationship(new Relationship(Relationship::ONE_TO_MANY, 'foo', 'id', 'qux', 'inFoo'))
-            ->withRelationship(new Relationship(Relationship::ONE_TO_MANY, 'foo', 'id', 'qux', 'outFoo'))
-            ->withRelationship(new Relationship(Relationship::MANY_TO_MANY, 'bar', 'x', 'qux', 'y'));
+            ->withRelationship(new Relationship(Relationship::ONE_TO_MANY, 'foo', 'bar', ['id' => 'fooId']))
+            ->withRelationship(new Relationship(Relationship::ONE_TO_MANY, 'foo', 'qux', ['id' => 'inFoo']))
+            ->withRelationship(new Relationship(Relationship::ONE_TO_MANY, 'foo', 'qux', ['id' => 'outFoo']))
+            ->withRelationship(new Relationship(Relationship::MANY_TO_MANY, 'bar', 'qux', ['x' => 'y']));
     }
 
     public function relationshipProvider()
     {
         return [
             'foo - bar' => [
-                ['foo', null, 'bar', null],
-                new Relationship(Relationship::ONE_TO_MANY, 'foo', 'id', 'bar', 'fooId'),
+                ['foo', 'bar'],
+                new Relationship(Relationship::ONE_TO_MANY, 'foo', 'bar', ['id' => 'fooId']),
             ],
             'bar - foo' => [
-                ['bar', null, 'foo', null],
-                new Relationship(Relationship::MANY_TO_ONE, 'bar', 'fooId', 'foo', 'id'),
+                ['bar', 'foo'],
+                new Relationship(Relationship::MANY_TO_ONE, 'bar', 'foo', ['fooId' => 'id']),
             ],
-            'foo - qux (inFoo)' => [
-                ['foo', null, 'qux', 'inFoo'],
-                new Relationship(Relationship::ONE_TO_MANY, 'foo', 'id', 'qux', 'inFoo'),
+            'foo - qux (id = inFoo)' => [
+                ['foo', 'qux', ['id' => 'inFoo']],
+                new Relationship(Relationship::ONE_TO_MANY, 'foo', 'qux', ['id' => 'inFoo']),
             ],
-            'foo - qux (outFoo)' => [
-                ['foo', null, 'qux', 'outFoo'],
-                new Relationship(Relationship::ONE_TO_MANY, 'foo', 'id', 'qux', 'outFoo'),
+            'foo - qux (id = outFoo)' => [
+                ['foo', 'qux', ['id' => 'outFoo']],
+                new Relationship(Relationship::ONE_TO_MANY, 'foo', 'qux', ['id' => 'outFoo']),
             ],
         ];
     }
@@ -184,25 +185,17 @@ class SchemaTest extends TestCase
     public function relationshipExceptionProvider()
     {
         return [
-            'pum' => [
-                ['pum', null, null, null],
-                'No relationship found for pum',
-            ],
             'foo - pum' => [
-                ['foo', null, 'pum', null],
+                ['foo', 'pum'],
                 'No relationship found between foo and pum',
             ],
             'foo - qux' => [
-                ['foo', null, 'qux', null],
+                ['foo', 'qux'],
                 'Multiple relationships found between foo and qux',
             ],
-            'foo (x)' => [
-                ['foo', 'x', null, null],
-                'No relationship found for foo (x)',
-            ],
-            'foo - bar (x)' => [
-                ['foo', null, 'bar', 'x'],
-                'No relationship found between foo and bar (x)',
+            'foo - bar (id = x)' => [
+                ['foo', 'bar', ['id' => 'x']],
+                'No relationship found between foo and bar with (foo.id = bar.x)',
             ],
         ];
     }
@@ -214,18 +207,37 @@ class SchemaTest extends TestCase
     {
         $schema = $this->createRelationshipSchema();
 
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(NoRelationshipException::class);
         $this->expectExceptionMessage($message);
 
         $schema->getRelationship(...$args);
     }
 
-    public function testGetRelationshipInvalidArgument()
+    public function relationshipForFieldExceptionProvider()
+    {
+        return [
+            'foo (x)' => [
+                ['foo', 'x'],
+                'No relationship found for foo (x)',
+            ],
+            'foo (id)' => [
+                ['foo', 'id'],
+                'Multiple relationships found for foo (id)',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider relationshipForFieldExceptionProvider
+     */
+    public function testRelationshipForFieldException(array $args, string $message)
     {
         $schema = $this->createRelationshipSchema();
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(NoRelationshipException::class);
+        $this->expectExceptionMessage($message);
 
-        $schema->getRelationship('foo', null, null, 'id');
+        $schema->getRelationshipForField(...$args);
     }
+
 }

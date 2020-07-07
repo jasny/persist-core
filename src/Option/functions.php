@@ -65,12 +65,12 @@ function hydrate(string $field): LookupOption
  * Expand a field, loading data from related collection.
  * Uses collection name as field name, this can be changed with `as()`.
  *
- * @param string      $related
- * @param string|null $relatedField  Relationship should be through this field.
+ * @param string                    $related
+ * @param array<string,string>|null $match    Field pairs as ON in JOIN statement
  */
-function lookup(string $related, ?string $relatedField = null): LookupOption
+function lookup(string $related, ?array $match = null): LookupOption
 {
-    return new LookupOption($related, $related, $relatedField);
+    return new LookupOption($related, $related, $match);
 }
 
 

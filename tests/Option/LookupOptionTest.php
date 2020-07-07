@@ -19,16 +19,16 @@ class LookupOptionTest extends TestCase
 
         $this->assertEquals('foo', $option->getField());
         $this->assertNull($option->getRelatedCollection());
-        $this->assertNull($option->getRelatedField());
+        $this->assertNull($option->getMatch());
     }
 
     public function testWithRelated()
     {
-        $option = new LookupOption('foo', 'foos', 'id');
+        $option = new LookupOption('foo', 'foos', ['id' => 'foo_id']);
 
         $this->assertEquals('foo', $option->getField());
         $this->assertEquals('foos', $option->getRelatedCollection());
-        $this->assertEquals('id', $option->getRelatedField());
+        $this->assertEquals(['id' => 'foo_id'], $option->getMatch());
     }
 
     /**
@@ -45,7 +45,10 @@ class LookupOptionTest extends TestCase
     public function testLookup()
     {
         $this->assertEquals(new LookupOption('foo', 'foo'), opts\lookup('foo'));
-        $this->assertEquals(new LookupOption('foo', 'foo', 'id'), opts\lookup('foo', 'id'));
+        $this->assertEquals(
+            new LookupOption('foo', 'foo', ['id' => 'foo_id']),
+            opts\lookup('foo', ['id' => 'foo_id'])
+        );
     }
 
     public function testLookupAs()
