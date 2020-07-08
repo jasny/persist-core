@@ -80,11 +80,6 @@ final class Relationship
             );
     }
 
-    private function fieldsMatch(array $matches)
-    {
-
-    }
-
     /**
      * Get the relationship type.
      *
