@@ -115,11 +115,16 @@ class MultiWriteTest extends TestCase
 
         foreach ($this->writers as $index => $writer) {
             $writer->expects($this->once())->method('save')
-                ->with($this->identicalTo($itemConsecutive[$index]), $this->identicalTo($opts))
+                ->with(
+                    $this->identicalTo($itemConsecutive[$index]),
+                    $this->identicalTo($opts[0]),
+                    $this->identicalTo($opts[1]),
+                    $this->identicalTo($opts[2]),
+                )
                 ->willReturn($results[$index]);
         }
 
-        $result = $this->multiWrite->save($itemConsecutive[0], $opts);
+        $result = $this->multiWrite->save($itemConsecutive[0], ...$opts);
 
         $this->assertSame($results[2], $result);
     }
@@ -140,30 +145,28 @@ class MultiWriteTest extends TestCase
             $writer->expects($this->once())->method('saveAll')
                 ->with(
                     $this->identicalTo($index === 0 ? $items : $results[$index - 1]),
-                    $this->identicalTo($opts)
+                    $this->identicalTo($opts[0]),
+                    $this->identicalTo($opts[1]),
+                    $this->identicalTo($opts[2]),
                 )
                 ->willReturn($results[$index]);
         }
 
-        $result = $this->multiWrite->saveAll($items, $opts);
+        $result = $this->multiWrite->saveAll($items, ...$opts);
 
         $this->assertSame($results[2], $result);
     }
 
     public function testAsssertAppyResultForSave()
     {
-        $noOpts = [];
-
         $this->expectException(\BadMethodCallException::class);
-        $this->multiWrite->save(new \stdClass(), $noOpts);
+        $this->multiWrite->save(new \stdClass());
     }
 
     public function testAsssertAppyResultForSaveAll()
     {
-        $noOpts = [];
-
         $this->expectException(\BadMethodCallException::class);
-        $this->multiWrite->saveAll([new \stdClass(), new \stdClass()], $noOpts);
+        $this->multiWrite->saveAll([new \stdClass(), new \stdClass()]);
     }
 
     public function testUpdate()
@@ -183,11 +186,17 @@ class MultiWriteTest extends TestCase
 
         foreach ($this->writers as $index => $writer) {
             $writer->expects($this->once())->method('update')
-                ->with($filter, $this->identicalTo($instruction), $this->identicalTo($opts))
+                ->with(
+                    $filter,
+                    $this->identicalTo($instruction),
+                    $this->identicalTo($opts[0]),
+                    $this->identicalTo($opts[1]),
+                    $this->identicalTo($opts[2]),
+                )
                 ->willReturn($results[$index]);
         }
 
-        $result = $this->multiWrite->update($filter, $instruction, $opts);
+        $result = $this->multiWrite->update($filter, $instruction, ...$opts);
 
         $this->assertSame($results[0], $result);
     }
@@ -208,11 +217,16 @@ class MultiWriteTest extends TestCase
 
         foreach ($this->writers as $index => $writer) {
             $writer->expects($this->once())->method('delete')
-                ->with($filter, $this->identicalTo($opts))
+                ->with(
+                    $filter,
+                    $this->identicalTo($opts[0]),
+                    $this->identicalTo($opts[1]),
+                    $this->identicalTo($opts[2]),
+                )
                 ->willReturn($results[$index]);
         }
 
-        $result = $this->multiWrite->delete($filter, $opts);
+        $result = $this->multiWrite->delete($filter, ...$opts);
 
         $this->assertSame($results[0], $result);
     }

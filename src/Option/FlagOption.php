@@ -15,7 +15,7 @@ use Improved as i;
  *
  * @immutable
  */
-class FlagOption
+class FlagOption implements OptionInterface
 {
     protected string $name;
 

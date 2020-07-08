@@ -9,7 +9,7 @@ use Jasny\Immutable;
 /**
  * Option to lookup related data from other collections / tables.
  */
-class LookupOption
+class LookupOption implements OptionInterface
 {
     use Immutable\With;
 

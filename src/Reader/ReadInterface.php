@@ -35,21 +35,21 @@ interface ReadInterface
      * Query and fetch data.
      *
      * @param array<string,mixed> $filter
-     * @param OptionInterface[]   $opts
+     * @param OptionInterface     ...$opts
      * @return Result
      *
      * @phpstan-param array<string,mixed> $filter
-     * @phpstan-param OptionInterface[]   $opts
+     * @phpstan-param OptionInterface     ...$opts
      * @phpstan-return Result<TValue>
      */
-    public function fetch(array $filter = [], array $opts = []): Result;
+    public function fetch(array $filter = [], OptionInterface ...$opts): Result;
 
     /**
      * Query and count result.
      *
      * @param array<string,mixed> $filter
-     * @param OptionInterface[]   $opts
+     * @param OptionInterface     ...$opts
      * @return int
      */
-    public function count(array $filter = [], array $opts = []): int;
+    public function count(array $filter = [], OptionInterface ...$opts): int;
 }

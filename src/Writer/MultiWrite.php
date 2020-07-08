@@ -78,20 +78,20 @@ class MultiWrite implements WriteInterface
      * Save the one item.
      * The use of the `apply_result` option is required.
      *
-     * @param array|object      $item
-     * @param OptionInterface[] $opts
+     * @param array|object    $item
+     * @param OptionInterface ...$opts
      * @return Result
      *
-     * @phpstan-param TItem        $item
-     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-param TItem           $item
+     * @phpstan-param OptionInterface ...$opts
      * @phpstan-return Result<TItem>
      */
-    public function save($item, array $opts = []): Result
+    public function save($item, OptionInterface ...$opts): Result
     {
         $this->assertApplyResult($opts);
 
         return $this->saveEach(static function (WriteInterface $writer, ?Result $result) use ($item, $opts): Result {
-            return $writer->save($result === null ? $item : $result->first(), $opts);
+            return $writer->save($result === null ? $item : $result->first(), ...$opts);
         });
     }
 
@@ -100,19 +100,19 @@ class MultiWrite implements WriteInterface
      * The use of the `apply_result` option is required.
      *
      * @param iterable<array|object> $items
-     * @param OptionInterface[] $opts
+     * @param OptionInterface        ...$opts
      * @return Result
      *
      * @phpstan-param iterable<TItem>   $items
-     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-param OptionInterface   ...$opts
      * @phpstan-return Result<TItem>
      */
-    public function saveAll(iterable $items, array $opts = []): Result
+    public function saveAll(iterable $items, OptionInterface ...$opts): Result
     {
         $this->assertApplyResult($opts);
 
         return $this->saveEach(static function (WriteInterface $writer, ?Result $result) use ($items, $opts): Result {
-            return $writer->saveAll($result ?? $items, $opts);
+            return $writer->saveAll($result ?? $items, ...$opts);
         });
     }
 
@@ -139,10 +139,10 @@ class MultiWrite implements WriteInterface
     /**
      * @inheritDoc
      */
-    public function update(array $filter, $instructions, array $opts = []): Result
+    public function update(array $filter, $instructions, OptionInterface ...$opts): Result
     {
         $result = Pipeline::with($this->writers)
-            ->map(fn(WriteInterface $writer) => $writer->update($filter, $instructions, $opts))
+            ->map(fn(WriteInterface $writer) => $writer->update($filter, $instructions, ...$opts))
             ->toArray();
 
         return $result[0];
@@ -151,10 +151,10 @@ class MultiWrite implements WriteInterface
     /**
      * @inheritDoc
      */
-    public function delete(array $filter, array $opts = []): Result
+    public function delete(array $filter, OptionInterface ...$opts): Result
     {
         $result = Pipeline::with($this->writers)
-            ->map(fn(WriteInterface $writer) => $writer->delete($filter, $opts))
+            ->map(fn(WriteInterface $writer) => $writer->delete($filter, ...$opts))
             ->toArray();
 
         return $result[0];

@@ -41,13 +41,13 @@ class NoReadTest extends TestCase
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $this->reader->fetch([], ['id' => 42]);
+        $this->reader->fetch([]);
     }
     
     public function testCount()
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $this->reader->count([], ['id' => 42]);
+        $this->reader->count([]);
     }
 }

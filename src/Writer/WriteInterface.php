@@ -37,49 +37,49 @@ interface WriteInterface
      * Result contains generated properties for the item.
      *
      * @param array|object      $item
-     * @param OptionInterface[] $opts
+     * @param OptionInterface   ...$opts
      * @return Result
      *
      * @phpstan-param TItem             $item
-     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-param OptionInterface   ...$opts
      * @phpstan-return Result<TItem|\stdClass>
      */
-    public function save($item, array $opts = []): Result;
+    public function save($item, OptionInterface ...$opts): Result;
 
     /**
      * Save the multiple items.
      * Result contains generated properties for each item.
      *
      * @param iterable<array|object> $items
-     * @param OptionInterface[] $opts
+     * @param OptionInterface        ...$opts
      * @return Result
      *
      * @phpstan-param iterable<TItem>   $items
-     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-param OptionInterface   ...$opts
      * @phpstan-return Result<TItem|\stdClass>
      */
-    public function saveAll(iterable $items, array $opts = []): Result;
+    public function saveAll(iterable $items, OptionInterface ...$opts): Result;
 
     /**
      * Query and update records.
      *
      * @param array<string,mixed>                   $filter
      * @param UpdateInstruction|UpdateInstruction[] $instructions
-     * @param OptionInterface[]                     $opts
+     * @param OptionInterface                       ...$opts
      * @return Result
      *
      * @phpstan-return Result<TItem|\stdClass>
      */
-    public function update(array $filter, $instructions, array $opts = []): Result;
+    public function update(array $filter, $instructions, OptionInterface ...$opts): Result;
 
     /**
      * Query and delete records.
      *
      * @param array<string, mixed> $filter
-     * @param OptionInterface[]    $opts
+     * @param OptionInterface      ...$opts
      * @return Result
      *
      * @phpstan-return Result<TItem|\stdClass>
      */
-    public function delete(array $filter, array $opts = []): Result;
+    public function delete(array $filter, OptionInterface ...$opts): Result;
 }
