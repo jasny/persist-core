@@ -6,7 +6,6 @@ namespace Jasny\DB\Update;
 
 /**
  * Operation for update query
- * @immutable
  */
 class UpdateInstruction
 {

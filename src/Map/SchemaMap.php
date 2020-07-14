@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Map;
 
-use Improved as i;
+use Jasny\DB\Option\HydrateOption;
 use Jasny\DB\Option\LookupOption;
 use Jasny\DB\Option\OptionInterface;
+use Jasny\DB\Schema\Relationship;
 use Jasny\DB\Schema\SchemaInterface;
 use Jasny\Immutable;
 
 /**
  * A field map based on a database schema.
- * @immutable
  */
 final class SchemaMap implements MapInterface
 {
@@ -36,48 +36,20 @@ final class SchemaMap implements MapInterface
     }
 
     /**
-     * Add a map for a relationship on the given field.
-     *
-     * @param string $field
-     * @return static
-     */
-    public function withHydrated(string $field): self
-    {
-        $relationship = $this->schema->getRelationshipForField($this->collection, $field);
-        $field .= $relationship->isFromMany() ? '[]' : '';
-
-        return $this->withNested($field, $relationship->getRelatedCollection());
-    }
-
-    /**
-     * Add a map for a relationship.
-     *
-     * @param string                    $field
-     * @param string                    $collection  Related collection name
-     * @param array<string,string>|null $match       Field pairs
-     * @return static
-     */
-    public function withRelated(string $field, string $collection, ?array $match = null): self
-    {
-        $relationship = $this->schema->getRelationship($this->collection, $collection, $match);
-        $field .= $relationship->isFromMany() ? '[]' : '';
-
-        return $this->withNested($field, $relationship->getRelatedCollection());
-    }
-
-    /**
      * Add a map for a nested field (without a predefined relationship).
      *
-     * @param string $field       Field name; suffix with `[]` if field will contain many items.
-     * @param string $collection  Related collection name
+     * @param string       $name          Field name
+     * @param Relationship $relationship  Related collection name
      * @return static
      */
-    public function withNested(string $field, string $collection): self
+    protected function withNested(string $name, Relationship $relationship): self
     {
-        $relatedMap = $this->schema->getMapOf($collection);
+        $relatedMap = $this->schema->getMapOf($relationship->getRelatedCollection());
         $map = $this->inner instanceof NestedMap ? $this->inner : new NestedMap($this->inner);
 
-        return $this->withProperty('inner', $map->withMappedField($field, $relatedMap));
+        $name .= $relationship->isToMany() ? '[]' : '';
+
+        return $this->withProperty('inner', $map->withMappedField($name, $relatedMap));
     }
 
 
@@ -89,13 +61,19 @@ final class SchemaMap implements MapInterface
      */
     public function withOpts(array $opts): self
     {
+        /** @var static $map */
         $map = $this->withInnerOpts($opts);
 
-        foreach (i\iterable_filter($opts, fn($opt) => $opt instanceof LookupOption) as $lookup) {
-            /** @var LookupOption $lookup */
-            $map = $lookup->getRelatedCollection() === null
-                ? $map->withHydrated($lookup->getField())
-                : $map->withRelated($lookup->getField(), $lookup->getRelatedCollection(), $lookup->getMatch());
+        foreach ($opts as $opt) {
+            if ($opt instanceof HydrateOption) {
+                $relationship = $this->schema->getRelationshipForField($this->collection, $opt->getField());
+            } elseif ($opt instanceof LookupOption) {
+                $relationship = $this->schema->getRelationship($this->collection, $opt->getRelated());
+            } else {
+                continue;
+            }
+
+            $map = $map->withNested($opt->getName(), $relationship);
         }
 
         return $map;

@@ -12,7 +12,6 @@ use Jasny\DB\Option\OptionInterface;
 
 /**
  * Pipeline builder for a query result.
- * @immutable
  *
  * @template TValue
  */

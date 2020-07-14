@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Schema;
 
+use function Jasny\str_before;
+
 /**
  * Relationship between two classes.
- * @immutable
  */
 final class Relationship
 {
@@ -19,6 +20,8 @@ final class Relationship
 
     protected string $collection;
     protected string $relatedCollection;
+    protected string $alias;
+    protected string $relatedAlias;
 
     /** @var array<string,string> */
     protected array $match;
@@ -37,8 +40,10 @@ final class Relationship
 
         $this->type = $type;
 
-        $this->collection = $collection;
-        $this->relatedCollection = $related;
+        $this->collection = str_before($collection, ':');
+        $this->relatedCollection = str_before($related, ':');
+        $this->alias = $collection;
+        $this->relatedAlias = $related;
         $this->match = $match;
     }
 
@@ -54,6 +59,8 @@ final class Relationship
 
         $copy->collection = $this->relatedCollection;
         $copy->relatedCollection = $this->collection;
+        $copy->alias = $this->relatedAlias;
+        $copy->relatedAlias = $this->alias;
 
         $copy->match = array_flip($this->match);
 
@@ -62,18 +69,17 @@ final class Relationship
 
     /**
      * See if the relationship matches the search criteria.
-     * Null means "don't care".
      *
-     * @param string|null               $collection
-     * @param string|null               $related
-     * @param array<string,string>|null $match
+     * @param string                    $collection  Local name or alias.
+     * @param string                    $related     Foreign name or alias.
+     * @param array<string,string>|null $match       Field pairs. Null means "don't care".
      * @return bool
      */
-    public function matches(?string $collection, ?string $related, ?array $match = null): bool
+    public function matches(string $collection, string $related, ?array $match = null): bool
     {
         return
-            ($collection === null || $this->collection === $collection) &&
-            ($related === null || $this->relatedCollection === $related) &&
+            $this->alias === $collection &&
+            $this->relatedAlias === $related &&
             (
                 $match === null ||
                 (count($match) === count($this->match) && array_diff_assoc($this->match, $match) === [])
@@ -108,7 +114,7 @@ final class Relationship
 
 
     /**
-     * Get the left hand table / collection.
+     * Get the local table / collection.
      */
     public function getCollection(): string
     {
@@ -116,11 +122,27 @@ final class Relationship
     }
 
     /**
-     * Get the right hand table / collection.
+     * Get the foreign table / collection.
      */
     public function getRelatedCollection(): string
     {
         return $this->relatedCollection;
+    }
+
+    /**
+     * Get the local table / collection with alias.
+     */
+    public function getName(): string
+    {
+        return $this->alias;
+    }
+
+    /**
+     * Get the foreign table / collection with alias.
+     */
+    public function getRelatedAlias(): string
+    {
+        return $this->alias;
     }
 
     /**

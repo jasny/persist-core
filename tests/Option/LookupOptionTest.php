@@ -13,54 +13,43 @@ use PHPUnit\Framework\TestCase;
  */
 class LookupOptionTest extends TestCase
 {
-    public function testWithoutRelated()
-    {
-        $option = new LookupOption('foo');
-
-        $this->assertEquals('foo', $option->getField());
-        $this->assertNull($option->getRelatedCollection());
-        $this->assertNull($option->getMatch());
-    }
-
-    public function testWithRelated()
-    {
-        $option = new LookupOption('foo', 'foos', ['id' => 'foo_id']);
-
-        $this->assertEquals('foo', $option->getField());
-        $this->assertEquals('foos', $option->getRelatedCollection());
-        $this->assertEquals(['id' => 'foo_id'], $option->getMatch());
-    }
-
-    /**
-     * @covers \Jasny\DB\Option\Functions\hydrate
-     */
-    public function testHydrate()
-    {
-        $this->assertEquals(new LookupOption('foo'), opts\hydrate('foo'));
-    }
-
     /**
      * @covers \Jasny\DB\Option\Functions\lookup
      */
     public function testLookup()
     {
-        $this->assertEquals(new LookupOption('foo', 'foo'), opts\lookup('foo'));
-        $this->assertEquals(
-            new LookupOption('foo', 'foo', ['id' => 'foo_id']),
-            opts\lookup('foo', ['id' => 'foo_id'])
-        );
+        $this->assertEquals(new LookupOption('foo'), opts\lookup('foo'));
+    }
+
+    public function collectionProvider()
+    {
+        return [
+            'foo' => ['foo', 'foo'],
+            'foo:default' => ['foo:default', 'foo_default'],
+        ];
+    }
+
+    /**
+     * @dataProvider collectionProvider
+     */
+    public function testConstruct(string $collection, string $name)
+    {
+        $this->assertEquals($collection, opts\lookup($collection)->getRelated());
+        $this->assertEquals($name, opts\lookup($collection)->getName());
     }
 
     public function testLookupAs()
     {
-        $this->assertEquals(new LookupOption('foo', 'foos'), opts\lookup('foos')->as('foo'));
+        $opt = opts\lookup('foo')->as('foos');
+
+        $this->assertEquals('foo', $opt->getRelated());
+        $this->assertEquals('foos', $opt->getName());
     }
 
-    public function testHydrateAs()
+    public function testWhere()
     {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage("Unable to change field name when expanding specific field");
+        $opt = opts\lookup('foo')->where(['abc' => 10]);
 
-        opts\hydrate('foo')->as('bar');
+        $this->assertEquals(['abc' => 10], $opt->getFilter());
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Option;
 
+use Jasny\DB\Filter\FilterItem;
 use Jasny\Immutable;
 
 /**
@@ -13,25 +14,22 @@ class LookupOption implements OptionInterface
 {
     use Immutable\With;
 
-    protected string $field;
-    protected ?string $related;
+    protected string $name;
+    protected string $related;
 
-    /** @var array<string,string>|null */
-    protected ?array $match;
+    /** @var array<string,string>|FilterItem[] */
+    protected array $filter = [];
 
     /**
      * Class constructor
      * If field maps to a single relationship, the related collection and fields don't have to be specified.
      *
-     * @param string                    $field    Collection field name or alias
-     * @param string|null               $related  Related collection name
-     * @param array<string,string>|null $match    Fields of related collection
+     * @param string $related  Related collection name (or alias)
      */
-    public function __construct(string $field, ?string $related = null, ?array $match = null)
+    public function __construct(string $related)
     {
-        $this->field = $field;
+        $this->name = str_replace(':', '_', $related);
         $this->related = $related;
-        $this->match = $match;
     }
 
     /**
@@ -39,38 +37,46 @@ class LookupOption implements OptionInterface
      *
      * @return static
      */
-    public function as(string $field): self
+    public function as(string $name): self
     {
-        if ($this->related === null) {
-            throw new \LogicException("Unable to change field name when expanding specific field");
-        }
-
-        return $this->withProperty('field', $field);
+        return $this->withProperty('name', $name);
     }
 
     /**
-     * Get local field name.
+     * Filter the items from the related collection.
+     *
+     * @param array<string,string>|FilterItem[]
+     * @return static
      */
-    public function getField(): string
+    public function where(array $filter): self
     {
-        return $this->field;
+        return $this->withProperty('filter', array_merge($this->filter, $filter));
     }
 
+
     /**
-     * Get related collection.
+     * Get related collection name (or alias).
      */
-    public function getRelatedCollection(): ?string
+    public function getRelated(): string
     {
         return $this->related;
     }
 
     /**
-     * Get related field.
-     *
-     * @return array<string,string>|null
+     * Get field name.
      */
-    public function getMatch(): ?array
+    public function getName(): string
     {
-        return $this->match;
+        return $this->name;
+    }
+
+    /**
+     * Get filter for related items.
+     *
+     * @return array<string,string>|FilterItem[]
+     */
+    public function getFilter(): array
+    {
+        return $this->filter;
     }
 }

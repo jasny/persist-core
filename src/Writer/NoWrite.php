@@ -12,7 +12,6 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Writing to storage is not supported.
- * @immutable
  *
  * @implements WriteInterface<mixed>
  */

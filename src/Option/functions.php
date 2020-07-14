@@ -6,6 +6,7 @@ namespace Jasny\DB\Option\Functions;
 
 use Jasny\DB\Option\FieldsOption;
 use Jasny\DB\Option\FlagOption;
+use Jasny\DB\Option\HydrateOption;
 use Jasny\DB\Option\LimitOption;
 use Jasny\DB\Option\LookupOption;
 use Jasny\DB\Option\SettingOption;
@@ -56,21 +57,20 @@ function page(int $page, int $pageSize): LimitOption
 /**
  * Hydrate a field, loading data from related collection.
  */
-function hydrate(string $field): LookupOption
+function hydrate(string $field): HydrateOption
 {
-    return new LookupOption($field);
+    return new HydrateOption($field);
 }
 
 /**
  * Expand a field, loading data from related collection.
  * Uses collection name as field name, this can be changed with `as()`.
  *
- * @param string                    $related
- * @param array<string,string>|null $match    Field pairs as ON in JOIN statement
+ * @param string $related
  */
-function lookup(string $related, ?array $match = null): LookupOption
+function lookup(string $related): LookupOption
 {
-    return new LookupOption($related, $related, $match);
+    return new LookupOption($related);
 }
 
 

@@ -11,7 +11,6 @@ use function Jasny\object_set_properties;
 
 /**
  * Query result.
- * @immutable
  *
  * @template TValue
  */

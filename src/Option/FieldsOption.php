@@ -6,7 +6,6 @@ namespace Jasny\DB\Option;
 
 /**
  * Only return specified fields.
- * @immutable
  */
 class FieldsOption implements OptionInterface
 {

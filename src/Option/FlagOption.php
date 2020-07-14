@@ -13,7 +13,6 @@ use Improved as i;
  *
  *     $isFast = opts\flag('fast')->isIn($opts);
  *
- * @immutable
  */
 class FlagOption implements OptionInterface
 {

@@ -6,7 +6,6 @@ namespace Jasny\DB\Option;
 
 /**
  * Limit the query result.
- * @immutable
  */
 class LimitOption implements OptionInterface
 {

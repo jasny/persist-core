@@ -13,7 +13,6 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Write to multiple storage endpoints (sequentially).
- * @immutable
  *
  * @template TItem
  * @implements WriteInterface<TItem>

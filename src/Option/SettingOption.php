@@ -14,7 +14,6 @@ use Improved\IteratorPipeline\Pipeline;
  *
  *     $setting = opts\setting('turns', 1)->findIn($opts);
  *
- * @immutable
  */
 class SettingOption implements OptionInterface
 {

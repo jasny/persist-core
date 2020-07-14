@@ -8,7 +8,6 @@ use Jasny\DB\Option\OptionInterface;
 
 /**
  * Null object for map.
- * @immutable
  */
 final class NoMap implements MapInterface
 {

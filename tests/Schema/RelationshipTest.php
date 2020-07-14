@@ -86,15 +86,8 @@ class RelationshipTest extends TestCase
 
     public function testMatches()
     {
-        $this->assertTrue($this->oneToOne->matches('foo', null, null));
-        $this->assertTrue($this->oneToOne->matches(null, 'bar', null));
         $this->assertTrue($this->oneToOne->matches('foo', 'bar', null));
         $this->assertTrue($this->oneToOne->matches('foo', 'bar', ['x' => 'y']));
-
-        $this->assertFalse($this->oneToOne->matches('qux', null, null));
-        $this->assertFalse($this->oneToOne->matches('bar', null, null));
-        $this->assertFalse($this->oneToOne->matches(null, 'qux', null));
-        $this->assertFalse($this->oneToOne->matches(null, 'foo', null));
 
         $this->assertFalse($this->oneToOne->matches('foo', 'qux', null));
         $this->assertFalse($this->oneToOne->matches('foo', 'bar', ['a' => 'b']));

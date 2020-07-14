@@ -14,7 +14,6 @@ use Jasny\Immutable;
 
 /**
  * Representation of database schema with field maps and relationships.
- * @immutable
  */
 class Schema implements SchemaInterface
 {

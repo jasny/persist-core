@@ -11,7 +11,6 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Reading from storage is not supported.
- * @immutable
  *
  * @implements ReadInterface<mixed>
  */

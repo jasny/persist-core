@@ -6,7 +6,6 @@ namespace Jasny\DB\Filter;
 
 /**
  * Representation of an item of filter passed to a query builder.
- * @immutable
  */
 class FilterItem
 {

@@ -7,6 +7,7 @@ namespace Jasny\DB\Tests\Map;
 use Jasny\DB\Map\ChildMap;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\NestedMap;
+use Jasny\DB\Map\NoMap;
 use Jasny\DB\Map\SchemaMap;
 use Jasny\DB\Option\Functions as opts;
 use Jasny\DB\Option\OptionInterface;
@@ -77,122 +78,24 @@ class SchemaMapTest extends TestCase
     }
 
 
-    public function testWithHydrated(): void
-    {
-        $schema = (new Schema())
-            ->withMap('foo', $this->createMock(MapInterface::class))
-            ->withMap('bar', $this->createMock(MapInterface::class))
-            ->withOneToMany('foo', 'bar', ['our_bar' => 'id']);
-
-        $map = new SchemaMap('foo', $schema);
-        $this->assertSame($schema->getMapOf('foo'), $map->getInner());
-
-        $mapWithBar = $map->withHydrated('our_bar');
-
-        $this->assertInstanceOf(NestedMap::class, $mapWithBar->getInner());
-
-        /** @var MapInterface[] $nested */
-        $nested = $mapWithBar->getInner()->getInner();
-        $this->assertIsArray($nested);
-        $this->assertContainsOnlyInstancesOf(MapInterface::class, $nested);
-
-        $this->assertArrayHasKey('', $nested);
-        $this->assertSame($schema->getMapOf('foo'), $nested['']);
-
-        $this->assertArrayHasKey('our_bar', $nested);
-        $this->assertInstanceOf(ChildMap::class, $nested['our_bar']);
-        $this->assertSame('our_bar', $nested['our_bar']->getField());
-        $this->assertFalse($nested['our_bar']->isForMany());
-        $this->assertSame($schema->getMapOf('bar'), $nested['our_bar']->getInner());
-    }
-
-    public function testWithRelated(): void
-    {
-        $schema = (new Schema())
-            ->withMap('foo', $this->createMock(MapInterface::class))
-            ->withMap('bar', $this->createMock(MapInterface::class))
-            ->withOneToMany('foo', 'bar', ['our_bar' => 'id']);
-
-        $map = new SchemaMap('bar', $schema);
-        $this->assertSame($schema->getMapOf('bar'), $map->getInner());
-
-        $mapWithBar = $map->withRelated('our_foos', 'foo');
-
-        $this->assertInstanceOf(NestedMap::class, $mapWithBar->getInner());
-
-        /** @var MapInterface[] $nested */
-        $nested = $mapWithBar->getInner()->getInner();
-        $this->assertIsArray($nested);
-        $this->assertContainsOnlyInstancesOf(MapInterface::class, $nested);
-
-        $this->assertIsArray($nested);
-        $this->assertArrayHasKey('', $nested);
-        $this->assertSame($schema->getMapOf('bar'), $nested['']);
-
-        $this->assertArrayHasKey('our_foos', $nested);
-        $this->assertInstanceOf(ChildMap::class, $nested['our_foos']);
-        $this->assertSame('our_foos', $nested['our_foos']->getField());
-        $this->assertTrue($nested['our_foos']->isForMany());
-        $this->assertSame($schema->getMapOf('foo'), $nested['our_foos']->getInner());
-    }
-
-    public function testWithRelatedAndHydrated(): void
-    {
-        $schema = (new Schema())
-            ->withMap('foo', $this->createMock(MapInterface::class))
-            ->withMap('bar', $this->createMock(MapInterface::class))
-            ->withOneToMany('foo', 'bar', ['our_bar' => 'id'])
-            ->withOneToOne('foo', 'bar', ['id' => 'default_foo']);
-
-        $map = new SchemaMap('bar', $schema);
-        $this->assertSame($schema->getMapOf('bar'), $map->getInner());
-
-        $mapWithBar = $map
-            ->withRelated('our_foos', 'foo', ['id' => 'our_bar'])
-            ->withHydrated('default_foo');
-
-        $this->assertInstanceOf(NestedMap::class, $mapWithBar->getInner());
-
-        /** @var MapInterface[] $nested */
-        $nested = $mapWithBar->getInner()->getInner();
-        $this->assertIsArray($nested);
-        $this->assertContainsOnlyInstancesOf(MapInterface::class, $nested);
-
-        $this->assertIsArray($nested);
-        $this->assertArrayHasKey('', $nested);
-        $this->assertSame($schema->getMapOf('bar'), $nested['']);
-
-        $this->assertArrayHasKey('our_foos', $nested);
-        $this->assertInstanceOf(ChildMap::class, $nested['our_foos']);
-        $this->assertSame('our_foos', $nested['our_foos']->getField());
-        $this->assertTrue($nested['our_foos']->isForMany());
-        $this->assertSame($schema->getMapOf('foo'), $nested['our_foos']->getInner());
-
-        $this->assertArrayHasKey('default_foo', $nested);
-        $this->assertInstanceOf(ChildMap::class, $nested['default_foo']);
-        $this->assertSame('default_foo', $nested['default_foo']->getField());
-        $this->assertFalse($nested['default_foo']->isForMany());
-        $this->assertSame($schema->getMapOf('foo'), $nested['default_foo']->getInner());
-    }
-
     public function testWithOpts(): void
     {
-        $fooMap = $this->createMock(MapInterface::class);
+        $fooMap = new NoMap();//$this->createMock(MapInterface::class);
         $barMap = $this->createMock(MapInterface::class);
         $barMapWithOpts = $this->createMock(MapInterface::class);
 
         $schema = (new Schema())
             ->withMap('foo', $fooMap)
             ->withMap('bar', $barMap)
-            ->withOneToMany('foo', 'bar', ['our_bar' => 'id'])
-            ->withOneToOne('foo', 'bar', ['id' => 'default_foo']);
+            ->withManyToOne('foo', 'bar', ['our_bar' => 'id'])
+            ->withOneToOne('foo:default', 'bar', ['id' => 'default_foo']);
 
         $map = new SchemaMap('bar', $schema);
         $this->assertSame($schema->getMapOf('bar'), $map->getInner());
 
         $opts = [
             $this->createMock(OptionInterface::class),
-            opts\lookup('foo', ['id' => 'our_bar'])->as('our_foos'),
+            opts\lookup('foo')->as('our_foos'),
             opts\hydrate('default_foo'),
         ];
 
@@ -218,13 +121,13 @@ class SchemaMapTest extends TestCase
         $this->assertInstanceOf(ChildMap::class, $nested['our_foos']);
         $this->assertSame('our_foos', $nested['our_foos']->getField());
         $this->assertTrue($nested['our_foos']->isForMany());
-        $this->assertSame($schema->getMapOf('foo'), $nested['our_foos']->getInner());
+        $this->assertSame($fooMap, $nested['our_foos']->getInner());
 
         $this->assertArrayHasKey('default_foo', $nested);
         $this->assertInstanceOf(ChildMap::class, $nested['default_foo']);
         $this->assertSame('default_foo', $nested['default_foo']->getField());
         $this->assertFalse($nested['default_foo']->isForMany());
-        $this->assertSame($schema->getMapOf('foo'), $nested['default_foo']->getInner());
+        $this->assertSame($fooMap, $nested['default_foo']->getInner());
     }
 
     public function testWithOptsInnerSelf(): void
@@ -235,15 +138,15 @@ class SchemaMapTest extends TestCase
         $schema = (new Schema())
             ->withMap('foo', $fooMap)
             ->withMap('bar', $barMap)
-            ->withOneToMany('foo', 'bar', ['our_bar' => 'id'])
-            ->withOneToOne('foo', 'bar', ['id' => 'default_foo']);
+            ->withManyToOne('foo', 'bar', ['our_bar' => 'id'])
+            ->withOneToOne('foo:default', 'bar', ['id' => 'default_foo']);
 
         $map = new SchemaMap('bar', $schema);
         $this->assertSame($schema->getMapOf('bar'), $map->getInner());
 
         $opts = [
             $this->createMock(OptionInterface::class),
-            opts\lookup('foo', ['id' => 'our_bar'])->as('our_foos'),
+            opts\lookup('foo')->as('our_foos'),
             opts\hydrate('default_foo'),
         ];
 
