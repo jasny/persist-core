@@ -16,6 +16,9 @@ class HydrateOption implements OptionInterface
     protected string $field;
     protected string $name;
 
+    /** @var OptionInterface[] */
+    protected array $opts = [];
+
     /**
      * Class constructor.
      */
@@ -36,6 +39,29 @@ class HydrateOption implements OptionInterface
     }
 
     /**
+     * Specify which fields to include in the hydrated data.
+     *
+     * @param string ...$fields
+     * @return static
+     */
+    public function fields(string ...$fields): self
+    {
+        return $this->withPropertyItem('opts', new FieldsOption($fields));
+    }
+
+    /**
+     * Specify which field to exclude from the hydrated data.
+     *
+     * @param string ...$fields
+     * @return static
+     */
+    public function omit(string ...$fields): self
+    {
+        return $this->withPropertyItem('opts', new FieldsOption($fields, true /* negate */));
+    }
+
+
+    /**
      * Get the field name that should be hydrated.
      */
     public function getField(): string
@@ -49,5 +75,15 @@ class HydrateOption implements OptionInterface
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Get options specific to hydration.
+     *
+     * @return OptionInterface[]
+     */
+    public function getOpts(): array
+    {
+        return $this->opts;
     }
 }

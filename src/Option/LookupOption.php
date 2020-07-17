@@ -17,8 +17,14 @@ class LookupOption implements OptionInterface
     protected string $name;
     protected string $related;
 
+    protected bool $isCount = false;
+
     /** @var array<string,string>|FilterItem[] */
     protected array $filter = [];
+
+    /** @var OptionInterface[] */
+    protected array $opts = [];
+
 
     /**
      * Class constructor
@@ -48,9 +54,65 @@ class LookupOption implements OptionInterface
      * @param array<string,string>|FilterItem[]
      * @return static
      */
-    public function where(array $filter): self
+    public function having(array $filter): self
     {
         return $this->withProperty('filter', array_merge($this->filter, $filter));
+    }
+
+    /**
+     * Only lookup a count of the number of items.
+     *
+     * @return static
+     */
+    public function count(): self
+    {
+        $this->withProperty('isCount', true);
+    }
+
+
+    /**
+     * Specify which fields to include in the related data.
+     *
+     * @param string ...$fields
+     * @return static
+     */
+    public function fields(string ...$fields): self
+    {
+        return $this->withPropertyItem('opts', new FieldsOption($fields));
+    }
+
+    /**
+     * Specify which field to exclude from the related data.
+     *
+     * @param string ...$fields
+     * @return static
+     */
+    public function omit(string ...$fields): self
+    {
+        return $this->withPropertyItem('opts', new FieldsOption($fields, true /* negate */));
+    }
+
+    /**
+     * Specify which field to exclude from the related data.
+     *
+     * @param string ...$fields
+     * @return static
+     */
+    public function sort(string ...$fields): self
+    {
+        return $this->withPropertyItem('opts', new SortOption($fields));
+    }
+
+    /**
+     * Specify which field to exclude from hydrated data.
+     *
+     * @param int $limit
+     * @param int $offset
+     * @return static
+     */
+    public function limit(int $limit, int $offset = 0): self
+    {
+        return $this->withPropertyItem('opts', new LimitOption($limit, $offset));
     }
 
 
@@ -71,6 +133,14 @@ class LookupOption implements OptionInterface
     }
 
     /**
+     * Should a count of the number of items be looked up?
+     */
+    public function isCount(): bool
+    {
+        return $this->isCount;
+    }
+
+    /**
      * Get filter for related items.
      *
      * @return array<string,string>|FilterItem[]
@@ -78,5 +148,15 @@ class LookupOption implements OptionInterface
     public function getFilter(): array
     {
         return $this->filter;
+    }
+
+    /**
+     * Get options specific to the lookup.
+     *
+     * @return OptionInterface[]
+     */
+    public function getOpts(): array
+    {
+        return $this->opts;
     }
 }
