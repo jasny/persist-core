@@ -11,7 +11,7 @@ use Improved as i;
  *
  * Example for checking if the 'fast' flag is set.
  *
- *     $isFast = opts\flag('fast')->isIn($opts);
+ *     $isFast = opt\flag('fast')->isIn($opts);
  *
  */
 class FlagOption implements OptionInterface

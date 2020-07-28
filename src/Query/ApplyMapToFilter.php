@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Query;
 
-use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\OptionInterface;
 
 /**
@@ -38,16 +37,22 @@ class ApplyMapToFilter implements ComposerInterface
     public function prepare(iterable $filter, array &$opts = []): iterable
     {
         /** @var MapInterface $map */
-        $map = opts\setting('map', new NoMap())->findIn($opts, MapInterface::class);
+        $map = opt\setting('map', new NoMap())->findIn($opts, MapInterface::class);
 
         // Quick return if there is no map
         if ($map instanceof NoMap) {
             return $filter;
         }
 
-        return Pipeline::with($filter)
-            ->map(fn(FilterItem $item) => $this->map($map, $item))
-            ->cleanup();
+        foreach ($filter as $key => &$item) {
+            $item = $this->map($map, $item);
+
+            if ($item === null) {
+                unset($filter[$key]);
+            }
+        }
+
+        return $filter;
     }
 
     /**

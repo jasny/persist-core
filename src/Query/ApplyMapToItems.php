@@ -7,7 +7,7 @@ namespace Jasny\DB\Query;
 use Improved as i;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 
 /**
  * Apply the field map to items.
@@ -33,7 +33,7 @@ class ApplyMapToItems implements ComposerInterface
     public function prepare(iterable $items, array &$opts = []): iterable
     {
         /** @var MapInterface $map */
-        $map = opts\setting('map', new NoMap())->findIn($opts, MapInterface::class);
+        $map = opt\setting('map', new NoMap())->findIn($opts, MapInterface::class);
 
         // Quick return if there is no map
         if ($map instanceof NoMap) {

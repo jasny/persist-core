@@ -7,7 +7,7 @@ namespace Jasny\DB\Tests\Query;
 use Improved as i;
 use Jasny\DB\Map\NoMap;
 use Jasny\DB\Query\ApplyMapToItems;
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Map\FieldMap;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +38,7 @@ class ApplyMapToItemsTest extends TestCase
         ];
 
         $map = new FieldMap(self::MAP);
-        $opts = [opts\setting('map', $map)];
+        $opts = [opt\setting('map', $map)];
 
         $applyMap = new ApplyMapToItems();
         $iterator = $applyMap->prepare($items, $opts);
@@ -55,7 +55,7 @@ class ApplyMapToItemsTest extends TestCase
     {
         return [
             [[]],
-            [[opts\setting('map', new NoMap())]],
+            [[opt\setting('map', new NoMap())]],
         ];
     }
 

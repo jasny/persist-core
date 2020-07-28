@@ -9,7 +9,7 @@ use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\NestedMap;
 use Jasny\DB\Map\NoMap;
 use Jasny\DB\Map\SchemaMap;
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Schema\Schema;
 use Jasny\DB\Schema\SchemaInterface;
@@ -95,8 +95,8 @@ class SchemaMapTest extends TestCase
 
         $opts = [
             $this->createMock(OptionInterface::class),
-            opts\lookup('foo')->as('our_foos'),
-            opts\hydrate('default_foo'),
+            opt\lookup('foo')->as('our_foos'),
+            opt\hydrate('default_foo'),
         ];
 
         $barMap->expects($this->once())
@@ -146,8 +146,8 @@ class SchemaMapTest extends TestCase
 
         $opts = [
             $this->createMock(OptionInterface::class),
-            opts\lookup('foo')->as('our_foos'),
-            opts\hydrate('default_foo'),
+            opt\lookup('foo')->as('our_foos'),
+            opt\hydrate('default_foo'),
         ];
 
         $barMap->expects($this->once())

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Writer;
 
-use Improved\IteratorPipeline\Pipeline;
 use Jasny\Immutable;
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Result\Result;
 use Psr\Log\LoggerInterface;
@@ -21,7 +20,10 @@ class MultiWrite implements WriteInterface
 {
     use Immutable\With;
 
-    /** @phpstan-var array<WriteInterface<TItem>> */
+    /**
+     * @var WriteInterface[]
+     * @phpstan-var array<WriteInterface<TItem>>
+     */
     protected array $writers = [];
 
     /**
@@ -65,9 +67,11 @@ class MultiWrite implements WriteInterface
      */
     public function withLogging(LoggerInterface $logger)
     {
-        $writers = Pipeline::with($this->writers)
-            ->map(fn(WriteInterface $writer) => $writer->withLogging($logger))
-            ->toArray();
+        $writers = [];
+
+        foreach ($this->writers as $writer) {
+            $writers[] = $writer->withLogging($logger);
+        }
 
         return $this->withProperty('writers', $writers);
     }
@@ -140,11 +144,13 @@ class MultiWrite implements WriteInterface
      */
     public function update(array $filter, $instructions, OptionInterface ...$opts): Result
     {
-        $result = Pipeline::with($this->writers)
-            ->map(fn(WriteInterface $writer) => $writer->update($filter, $instructions, ...$opts))
-            ->toArray();
+        $result = null;
 
-        return $result[0];
+        foreach ($this->writers as $writer) {
+            $result ??= $writer->update($filter, $instructions, ...$opts);
+        }
+
+        return $result;
     }
 
     /**
@@ -152,11 +158,13 @@ class MultiWrite implements WriteInterface
      */
     public function delete(array $filter, OptionInterface ...$opts): Result
     {
-        $result = Pipeline::with($this->writers)
-            ->map(fn(WriteInterface $writer) => $writer->delete($filter, ...$opts))
-            ->toArray();
+        $result = null;
 
-        return $result[0];
+        foreach ($this->writers as $writer) {
+            $result ??= $writer->delete($filter, ...$opts);
+        }
+
+        return $result;
     }
 
     /**
@@ -166,7 +174,7 @@ class MultiWrite implements WriteInterface
      */
     protected function assertApplyResult(array $opts): void
     {
-        if (!opts\apply_result()->isIn($opts)) {
+        if (!opt\apply_result()->isIn($opts)) {
             throw new \BadMethodCallException("The `apply_result` option is required when using multi write");
         }
     }

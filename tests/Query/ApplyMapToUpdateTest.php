@@ -8,7 +8,7 @@ use Improved as i;
 use Jasny\DB\Map\NoMap;
 use Jasny\DB\Query\ApplyMapToUpdate;
 use Jasny\DB\Update\UpdateInstruction;
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Map\FieldMap;
 use PHPUnit\Framework\TestCase;
 
@@ -33,7 +33,7 @@ class ApplyMapToUpdateTest extends TestCase
         ];
 
         $map = new FieldMap(self::MAP);
-        $opts = [opts\setting('map', $map)];
+        $opts = [opt\setting('map', $map)];
 
         $applyMap = new ApplyMapToUpdate();
         $iterator = $applyMap->prepare($instructions, $opts);
@@ -50,7 +50,7 @@ class ApplyMapToUpdateTest extends TestCase
     {
         return [
             [[]],
-            [[opts\setting('map', new NoMap())]],
+            [[opt\setting('map', new NoMap())]],
         ];
     }
 

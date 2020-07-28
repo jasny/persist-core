@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Writer;
 
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\OptionInterface;
 use Jasny\DB\Result\Result;
 use Jasny\DB\Update\UpdateInstruction;
@@ -237,7 +237,7 @@ class MultiWriteTest extends TestCase
     protected function createStubOpts(): array
     {
         return [
-            opts\apply_result(),
+            opt\apply_result(),
             $this->createStub(OptionInterface::class),
             $this->createStub(OptionInterface::class),
         ];

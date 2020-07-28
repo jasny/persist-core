@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Query;
 
-use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opts;
-use Jasny\DB\Option\OptionInterface;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\SettingOption;
 
 /**
@@ -44,13 +42,23 @@ class SetMap implements ComposerInterface
      */
     public function prepare(iterable $items, array &$opts = []): iterable
     {
-        $oldMap = opts\setting('map', new NoMap())->findIn($opts, MapInterface::class);
-        $setting = opts\setting('map', ($this->callback)($oldMap, $opts));
+        $map = null;
 
-        $opts = Pipeline::with($opts)
-            ->filter(fn($opt) => !($opt instanceof SettingOption) || $opt->getName() !== 'map')
-            ->toArray();
-        $opts[] = $setting;
+        foreach ($opts as &$opt) {
+            if (
+                $opt instanceof SettingOption &&
+                $opt->getName() === 'map' &&
+                $opt->getValue() instanceof MapInterface
+            ) {
+                $map = ($this->callback)($opt->getValue(), $opts);
+                $opt = opt\setting('map', $map);
+            }
+        }
+
+        if ($map === null) {
+            $map = ($this->callback)(new NoMap(), $opts);
+            $opts[] = opt\setting('map', $map);
+        }
 
         return $items;
     }

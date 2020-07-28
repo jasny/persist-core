@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Option;
 
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\LookupOption;
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +18,7 @@ class LookupOptionTest extends TestCase
      */
     public function testLookup()
     {
-        $this->assertEquals(new LookupOption('foo'), opts\lookup('foo'));
+        $this->assertEquals(new LookupOption('foo'), opt\lookup('foo'));
     }
 
     public function collectionProvider()
@@ -34,13 +34,13 @@ class LookupOptionTest extends TestCase
      */
     public function testConstruct(string $collection, string $name)
     {
-        $this->assertEquals($collection, opts\lookup($collection)->getRelated());
-        $this->assertEquals($name, opts\lookup($collection)->getName());
+        $this->assertEquals($collection, opt\lookup($collection)->getRelated());
+        $this->assertEquals($name, opt\lookup($collection)->getName());
     }
 
     public function testLookupAs()
     {
-        $opt = opts\lookup('foo')->as('foos');
+        $opt = opt\lookup('foo')->as('foos');
 
         $this->assertEquals('foo', $opt->getRelated());
         $this->assertEquals('foos', $opt->getName());
@@ -48,7 +48,7 @@ class LookupOptionTest extends TestCase
 
     public function testWhere()
     {
-        $opt = opts\lookup('foo')->where(['abc' => 10]);
+        $opt = opt\lookup('foo')->where(['abc' => 10]);
 
         $this->assertEquals(['abc' => 10], $opt->getFilter());
     }

@@ -7,7 +7,7 @@ namespace Jasny\DB\Result;
 use Improved\IteratorPipeline\PipelineBuilder;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\OptionInterface;
 
 /**
@@ -26,7 +26,7 @@ class ResultBuilder extends PipelineBuilder
     public function withOpts(array $opts): self
     {
         /** @var MapInterface $map */
-        $map = opts\setting('map', new NoMap())->findIn($opts, MapInterface::class);
+        $map = opt\setting('map', new NoMap())->findIn($opts, MapInterface::class);
 
         return !($map instanceof NoMap)
             ? $this->map([$map, 'applyInverse'])

@@ -15,6 +15,7 @@ class LookupOption implements OptionInterface
     use Immutable\With;
 
     protected string $name;
+    protected ?string $collection = null;
     protected string $related;
 
     protected bool $isCount = false;
@@ -49,6 +50,17 @@ class LookupOption implements OptionInterface
     }
 
     /**
+     * Specify the collection the lookup applies to.
+     *
+     * @param string $collection
+     * @return static
+     */
+    public function for(string $collection): self
+    {
+        return $this->withProperty('collection', $collection);
+    }
+
+    /**
      * Filter the items from the related collection.
      *
      * @param array<string,string>|FilterItem[]
@@ -68,7 +80,6 @@ class LookupOption implements OptionInterface
     {
         $this->withProperty('isCount', true);
     }
-
 
     /**
      * Specify which fields to include in the related data.
@@ -115,6 +126,28 @@ class LookupOption implements OptionInterface
         return $this->withPropertyItem('opts', new LimitOption($limit, $offset));
     }
 
+    /**
+     * Add custom option(s).
+     *
+     * @param OptionInterface ...$opts
+     * @return static
+     */
+    public function with(OptionInterface ...$opts): self
+    {
+        return $this->withProperty('opts', array_merge($this->opts, $opts));
+    }
+
+
+    /**
+     * Get the collection this lookup applies to.
+     * Null for the main collection of the query.
+     *
+     * @return string|null
+     */
+    public function getCollection(): ?string
+    {
+        return $this->collection;
+    }
 
     /**
      * Get related collection name (or alias).

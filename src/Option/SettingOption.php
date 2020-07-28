@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Jasny\DB\Option;
 
 use Improved as i;
-use Improved\IteratorPipeline\Pipeline;
 
 /**
  * Generic setting for the query builder.
  *
  * Example for getting the value of the `turns` setting with `1` as default value.
  *
- *     $setting = opts\setting('turns', 1)->findIn($opts);
+ *     $setting = opt\setting('turns', 1)->findIn($opts);
  *
  */
 class SettingOption implements OptionInterface
@@ -58,18 +57,24 @@ class SettingOption implements OptionInterface
      * Returns `null` if the setting isn't present in opts.
      * If a setting option with the name appears twice in opts, the last value is given.
      *
+     * {@internal Not using iterable pipeline to optimize performance.}}
+     *
      * @param OptionInterface[] $opts
-     * @param string            $type  Value must be of this (internal) type or class name.
+     * @param string|null       $type  Value must be of this (internal) type or class name.
      * @return mixed
      */
     public function findIn(array $opts, ?string $type = null)
     {
-        $value = Pipeline::with($opts)
-            ->filter(fn($opt) => $opt instanceof self && $opt->getName() === $this->name)
-            ->map(fn(self $opt) => $opt->getValue())
-            ->filter(fn($value) => $type === null || i\type_is($value, $type))
-            ->last();
+        foreach (array_reverse($opts) as $opt) {
+            $found = $opt instanceof self &&
+                $opt->getName() === $this->name &&
+                ($type === null || i\type_is($opt->getValue(), $type));
 
-        return $value ?? $this->value;
+            if ($found) {
+                return $opt->getValue();
+            }
+        }
+
+        return $this->value;
     }
 }

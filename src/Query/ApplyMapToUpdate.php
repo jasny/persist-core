@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Query;
 
-use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Update\UpdateInstruction;
 
 /**
@@ -33,16 +32,22 @@ class ApplyMapToUpdate implements ComposerInterface
     public function prepare(iterable $update, array &$opts = []): iterable
     {
         /** @var MapInterface $map */
-        $map = opts\setting('map', new NoMap())->findIn($opts, MapInterface::class);
+        $map = opt\setting('map', new NoMap())->findIn($opts, MapInterface::class);
 
         // Quick return if there is no map
         if ($map instanceof NoMap) {
             return $update;
         }
 
-        return Pipeline::with($update)
-            ->map(fn(UpdateInstruction $instruction) => $this->map($map, $instruction))
-            ->cleanup();
+        foreach ($update as $key => $instruction) {
+            $instruction = $this->map($map, $instruction);
+
+            if ($instruction === null) {
+                unset($update[$key]);
+            }
+        }
+
+        return $update;
     }
 
     /**

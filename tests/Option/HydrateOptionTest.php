@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Option;
 
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\HydrateOption;
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +18,7 @@ class HydrateOptionTest extends TestCase
      */
     public function testHydrate()
     {
-        $this->assertEquals(new HydrateOption('foo'), opts\hydrate('foo'));
+        $this->assertEquals(new HydrateOption('foo'), opt\hydrate('foo'));
     }
 
     public function fieldProvider()
@@ -36,13 +36,13 @@ class HydrateOptionTest extends TestCase
      */
     public function testConstruct(string $field)
     {
-        $this->assertEquals($field, opts\hydrate($field)->getField());
-        $this->assertEquals(substr($field, 0, 3), opts\hydrate($field)->getName());
+        $this->assertEquals($field, opt\hydrate($field)->getField());
+        $this->assertEquals(substr($field, 0, 3), opt\hydrate($field)->getName());
     }
 
     public function testHydrateAs()
     {
-        $opt = opts\hydrate('foo_number')->as('foo');
+        $opt = opt\hydrate('foo_number')->as('foo');
 
         $this->assertEquals('foo_number', $opt->getField());
         $this->assertEquals('foo', $opt->getName());

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Option;
 
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\SettingOption;
 use Jasny\DB\Option\OptionInterface;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +27,7 @@ class SettingOptionTest extends TestCase
      */
     public function testFunction()
     {
-        $option = opts\setting('foo.bar', 234);
+        $option = opt\setting('foo.bar', 234);
 
         $this->assertInstanceOf(SettingOption::class, $option);
         $this->assertEquals('foo.bar', $option->getName());
@@ -83,7 +83,7 @@ class SettingOptionTest extends TestCase
      */
     public function testExistingFunction(string $resolution)
     {
-        $option = opts\existing($resolution);
+        $option = opt\existing($resolution);
 
         $this->assertInstanceOf(SettingOption::class, $option);
         $this->assertEquals('existing', $option->getName());
@@ -98,6 +98,6 @@ class SettingOptionTest extends TestCase
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage("Unsupported conflict resolution option 'foo-bar'");
 
-        opts\existing('foo-bar');
+        opt\existing('foo-bar');
     }
 }

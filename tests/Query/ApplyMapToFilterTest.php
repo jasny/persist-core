@@ -7,7 +7,7 @@ namespace Jasny\DB\Tests\Query;
 use Improved as i;
 use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Map\FieldMap;
 use Jasny\DB\Query\ApplyMapToFilter;
 use Jasny\PHPUnit\ExpectWarningTrait;
@@ -44,7 +44,7 @@ class ApplyMapToFilterTest extends TestCase
         $filter = $this->createFilter();
 
         $map = new FieldMap(self::MAP);
-        $opts = [opts\setting('map', $map)];
+        $opts = [opt\setting('map', $map)];
 
         $applyMap = new ApplyMapToFilter();
         $iterator = $applyMap->prepare($filter, $opts);
@@ -65,8 +65,8 @@ class ApplyMapToFilterTest extends TestCase
     {
         return [
             'without' => [[]],
-            'NoMap'   => [[opts\setting('map', new NoMap())]],
-            'invalid' => [[opts\setting('map', 'hello')]],
+            'NoMap'   => [[opt\setting('map', new NoMap())]],
+            'invalid' => [[opt\setting('map', 'hello')]],
         ];
     }
 

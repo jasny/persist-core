@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Tests\Option;
 
-use Jasny\DB\Option\Functions as opts;
+use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\FlagOption;
 use Jasny\DB\Option\OptionInterface;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +25,7 @@ class FlagOptionTest extends TestCase
      */
     public function testFunction()
     {
-        $flag = opts\flag('foo');
+        $flag = opt\flag('foo');
         $this->assertEquals('foo', $flag->getName());
     }
 
@@ -48,7 +48,7 @@ class FlagOptionTest extends TestCase
      */
     public function testApplyResultFunction()
     {
-        $flag = opts\apply_result();
+        $flag = opt\apply_result();
 
         $this->assertInstanceOf(FlagOption::class, $flag);
         $this->assertEquals('apply_result', $flag->getName());
