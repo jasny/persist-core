@@ -7,7 +7,7 @@ namespace Jasny\DB\Schema;
 use function Jasny\str_before;
 
 /**
- * Relationship between two classes.
+ * Relationship between two tables / collections.
  */
 final class Relationship
 {
@@ -34,7 +34,7 @@ final class Relationship
      */
     public function __construct(int $type, string $collection, string $related, array $match)
     {
-        if ($type > 0b11) {
+        if ($type < 0 || $type > 0b11) {
             throw new \InvalidArgumentException("Invalid relationship type '$type'; use one of the constants");
         }
 

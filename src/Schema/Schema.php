@@ -8,6 +8,7 @@ use Improved\IteratorPipeline\Pipeline;
 use Jasny\DB\Exception\NoRelationshipException;
 use Jasny\DB\Map\FieldMap;
 use Jasny\DB\Map\MapInterface;
+use Jasny\DB\Map\NestedMap;
 use Jasny\DB\Map\SchemaMap;
 use Jasny\DB\Map\NoMap;
 use Jasny\Immutable;
@@ -24,8 +25,11 @@ class Schema implements SchemaInterface
     /** @var array<string,MapInterface> */
     protected array $maps = [];
 
-    /** @var array<string,array<Relationship>> */
+    /** @var array<string,array<int,Relationship>> */
     protected array $relationships = [];
+
+    /** @var array<string,array<string,Relationship>> */
+    protected array $embedded = [];
 
 
     /**
@@ -69,6 +73,7 @@ class Schema implements SchemaInterface
     {
         return $map instanceof MapInterface ? $map : new FieldMap($map);
     }
+
 
     /**
      * Get a copy with a new relationship between two collections / tables.
@@ -148,6 +153,45 @@ class Schema implements SchemaInterface
 
 
     /**
+     * Get a copy with a new embedded relationship for a collection.
+     *
+     * @param Embedded $embedded
+     * @return static
+     */
+    public function withEmbedded(Embedded $embedded): self
+    {
+        $clone = clone $this;
+        $clone->embedded[$embedded->getCollection()][$embedded->getField()] = $embedded;
+
+        return $clone;
+    }
+
+    /**
+     * Get a copy with an one to one embedded relationship for a collection.
+     *
+     * @param string $collection
+     * @param string $field
+     * @return static
+     */
+    final public function withOneEmbedded(string $collection, string $field): self
+    {
+        return $this->withEmbedded(new Embedded(Embedded::ONE_TO_ONE, $collection, $field));
+    }
+
+    /**
+     * Get a copy with an one to many embedded relationship for a collection.
+     *
+     * @param string $collection
+     * @param string $field
+     * @return static
+     */
+    final public function withManyEmbedded(string $collection, string $field): self
+    {
+        return $this->withEmbedded(new Embedded(Embedded::ONE_TO_MANY, $collection, $field));
+    }
+
+
+    /**
      * @inheritDoc
      */
     public function map(string $collection): SchemaMap
@@ -160,7 +204,21 @@ class Schema implements SchemaInterface
      */
     public function getMapOf(string $collection): MapInterface
     {
-        return $this->maps[$collection] ?? $this->defaultMap;
+        $map = $this->maps[$collection] ?? $this->defaultMap;
+
+        /** @var Embedded $embedded */
+        foreach (($this->embedded[$collection] ?? []) as $embedded) {
+            $field = $embedded->getField();
+
+            if (!isset($this->maps["$collection.$field"])) {
+                continue;
+            }
+
+            $map = ($map instanceof NestedMap ? $map : new NestedMap($map))
+                ->withMappedField($field, $this->getMapOf("$collection.$field"));
+        }
+
+        return $map;
     }
 
     /**
@@ -213,10 +271,22 @@ class Schema implements SchemaInterface
         if (count($relationships) !== 1) {
             throw new NoRelationshipException(
                 (count($relationships) === 0 ? "No relationship" : "Multiple relationships") .
-                " found for {$collection} ({$field})"
+                " found for {$collection}.{$field}"
             );
         }
 
         return $relationships[0];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEmbedded(string $collection, string $field): Embedded
+    {
+        if (!isset($clone->embedded[$collection][$field])) {
+            throw new NoRelationshipException("No embedded relationship found for {$collection}.{$field}");
+        }
+
+        return $clone->embedded[$collection][$field];
     }
 }

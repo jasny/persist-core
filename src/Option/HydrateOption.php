@@ -15,6 +15,7 @@ class HydrateOption implements OptionInterface
 
     protected string $field;
     protected string $name;
+    protected ?string $target = null;
 
     /** @var OptionInterface[] */
     protected array $opts = [];
@@ -39,6 +40,18 @@ class HydrateOption implements OptionInterface
     }
 
     /**
+     * Specify the field that the lookup applies to.
+     * Null for the main collection of the query.
+     *
+     * @param string|null $field
+     * @return static
+     */
+    public function for(?string $field): self
+    {
+        return $this->withProperty('target', $field);
+    }
+
+    /**
      * Specify which fields to include in the hydrated data.
      *
      * @param string ...$fields
@@ -60,6 +73,28 @@ class HydrateOption implements OptionInterface
         return $this->withPropertyItem('opts', new FieldsOption($fields, true /* negate */));
     }
 
+    /**
+     * Add custom option(s).
+     *
+     * @param OptionInterface ...$opts
+     * @return static
+     */
+    public function with(OptionInterface ...$opts): self
+    {
+        return $this->withProperty('opts', array_merge($this->opts, $opts));
+    }
+
+
+    /**
+     * Get the field this lookup applies to.
+     * Null for the main collection of the query.
+     *
+     * @return string|null
+     */
+    public function getTarget(): ?string
+    {
+        return $this->target;
+    }
 
     /**
      * Get the field name that should be hydrated.

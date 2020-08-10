@@ -7,19 +7,19 @@ namespace Jasny\DB\Tests\Query;
 use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Option\LookupOption;
 use Jasny\DB\Option\OptionInterface;
-use Jasny\DB\Query\NestedLookup;
+use Jasny\DB\Query\NestLookup;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Query\NestedLookup
+ * @covers \Jasny\DB\Query\NestLookup
  */
-class NestedLookupTest extends TestCase
+class NestLookupTest extends TestCase
 {
-    protected NestedLookup $composer;
+    protected NestLookup $composer;
 
     public function setUp(): void
     {
-        $this->composer = new NestedLookup();
+        $this->composer = new NestLookup();
     }
 
     public function test()
@@ -30,9 +30,9 @@ class NestedLookupTest extends TestCase
         $foo = opt\lookup('foo');
         $fooA = opt\lookup('foo_a')->for('foo');
         $fooB = opt\lookup('foo_b')->for('foo');
-        $bar = opt\lookup('bar');
-        $barA = opt\lookup('bar_a')->for('bar');
-        $barA1 = opt\lookup('bar_a_1')->for('bar_a');
+        $bar = opt\lookup('box')->as('bar');
+        $barA = opt\lookup('bar_a')->for('bar')->as('a');
+        $barA1 = opt\lookup('bar_a_1')->for('bar.a');
 
         $opts = [$mockOpt1, $foo, $fooA, $mockOpt2, $bar, $barA, $barA1, $fooB];
 

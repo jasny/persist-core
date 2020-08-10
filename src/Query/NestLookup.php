@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Query;
 
-use Jasny\DB\Option\Functions as opt;
 use Jasny\DB\Exception\LookupException;
+use Jasny\DB\Option\HydrateOption;
 use Jasny\DB\Option\LookupOption;
+use Jasny\DB\Option\OptionInterface;
 use function Jasny\array_without;
 
 /**
- * Inject lookups that specified a `for` collection into their parent lookup option.
+ * Inject hydrate and lookups that specified a `for` collection into their parent lookup option.
  */
-class NestedLookup implements ComposerInterface
+class NestLookup implements ComposerInterface
 {
     /**
      * @inheritDoc
@@ -27,17 +28,10 @@ class NestedLookup implements ComposerInterface
      */
     public function prepare(iterable $items, array &$opts = []): iterable
     {
-        $collection = null;
         $injected = [];
 
         foreach ($opts as $key => $opt) {
-            if (!$opt instanceof LookupOption || $opt->getCollection() === null) {
-                continue;
-            }
-
-            // Performance optimization.
-            $collection ??= opt\setting('collection', '')->findIn($opts);
-            if ($opt->getCollection() === $collection) {
+            if ((!$opt instanceof LookupOption && !$opt instanceof HydrateOption) || $opt->getTarget() === null) {
                 continue;
             }
 
@@ -55,22 +49,26 @@ class NestedLookup implements ComposerInterface
     /**
      * Inject deep lookups as opt in lookup of target collection.
      *
-     * @param LookupOption $lookup
-     * @param array        $opts
+     * @param LookupOption|HydrateOption $lookup
+     * @param OptionInterface[]          $opts
      */
-    protected function injectLookup(LookupOption $lookup, array &$opts): void
+    protected function injectLookup($lookup, array &$opts): void
     {
-        $collection = $lookup->getCollection();
+        $target = $lookup->getTarget();
 
         foreach ($opts as &$opt) {
-            if ($opt instanceof LookupOption && $opt->getRelated() === $collection && $opt !== $lookup) {
+            if ((!$opt instanceof LookupOption && !$opt instanceof HydrateOption) || $opt === $lookup) {
+                continue;
+            }
+
+            if (($opt->getTarget() !== null ? $opt->getTarget() . '.' : '') . $opt->getName() === $target) {
                 $opt = $opt->with($lookup);
                 return;
             }
         }
 
-        throw new LookupException("Unable to apply lookup '" . $lookup->getRelated() . "'"
-            . " for '{$collection}': no lookup for '{$collection}'");
+        $type = $lookup instanceof LookupOption ? 'lookup' : 'hydrate';
+        throw new LookupException("Unable to apply {$type} '" . $lookup->getName() . "' for '{$target}'");
     }
 
     /**

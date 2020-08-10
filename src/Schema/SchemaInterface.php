@@ -45,7 +45,14 @@ interface SchemaInterface
     /**
      * Get the relationship for a field of a collection.
      *
-     * @throws NoRelationshipException  If no or more than one relationship matches
+     * @throws NoRelationshipException  If no or more than one relationship matches.
      */
     public function getRelationshipForField(string $collection, string $field): Relationship;
+
+    /**
+     * Get the embedded relationship for a field of a collection.
+     *
+     * @throws NoRelationshipException  If field doesn't hold embedded entities.
+     */
+    public function getEmbedded(string $collection, string $field): Embedded;
 }

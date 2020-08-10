@@ -121,7 +121,7 @@ class SchemaTest extends TestCase
     /**
      * @dataProvider withXToYProvider
      */
-    public function testWithXtoY(string $method, int $typeFoo, int $typeBar)
+    public function testWithXToY(string $method, int $typeFoo, int $typeBar)
     {
         /** @var Schema $schema */
         $schema = $this->schema->{$method}('foo', 'bar', ['x' => 'y']);
@@ -140,13 +140,43 @@ class SchemaTest extends TestCase
         );
     }
 
+    public function withEmbeddedProvider()
+    {
+        return [
+            'withOneEmbedded'   => ['withOneEmbedded', Relationship::ONE_EMBEDDED],
+            'withManyEmbedded'  => ['withManyEmbedded', Relationship::MANY_EMBEDDED],
+        ];
+    }
+
+    /**
+     * @dataProvider withEmbeddedProvider
+     */
+    public function testWithEmbedded(string $method, int $type)
+    {
+        /** @var Schema $schema */
+        $schema = $this->schema->{$method}('foo', 'bar');
+
+        $this->assertInstanceOf(Schema::class, $schema);
+        $this->assertNotSame($this->schema, $schema);
+
+        $this->assertEquals(
+            [new Relationship($type, 'foo', 'foo.bar', ['bar' => ''])],
+            $schema->getRelationships('foo')
+        );
+
+        $this->assertEquals([], $schema->getRelationships('bar'));
+        $this->assertEquals([], $schema->getRelationships('foo.bar'));
+    }
+
     protected function createRelationshipSchema()
     {
         return $this->schema
-            ->withRelationship(new Relationship(Relationship::ONE_TO_MANY, 'foo', 'bar', ['id' => 'fooId']))
-            ->withRelationship(new Relationship(Relationship::ONE_TO_MANY, 'foo', 'qux', ['id' => 'inFoo']))
-            ->withRelationship(new Relationship(Relationship::ONE_TO_MANY, 'foo', 'qux', ['id' => 'outFoo']))
-            ->withRelationship(new Relationship(Relationship::MANY_TO_MANY, 'bar', 'qux', ['x' => 'y']));
+            ->withOneToMany('foo', 'bar', ['id' => 'fooId'])
+            ->withOneToMany('foo', 'qux', ['id' => 'inFoo'])
+            ->withOneToMany('foo', 'qux', ['id' => 'outFoo'])
+            ->withManyToMany('bar', 'qux', ['x' => 'y'])
+            ->withManyEmbedded('foo', 'wos')
+            ->withManyToOne('foo.wos', 'qux', ['quxId' => 'id']);
     }
 
     public function relationshipProvider()
@@ -167,6 +197,10 @@ class SchemaTest extends TestCase
             'foo - qux (id = outFoo)' => [
                 ['foo', 'qux', ['id' => 'outFoo']],
                 new Relationship(Relationship::ONE_TO_MANY, 'foo', 'qux', ['id' => 'outFoo']),
+            ],
+            'foo.wos - qux' => [
+                ['foo.wos', 'qux'],
+                new Relationship(Relationship::MANY_TO_ONE, 'foo.wos', 'qux', ['quxId' => 'id']),
             ],
         ];
     }
@@ -213,6 +247,31 @@ class SchemaTest extends TestCase
         $schema->getRelationship(...$args);
     }
 
+    public function relationshipForFieldProvider()
+    {
+        return [
+            'bar (fooId)' => [
+                ['bar', 'fooId'],
+                new Relationship(Relationship::ONE_TO_MANY, 'bar', 'foo', ['fooId' => 'id']),
+            ],
+            'qux (inFoo)' => [
+                ['qux', 'inFoo'],
+                new Relationship(Relationship::ONE_TO_MANY, 'qux', 'foo', ['inFoo' => 'id']),
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider relationshipForFieldProvider
+     */
+    public function testRelationshipForField(array $args, Relationship $expected)
+    {
+        $schema = $this->createRelationshipSchema();
+
+        $relationship = $schema->getRelationshipForField(...$args);
+        $this->assertEquals($expected, $relationship);
+    }
+
     public function relationshipForFieldExceptionProvider()
     {
         return [
@@ -223,6 +282,10 @@ class SchemaTest extends TestCase
             'foo (id)' => [
                 ['foo', 'id'],
                 'Multiple relationships found for foo (id)',
+            ],
+            'foo (wos)' => [
+                ['foo', 'wos'],
+                'No relationship found for foo (wos)',
             ],
         ];
     }
@@ -239,5 +302,4 @@ class SchemaTest extends TestCase
 
         $schema->getRelationshipForField(...$args);
     }
-
 }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Jasny\DB\Option;
 
+use Improved as i;
 use Jasny\DB\Filter\FilterItem;
+use Jasny\DB\Schema\Relationship;
 use Jasny\Immutable;
 
 /**
@@ -15,7 +17,7 @@ class LookupOption implements OptionInterface
     use Immutable\With;
 
     protected string $name;
-    protected ?string $collection = null;
+    protected ?string $target = null;
     protected string $related;
 
     protected bool $isCount = false;
@@ -50,14 +52,15 @@ class LookupOption implements OptionInterface
     }
 
     /**
-     * Specify the collection the lookup applies to.
+     * Specify the field that the lookup applies to.
+     * Null for the main collection of the query.
      *
-     * @param string $collection
+     * @param string|null $field
      * @return static
      */
-    public function for(string $collection): self
+    public function for(?string $field): self
     {
-        return $this->withProperty('collection', $collection);
+        return $this->withProperty('target', $field);
     }
 
     /**
@@ -139,14 +142,14 @@ class LookupOption implements OptionInterface
 
 
     /**
-     * Get the collection this lookup applies to.
+     * Get the field this lookup applies to.
      * Null for the main collection of the query.
      *
      * @return string|null
      */
-    public function getCollection(): ?string
+    public function getTarget(): ?string
     {
-        return $this->collection;
+        return $this->target;
     }
 
     /**
