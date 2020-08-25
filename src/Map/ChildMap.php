@@ -13,7 +13,7 @@ use function Jasny\str_ends_with;
 /**
  * Field map for a nested item.
  */
-class ChildMap implements MapInterface
+final class ChildMap implements MapInterface
 {
     protected string $field;
     protected bool $isForMany;

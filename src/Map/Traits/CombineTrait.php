@@ -12,7 +12,7 @@ use Jasny\DB\Map\MapInterface;
 trait CombineTrait
 {
     /** @var MapInterface[] $maps */
-    protected array $maps;
+    protected array $maps = [];
 
     /**
      * Get wrapped maps.
