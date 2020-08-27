@@ -42,15 +42,4 @@ class FlagOptionTest extends TestCase
         $this->assertTrue((new FlagOption('foo.bar'))->isIn($opts));
         $this->assertFalse((new FlagOption('zoo'))->isIn($opts));
     }
-
-    /**
-     * @covers \Jasny\DB\Option\Functions\apply_result
-     */
-    public function testApplyResultFunction()
-    {
-        $flag = opt\apply_result();
-
-        $this->assertInstanceOf(FlagOption::class, $flag);
-        $this->assertEquals('apply_result', $flag->getName());
-    }
 }

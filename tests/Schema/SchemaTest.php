@@ -8,6 +8,7 @@ use Jasny\DB\Exception\NoRelationshipException;
 use Jasny\DB\Map\MapInterface;
 use Jasny\DB\Map\NoMap;
 use Jasny\DB\Map\SchemaMap;
+use Jasny\DB\Schema\Embedded;
 use Jasny\DB\Schema\Relationship;
 use Jasny\DB\Schema\Schema;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -143,8 +144,8 @@ class SchemaTest extends TestCase
     public function withEmbeddedProvider()
     {
         return [
-            'withOneEmbedded'   => ['withOneEmbedded', Relationship::ONE_EMBEDDED],
-            'withManyEmbedded'  => ['withManyEmbedded', Relationship::MANY_EMBEDDED],
+            'withOneEmbedded'  => ['withOneEmbedded', Embedded::ONE_TO_ONE],
+            'withManyEmbedded' => ['withManyEmbedded', Embedded::ONE_TO_MANY],
         ];
     }
 
@@ -159,13 +160,10 @@ class SchemaTest extends TestCase
         $this->assertInstanceOf(Schema::class, $schema);
         $this->assertNotSame($this->schema, $schema);
 
-        $this->assertEquals(
-            [new Relationship($type, 'foo', 'foo.bar', ['bar' => ''])],
-            $schema->getRelationships('foo')
-        );
+        $embedded = new Embedded($type, 'foo', 'bar');
 
-        $this->assertEquals([], $schema->getRelationships('bar'));
-        $this->assertEquals([], $schema->getRelationships('foo.bar'));
+        $this->assertEquals([$embedded], $schema->getEmbedded('foo'));
+        $this->assertEquals($embedded, $schema->getEmbeddedForField('foo', 'bar'));
     }
 
     protected function createRelationshipSchema()
@@ -250,13 +248,13 @@ class SchemaTest extends TestCase
     public function relationshipForFieldProvider()
     {
         return [
-            'bar (fooId)' => [
+            'bar.fooId' => [
                 ['bar', 'fooId'],
-                new Relationship(Relationship::ONE_TO_MANY, 'bar', 'foo', ['fooId' => 'id']),
+                new Relationship(Relationship::MANY_TO_ONE, 'bar', 'foo', ['fooId' => 'id']),
             ],
-            'qux (inFoo)' => [
+            'qux.inFoo' => [
                 ['qux', 'inFoo'],
-                new Relationship(Relationship::ONE_TO_MANY, 'qux', 'foo', ['inFoo' => 'id']),
+                new Relationship(Relationship::MANY_TO_ONE, 'qux', 'foo', ['inFoo' => 'id']),
             ],
         ];
     }
@@ -275,17 +273,17 @@ class SchemaTest extends TestCase
     public function relationshipForFieldExceptionProvider()
     {
         return [
-            'foo (x)' => [
+            'foo.x' => [
                 ['foo', 'x'],
-                'No relationship found for foo (x)',
+                'No relationship found for foo.x',
             ],
-            'foo (id)' => [
+            'foo.id' => [
                 ['foo', 'id'],
-                'Multiple relationships found for foo (id)',
+                'Multiple relationships found for foo.id',
             ],
-            'foo (wos)' => [
+            'foo.wos' => [
                 ['foo', 'wos'],
-                'No relationship found for foo (wos)',
+                'No relationship found for foo.wos',
             ],
         ];
     }

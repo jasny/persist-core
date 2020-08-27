@@ -2,66 +2,80 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Writer;
+namespace Jasny\DB\Tests\Gateway;
 
 use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\Writer\NoWrite;
+use Jasny\DB\Gateway\Unsupported;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Jasny\DB\Writer\NoWrite
+ * @covers \Jasny\DB\Gateway\Unsupported
  */
-class NoWriteTest extends TestCase
+class UnsupportedTest extends TestCase
 {
-    protected NoWrite $writer;
+    protected Unsupported $gateway;
 
     public function setUp(): void
     {
-        $this->writer = new NoWrite();
+        $this->gateway = new Unsupported();
     }
 
     public function testGetStorage()
     {
-        $this->assertNull($this->writer->getStorage());
+        $this->assertNull($this->gateway->getStorage());
     }
 
     public function testWithLogging()
     {
         /** @var LoggerInterface|MockObject $builder */
         $logger = $this->createMock(LoggerInterface::class);
-        $ret = $this->writer->withLogging($logger);
+        $ret = $this->gateway->withLogging($logger);
 
-        $this->assertSame($this->writer, $ret);
+        $this->assertSame($this->gateway, $ret);
     }
 
+
+    public function testFetch()
+    {
+        $this->expectException(UnsupportedFeatureException::class);
+
+        $this->gateway->fetch();
+    }
+
+    public function testCount()
+    {
+        $this->expectException(UnsupportedFeatureException::class);
+
+        $this->gateway->count();
+    }
 
     public function testSave()
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $this->writer->save([]);
+        $this->gateway->save([]);
     }
 
     public function testSaveAll()
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $this->writer->saveAll([[], []]);
+        $this->gateway->saveAll([[], []]);
     }
 
     public function testUpdate()
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $this->writer->update([], []);
+        $this->gateway->update([], []);
     }
 
     public function testDelete()
     {
         $this->expectException(UnsupportedFeatureException::class);
 
-        $this->writer->delete([]);
+        $this->gateway->delete([]);
     }
 }

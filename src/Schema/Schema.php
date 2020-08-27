@@ -278,15 +278,24 @@ class Schema implements SchemaInterface
         return $relationships[0];
     }
 
+
     /**
      * @inheritDoc
      */
-    public function getEmbedded(string $collection, string $field): Embedded
+    public function getEmbedded(string $collection): array
     {
-        if (!isset($clone->embedded[$collection][$field])) {
+        return array_values($this->embedded[$collection] ?? []);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEmbeddedForField(string $collection, string $field): Embedded
+    {
+        if (!isset($this->embedded[$collection][$field])) {
             throw new NoRelationshipException("No embedded relationship found for {$collection}.{$field}");
         }
 
-        return $clone->embedded[$collection][$field];
+        return $this->embedded[$collection][$field];
     }
 }

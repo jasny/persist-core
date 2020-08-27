@@ -49,10 +49,19 @@ interface SchemaInterface
      */
     public function getRelationshipForField(string $collection, string $field): Relationship;
 
+
+    /**
+     * Get the embedded relationship for a field of a collection.
+     *
+     * @param string $collection
+     * @return Embedded[]
+     */
+    public function getEmbedded(string $collection): array;
+
     /**
      * Get the embedded relationship for a field of a collection.
      *
      * @throws NoRelationshipException  If field doesn't hold embedded entities.
      */
-    public function getEmbedded(string $collection, string $field): Embedded;
+    public function getEmbeddedForField(string $collection, string $field): Embedded;
 }

@@ -94,15 +94,6 @@ function existing(string $resolution): SettingOption
 }
 
 /**
- * Update the items with generated ids for save action.
- * Result contains the updated items instead of only generated ids.
- */
-function apply_result(): FlagOption
-{
-    return new FlagOption('apply_result');
-}
-
-/**
  * Generic flag for a query.
  */
 function flag(string $name): FlagOption

@@ -39,15 +39,25 @@ class ApplyMapToUpdate implements ComposerInterface
             return $update;
         }
 
+        return $this->applyMap($map, $update);
+    }
+
+    /**
+     * Apply mapping to update instructions.
+     *
+     * @param MapInterface                $map
+     * @param iterable<UpdateInstruction> $update
+     * @return \Generator&iterable<UpdateInstruction>
+     */
+    protected function applyMap(MapInterface $map, iterable $update): \Generator
+    {
         foreach ($update as $key => $instruction) {
             $instruction = $this->map($map, $instruction);
 
-            if ($instruction === null) {
-                unset($update[$key]);
+            if ($instruction !== null) {
+                yield $key => $instruction;
             }
         }
-
-        return $update;
     }
 
     /**

@@ -46,9 +46,9 @@ class LookupOptionTest extends TestCase
         $this->assertEquals('foos', $opt->getName());
     }
 
-    public function testWhere()
+    public function testHaving()
     {
-        $opt = opt\lookup('foo')->where(['abc' => 10]);
+        $opt = opt\lookup('foo')->having(['abc' => 10]);
 
         $this->assertEquals(['abc' => 10], $opt->getFilter());
     }

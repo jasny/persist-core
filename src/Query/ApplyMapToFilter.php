@@ -44,15 +44,25 @@ class ApplyMapToFilter implements ComposerInterface
             return $filter;
         }
 
-        foreach ($filter as $key => &$item) {
+        return $this->applyMap($map, $filter);
+    }
+
+    /**
+     * Apply mapping to filter.
+     *
+     * @param MapInterface         $map
+     * @param iterable<FilterItem> $filter
+     * @return \Generator&iterable<FilterItem>
+     */
+    protected function applyMap(MapInterface $map, iterable $filter): \Generator
+    {
+        foreach ($filter as $key => $item) {
             $item = $this->map($map, $item);
 
-            if ($item === null) {
-                unset($filter[$key]);
+            if ($item !== null) {
+                yield $key => $item;
             }
         }
-
-        return $filter;
     }
 
     /**

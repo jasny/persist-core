@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Writer;
+namespace Jasny\DB\Gateway;
 
+use Jasny\DB\Filter\FilterItem;
 use Jasny\DB\Option\OptionInterface;
-use Jasny\DB\Update\UpdateInstruction;
 use Jasny\DB\Result\Result;
+use Jasny\DB\Update\UpdateInstruction;
 use Psr\Log\LoggerInterface;
 
 /**
- * Service to add, update, and delete data from a persistent data storage (DB table, collection, etc).
+ * Gateway to a database table or collection.
  *
  * @template TItem
  */
-interface WriteInterface
+interface GatewayInterface
 {
     /**
      * Get underlying storage object.
@@ -33,6 +34,26 @@ interface WriteInterface
 
 
     /**
+     * Query and fetch data.
+     *
+     * @param array<string,mixed>|FilterItem[] $filter
+     * @param OptionInterface                  ...$opts
+     * @return Result
+     *
+     * @phpstan-return Result<TItem>
+     */
+    public function fetch(array $filter = [], OptionInterface ...$opts): Result;
+
+    /**
+     * Query and count result.
+     *
+     * @param array<string,mixed>|FilterItem[] $filter
+     * @param OptionInterface                  ...$opts
+     * @return int
+     */
+    public function count(array $filter = [], OptionInterface ...$opts): int;
+
+    /**
      * Save the one item.
      * Result contains generated properties for the item.
      *
@@ -42,7 +63,7 @@ interface WriteInterface
      *
      * @phpstan-param TItem             $item
      * @phpstan-param OptionInterface   ...$opts
-     * @phpstan-return Result<TItem|\stdClass>
+     * @phpstan-return Result<TItem>
      */
     public function save($item, OptionInterface ...$opts): Result;
 
@@ -56,30 +77,30 @@ interface WriteInterface
      *
      * @phpstan-param iterable<TItem>   $items
      * @phpstan-param OptionInterface   ...$opts
-     * @phpstan-return Result<TItem|\stdClass>
+     * @phpstan-return Result<TItem>
      */
     public function saveAll(iterable $items, OptionInterface ...$opts): Result;
 
     /**
      * Query and update records.
      *
-     * @param array<string,mixed>                   $filter
+     * @param array<string,mixed>|FilterItem[]      $filter
      * @param UpdateInstruction|UpdateInstruction[] $instructions
      * @param OptionInterface                       ...$opts
      * @return Result
      *
-     * @phpstan-return Result<TItem|\stdClass>
+     * @phpstan-return Result<TItem>
      */
     public function update(array $filter, $instructions, OptionInterface ...$opts): Result;
 
     /**
      * Query and delete records.
      *
-     * @param array<string, mixed> $filter
-     * @param OptionInterface      ...$opts
+     * @param array<string,mixed>|FilterItem[] $filter
+     * @param OptionInterface                  ...$opts
      * @return Result
      *
-     * @phpstan-return Result<TItem|\stdClass>
+     * @phpstan-return Result<TItem>
      */
     public function delete(array $filter, OptionInterface ...$opts): Result;
 }
