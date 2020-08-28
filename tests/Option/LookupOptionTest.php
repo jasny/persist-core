@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Option;
+namespace Jasny\Persist\Tests\Option;
 
-use Jasny\DB\Option\Functions as opt;
-use Jasny\DB\Option\LookupOption;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Option\LookupOption;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Option\LookupOption
+ * @covers \Jasny\Persist\Option\LookupOption
  */
 class LookupOptionTest extends TestCase
 {
     /**
-     * @covers \Jasny\DB\Option\Functions\lookup
+     * @covers \Jasny\Persist\Option\Functions\lookup
      */
     public function testLookup()
     {

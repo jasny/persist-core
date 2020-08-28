@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Query;
+namespace Jasny\Persist\Query;
 
-use Jasny\DB\Map\MapInterface;
-use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opt;
-use Jasny\DB\Option\SettingOption;
+use Jasny\Persist\Map\MapInterface;
+use Jasny\Persist\Map\NoMap;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Option\SettingOption;
 
 /**
  * Set/change map as query composer step.

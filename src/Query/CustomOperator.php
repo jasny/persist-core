@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Query;
+namespace Jasny\Persist\Query;
 
-use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Update\UpdateInstruction;
+use Jasny\Persist\Filter\FilterItem;
+use Jasny\Persist\Update\UpdateInstruction;
 
 /**
  * Handle custom filter operator when composing a query.

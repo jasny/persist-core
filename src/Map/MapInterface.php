@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Map;
+namespace Jasny\Persist\Map;
 
-use Jasny\DB\Option\OptionInterface;
+use Jasny\Persist\Option\OptionInterface;
 
 /**
  * Map DB fields to App fields and visa versa.

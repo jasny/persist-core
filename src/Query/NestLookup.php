@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Query;
+namespace Jasny\Persist\Query;
 
-use Jasny\DB\Exception\LookupException;
-use Jasny\DB\Option\HydrateOption;
-use Jasny\DB\Option\LookupOption;
-use Jasny\DB\Option\OptionInterface;
+use Jasny\Persist\Exception\LookupException;
+use Jasny\Persist\Option\HydrateOption;
+use Jasny\Persist\Option\LookupOption;
+use Jasny\Persist\Option\OptionInterface;
 use function Jasny\array_without;
 
 /**

@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Query;
+namespace Jasny\Persist\Tests\Query;
 
 use Improved as i;
-use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opt;
-use Jasny\DB\Map\FieldMap;
-use Jasny\DB\Query\ApplyMapToFilter;
+use Jasny\Persist\Filter\FilterItem;
+use Jasny\Persist\Map\NoMap;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Map\FieldMap;
+use Jasny\Persist\Query\ApplyMapToFilter;
 use Jasny\PHPUnit\ExpectWarningTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Query\ApplyMapToFilter
+ * @covers \Jasny\Persist\Query\ApplyMapToFilter
  */
 class ApplyMapToFilterTest extends TestCase
 {

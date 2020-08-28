@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Map;
+namespace Jasny\Persist\Tests\Map;
 
-use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Map\NoMap;
-use Jasny\DB\Update\UpdateInstruction;
+use Jasny\Persist\Filter\FilterItem;
+use Jasny\Persist\Map\NoMap;
+use Jasny\Persist\Update\UpdateInstruction;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Map\NoMap
+ * @covers \Jasny\Persist\Map\NoMap
  */
 class NoMapTest extends TestCase
 {

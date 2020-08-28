@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Gateway;
+namespace Jasny\Persist\Tests\Gateway;
 
-use Jasny\DB\Exception\UnsupportedFeatureException;
-use Jasny\DB\Gateway\Unsupported;
+use Jasny\Persist\Exception\UnsupportedFeatureException;
+use Jasny\Persist\Gateway\Unsupported;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Jasny\DB\Gateway\Unsupported
+ * @covers \Jasny\Persist\Gateway\Unsupported
  */
 class UnsupportedTest extends TestCase
 {

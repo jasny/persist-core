@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Schema;
+namespace Jasny\Persist\Tests\Schema;
 
-use Jasny\DB\Exception\NoRelationshipException;
-use Jasny\DB\Map\MapInterface;
-use Jasny\DB\Map\NoMap;
-use Jasny\DB\Map\SchemaMap;
-use Jasny\DB\Schema\Embedded;
-use Jasny\DB\Schema\Relationship;
-use Jasny\DB\Schema\Schema;
+use Jasny\Persist\Exception\NoRelationshipException;
+use Jasny\Persist\Map\MapInterface;
+use Jasny\Persist\Map\NoMap;
+use Jasny\Persist\Map\SchemaMap;
+use Jasny\Persist\Schema\Embedded;
+use Jasny\Persist\Schema\Relationship;
+use Jasny\Persist\Schema\Schema;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Schema\Schema
+ * @covers \Jasny\Persist\Schema\Schema
  */
 class SchemaTest extends TestCase
 {

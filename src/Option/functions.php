@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Option\Functions;
+namespace Jasny\Persist\Option\Functions;
 
-use Jasny\DB\Option\FieldsOption;
-use Jasny\DB\Option\FlagOption;
-use Jasny\DB\Option\HydrateOption;
-use Jasny\DB\Option\LimitOption;
-use Jasny\DB\Option\LookupOption;
-use Jasny\DB\Option\SettingOption;
-use Jasny\DB\Option\SortOption;
+use Jasny\Persist\Option\FieldsOption;
+use Jasny\Persist\Option\FlagOption;
+use Jasny\Persist\Option\HydrateOption;
+use Jasny\Persist\Option\LimitOption;
+use Jasny\Persist\Option\LookupOption;
+use Jasny\Persist\Option\SettingOption;
+use Jasny\Persist\Option\SortOption;
 
 /**
  * Only return the specified fields.

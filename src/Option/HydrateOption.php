@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Option;
+namespace Jasny\Persist\Option;
 
 use Jasny\Immutable;
 

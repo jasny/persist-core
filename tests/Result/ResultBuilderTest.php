@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Result;
+namespace Jasny\Persist\Tests\Result;
 
-use Jasny\DB\Map\MapInterface;
-use Jasny\DB\Option\SettingOption;
-use Jasny\DB\Result\Result;
-use Jasny\DB\Result\ResultBuilder;
+use Jasny\Persist\Map\MapInterface;
+use Jasny\Persist\Option\SettingOption;
+use Jasny\Persist\Result\Result;
+use Jasny\Persist\Result\ResultBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Result\ResultBuilder
+ * @covers \Jasny\Persist\Result\ResultBuilder
  */
 class ResultBuilderTest extends TestCase
 {

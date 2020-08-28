@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Query;
+namespace Jasny\Persist\Tests\Query;
 
 use Improved as i;
-use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Query\FilterParser;
+use Jasny\Persist\Filter\FilterItem;
+use Jasny\Persist\Query\FilterParser;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Query\FilterParser
+ * @covers \Jasny\Persist\Query\FilterParser
  */
 class FilterParserTest extends TestCase
 {

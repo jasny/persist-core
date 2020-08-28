@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Query;
+namespace Jasny\Persist\Query;
 
-use Jasny\DB\Filter\FilterItem;
-use Jasny\DB\Map\MapInterface;
-use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opt;
-use Jasny\DB\Option\OptionInterface;
+use Jasny\Persist\Filter\FilterItem;
+use Jasny\Persist\Map\MapInterface;
+use Jasny\Persist\Map\NoMap;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Option\OptionInterface;
 
 /**
  * Apply the field map to the filter items.

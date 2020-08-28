@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Schema;
+namespace Jasny\Persist\Schema;
 
 use function Jasny\str_before;
 

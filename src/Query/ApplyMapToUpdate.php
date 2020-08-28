@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Query;
+namespace Jasny\Persist\Query;
 
-use Jasny\DB\Map\MapInterface;
-use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opt;
-use Jasny\DB\Update\UpdateInstruction;
+use Jasny\Persist\Map\MapInterface;
+use Jasny\Persist\Map\NoMap;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Update\UpdateInstruction;
 
 /**
  * Apply the field map to the update instructions.

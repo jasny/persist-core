@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Map;
+namespace Jasny\Persist\Tests\Map;
 
 use Improved\IteratorPipeline\Pipeline;
-use Jasny\DB\Map\ChildMap;
-use Jasny\DB\Map\FieldMap;
-use Jasny\DB\Map\MapInterface;
+use Jasny\Persist\Map\ChildMap;
+use Jasny\Persist\Map\FieldMap;
+use Jasny\Persist\Map\MapInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Map\ChildMap
+ * @covers \Jasny\Persist\Map\ChildMap
  */
 class ChildMapTest extends TestCase
 {

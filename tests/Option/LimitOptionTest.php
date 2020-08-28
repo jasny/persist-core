@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Option;
+namespace Jasny\Persist\Tests\Option;
 
-use Jasny\DB\Option\Functions as opt;
-use Jasny\DB\Option\LimitOption;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Option\LimitOption;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Option\LimitOption
+ * @covers \Jasny\Persist\Option\LimitOption
  */
 class LimitOptionTest extends TestCase
 {
@@ -30,7 +30,7 @@ class LimitOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\Functions\limit
+     * @covers \Jasny\Persist\Option\Functions\limit
      */
     public function testLimitFunction()
     {
@@ -42,7 +42,7 @@ class LimitOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\Functions\limit
+     * @covers \Jasny\Persist\Option\Functions\limit
      */
     public function testLimitFunctionOffset()
     {
@@ -54,7 +54,7 @@ class LimitOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\Functions\page
+     * @covers \Jasny\Persist\Option\Functions\page
      */
     public function testPageFunction()
     {

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Query;
+namespace Jasny\Persist\Tests\Query;
 
 use Improved as i;
-use Jasny\DB\Map\NoMap;
-use Jasny\DB\Query\ApplyMapToUpdate;
-use Jasny\DB\Update\UpdateInstruction;
-use Jasny\DB\Option\Functions as opt;
-use Jasny\DB\Map\FieldMap;
+use Jasny\Persist\Map\NoMap;
+use Jasny\Persist\Query\ApplyMapToUpdate;
+use Jasny\Persist\Update\UpdateInstruction;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Map\FieldMap;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Query\ApplyMapToUpdate
+ * @covers \Jasny\Persist\Query\ApplyMapToUpdate
  */
 class ApplyMapToUpdateTest extends TestCase
 {

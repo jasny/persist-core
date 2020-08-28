@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Schema;
+namespace Jasny\Persist\Schema;
 
 use Improved\IteratorPipeline\Pipeline;
-use Jasny\DB\Exception\NoRelationshipException;
-use Jasny\DB\Map\FieldMap;
-use Jasny\DB\Map\MapInterface;
-use Jasny\DB\Map\NestedMap;
-use Jasny\DB\Map\SchemaMap;
-use Jasny\DB\Map\NoMap;
+use Jasny\Persist\Exception\NoRelationshipException;
+use Jasny\Persist\Map\FieldMap;
+use Jasny\Persist\Map\MapInterface;
+use Jasny\Persist\Map\NestedMap;
+use Jasny\Persist\Map\SchemaMap;
+use Jasny\Persist\Map\NoMap;
 use Jasny\Immutable;
 
 /**

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Tests\Option;
+namespace Jasny\Persist\Tests\Option;
 
-use Jasny\DB\Option\Functions as opt;
-use Jasny\DB\Option\SortOption;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Option\SortOption;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\DB\Option\SortOption
+ * @covers \Jasny\Persist\Option\SortOption
  */
 class SortOptionTest extends TestCase
 {
@@ -21,7 +21,7 @@ class SortOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\DB\Option\Functions\sort
+     * @covers \Jasny\Persist\Option\Functions\sort
      */
     public function testSortFunction()
     {

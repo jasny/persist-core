@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Result;
+namespace Jasny\Persist\Result;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
@@ -80,5 +80,13 @@ class Result extends Pipeline
         });
 
         return $this;
+    }
+
+    /**
+     * Factory method for ResultBuilder
+     */
+    public static function build(): ResultBuilder
+    {
+        return new ResultBuilder(get_called_class());
     }
 }

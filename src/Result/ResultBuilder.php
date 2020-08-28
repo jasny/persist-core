@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Result;
+namespace Jasny\Persist\Result;
 
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\DB\Map\MapInterface;
-use Jasny\DB\Map\NoMap;
-use Jasny\DB\Option\Functions as opt;
-use Jasny\DB\Option\OptionInterface;
+use Jasny\Persist\Map\MapInterface;
+use Jasny\Persist\Map\NoMap;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Option\OptionInterface;
 
 /**
  * Pipeline builder for a query result.
@@ -17,6 +17,20 @@ use Jasny\DB\Option\OptionInterface;
  */
 class ResultBuilder extends PipelineBuilder
 {
+    protected string $class;
+
+    /**
+     * Class constructor.
+     */
+    public function __construct(string $class = Result::class)
+    {
+        if (!is_a($class, Result::class, true)) {
+            throw new \LogicException("$class doesn't extend " . Result::class);
+        }
+
+        $this->class = $class;
+    }
+
     /**
      * Apply query options, like mapping, to result.
      *
@@ -42,7 +56,10 @@ class ResultBuilder extends PipelineBuilder
      */
     public function with(iterable $iterable, array $meta = []): Result
     {
-        $result = new Result($iterable, $meta);
+        $class = $this->class;
+
+        /** @var Result $result */
+        $result = new $class($iterable, $meta);
 
         foreach ($this->steps as [$callback, $args]) {
             $result->then($callback, ...$args);

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Map\Traits;
+namespace Jasny\Persist\Map\Traits;
 
-use Jasny\DB\Map\MapInterface;
-use Jasny\DB\Option\OptionInterface;
+use Jasny\Persist\Map\MapInterface;
+use Jasny\Persist\Option\OptionInterface;
 
 /**
  * Trait for maps that simply proxies to another map.

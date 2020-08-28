@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Jasny\DB\Update\Functions;
+namespace Jasny\Persist\Update\Functions;
 
 use Improved as i;
-use Jasny\DB\Update\UpdateInstruction;
+use Jasny\Persist\Update\UpdateInstruction;
 
 /**
  * Set a field to a value.
