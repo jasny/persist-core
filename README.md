@@ -44,7 +44,7 @@ $list = $gateway
             'role (any)' => ['user', 'admin', 'super']
         ],
         opt\fields('name', 'role', 'age'),
-        opt\limit(10)
+        opt\limit(10),
     )
     ->map(function(array $user): string {
         return sprintf("%s (%s) - %s", $user['name'], $user['age'], $user['role']);
@@ -76,13 +76,16 @@ $gateway = new Gateway($collection);
 
 $gateway->update(
     ['type' => 'admin'],
-    [update\inc('reward', 100), update\set('rewarded', new DateTime())
-]);
+    [
+        update\inc('reward', 100),
+        update\set('rewarded', new DateTime()),
+    ],
+);
 ```
 
 ### Iterators and generators
 
-Jasny DB uses PHP iterators and generators. It's important to understand what they are and how they work. If you're
+Persist uses PHP iterators and generators. It's important to understand what they are and how they work. If you're
 not familiar with this concept, first read
 "[What are iterators?](https://github.com/improved-php-library/iterable#what-are-iterators)".
 
@@ -153,7 +156,7 @@ This library defines the concept of options, and a number of common options.
 
 For sorting, add a `~` in front of the field to sort in descending order.
 
-Jasny DB implementations may define additional options.
+Persist implementations may define additional options.
 
 ## Gateway
 
