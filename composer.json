@@ -8,7 +8,7 @@
         {
             "name": "Arnold Daniels",
             "email": "arnold@jasny.net",
-            "homepage": "http://www.jasny.net"
+            "homepage": "https://jasny.net"
         }
     ],
     "support": {
@@ -39,7 +39,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Jasny\\Persist\\Tests\\": "tests/"
+            "Persist\\Tests\\": "tests/"
         }
     },
     "scripts": {
