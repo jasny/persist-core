@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Query;
+namespace Persist\Query;
 
-use Jasny\Persist\Filter\FilterItem;
-use Jasny\Persist\Option\OptionInterface;
+use Persist\Filter\FilterItem;
+use Persist\Option\OptionInterface;
 
 /**
  * Handle custom filter when composing a query.

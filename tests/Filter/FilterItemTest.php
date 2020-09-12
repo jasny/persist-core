@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Tests\Filter;
+namespace Persist\Tests\Filter;
 
-use Jasny\Persist\Filter\FilterItem;
+use Persist\Filter\FilterItem;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\Persist\Filter\FilterItem
+ * @covers \Persist\Filter\FilterItem
  */
 class FilterItemTest extends TestCase
 {

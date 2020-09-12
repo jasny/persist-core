@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Option;
+namespace Persist\Option;
 
 use Improved as i;
-use Jasny\Persist\Filter\FilterItem;
-use Jasny\Persist\Schema\Relationship;
+use Persist\Filter\FilterItem;
+use Persist\Schema\Relationship;
 use Jasny\Immutable;
 
 /**

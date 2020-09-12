@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Query;
+namespace Persist\Query;
 
-use Jasny\Persist\Option\OptionInterface;
+use Persist\Option\OptionInterface;
 
 /**
  * Custom preparation step when composing a query.

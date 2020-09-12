@@ -1,5 +1,5 @@
 {
-    "name": "jasny/persist",
+    "name": "persist/core",
     "type": "library",
     "description": "Service based DB abstraction layer",
     "keywords": ["database", "db"],
@@ -30,7 +30,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Jasny\\Persist\\": "src/"
+            "Persist\\": "src/"
         },
         "files": [
             "src/Option/functions.php",

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Tests\Query;
+namespace Persist\Tests\Query;
 
 use Improved as i;
-use Jasny\Persist\Map\NoMap;
-use Jasny\Persist\Query\ApplyMapToItems;
-use Jasny\Persist\Option\Functions as opt;
-use Jasny\Persist\Map\FieldMap;
+use Persist\Map\NoMap;
+use Persist\Query\ApplyMapToItems;
+use Persist\Option\Functions as opt;
+use Persist\Map\FieldMap;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\Persist\Query\ApplyMapToItems
+ * @covers \Persist\Query\ApplyMapToItems
  */
 class ApplyMapToItemsTest extends TestCase
 {

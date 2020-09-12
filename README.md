@@ -12,16 +12,16 @@ Persist - Database abstraction layer
 Installation
 ---
 
-This library should not be installed directly. The Jasny Persist library contains design pattern definitions and
+This library should not be installed directly. The Persist library contains design pattern definitions and
 implementations. It serves as an abstract base for concrete libraries implemented for specific PHP extensions.
 
 ### Implementations
 
-* _Jasny\Persist\SQL_ for MySQL, PostgreSQL, and SQLite using [PDO](https://http://php.net/pdo/) **TODO**
-* [Jasny\Persist\Mongo](http://github.com/jasny/persist-mongo) for [MongoDB](https://docs.mongodb.com/php-library/)
-* _Jasny\Persist\Dynamo_ for [DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.PHP.html) 
+* _Persist\SQL_ for MySQL, PostgreSQL, and SQLite using [PDO](https://http://php.net/pdo/) **TODO**
+* [Persist\Mongo](http://github.com/jasny/persist-mongo) for [MongoDB](https://docs.mongodb.com/php-library/)
+* _Persist\Dynamo_ for [DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.PHP.html) 
   **TODO**
-* _Jasny\Persist\Elasticsearch_ for
+* _Persist\Elasticsearch_ for
     [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/) **TODO**
 
 Usage
@@ -30,8 +30,8 @@ Usage
 ### Fetch a list
 
 ```php
-use Jasny\Persist\Option\Functions as opt;
-use Jasny\Persist\Mongo\Gateway\Gateway;
+use Persist\Option\Functions as opt;
+use Persist\Mongo\Gateway\Gateway;
 
 $collection = (new MongoDB\Client())->test->users;
 $gateway = new Gateway($collection);
@@ -54,7 +54,7 @@ $list = $gateway
 ### Read and write
 
 ```php
-use Jasny\Persist\Mongo\Gateway\Gateway;
+use Persist\Mongo\Gateway\Gateway;
 
 $collection = (new MongoDB\Client())->test->users;
 $gateway = new Gateway($collection);
@@ -68,8 +68,8 @@ $gateway->save($user);
 ### Update multiple
 
 ```php
-use Jasny\Persist\Update\Functions as update;
-use Jasny\Persist\Mongo\Gateway;
+use Persist\Update\Functions as update;
+use Persist\Mongo\Gateway;
 
 $collection = (new MongoDB\Client())->test->users;
 $gateway = new Gateway($collection);
@@ -207,8 +207,8 @@ The method returns a result with the items, possibly modified with generated val
 Query and update records.
 
 ```php
-use Jasny\Persist\Update as update;
-use Jasny\Persist\Mongo\Gateway as Gateway;
+use Persist\Update as update;
+use Persist\Mongo\Gateway as Gateway;
 
 $userCollection = (MongoDB\Client())->tests->users;
 $gateway = Gateway::basic()->forCollection($userCollection);
@@ -217,7 +217,7 @@ $gateway->update(['id' => 10], [update\set('last_login', new DateTime()), update
 ```
 
 The `$changes` argument must be one or more `UpdateOperation` objects. Rather than creating such an object by hand, the
-following helper functions exist in the `Jasny\Persist\Update\Functions` namespace:
+following helper functions exist in the `Persist\Update\Functions` namespace:
 
 * `set(iterable $values)`
 * `set(string $field, mixed $value)`
@@ -278,8 +278,8 @@ The read service has a `withResultBuilder()` which takes a `ResultBuilder` objec
 are performed for every result.
 
 ```php
-use Jasny\Persist\Result\Result;
-use Jasny\Persist\Mongo\Gateway\Gateway;
+use Persist\Result\Result;
+use Persist\Mongo\Gateway\Gateway;
 
 $resultBuilder = Result::build()
     ->filter(function($value) {
@@ -292,7 +292,7 @@ $gateway = (new Gateway())->withResultBuilder($resultBuilder);
 If needed, you can extend the `Result` class to add custom methods
 
 ```php
-use Jasny\Persist\Result\Result;
+use Persist\Result\Result;
 
 class MyResult extends Result
 {
@@ -312,7 +312,7 @@ class MyResult extends Result
 Use `build()` on your custom class to get a result builder that creates your custom result object.
 
 ```php
-use Jasny\Persist\Mongo\Gateway\Gateway;
+use Persist\Mongo\Gateway\Gateway;
 
 $gateway = (new Gateway())->withResultBuilder(MyResult::build());
 ```
@@ -325,7 +325,7 @@ database field names into field names used in the PHP app and visa versa.
 Construct the map using an associative array in the form `[from => to]`. The `flip()` method flips the `from` and `to`.
 
 ```php
-use Jasny\Persist\Map\DeepMap;
+use Persist\Map\DeepMap;
 
 $fieldMap = new DeepMap(['ref' => 'reference', 'foo_bar_setting' => 'foo_bar']);
 

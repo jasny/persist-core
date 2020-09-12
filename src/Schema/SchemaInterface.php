@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Schema;
+namespace Persist\Schema;
 
-use Jasny\Persist\Exception\NoRelationshipException;
-use Jasny\Persist\Map\MapInterface;
-use Jasny\Persist\Map\SchemaMap;
+use Persist\Exception\NoRelationshipException;
+use Persist\Map\MapInterface;
+use Persist\Map\SchemaMap;
 
 /**
  * Database schema with field maps and relationships.

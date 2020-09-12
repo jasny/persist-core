@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Map;
-
-use Jasny\Persist\Option\OptionInterface;
+namespace Persist\Map;
 
 /**
  * Null object for map.

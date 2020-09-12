@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Result;
+namespace Persist\Result;
 
 use Improved\IteratorPipeline\PipelineBuilder;
-use Jasny\Persist\Map\MapInterface;
-use Jasny\Persist\Map\NoMap;
-use Jasny\Persist\Option\Functions as opt;
-use Jasny\Persist\Option\OptionInterface;
+use Persist\Map\MapInterface;
+use Persist\Map\NoMap;
+use Persist\Option\Functions as opt;
+use Persist\Option\OptionInterface;
 
 /**
  * Pipeline builder for a query result.

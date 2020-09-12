@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Result;
+namespace Persist\Result;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;

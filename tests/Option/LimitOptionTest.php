@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Tests\Option;
+namespace Persist\Tests\Option;
 
-use Jasny\Persist\Option\Functions as opt;
-use Jasny\Persist\Option\LimitOption;
+use Persist\Option\Functions as opt;
+use Persist\Option\LimitOption;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\Persist\Option\LimitOption
+ * @covers \Persist\Option\LimitOption
  */
 class LimitOptionTest extends TestCase
 {
@@ -30,7 +30,7 @@ class LimitOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Option\Functions\limit
+     * @covers \Persist\Option\Functions\limit
      */
     public function testLimitFunction()
     {
@@ -42,7 +42,7 @@ class LimitOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Option\Functions\limit
+     * @covers \Persist\Option\Functions\limit
      */
     public function testLimitFunctionOffset()
     {
@@ -54,7 +54,7 @@ class LimitOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Option\Functions\page
+     * @covers \Persist\Option\Functions\page
      */
     public function testPageFunction()
     {

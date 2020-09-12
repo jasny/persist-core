@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Tests\Update;
+namespace Persist\Tests\Update;
 
-use Jasny\Persist\Update\Functions as update;
-use Jasny\Persist\Update\UpdateInstruction;
+use Persist\Update\Functions as update;
+use Persist\Update\UpdateInstruction;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\Persist\Update\UpdateInstruction
+ * @covers \Persist\Update\UpdateInstruction
  */
 class UpdateInstructionTest extends TestCase
 {
@@ -38,7 +38,7 @@ class UpdateInstructionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Update\Functions\set
+     * @covers \Persist\Update\Functions\set
      */
     public function testSet()
     {
@@ -49,7 +49,7 @@ class UpdateInstructionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Update\Functions\clear
+     * @covers \Persist\Update\Functions\clear
      */
     public function testClear()
     {
@@ -60,7 +60,7 @@ class UpdateInstructionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Update\Functions\set
+     * @covers \Persist\Update\Functions\set
      */
     public function testSetWithArray()
     {
@@ -71,7 +71,7 @@ class UpdateInstructionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Update\Functions\patch
+     * @covers \Persist\Update\Functions\patch
      */
     public function testPatch()
     {
@@ -92,7 +92,7 @@ class UpdateInstructionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Update\Functions\inc
+     * @covers \Persist\Update\Functions\inc
      */
     public function testInc()
     {
@@ -104,7 +104,7 @@ class UpdateInstructionTest extends TestCase
 
     /**
      * @dataProvider numberProvider
-     * @covers \Jasny\Persist\Update\Functions\inc
+     * @covers \Persist\Update\Functions\inc
      */
     public function testIncWithAValue($number)
     {
@@ -115,7 +115,7 @@ class UpdateInstructionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Update\Functions\dec
+     * @covers \Persist\Update\Functions\dec
      */
     public function testDec()
     {
@@ -127,7 +127,7 @@ class UpdateInstructionTest extends TestCase
 
     /**
      * @dataProvider numberProvider
-     * @covers \Jasny\Persist\Update\Functions\dec
+     * @covers \Persist\Update\Functions\dec
      */
     public function testDecWithAValue($number)
     {
@@ -139,7 +139,7 @@ class UpdateInstructionTest extends TestCase
 
     /**
      * @dataProvider numberProvider
-     * @covers \Jasny\Persist\Update\Functions\mul
+     * @covers \Persist\Update\Functions\mul
      */
     public function testMul($number)
     {
@@ -151,7 +151,7 @@ class UpdateInstructionTest extends TestCase
 
     /**
      * @dataProvider numberProvider
-     * @covers \Jasny\Persist\Update\Functions\div
+     * @covers \Persist\Update\Functions\div
      */
     public function testDiv($number)
     {
@@ -163,7 +163,7 @@ class UpdateInstructionTest extends TestCase
 
     /**
      * @dataProvider numberProvider
-     * @covers \Jasny\Persist\Update\Functions\mod
+     * @covers \Persist\Update\Functions\mod
      */
     public function testMod($number)
     {
@@ -174,7 +174,7 @@ class UpdateInstructionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Update\Functions\push
+     * @covers \Persist\Update\Functions\push
      */
     public function testPush()
     {
@@ -185,7 +185,7 @@ class UpdateInstructionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Update\Functions\push
+     * @covers \Persist\Update\Functions\push
      */
     public function testPushMultiple()
     {
@@ -196,7 +196,7 @@ class UpdateInstructionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Update\Functions\pull
+     * @covers \Persist\Update\Functions\pull
      */
     public function testPull()
     {
@@ -207,7 +207,7 @@ class UpdateInstructionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Update\Functions\pull
+     * @covers \Persist\Update\Functions\pull
      */
     public function testPullMultiple()
     {

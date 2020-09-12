@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Tests\Gateway;
+namespace Persist\Tests\Gateway;
 
-use Jasny\Persist\Option\OptionInterface;
-use Jasny\Persist\Result\Result;
-use Jasny\Persist\Update\UpdateInstruction;
-use Jasny\Persist\Gateway\MultiWrite;
-use Jasny\Persist\Gateway\GatewayInterface;
+use Persist\Option\OptionInterface;
+use Persist\Result\Result;
+use Persist\Update\UpdateInstruction;
+use Persist\Gateway\MultiWrite;
+use Persist\Gateway\GatewayInterface;
 use Jasny\PHPUnit\SafeMocksTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Jasny\Persist\Gateway\MultiWrite
+ * @covers \Persist\Gateway\MultiWrite
  */
 class MultiWriteTest extends TestCase
 {

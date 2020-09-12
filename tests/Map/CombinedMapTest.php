@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Tests\Map;
+namespace Persist\Tests\Map;
 
-use Jasny\Persist\Map\CombinedMap;
-use Jasny\Persist\Map\MapInterface;
+use Persist\Map\CombinedMap;
+use Persist\Map\MapInterface;
 use Jasny\PHPUnit\CallbackMockTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\Persist\Map\CombinedMap
- * @covers \Jasny\Persist\Map\Traits\CombineTrait
+ * @covers \Persist\Map\CombinedMap
+ * @covers \Persist\Map\Traits\CombineTrait
  */
 class CombinedMapTest extends TestCase
 {

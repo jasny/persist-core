@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Gateway;
+namespace Persist\Gateway;
 
-use Jasny\Persist\Option\OptionInterface;
-use Jasny\Persist\Result\Result;
+use Persist\Option\OptionInterface;
+use Persist\Result\Result;
 use Jasny\Immutable;
 use Psr\Log\LoggerInterface;
 

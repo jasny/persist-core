@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Gateway;
+namespace Persist\Gateway;
 
-use Jasny\Persist\Exception\UnsupportedFeatureException;
-use Jasny\Persist\Option\OptionInterface;
-use Jasny\Persist\Result\Result;
+use Persist\Exception\UnsupportedFeatureException;
+use Persist\Option\OptionInterface;
+use Persist\Result\Result;
 use Psr\Log\LoggerInterface;
 
 /**

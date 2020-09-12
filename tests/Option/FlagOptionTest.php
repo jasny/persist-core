@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Tests\Option;
+namespace Persist\Tests\Option;
 
-use Jasny\Persist\Option\Functions as opt;
-use Jasny\Persist\Option\FlagOption;
-use Jasny\Persist\Option\OptionInterface;
+use Persist\Option\Functions as opt;
+use Persist\Option\FlagOption;
+use Persist\Option\OptionInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\Persist\Option\FlagOption
+ * @covers \Persist\Option\FlagOption
  */
 class FlagOptionTest extends TestCase
 {
@@ -21,7 +21,7 @@ class FlagOptionTest extends TestCase
     }
 
     /**
-     * @covers \Jasny\Persist\Option\Functions\flag
+     * @covers \Persist\Option\Functions\flag
      */
     public function testFunction()
     {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Query;
+namespace Persist\Query;
 
 use Improved as i;
-use Jasny\Persist\Option\OptionInterface;
+use Persist\Option\OptionInterface;
 
 /**
  * Compound class for query composers.

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Jasny\Persist\Tests\Query;
+namespace Persist\Tests\Query;
 
-use Jasny\Persist\Option\Functions as opt;
-use Jasny\Persist\Option\LookupOption;
-use Jasny\Persist\Option\OptionInterface;
-use Jasny\Persist\Query\NestLookup;
+use Persist\Option\Functions as opt;
+use Persist\Option\LookupOption;
+use Persist\Option\OptionInterface;
+use Persist\Query\NestLookup;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Jasny\Persist\Query\NestLookup
+ * @covers \Persist\Query\NestLookup
  */
 class NestLookupTest extends TestCase
 {
