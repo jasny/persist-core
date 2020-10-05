@@ -18,14 +18,6 @@ use Psr\Log\LoggerInterface;
 interface GatewayInterface
 {
     /**
-     * Get underlying storage object.
-     * This is DB implementation dependent.
-     *
-     * @return mixed
-     */
-    public function getStorage();
-
-    /**
      * Enable (debug) logging.
      *
      * @return static

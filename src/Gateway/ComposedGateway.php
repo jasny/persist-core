@@ -46,16 +46,6 @@ class ComposedGateway implements GatewayInterface
 
 
     /**
-     * Return the 'read' storage.
-     *
-     * @inheritDoc
-     */
-    public function getStorage()
-    {
-        $this->read->getStorage();
-    }
-
-    /**
      * @inheritDoc
      */
     public function withLogging(LoggerInterface $logger)

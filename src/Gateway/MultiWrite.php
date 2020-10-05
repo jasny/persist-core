@@ -49,16 +49,6 @@ class MultiWrite implements GatewayInterface
     }
 
     /**
-     * Get underlying storage object of the main writer.
-     *
-     * @return mixed
-     */
-    public function getStorage()
-    {
-        return $this->inner[0]->getStorage();
-    }
-
-    /**
      * Enable logging for each underlying writer.
      *
      * @param LoggerInterface $logger

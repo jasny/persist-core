@@ -16,16 +16,6 @@ use Psr\Log\LoggerInterface;
 final class Blackhole implements GatewayInterface
 {
     /**
-     * Get underlying storage object.
-     *
-     * @return null
-     */
-    public function getStorage()
-    {
-        return null;
-    }
-
-    /**
      * Does nothing.
      *
      * @param LoggerInterface $logger
