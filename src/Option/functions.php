@@ -63,7 +63,7 @@ function hydrate(string $field): HydrateOption
 }
 
 /**
- * Expand a field, loading data from related collection.
+ * Load items from related collection.
  * Uses collection name as field name, this can be changed with `as()`.
  *
  * @param string $related
@@ -73,24 +73,39 @@ function lookup(string $related): LookupOption
     return new LookupOption($related);
 }
 
+/**
+ * Count items from related collection.
+ * Uses collection name as field name, this can be changed with `as()`.
+ *
+ * @param string $related
+ */
+function count(string $related): LookupOption
+{
+    return (new LookupOption($related))->count();
+}
 
 /**
- * How to handle existing items for save query?
- *
- * - conflict - results in db error
- * - ignore   - skip existing
- * - replace  - replace existing, missing fields are removed or set to default value
- * - update   - update existing, missing fields are not changed
- *
- * @throws \UnexpectedValueException for unknown resolution
+ * Ignore existing items for save.
  */
-function existing(string $resolution): SettingOption
+function ignore_existing(): SettingOption
 {
-    if (!in_array($resolution, ['conflict', 'ignore', 'replace', 'update'], true)) {
-        throw new \UnexpectedValueException("Unsupported conflict resolution option '$resolution'");
-    }
+    return new SettingOption('existing', 'ignore');
+}
 
-    return new SettingOption('existing', $resolution);
+/**
+ * Replace existing items for save.
+ */
+function replace_existing(): SettingOption
+{
+    return new SettingOption('existing', 'replace');
+}
+
+/**
+ * Update existing items for save.
+ */
+function update_existing(): SettingOption
+{
+    return new SettingOption('existing', 'update');
 }
 
 /**

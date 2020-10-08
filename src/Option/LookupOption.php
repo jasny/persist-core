@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Persist\Option;
 
-use Improved as i;
 use Persist\Filter\FilterItem;
-use Persist\Schema\Relationship;
 use Jasny\Immutable;
+use Persist\Schema\Relationship;
+use Persist\Schema\SchemaInterface;
 
 /**
  * Option to lookup related data from other collections / tables.
@@ -20,6 +20,11 @@ class LookupOption implements OptionInterface
     protected ?string $target = null;
     protected string $related;
 
+    protected int $relationshipType = -1;
+
+    /** @var array<string,string> */
+    protected array $match;
+
     protected bool $isCount = false;
 
     /** @var array<string,string>|FilterItem[] */
@@ -30,8 +35,7 @@ class LookupOption implements OptionInterface
 
 
     /**
-     * Class constructor
-     * If field maps to a single relationship, the related collection and fields don't have to be specified.
+     * Class constructor.
      *
      * @param string $related  Related collection name (or alias)
      */
@@ -64,6 +68,24 @@ class LookupOption implements OptionInterface
     }
 
     /**
+     * Specify the relationship between the collections.
+     *
+     * @param int                  $type   One of the relationship constants
+     * @param array<string,string> $match  Field pairs as ON in a JOIN statement
+     * @return static
+     */
+    public function on(int $type, array $match): self
+    {
+        if ($type < 0 || $type > 0b11) {
+            throw new \InvalidArgumentException("Invalid relationship type '$type'; use one of the constants");
+        }
+
+        return $this
+            ->withProperty('relationshipType', $type)
+            ->withProperty('match', $match);
+    }
+
+    /**
      * Filter the items from the related collection.
      *
      * @param array<string,string>|FilterItem[]
@@ -81,7 +103,7 @@ class LookupOption implements OptionInterface
      */
     public function count(): self
     {
-        $this->withProperty('isCount', true);
+        return $this->withProperty('isCount', true);
     }
 
     /**
@@ -158,6 +180,17 @@ class LookupOption implements OptionInterface
     public function getRelated(): string
     {
         return $this->related;
+    }
+
+    /**
+     * Get the relationship, if the defined for the option.
+     * If not defined, this method will return null and the schema should be used.
+     */
+    public function getRelationship(string $collection): ?Relationship
+    {
+        return $this->relationshipType >= 0
+            ? new Relationship($this->relationshipType, $collection, $this->related, $this->match)
+            : null;
     }
 
     /**
