@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Persist\Query;
 
-use Persist\Filter\FilterItem;
+use Persist\Option\FieldsOption;
 use Persist\Option\OptionInterface;
 
 /**
- * Handle custom filter when composing a query.
+ * Add an expression as custom field when composing a query.
  *
  * @template TQuery
- * @implements ComposerInterface<TQuery,FilterItem>
+ * @implements ComposerInterface<TQuery,mixed>
  */
-class CustomFilter implements ComposerInterface
+class CustomField implements ComposerInterface
 {
     protected string $field;
     protected \Closure $callback;
@@ -45,23 +45,11 @@ class CustomFilter implements ComposerInterface
     }
 
     /**
-     * Apply items to given query.
-     *
-     * @param object               $accumulator  Database specific query object.
-     * @param iterable<FilterItem> $items
-     * @param OptionInterface[]    $opts
-     * @return iterable<FilterItem>
+     * @inheritDoc
      */
     public function apply(object $accumulator, iterable $items, array $opts): iterable
     {
-        foreach ($items as $item) {
-            if ($item->getField() !== $this->field) {
-                yield $item;
-                continue;
-            }
-
-            ($this->callback)($accumulator, $item, $opts);
-        }
+        return $items;
     }
 
     /**
@@ -69,5 +57,34 @@ class CustomFilter implements ComposerInterface
      */
     public function finalize(object $accumulator, array $opts): void
     {
+        if ($this->isFieldIncluded($opts)) {
+            ($this->callback)($accumulator, $opts);
+        }
+    }
+
+    /**
+     * Check if the field is included in the projection.
+     *
+     * @param OptionInterface[] $opts
+     * @return bool
+     */
+    protected function isFieldIncluded(array $opts): bool
+    {
+        $default = true;
+        $included = null;
+
+        foreach ($opts as $opt) {
+            if (!$opt instanceof FieldsOption) {
+                continue;
+            }
+
+            $default = $default && $opt->isNegated();
+
+            if (in_array($this->field, $opt->getFields(), true)) {
+                $included = !$opt->isNegated();
+            }
+        }
+
+        return $included ?? $default;
     }
 }

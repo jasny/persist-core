@@ -5,28 +5,32 @@ declare(strict_types=1);
 namespace Persist\Query;
 
 use Improved as i;
+use Improved\IteratorPipeline\Pipeline;
 use Persist\Option\OptionInterface;
 
 /**
- * Compound class for query composers.
+ * Composite class for query composers.
  *
  * @template TQuery
  * @template TQueryItem
  * @implements ComposerInterface<TQuery,TQueryItem>
  */
-class Composer implements ComposerInterface
+final class Composer implements ComposerInterface
 {
     /**
      * @phpstan-var array<ComposerInterface<TQuery,TQueryItem>>
      */
-    public array $steps;
+    protected array $steps = [];
 
     /**
      * @phpstan-param ComposerInterface<TQuery,TQueryItem> ...$steps
      */
     public function __construct(ComposerInterface ...$steps)
     {
-        $this->steps = $steps;
+        $this->steps = Pipeline::with($steps)
+            ->map(fn(ComposerInterface $step) => $step instanceof self ? $step->steps : $step)
+            ->flatten()
+            ->toArray();
     }
 
     /**
