@@ -20,15 +20,26 @@ class NestLookup implements ComposerInterface
     /**
      * @inheritDoc
      */
-    public function compose(object $accumulator, iterable $items, array $opts = []): void
+    public function getPriority(): int
     {
-        throw new \LogicException(__CLASS__ . ' can only be used in combination with other query composers');
+        return 200;
     }
 
     /**
-     * @inheritDoc
+     * Apply items to given query.
+     *
+     * @param object            $accumulator
+     * @param iterable          $items
+     * @param OptionInterface[] $opts
+     * @return iterable
+     *
+     * @template TItem
+     * @phpstan-param TQuery&object     $accumulator
+     * @phpstan-param iterable<TItem>   $items
+     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-return iterable<TItem>
      */
-    public function prepare(iterable $items, array &$opts = []): iterable
+    public function compose(object $accumulator, iterable $items, array &$opts = []): iterable
     {
         $injected = [];
 
@@ -81,7 +92,7 @@ class NestLookup implements ComposerInterface
 
     /**
      * Find an lookup or hydrate option to inject the lookup for this specific target.
-     * The target might be an embedded relationship. In that case the lookup will be retargetted.
+     * The target might be an embedded relationship. In that case the lookup will be retargeted.
      *
      * @param string                     $target
      * @param string                     $field
@@ -130,22 +141,5 @@ class NestLookup implements ComposerInterface
         }
 
         return false;
-    }
-
-
-
-    /**
-     * @inheritDoc
-     */
-    public function apply(object $accumulator, iterable $items, array $opts): iterable
-    {
-        return $items;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function finalize(object $accumulator, array $opts): void
-    {
     }
 }

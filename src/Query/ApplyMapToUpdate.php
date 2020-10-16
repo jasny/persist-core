@@ -7,39 +7,49 @@ namespace Persist\Query;
 use Persist\Map\MapInterface;
 use Persist\Map\NoMap;
 use Persist\Option\Functions as opt;
+use Persist\Option\OptionInterface;
 use Persist\Update\UpdateInstruction;
 
 /**
  * Apply the field map to the update instructions.
  *
  * @template TQuery
- * @implements ComposerInterface<TQuery,UpdateInstruction>
+ * @implements ComposerInterface<TQuery,UpdateInstruction,UpdateInstruction>
  */
 class ApplyMapToUpdate implements ComposerInterface
 {
     /**
      * @inheritDoc
-     * @throws \LogicException
      */
-    public function compose(object $accumulator, iterable $items, array $opts = []): void
+    public function getPriority(): int
     {
-        throw new \LogicException(__CLASS__ . ' can only be used in combination with other query composers');
+        return 300;
     }
 
     /**
-     * @inheritDoc
+     * Apply items to given query.
+     *
+     * @param object                      $accumulator
+     * @param iterable<UpdateInstruction> $instructions
+     * @param OptionInterface[]           $opts
+     * @return iterable
+     *
+     * @phpstan-param TQuery&object               $accumulator
+     * @phpstan-param iterable<UpdateInstruction> $instructions
+     * @phpstan-param OptionInterface[]           $opts
+     * @phpstan-return iterable<UpdateInstruction>
      */
-    public function prepare(iterable $update, array &$opts = []): iterable
+    public function compose(object $accumulator, iterable $instructions, array &$opts = []): iterable
     {
         /** @var MapInterface $map */
         $map = opt\setting('map', new NoMap())->findIn($opts, MapInterface::class);
 
         // Quick return if there is no map
         if ($map instanceof NoMap) {
-            return $update;
+            return $instructions;
         }
 
-        return $this->applyMap($map, $update);
+        return $this->applyMap($map, $instructions);
     }
 
     /**
@@ -79,15 +89,5 @@ class ApplyMapToUpdate implements ComposerInterface
         return ($mappedPairs === $pairs)
             ? $instruction
             : ($mappedPairs !== [] ? new UpdateInstruction($instruction->getOperator(), $mappedPairs) : null);
-    }
-
-
-    public function apply(object $accumulator, iterable $items, array $opts): iterable
-    {
-        return $items;
-    }
-
-    public function finalize(object $accumulator, array $opts): void
-    {
     }
 }

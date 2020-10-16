@@ -4,111 +4,50 @@ declare(strict_types=1);
 
 namespace Persist\Query;
 
-use Improved as i;
 use Improved\IteratorPipeline\Pipeline;
-use Persist\Option\OptionInterface;
 
 /**
  * Composite class for query composers.
  *
  * @template TQuery
- * @template TQueryItem
- * @implements ComposerInterface<TQuery,TQueryItem>
+ * @implements ComposerInterface<TQuery,mixed,mixed>
  */
 final class Composer implements ComposerInterface
 {
     /**
-     * @phpstan-var array<ComposerInterface<TQuery,TQueryItem>>
+     * @phpstan-var array<ComposerInterface<TQuery,mixed,mixed>>
      */
     protected array $steps = [];
 
     /**
-     * @phpstan-param ComposerInterface<TQuery,TQueryItem> ...$steps
+     * @phpstan-param ComposerInterface<TQuery,mixed,mixed> ...$steps
      */
     public function __construct(ComposerInterface ...$steps)
     {
         $this->steps = Pipeline::with($steps)
             ->map(fn(ComposerInterface $step) => $step instanceof self ? $step->steps : $step)
             ->flatten()
+            ->sort(fn(ComposerInterface $step) => $step->getPriority())
             ->toArray();
     }
 
     /**
-     * Apply instructions to given query.
-     *
-     * @param iterable          $items
-     * @param OptionInterface[] $opts
-     *
-     * @phpstan-param TQuery&object        $accumulator
-     * @phpstan-param iterable<TQueryItem> $items
-     * @phpstan-param OptionInterface[]    $opts
+     * @inheritDoc
      */
-    public function compose(object $accumulator, iterable $items, array $opts = []): void
+    public function getPriority(): int
     {
-        $items = $this->prepare($items, $opts);
-
-        i\iterable_walk(
-            $this->apply($accumulator, $items, $opts)
-        );
-
-        $this->finalize($accumulator, $opts);
+        return isset($this->steps[0]) ? $this->steps[0]->getPriority() : PHP_INT_MAX;
     }
 
     /**
-     * Apply instructions to given query.
-     *
-     * @param iterable          $items
-     * @param OptionInterface[] $opts
-     * @return iterable
-     *
-     * @phpstan-param iterable<TQueryItem> $items
-     * @phpstan-param OptionInterface[]    $opts
-     * @phpstan-return iterable<TQueryItem>
+     * @inheritDoc
      */
-    public function prepare(iterable $items, array &$opts = []): iterable
+    public function compose(object $accumulator, iterable $items, array &$opts = []): iterable
     {
         foreach ($this->steps as $step) {
-            $items = $step->prepare($items, $opts);
+            $items = $step->compose($accumulator, $items, $opts);
         }
 
         return $items;
-    }
-
-    /**
-     * Apply items to given query.
-     *
-     * @param object            $accumulator  Database specific query object.
-     * @param iterable          $items
-     * @param OptionInterface[] $opts
-     * @return array
-     *
-     * @phpstan-param TQuery&object        $accumulator
-     * @phpstan-param iterable<TQueryItem> $items
-     * @phpstan-param OptionInterface[]    $opts
-     * @phpstan-return array<TQueryItem>
-     */
-    public function apply(object $accumulator, iterable $items, array $opts): iterable
-    {
-        foreach ($this->steps as $step) {
-            $items = $step->apply($accumulator, $items, $opts);
-        }
-
-        return $items;
-    }
-
-    /**
-     * Apply instructions to given query.
-     *
-     * @param object            $accumulator  Database specific query object.
-     * @param OptionInterface[] $opts
-     *
-     * @phpstan-param TQuery&object     $accumulator
-     * @phpstan-param OptionInterface[] $opts
-     */
-    public function finalize(object $accumulator, array $opts): void
-    {
-        foreach ($this->steps as $step) {
-            $step->finalize($accumulator, $opts);
-        }
     }
 }

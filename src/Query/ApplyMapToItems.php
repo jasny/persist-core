@@ -8,29 +8,39 @@ use Improved as i;
 use Persist\Map\MapInterface;
 use Persist\Map\NoMap;
 use Persist\Option\Functions as opt;
+use Persist\Option\OptionInterface;
 
 /**
  * Apply the field map to items.
  *
  * @template TQuery
  * @template TItem
- * @implements ComposerInterface<TQuery,TItem>
+ * @implements ComposerInterface<TQuery,TItem,TItem>
  */
 class ApplyMapToItems implements ComposerInterface
 {
     /**
-     * @inheritDoc
-     * @throws \LogicException
+     * Get the composer priority.
      */
-    public function compose(object $accumulator, iterable $items, array $opts = []): void
+    public function getPriority(): int
     {
-        throw new \LogicException(__CLASS__ . ' can only be used in combination with other query composers');
+        return 300;
     }
 
     /**
-     * @inheritDoc
+     * Apply items to given query.
+     *
+     * @param object            $accumulator
+     * @param iterable          $items
+     * @param OptionInterface[] $opts
+     * @return iterable
+     *
+     * @phpstan-param TQuery&object     $accumulator
+     * @phpstan-param iterable<TItem>   $items
+     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-return iterable<TItem>
      */
-    public function prepare(iterable $items, array &$opts = []): iterable
+    public function compose(object $accumulator, iterable $items, array &$opts = []): iterable
     {
         /** @var MapInterface $map */
         $map = opt\setting('map', new NoMap())->findIn($opts, MapInterface::class);
@@ -41,20 +51,5 @@ class ApplyMapToItems implements ComposerInterface
         }
 
         return i\iterable_map($items, [$map, 'apply']);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function apply(object $accumulator, iterable $items, array $opts): iterable
-    {
-        return $items;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function finalize(object $accumulator, array $opts): void
-    {
     }
 }

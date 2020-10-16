@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace Persist\Query;
 
+use Jasny\Immutable;
 use Persist\Option\OptionInterface;
 
 /**
  * Custom finalization step when composing a query.
  *
  * @template TQuery
- * @implements ComposerInterface<TQuery,mixed>
+ * @implements ComposerInterface<TQuery,mixed,mixed>
  */
 class Finalization implements ComposerInterface
 {
+    use Immutable\With;
+
+    protected int $priority = 1200;
     protected \Closure $callback;
 
     /**
@@ -25,34 +29,46 @@ class Finalization implements ComposerInterface
     }
 
     /**
-     * @inheritDoc
+     * Set a custom priority for the composer.
+     *
+     * @param int $priority  Priority between 500 and 999
+     * @return static
      */
-    public function compose(object $accumulator, iterable $items, array $opts = []): void
+    public function withPriority(int $priority): self
     {
-        $this->finalize($accumulator, $opts);
+        if ($priority <= 1000 || $priority >= 2000) {
+            throw new \InvalidArgumentException("Priority should be between 1001 and 1999");
+        }
+
+        return $this->withProperty('priority', $priority);
     }
 
     /**
      * @inheritDoc
      */
-    public function prepare(iterable $items, array &$opts = []): iterable
+    public function getPriority(): int
     {
-        return $items;
+        return $this->priority;
     }
 
     /**
-     * @inheritDoc
+     * Apply step to given query.
+     *
+     * @param object            $accumulator
+     * @param iterable          $items
+     * @param OptionInterface[] $opts
+     * @return iterable
+     *
+     * @template TItem
+     * @phpstan-param TQuery&object     $accumulator
+     * @phpstan-param iterable<TItem>   $items
+     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-return iterable<TItem>
      */
-    public function apply(object $accumulator, iterable $items, array $opts): iterable
-    {
-        return $items;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function finalize(object $accumulator, array $opts): void
+    public function compose(object $accumulator, iterable $items, array &$opts = []): iterable
     {
         ($this->callback)($accumulator, $opts);
+
+        return $items;
     }
 }

@@ -10,58 +10,28 @@ use Persist\Option\OptionInterface;
  * Interface for service that can apply instructions to a database specific query.
  *
  * @template TQuery
- * @template TQueryItem
+ * @template TIn
+ * @template TOut
  */
 interface ComposerInterface
 {
     /**
-     * Apply instructions to given query.
-     *
-     * @param iterable          $items
-     * @param OptionInterface[] $opts
-     *
-     * @phpstan-param TQuery&object               $accumulator
-     * @phpstan-param iterable<TQueryItem&object> $items
-     * @phpstan-param OptionInterface[]           $opts
+     * Get the composer priority.
      */
-    public function compose(object $accumulator, iterable $items, array $opts = []): void;
-
-    /**
-     * Apply instructions to given query.
-     *
-     * @param iterable          $items
-     * @param OptionInterface[] $opts
-     * @return iterable
-     *
-     * @phpstan-param iterable<TQueryItem> $items
-     * @phpstan-param OptionInterface[]    $opts
-     * @phpstan-return iterable<TQueryItem>
-     */
-    public function prepare(iterable $items, array &$opts = []): iterable;
+    public function getPriority(): int;
 
     /**
      * Apply items to given query.
      *
-     * @param object            $accumulator  Database specific query object.
+     * @param object            $accumulator
      * @param iterable          $items
      * @param OptionInterface[] $opts
      * @return iterable
      *
-     * @phpstan-param TQuery&object        $accumulator
-     * @phpstan-param iterable<TQueryItem> $items
-     * @phpstan-param OptionInterface[]    $opts
-     * @phpstan-return iterable<TQueryItem>
-     */
-    public function apply(object $accumulator, iterable $items, array $opts): iterable;
-
-    /**
-     * Apply instructions to given query.
-     *
-     * @param object            $accumulator  Database specific query object.
-     * @param OptionInterface[] $opts
-     *
      * @phpstan-param TQuery&object     $accumulator
+     * @phpstan-param iterable<TIn>     $items
      * @phpstan-param OptionInterface[] $opts
+     * @phpstan-return iterable<TOut>
      */
-    public function finalize(object $accumulator, array $opts): void;
+    public function compose(object $accumulator, iterable $items, array &$opts = []): iterable;
 }

@@ -7,6 +7,7 @@ namespace Persist\Query;
 use Persist\Map\MapInterface;
 use Persist\Map\NoMap;
 use Persist\Option\Functions as opt;
+use Persist\Option\OptionInterface;
 use Persist\Option\SettingOption;
 
 /**
@@ -32,17 +33,28 @@ class SetMap implements ComposerInterface
     /**
      * @inheritDoc
      */
-    public function compose(object $accumulator, iterable $items, array $opts = []): void
+    public function getPriority(): int
     {
-        throw new \LogicException(__CLASS__ . ' can only be used in combination with other query composers');
+        return 150;
     }
 
     /**
-     * @inheritDoc
+     * Apply the callback to each map in opts.
+     *
+     * @param object            $accumulator
+     * @param iterable          $items
+     * @param OptionInterface[] $opts
+     * @return iterable
+     *
+     * @template TItem
+     * @phpstan-param TQuery&object     $accumulator
+     * @phpstan-param iterable<TItem>   $items
+     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-return iterable<TItem>
      */
-    public function prepare(iterable $items, array &$opts = []): iterable
+    public function compose(object $accumulator, iterable $items, array &$opts = []): iterable
     {
-        $map = null;
+        $hasMap = false;
 
         foreach ($opts as &$opt) {
             if (
@@ -50,31 +62,21 @@ class SetMap implements ComposerInterface
                 $opt->getName() === 'map' &&
                 $opt->getValue() instanceof MapInterface
             ) {
-                $map = ($this->callback)($opt->getValue(), $opts);
-                $opt = opt\setting('map', $map);
+                $hasMap = true;
+                $opt = opt\setting(
+                    'map',
+                    ($this->callback)($opt->getValue(), $opts)
+                );
             }
         }
 
-        if ($map === null) {
-            $map = ($this->callback)(new NoMap(), $opts);
-            $opts[] = opt\setting('map', $map);
+        if (!$hasMap) {
+            $opts[] = opt\setting(
+                'map',
+                ($this->callback)(new NoMap(), $opts)
+            );
         }
 
         return $items;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function apply(object $accumulator, iterable $items, array $opts): iterable
-    {
-        return $items;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function finalize(object $accumulator, array $opts): void
-    {
     }
 }

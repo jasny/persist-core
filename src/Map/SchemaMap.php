@@ -107,11 +107,9 @@ final class SchemaMap implements MapInterface
      */
     public function withOpts(array $opts): self
     {
-        $map = $this
+        return $this
             ->withInnerOpts($opts)
             ->applyOpts(null, $this->getCollectionMap('', $this->collection), $opts);
-
-        return $map;
     }
 
     /**
@@ -185,7 +183,7 @@ final class SchemaMap implements MapInterface
         $as = ($rel !== $opt->getName() ? " as '" . $opt->getName() . "'" : '');
 
         return new LookupException(
-            "Unable to $type '$rel'$as; no lookup/hydrate or embbedded relationship for field '$target'"
+            "Unable to $type '$rel'$as; no lookup/hydrate or embedded relationship for field '$target'"
         );
     }
 }

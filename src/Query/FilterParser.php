@@ -7,12 +7,14 @@ namespace Persist\Query;
 use Persist\Filter\FilterItem;
 use Persist\Option\OptionInterface;
 use Spatie\Regex\Regex;
+use Spatie\Regex\RegexFailed;
 
 /**
  * Parse a filter key into a basic filter by extracting the field and operator.
  * Format is "key" or "key (operator)".
  *
- * @implements ComposerInterface<object,FilterItem|mixed>
+ * @template TQuery
+ * @implements ComposerInterface<TQuery,mixed,FilterItem>
  */
 class FilterParser implements ComposerInterface
 {
@@ -20,22 +22,26 @@ class FilterParser implements ComposerInterface
 
     /**
      * @inheritDoc
-     * @throws \LogicException
      */
-    public function compose(object $accumulator, iterable $items, array $opts = []): void
+    public function getPriority(): int
     {
-        throw new \LogicException(__CLASS__ . ' can only be used in combination with other query composers');
+        return 100;
     }
 
     /**
-     * Invoke the parser.
+     * Apply items to given query.
      *
-     * @param iterable<string,mixed>|iterable<FilterItem> $filter
-     * @param OptionInterface[]                           $opts
-     * @return iterable<FilterItem>
-     * @throws \UnexpectedValueException for unclosed parentheses in key.
+     * @param object            $accumulator
+     * @param iterable          $filter
+     * @param OptionInterface[] $opts
+     * @return iterable
+     *
+     * @phpstan-param TQuery&object     $accumulator
+     * @phpstan-param iterable<mixed>   $filter
+     * @phpstan-param OptionInterface[] $opts
+     * @phpstan-return iterable<FilterItem>
      */
-    public function prepare(iterable $filter, array &$opts = []): iterable
+    public function compose(object $accumulator, iterable $filter, array &$opts = []): iterable
     {
         foreach ($filter as $key => $value) {
             if ($value instanceof FilterItem) {
@@ -55,28 +61,25 @@ class FilterParser implements ComposerInterface
      */
     protected function parse(string $key): array
     {
+        // Quick return for field without an operator
         if (strpos($key, '(') === false && strpos($key, ')') === false) {
             return ['field' => trim($key), 'operator' => ''];
         }
 
-        $result = Regex::match(static::REGEXP, $key);
+        // Use regex to parse field and operator
+        try {
+            $result = Regex::match(static::REGEXP, $key);
 
-        if (!$result->hasMatch()) {
-            throw new \UnexpectedValueException("Invalid filter item '$key': Bad use of parentheses");
+            if (!$result->hasMatch()) {
+                throw new \UnexpectedValueException("Invalid filter item '$key': Bad use of parentheses");
+            }
+
+            return [
+                'field' => $result->group('field'),
+                'operator' => $result->groupOr('operator', ''),
+            ];
+        } catch (RegexFailed $exception) {
+            throw new \UnexpectedValueException("Invalid filter item '$key'", 0, $exception);
         }
-
-        return [
-            'field' => $result->group('field'),
-            'operator' => $result->groupOr('operator', ''),
-        ];
-    }
-
-    public function apply(object $accumulator, iterable $items, array $opts): iterable
-    {
-        return $items;
-    }
-
-    public function finalize(object $accumulator, array $opts): void
-    {
     }
 }

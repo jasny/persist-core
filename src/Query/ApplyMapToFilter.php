@@ -14,27 +14,32 @@ use Persist\Option\OptionInterface;
  * Apply the field map to the filter items.
  *
  * @template TQuery
- * @implements ComposerInterface<TQuery,FilterItem>
+ * @implements ComposerInterface<TQuery,FilterItem,FilterItem>
  */
 class ApplyMapToFilter implements ComposerInterface
 {
     /**
      * @inheritDoc
-     * @throws \LogicException
      */
-    public function compose(object $accumulator, iterable $items, array $opts = []): void
+    public function getPriority(): int
     {
-        throw new \LogicException(__CLASS__ . ' can only be used in combination with other query composers');
+        return 300;
     }
 
     /**
-     * Invoke the parser.
+     * Apply items to given query.
      *
+     * @param object               $accumulator
      * @param iterable<FilterItem> $filter
      * @param OptionInterface[]    $opts
      * @return iterable<FilterItem>
+     *
+     * @phpstan-param TQuery&object        $accumulator
+     * @phpstan-param iterable<FilterItem> $items
+     * @phpstan-param OptionInterface[]    $opts
+     * @phpstan-return iterable<FilterItem>
      */
-    public function prepare(iterable $filter, array &$opts = []): iterable
+    public function compose(object $accumulator, iterable $filter, array &$opts = []): iterable
     {
         /** @var MapInterface $map */
         $map = opt\setting('map', new NoMap())->findIn($opts, MapInterface::class);
@@ -80,20 +85,5 @@ class ApplyMapToFilter implements ComposerInterface
         return $mappedField !== false
             ? new FilterItem($mappedField, $item->getOperator(), $item->getValue())
             : null;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function apply(object $accumulator, iterable $items, array $opts): iterable
-    {
-        return $items;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function finalize(object $accumulator, array $opts): void
-    {
     }
 }
