@@ -28,7 +28,7 @@ class Schema implements SchemaInterface
     /** @var array<string,array<int,Relationship>> */
     protected array $relationships = [];
 
-    /** @var array<string,array<string,Relationship>> */
+    /** @var array<string,array<string,Embedded>> */
     protected array $embedded = [];
 
 
@@ -204,18 +204,29 @@ class Schema implements SchemaInterface
      */
     public function getMapOf(string $collection): MapInterface
     {
-        $map = $this->maps[$collection] ?? $this->defaultMap;
+        return $this->nestEmbeddedMaps(
+            $this->maps[$collection] ?? $this->defaultMap,
+            $collection
+        );
+    }
 
-        /** @var Embedded $embedded */
+    /**
+     * Nest maps for embedded relationships.
+     */
+    private function nestEmbeddedMaps(MapInterface $map, string $collection): MapInterface
+    {
         foreach (($this->embedded[$collection] ?? []) as $embedded) {
             $field = $embedded->getField();
 
-            if (!isset($this->maps["$collection.$field"])) {
-                continue;
-            }
+            $childMap = $this->nestEmbeddedMaps(
+                $this->maps["$collection.$field"] ?? new NoMap(), // Embedded fields don't get default map
+                "$collection.$field"
+            );
+
+            // Don't skip if child map is a NoMap. The to-many mapped field is important for lookup/hydrate.
 
             $map = ($map instanceof NestedMap ? $map : new NestedMap($map))
-                ->withMappedField($field, $this->getMapOf("$collection.$field"));
+                ->withMappedField($field . ($embedded->isToMany() ? '[]' : ''), $childMap);
         }
 
         return $map;
@@ -271,7 +282,7 @@ class Schema implements SchemaInterface
         if (count($relationships) !== 1) {
             throw new NoRelationshipException(
                 (count($relationships) === 0 ? "No relationship" : "Multiple relationships") .
-                " found for {$collection}.{$field}"
+                " found for field '$field' of '{$collection}'"
             );
         }
 
@@ -293,7 +304,7 @@ class Schema implements SchemaInterface
     public function getEmbeddedForField(string $collection, string $field): Embedded
     {
         if (!isset($this->embedded[$collection][$field])) {
-            throw new NoRelationshipException("No embedded relationship found for {$collection}.{$field}");
+            throw new NoRelationshipException("No embedded relationship found for field '{$field}' of '{$collection}'");
         }
 
         return $this->embedded[$collection][$field];

@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Persist\Query;
 
 use Persist\Exception\LookupException;
+use Persist\Option\FieldsOption;
 use Persist\Option\HydrateOption;
 use Persist\Option\LookupOption;
 use Persist\Option\OptionInterface;
 use function Jasny\array_without;
+use function Jasny\str_contains;
 
 /**
  * Inject hydrate and lookups that specified a `for` collection into their parent lookup option.
@@ -35,8 +37,9 @@ class NestLookup implements ComposerInterface
                 continue;
             }
 
-            $this->injectLookup($opt, $opts);
-            $injected[] = $key;
+            if ($this->injectLookup($opt, $opts)) {
+                $injected[] = $key;
+            }
         }
 
         if ($injected !== []) {
@@ -51,25 +54,85 @@ class NestLookup implements ComposerInterface
      *
      * @param LookupOption|HydrateOption $lookup
      * @param OptionInterface[]          $opts
+     * @return bool
      */
-    protected function injectLookup($lookup, array &$opts): void
+    protected function injectLookup($lookup, array &$opts): bool
     {
+        // Quick return for most common case.
         $target = $lookup->getTarget();
+        if (!str_contains($target, '.')) {
+            return $this->injectLookupForTarget($target, '', $lookup, $opts);
+        }
 
+        // Target is in the form of "a.b". It should be a sub-lookup or an embedded field.
+        $field = [];
+        $parts = explode('.', $target);
+
+        while ($parts !== []) {
+            if ($this->injectLookupForTarget(join('.', $parts), join('.', $field), $lookup, $opts)) {
+                return true;
+            }
+
+            $field[] = array_pop($parts);
+        };
+
+        return false;
+    }
+
+    /**
+     * Find an lookup or hydrate option to inject the lookup for this specific target.
+     * The target might be an embedded relationship. In that case the lookup will be retargetted.
+     *
+     * @param string                     $target
+     * @param string                     $field
+     * @param LookupOption|HydrateOption $lookup
+     * @param OptionInterface[]          $opts
+     * @return bool
+     */
+    protected function injectLookupForTarget(string $target, string $field, $lookup, array &$opts): bool
+    {
         foreach ($opts as &$opt) {
-            if ((!$opt instanceof LookupOption && !$opt instanceof HydrateOption) || $opt === $lookup) {
+            $found = ($opt instanceof LookupOption || $opt instanceof HydrateOption)
+                && $opt !== $lookup
+                && ($opt->getTarget() !== null ? $opt->getTarget() . '.' : '') . $opt->getName() === $target;
+
+            if (!$found) {
                 continue;
             }
 
-            if (($opt->getTarget() !== null ? $opt->getTarget() . '.' : '') . $opt->getName() === $target) {
-                $opt = $opt->with($lookup);
-                return;
+            $opt = $opt->with(
+                $lookup->for($field !== '' ? $field : null)
+            );
+
+            // Add the lookup field, if not specified in the projection.
+            if ($this->isProjectionDefined($opt->getOpts())) {
+                $opt = $opt->with(new FieldsOption([$lookup->getName()], false));
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the option is only return specific fields.
+     *
+     * @param OptionInterface[] $opts
+     * @return bool
+     */
+    protected function isProjectionDefined(array $opts): bool
+    {
+        foreach ($opts as $opt) {
+            if ($opt instanceof FieldsOption && !$opt->isNegated()) {
+                return true;
             }
         }
 
-        $type = $lookup instanceof LookupOption ? 'lookup' : 'hydrate';
-        throw new LookupException("Unable to apply {$type} '" . $lookup->getName() . "' for '{$target}'");
+        return false;
     }
+
+
 
     /**
      * @inheritDoc

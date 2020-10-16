@@ -33,6 +33,7 @@ final class SchemaMap implements MapInterface
         $this->collection = $collection;
         $this->schema = $schema;
 
+        // Map of collection, including maps embedded relationships
         $this->inner = $schema->getMapOf($collection);
     }
 
@@ -106,9 +107,29 @@ final class SchemaMap implements MapInterface
      */
     public function withOpts(array $opts): self
     {
-        return $this
+        $map = $this
             ->withInnerOpts($opts)
-            ->applyOpts(null, ['' => $this->collection], $opts);
+            ->applyOpts(null, $this->getCollectionMap('', $this->collection), $opts);
+
+        return $map;
+    }
+
+    /**
+     * Get field to collection mapping for collection, including for embedded relationships.
+     *
+     * @return array<string,string>
+     */
+    protected function getCollectionMap(string $field, string $collection): array
+    {
+        $cols = [$field => $collection];
+
+        // Map from schema includes child maps for embedded relationships, so add them to the collection index.
+        foreach ($this->schema->getEmbedded($collection) as $embedded) {
+            $key = ($field === '' ? '' : $field . '.') . $embedded->getField();
+            $cols[$key] = $embedded->getCollection() . '.' . $embedded->getField();
+        }
+
+        return $cols;
     }
 
     /**
@@ -131,7 +152,7 @@ final class SchemaMap implements MapInterface
             $optTarget = $opt->getTarget();
             $target = $baseTarget !== null && $optTarget !== null
                 ? "{$baseTarget}.{$optTarget}"
-                : $baseTarget ?? (string)$optTarget;
+                : ($baseTarget ?? (string)$optTarget);
 
             if (!isset($cols[$target])) {
                 throw $this->lookupException($opt, $target);
@@ -141,12 +162,12 @@ final class SchemaMap implements MapInterface
                 ? $this->schema->getRelationshipForField($cols[$target], $opt->getField())
                 : $this->schema->getRelationship($cols[$target], $opt->getRelated());
 
-            $fullName = ($target !== '' ? $target . '.' : '') . $opt->getName();
-            $cols[$fullName] = $relationship->getRelatedCollection();
+            $path = ($target !== '' ? $target . '.' : '') . $opt->getName();
+            $cols += $this->getCollectionMap($path, $relationship->getRelatedCollection());
 
             $map = $map
                 ->withNested($opt->getName(), $target, $relationship)
-                ->applyOpts($fullName, $cols, $opt->getOpts());
+                ->applyOpts($path, $cols, $opt->getOpts());
         }
 
         return $map;
@@ -161,8 +182,10 @@ final class SchemaMap implements MapInterface
     {
         $type = $opt instanceof HydrateOption ? "hydrate" : "lookup";
         $rel = $opt instanceof HydrateOption ? $opt->getField() : $opt->getRelated();
-        $as = ($rel !== $opt->getName() ? " as " . $opt->getName() : '');
+        $as = ($rel !== $opt->getName() ? " as '" . $opt->getName() . "'" : '');
 
-        return new LookupException("Unable to $type '$rel'$as; no lookup or hydrate for field '$target'");
+        return new LookupException(
+            "Unable to $type '$rel'$as; no lookup/hydrate or embbedded relationship for field '$target'"
+        );
     }
 }
