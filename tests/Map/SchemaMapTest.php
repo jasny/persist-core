@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Persist\Tests\Map;
+namespace Jasny\Tests\Persist\Map;
 
-use Persist\Map\ChildMap;
-use Persist\Map\MapInterface;
-use Persist\Map\NestedMap;
-use Persist\Map\NoMap;
-use Persist\Map\SchemaMap;
-use Persist\Option\Functions as opt;
-use Persist\Option\OptionInterface;
-use Persist\Schema\Schema;
-use Persist\Schema\SchemaInterface;
+use Jasny\Persist\Map\ChildMap;
+use Jasny\Persist\Map\MapInterface;
+use Jasny\Persist\Map\NestedMap;
+use Jasny\Persist\Map\NoMap;
+use Jasny\Persist\Map\SchemaMap;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Option\OptionInterface;
+use Jasny\Persist\Schema\Schema;
+use Jasny\Persist\Schema\SchemaInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Persist\Map\SchemaMap
- * @covers \Persist\Map\Traits\ProxyTrait
+ * @covers \Jasny\Persist\Map\SchemaMap
+ * @covers \Jasny\Persist\Map\Traits\ProxyTrait
  */
 class SchemaMapTest extends TestCase
 {

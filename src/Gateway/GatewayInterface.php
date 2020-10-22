@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Persist\Gateway;
+namespace Jasny\Persist\Gateway;
 
-use Persist\Filter\FilterItem;
-use Persist\Option\OptionInterface;
-use Persist\Result\Result;
-use Persist\Update\UpdateInstruction;
+use Jasny\Persist\Filter\FilterItem;
+use Jasny\Persist\Option\OptionInterface;
+use Jasny\Persist\Result\Result;
+use Jasny\Persist\Update\UpdateInstruction;
 use Psr\Log\LoggerInterface;
 
 /**

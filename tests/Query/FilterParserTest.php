@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Persist\Tests\Query;
+namespace Jasny\Tests\Persist\Query;
 
 use Improved as i;
-use Persist\Filter\FilterItem;
-use Persist\Query\FilterParser;
+use Jasny\Persist\Filter\FilterItem;
+use Jasny\Persist\Query\FilterParser;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Persist\Query\FilterParser
+ * @covers \Jasny\Persist\Query\FilterParser
  */
 class FilterParserTest extends TestCase
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Persist\Exception;
+namespace Jasny\Persist\Exception;
 
 /**
  * Lookup can't be applied.

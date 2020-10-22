@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Persist\Tests\Option;
+namespace Jasny\Tests\Persist\Option;
 
-use Persist\Option\Functions as opt;
-use Persist\Option\HydrateOption;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Option\HydrateOption;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Persist\Option\HydrateOption
+ * @covers \Jasny\Persist\Option\HydrateOption
  */
 class HydrateOptionTest extends TestCase
 {
     /**
-     * @covers \Persist\Option\Functions\hydrate
+     * @covers \Jasny\Persist\Option\Functions\hydrate
      */
     public function testHydrate()
     {

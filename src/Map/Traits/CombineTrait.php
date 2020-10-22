@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Persist\Map\Traits;
+namespace Jasny\Persist\Map\Traits;
 
-use Persist\Map\MapInterface;
+use Jasny\Persist\Map\MapInterface;
 
 /**
  * Trait for maps that simply combine other maps.

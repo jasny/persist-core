@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Persist\Tests\Result;
+namespace Jasny\Tests\Persist\Result;
 
-use Persist\Map\MapInterface;
-use Persist\Option\SettingOption;
-use Persist\Result\Result;
-use Persist\Result\ResultBuilder;
+use Jasny\Persist\Map\MapInterface;
+use Jasny\Persist\Option\SettingOption;
+use Jasny\Persist\Result\Result;
+use Jasny\Persist\Result\ResultBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Persist\Result\ResultBuilder
+ * @covers \Jasny\Persist\Result\ResultBuilder
  */
 class ResultBuilderTest extends TestCase
 {

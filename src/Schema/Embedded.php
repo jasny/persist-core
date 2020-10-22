@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Persist\Schema;
+namespace Jasny\Persist\Schema;
 
 /**
  * Field with embedded relationship for collection.

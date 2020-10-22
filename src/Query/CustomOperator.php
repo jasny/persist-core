@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Persist\Query;
+namespace Jasny\Persist\Query;
 
 use Jasny\Immutable;
-use Persist\Filter\FilterItem;
-use Persist\Option\OptionInterface;
-use Persist\Update\UpdateInstruction;
+use Jasny\Persist\Filter\FilterItem;
+use Jasny\Persist\Option\OptionInterface;
+use Jasny\Persist\Update\UpdateInstruction;
 
 /**
  * Handle custom filter operator when composing a query.

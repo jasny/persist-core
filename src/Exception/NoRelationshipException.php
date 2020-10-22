@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Persist\Exception;
+namespace Jasny\Persist\Exception;
 
 /**
  * Referenced relationship is not specified.

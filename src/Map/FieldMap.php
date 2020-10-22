@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Persist\Map;
+namespace Jasny\Persist\Map;
 
 use Jasny\DotKey\DotKey;
 

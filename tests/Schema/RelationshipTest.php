@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Persist\Tests\Schema;
+namespace Jasny\Tests\Persist\Schema;
 
-use Persist\Schema\Relationship;
+use Jasny\Persist\Schema\Relationship;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Persist\Schema\Relationship
+ * @covers \Jasny\Persist\Schema\Relationship
  */
 class RelationshipTest extends TestCase
 {

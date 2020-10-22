@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Persist\Query;
+namespace Jasny\Persist\Query;
 
-use Persist\Exception\LookupException;
-use Persist\Option\FieldsOption;
-use Persist\Option\HydrateOption;
-use Persist\Option\LookupOption;
-use Persist\Option\OptionInterface;
+use Jasny\Persist\Exception\LookupException;
+use Jasny\Persist\Option\FieldsOption;
+use Jasny\Persist\Option\HydrateOption;
+use Jasny\Persist\Option\LookupOption;
+use Jasny\Persist\Option\OptionInterface;
 use function Jasny\array_without;
 use function Jasny\str_contains;
 

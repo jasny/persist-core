@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Persist\Option;
+namespace Jasny\Persist\Option;
 
-use Persist\Filter\FilterItem;
+use Jasny\Persist\Filter\FilterItem;
 use Jasny\Immutable;
-use Persist\Schema\Relationship;
-use Persist\Schema\SchemaInterface;
+use Jasny\Persist\Schema\Relationship;
+use Jasny\Persist\Schema\SchemaInterface;
 
 /**
  * Option to lookup related data from other collections / tables.

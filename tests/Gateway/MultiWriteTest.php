@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Persist\Tests\Gateway;
+namespace Jasny\Tests\Persist\Gateway;
 
-use Persist\Option\OptionInterface;
-use Persist\Result\Result;
-use Persist\Update\UpdateInstruction;
-use Persist\Gateway\MultiWrite;
-use Persist\Gateway\GatewayInterface;
+use Jasny\Persist\Option\OptionInterface;
+use Jasny\Persist\Result\Result;
+use Jasny\Persist\Update\UpdateInstruction;
+use Jasny\Persist\Gateway\MultiWrite;
+use Jasny\Persist\Gateway\GatewayInterface;
 use Jasny\PHPUnit\SafeMocksTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @covers \Persist\Gateway\MultiWrite
+ * @covers \Jasny\Persist\Gateway\MultiWrite
  */
 class MultiWriteTest extends TestCase
 {
-    use SafeMocksTrait;
+    //use SafeMocksTrait;
 
     protected MultiWrite $gateway;
 
@@ -49,17 +49,6 @@ class MultiWriteTest extends TestCase
     public function testGetInner()
     {
         $this->assertSame($this->inner, $this->gateway->getInner());
-    }
-
-    public function testGetStorage()
-    {
-        $storage = new \stdClass();
-
-        $this->inner[0]->expects($this->once())->method('getStorage')->willReturn($storage);
-        $this->inner[1]->expects($this->never())->method('getStorage');
-        $this->inner[2]->expects($this->never())->method('getStorage');
-
-        $this->assertSame($storage, $this->gateway->getStorage());
     }
 
     public function testWithLogging()

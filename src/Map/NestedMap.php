@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Persist\Map;
+namespace Jasny\Persist\Map;
 
-use Persist\Option\OptionInterface;
+use Jasny\Persist\Option\OptionInterface;
 use Jasny\Immutable;
 
 /**

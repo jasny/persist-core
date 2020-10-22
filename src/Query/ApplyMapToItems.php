@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Persist\Query;
+namespace Jasny\Persist\Query;
 
 use Improved as i;
-use Persist\Map\MapInterface;
-use Persist\Map\NoMap;
-use Persist\Option\Functions as opt;
-use Persist\Option\OptionInterface;
+use Jasny\Persist\Map\MapInterface;
+use Jasny\Persist\Map\NoMap;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Option\OptionInterface;
 
 /**
  * Apply the field map to items.

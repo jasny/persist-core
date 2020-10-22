@@ -1,5 +1,5 @@
 {
-    "name": "persist/core",
+    "name": "jasny/persist-core",
     "type": "library",
     "description": "Service based DB abstraction layer",
     "keywords": ["database", "db"],
@@ -12,8 +12,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/jasny/persist/issues",
-        "source": "https://github.com/jasny/persist"
+        "issues": "https://github.com/jasny/persist-core/issues",
+        "source": "https://github.com/jasny/persist-core"
     },
     "require": {
         "php": ">=7.4.0",
@@ -22,15 +22,14 @@
         "jasny/dotkey": "dev-master as 2.1",
         "jasny/immutable": "^2.0",
         "jasny/php-functions": "^4.1",
-        "psr/log": "^1.1",
-        "spatie/regex": "^1.4"
+        "psr/log": "^1.1"
     },
     "require-dev": {
         "jasny/php-code-quality": "2.6.*"
     },
     "autoload": {
         "psr-4": {
-            "Persist\\": "src/"
+            "Jasny\\Persist\\": "src/"
         },
         "files": [
             "src/Option/functions.php",
@@ -39,7 +38,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Persist\\Tests\\": "tests/"
+            "Jasny\\Tests\\Persist\\": "tests/"
         }
     },
     "scripts": {

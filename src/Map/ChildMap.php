@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Persist\Map;
+namespace Jasny\Persist\Map;
 
 use Improved as i;
 use Improved\IteratorPipeline\Pipeline;

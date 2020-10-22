@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Persist\Query;
+namespace Jasny\Persist\Query;
 
-use Persist\Filter\FilterItem;
-use Persist\Option\OptionInterface;
-use Spatie\Regex\Regex;
-use Spatie\Regex\RegexFailed;
+use Jasny\Persist\Filter\FilterItem;
+use Jasny\Persist\Option\OptionInterface;
 
 /**
  * Parse a filter key into a basic filter by extracting the field and operator.
@@ -67,19 +65,15 @@ class FilterParser implements ComposerInterface
         }
 
         // Use regex to parse field and operator
-        try {
-            $result = Regex::match(static::REGEXP, $key);
+        $result = preg_match(static::REGEXP, $key, $matches);
 
-            if (!$result->hasMatch()) {
-                throw new \UnexpectedValueException("Invalid filter item '$key': Bad use of parentheses");
-            }
-
-            return [
-                'field' => $result->group('field'),
-                'operator' => $result->groupOr('operator', ''),
-            ];
-        } catch (RegexFailed $exception) {
-            throw new \UnexpectedValueException("Invalid filter item '$key'", 0, $exception);
+        if (!(bool)$result) {
+            throw new \UnexpectedValueException("Invalid filter item '$key': Bad use of parentheses");
         }
+
+        return [
+            'field' => $matches['field'],
+            'operator' => $matches['operator'] ?? '',
+        ];
     }
 }

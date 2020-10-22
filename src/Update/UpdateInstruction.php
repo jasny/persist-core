@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Persist\Update;
+namespace Jasny\Persist\Update;
 
 /**
  * Operation for update query

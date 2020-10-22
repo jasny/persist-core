@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Persist\Tests\Option;
+namespace Jasny\Tests\Persist\Option;
 
-use Persist\Option\Functions as opt;
-use Persist\Option\SettingOption;
-use Persist\Option\OptionInterface;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Option\SettingOption;
+use Jasny\Persist\Option\OptionInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Persist\Option\SettingOption
+ * @covers \Jasny\Persist\Option\SettingOption
  */
 class SettingOptionTest extends TestCase
 {
@@ -23,7 +23,7 @@ class SettingOptionTest extends TestCase
     }
 
     /**
-     * @covers \Persist\Option\Functions\setting
+     * @covers \Jasny\Persist\Option\Functions\setting
      */
     public function testFunction()
     {
@@ -78,7 +78,7 @@ class SettingOptionTest extends TestCase
     }
 
     /**
-     * @covers \Persist\Option\Functions\existing
+     * @covers \Jasny\Persist\Option\Functions\existing
      * @dataProvider resolutionProvider
      */
     public function testExistingFunction(string $resolution)
@@ -91,7 +91,7 @@ class SettingOptionTest extends TestCase
     }
 
     /**
-     * @covers \Persist\Option\Functions\existing
+     * @covers \Jasny\Persist\Option\Functions\existing
      */
     public function testExistingFunctionWithUnsupportedResolution()
     {

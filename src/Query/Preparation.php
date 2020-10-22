@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Persist\Query;
+namespace Jasny\Persist\Query;
 
 use Jasny\Immutable;
-use Persist\Option\OptionInterface;
+use Jasny\Persist\Option\OptionInterface;
 
 /**
  * Custom preparation step when composing a query.

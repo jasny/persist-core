@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Persist\Tests\Option;
+namespace Jasny\Tests\Persist\Option;
 
-use Persist\Option\Functions as opt;
-use Persist\Option\FieldsOption;
+use Jasny\Persist\Option\Functions as opt;
+use Jasny\Persist\Option\FieldsOption;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Persist\Option\FieldsOption
+ * @covers \Jasny\Persist\Option\FieldsOption
  */
 class FieldsOptionTest extends TestCase
 {
@@ -30,7 +30,7 @@ class FieldsOptionTest extends TestCase
     }
 
     /**
-     * @covers \Persist\Option\Functions\fields
+     * @covers \Jasny\Persist\Option\Functions\fields
      */
     public function testFieldsFunction()
     {
@@ -42,7 +42,7 @@ class FieldsOptionTest extends TestCase
     }
 
     /**
-     * @covers \Persist\Option\Functions\omit
+     * @covers \Jasny\Persist\Option\Functions\omit
      */
     public function testOmitFunction()
     {

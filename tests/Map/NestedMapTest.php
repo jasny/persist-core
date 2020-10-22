@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Persist\Tests\Map;
+namespace Jasny\Tests\Persist\Map;
 
 use Improved\IteratorPipeline\Pipeline;
-use Persist\Map\ChildMap;
-use Persist\Map\FieldMap;
-use Persist\Map\NestedMap;
+use Jasny\Persist\Map\ChildMap;
+use Jasny\Persist\Map\FieldMap;
+use Jasny\Persist\Map\NestedMap;
 use PHPUnit\Framework\TestCase;
 
 use function Jasny\objectify;
 
 /**
- * @covers \Persist\Map\NestedMap
- * @covers \Persist\Map\Traits\CombineTrait
+ * @covers \Jasny\Persist\Map\NestedMap
+ * @covers \Jasny\Persist\Map\Traits\CombineTrait
  */
 class NestedMapTest extends TestCase
 {

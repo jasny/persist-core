@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Persist\Filter;
+namespace Jasny\Persist\Filter;
 
 /**
  * Representation of an item of filter passed to a query builder.

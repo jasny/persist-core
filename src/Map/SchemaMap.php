@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Persist\Map;
+namespace Jasny\Persist\Map;
 
-use Persist\Exception\LookupException;
-use Persist\Option\HydrateOption;
-use Persist\Option\LookupOption;
-use Persist\Option\OptionInterface;
-use Persist\Schema\Relationship;
-use Persist\Schema\SchemaInterface;
+use Jasny\Persist\Exception\LookupException;
+use Jasny\Persist\Option\HydrateOption;
+use Jasny\Persist\Option\LookupOption;
+use Jasny\Persist\Option\OptionInterface;
+use Jasny\Persist\Schema\Relationship;
+use Jasny\Persist\Schema\SchemaInterface;
 use Jasny\Immutable;
 
 /**

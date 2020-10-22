@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Persist\Tests\Map;
+namespace Jasny\Tests\Persist\Map;
 
 use Improved\IteratorPipeline\Pipeline;
-use Persist\Map\FieldMap;
+use Jasny\Persist\Map\FieldMap;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Persist\Map\FieldMap
+ * @covers \Jasny\Persist\Map\FieldMap
  */
 class FieldMapTest extends TestCase
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Persist\Option;
+namespace Jasny\Persist\Option;
 
 /**
  * Limit the query result.
