@@ -29,15 +29,10 @@ class ApplyMapToFilter implements ComposerInterface
     /**
      * Apply items to given query.
      *
-     * @param object               $accumulator
+     * @param TQuery&object        $accumulator
      * @param iterable<FilterItem> $filter
      * @param OptionInterface[]    $opts
      * @return iterable<FilterItem>
-     *
-     * @phpstan-param TQuery&object        $accumulator
-     * @phpstan-param iterable<FilterItem> $items
-     * @phpstan-param OptionInterface[]    $opts
-     * @phpstan-return iterable<FilterItem>
      */
     public function compose(object $accumulator, iterable $filter, array &$opts = []): iterable
     {

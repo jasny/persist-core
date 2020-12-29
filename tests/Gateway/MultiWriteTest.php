@@ -19,7 +19,7 @@ use Psr\Log\LoggerInterface;
  */
 class MultiWriteTest extends TestCase
 {
-    //use SafeMocksTrait;
+    use SafeMocksTrait;
 
     protected MultiWrite $gateway;
 

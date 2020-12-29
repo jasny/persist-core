@@ -22,11 +22,6 @@ class UnsupportedTest extends TestCase
         $this->gateway = new Unsupported();
     }
 
-    public function testGetStorage()
-    {
-        $this->assertNull($this->gateway->getStorage());
-    }
-
     public function testWithLogging()
     {
         /** @var LoggerInterface|MockObject $builder */

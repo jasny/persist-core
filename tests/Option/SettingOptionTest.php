@@ -70,34 +70,25 @@ class SettingOptionTest extends TestCase
     public function resolutionProvider()
     {
         return [
-            'conflict' => ['conflict'],
-            'ignore'   => ['ignore'],
-            'replace'  => ['replace'],
-            'update'   => ['update'],
+            'ignore'   => ['ignore', 'ignore_existing'],
+            'replace'  => ['replace', 'replace_existing'],
+            'update'   => ['update', 'update_existing'],
         ];
     }
 
     /**
-     * @covers \Jasny\Persist\Option\Functions\existing
+     * @covers \Jasny\Persist\Option\Functions\ignore_existing
+     * @covers \Jasny\Persist\Option\Functions\replace_existing
+     * @covers \Jasny\Persist\Option\Functions\update_existing
      * @dataProvider resolutionProvider
      */
-    public function testExistingFunction(string $resolution)
+    public function testExistingFunction(string $resolution, string $fnName)
     {
-        $option = opt\existing($resolution);
+        $fn = 'Jasny\Persist\Option\Functions\\' . $fnName;
+        $option = $fn();
 
         $this->assertInstanceOf(SettingOption::class, $option);
         $this->assertEquals('existing', $option->getName());
         $this->assertEquals($resolution, $option->getValue());
-    }
-
-    /**
-     * @covers \Jasny\Persist\Option\Functions\existing
-     */
-    public function testExistingFunctionWithUnsupportedResolution()
-    {
-        $this->expectException(\UnexpectedValueException::class);
-        $this->expectExceptionMessage("Unsupported conflict resolution option 'foo-bar'");
-
-        opt\existing('foo-bar');
     }
 }

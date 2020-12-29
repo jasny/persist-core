@@ -30,15 +30,10 @@ class ApplyMapToItems implements ComposerInterface
     /**
      * Apply items to given query.
      *
-     * @param object            $accumulator
-     * @param iterable          $items
+     * @param TQuery&object     $accumulator
+     * @param iterable<TItem>   $items
      * @param OptionInterface[] $opts
-     * @return iterable
-     *
-     * @phpstan-param TQuery&object     $accumulator
-     * @phpstan-param iterable<TItem>   $items
-     * @phpstan-param OptionInterface[] $opts
-     * @phpstan-return iterable<TItem>
+     * @return iterable<TItem>
      */
     public function compose(object $accumulator, iterable $items, array &$opts = []): iterable
     {

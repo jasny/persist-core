@@ -29,15 +29,10 @@ class ApplyMapToUpdate implements ComposerInterface
     /**
      * Apply items to given query.
      *
-     * @param object                      $accumulator
+     * @param TQuery&object               $accumulator
      * @param iterable<UpdateInstruction> $instructions
      * @param OptionInterface[]           $opts
-     * @return iterable
-     *
-     * @phpstan-param TQuery&object               $accumulator
-     * @phpstan-param iterable<UpdateInstruction> $instructions
-     * @phpstan-param OptionInterface[]           $opts
-     * @phpstan-return iterable<UpdateInstruction>
+     * @return iterable<UpdateInstruction>
      */
     public function compose(object $accumulator, iterable $instructions, array &$opts = []): iterable
     {

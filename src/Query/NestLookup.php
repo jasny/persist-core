@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Jasny\Persist\Query;
 
-use Jasny\Persist\Exception\LookupException;
 use Jasny\Persist\Option\FieldsOption;
 use Jasny\Persist\Option\HydrateOption;
 use Jasny\Persist\Option\LookupOption;
@@ -14,6 +13,9 @@ use function Jasny\str_contains;
 
 /**
  * Inject hydrate and lookups that specified a `for` collection into their parent lookup option.
+ *
+ * @template TQuery
+ * @implements ComposerInterface<TQuery,mixed,mixed>
  */
 class NestLookup implements ComposerInterface
 {
@@ -28,16 +30,11 @@ class NestLookup implements ComposerInterface
     /**
      * Apply items to given query.
      *
-     * @param object            $accumulator
-     * @param iterable          $items
-     * @param OptionInterface[] $opts
-     * @return iterable
-     *
      * @template TItem
-     * @phpstan-param TQuery&object     $accumulator
-     * @phpstan-param iterable<TItem>   $items
-     * @phpstan-param OptionInterface[] $opts
-     * @phpstan-return iterable<TItem>
+     * @param TQuery&object     $accumulator
+     * @param iterable<TItem>   $items
+     * @param OptionInterface[] $opts
+     * @return iterable<TItem>
      */
     public function compose(object $accumulator, iterable $items, array &$opts = []): iterable
     {
