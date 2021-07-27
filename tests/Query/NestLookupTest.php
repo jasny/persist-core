@@ -24,6 +24,8 @@ class NestLookupTest extends TestCase
 
     public function test()
     {
+        $acc = (object)[];
+
         $mockOpt1 = $this->createMock(OptionInterface::class);
         $mockOpt2 = $this->createMock(OptionInterface::class);
 
@@ -36,7 +38,7 @@ class NestLookupTest extends TestCase
 
         $opts = [$mockOpt1, $foo, $fooA, $mockOpt2, $bar, $barA, $barA1, $fooB];
 
-        $this->composer->prepare([], $opts);
+        $this->composer->compose($acc, [], $opts);
 
         $this->assertCount(4, $opts);
 
@@ -45,18 +47,25 @@ class NestLookupTest extends TestCase
 
         $this->assertInstanceOf(LookupOption::class, $opts[1]);
         $this->assertEquals('foo', $opts[1]->getRelated());
-        $this->assertSame([$fooA, $fooB], $opts[1]->getOpts());
+
+        $this->assertEquals(
+            [$fooA->for(null), $fooB->for(null)],
+            $opts[1]->getOpts()
+        );
     }
 
     public function testNop()
     {
+        $acc = (object)[];
+
         $opts = [
             $this->createMock(OptionInterface::class),
             $this->createMock(OptionInterface::class),
         ];
+
         $expected = $opts;
 
-        $this->composer->prepare([], $opts);
+        $this->composer->compose($acc, [], $opts);
 
         $this->assertSame($expected, $opts);
     }

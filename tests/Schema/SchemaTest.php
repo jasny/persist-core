@@ -275,15 +275,15 @@ class SchemaTest extends TestCase
         return [
             'foo.x' => [
                 ['foo', 'x'],
-                'No relationship found for foo.x',
+                "No relationship found for field 'x' of 'foo'",
             ],
             'foo.id' => [
                 ['foo', 'id'],
-                'Multiple relationships found for foo.id',
+                "Multiple relationships found for field 'id' of 'foo'",
             ],
             'foo.wos' => [
                 ['foo', 'wos'],
-                'No relationship found for foo.wos',
+                "No relationship found for field 'wos' of 'foo'",
             ],
         ];
     }

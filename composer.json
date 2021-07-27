@@ -16,7 +16,7 @@
         "source": "https://github.com/jasny/persist-core"
     },
     "require": {
-        "php": ">=7.4.0",
+        "php": ">=8.0",
         "improved/iterable": "~0.1",
         "improved/type": "~0.1",
         "jasny/dotkey": "dev-master as 2.1",

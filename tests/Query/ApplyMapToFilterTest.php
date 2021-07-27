@@ -41,13 +41,14 @@ class ApplyMapToFilterTest extends TestCase
 
     public function test()
     {
+        $acc = (object)[];
         $filter = $this->createFilter();
 
         $map = new FieldMap(self::MAP);
         $opts = [opt\setting('map', $map)];
 
         $applyMap = new ApplyMapToFilter();
-        $iterator = $applyMap->prepare($filter, $opts);
+        $iterator = $applyMap->compose($acc, $filter, $opts);
 
         $this->assertIsIterable($iterator);
         $mapped = i\iterable_to_array($iterator, true);
@@ -75,10 +76,11 @@ class ApplyMapToFilterTest extends TestCase
      */
     public function testNoMap(array $opts)
     {
+        $acc = (object)[];
         $filter = $this->createFilter();
 
         $applyMap = new ApplyMapToFilter();
-        $iterator = $applyMap->prepare($filter, $opts);
+        $iterator = $applyMap->compose($acc, $filter, $opts);
 
         $this->assertSame($filter, $iterator);
     }

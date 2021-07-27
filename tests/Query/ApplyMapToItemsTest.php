@@ -25,6 +25,7 @@ class ApplyMapToItemsTest extends TestCase
 
     public function test()
     {
+        $acc = (object)[];
         $items = [
             ['id' => 1, 'name' => 'one', 'foo' => ['x'], 'skippy' => 42],
             ['id' => 2, 'name' => 'two', 'foo' => ['y'], 'bar' => 'b'],
@@ -41,7 +42,7 @@ class ApplyMapToItemsTest extends TestCase
         $opts = [opt\setting('map', $map)];
 
         $applyMap = new ApplyMapToItems();
-        $iterator = $applyMap->prepare($items, $opts);
+        $iterator = $applyMap->compose($acc, $items, $opts);
 
         $this->assertIsIterable($iterator);
         $mapped = i\iterable_to_array($iterator, true);
@@ -64,6 +65,7 @@ class ApplyMapToItemsTest extends TestCase
      */
     public function testNoMap(array $opts)
     {
+        $acc = (object)[];
         $items = [
             ['id' => 1, 'name' => 'one', 'foo' => ['x'], 'skippy' => 42],
             ['id' => 2, 'name' => 'two', 'foo' => ['y'], 'bar' => 'b'],
@@ -71,7 +73,7 @@ class ApplyMapToItemsTest extends TestCase
         ];
 
         $applyMap = new ApplyMapToItems();
-        $mapped = $applyMap->prepare($items, $opts);
+        $mapped = $applyMap->compose($acc, $items, $opts);
 
         $this->assertSame($items, $mapped);
     }

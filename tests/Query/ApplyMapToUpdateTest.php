@@ -26,6 +26,7 @@ class ApplyMapToUpdateTest extends TestCase
 
     public function test()
     {
+        $acc = (object)[];
         $instructions = [
             new UpdateInstruction('set', ['id' => 42, 'bar' => 'hello']),
             new UpdateInstruction('inc', ['id' => 1, 'foo.bar.qux' => 9]),
@@ -36,7 +37,7 @@ class ApplyMapToUpdateTest extends TestCase
         $opts = [opt\setting('map', $map)];
 
         $applyMap = new ApplyMapToUpdate();
-        $iterator = $applyMap->prepare($instructions, $opts);
+        $iterator = $applyMap->compose($acc, $instructions, $opts);
         $mapped = i\iterable_to_array($iterator);
 
         $this->assertCount(3, $mapped);
@@ -59,6 +60,7 @@ class ApplyMapToUpdateTest extends TestCase
      */
     public function testNoMap(array $opts)
     {
+        $acc = (object)[];
         $instructions = [
             new UpdateInstruction('set', ['id' => 42, 'bar' => 'hello']),
             new UpdateInstruction('inc', ['id' => 1, 'foo.bar.qux' => 9]),
@@ -66,7 +68,7 @@ class ApplyMapToUpdateTest extends TestCase
         ];
 
         $applyMap = new ApplyMapToUpdate();
-        $mapped = $applyMap->prepare($instructions, $opts);
+        $mapped = $applyMap->compose($acc, $instructions, $opts);
 
         $this->assertSame($instructions, $mapped);
     }

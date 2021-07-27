@@ -65,8 +65,6 @@ function hydrate(string $field): HydrateOption
 /**
  * Load items from related collection.
  * Uses collection name as field name, this can be changed with `as()`.
- *
- * @param string $related
  */
 function lookup(string $related): LookupOption
 {
@@ -76,8 +74,6 @@ function lookup(string $related): LookupOption
 /**
  * Count items from related collection.
  * Uses collection name as field name, this can be changed with `as()`.
- *
- * @param string $related
  */
 function count(string $related): LookupOption
 {

@@ -31,8 +31,10 @@ class FilterParserTest extends TestCase
      */
     public function testParse(array $filter, FilterItem $expected)
     {
+        $acc = (object)[];
+
         $parser = new FilterParser();
-        $iterator = $parser->prepare($filter);
+        $iterator = $parser->compose($acc, $filter);
         $result = i\iterable_to_array($iterator);
 
         $this->assertEquals([$expected], $result);
@@ -55,8 +57,10 @@ class FilterParserTest extends TestCase
      */
     public function testInvalidParentheses(array $filter)
     {
+        $acc = (object)[];
+
         $parser = new FilterParser();
-        $iterator = $parser->prepare($filter);
+        $iterator = $parser->compose($acc, $filter);
 
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage(sprintf("Invalid filter item '%s': Bad use of parentheses", key($filter)));
@@ -66,12 +70,14 @@ class FilterParserTest extends TestCase
 
     public function testParseFilters()
     {
+        $acc = (object)[];
+
         $data = $this->provider();
         $filter = array_merge(...array_column($data, 0));
         $expected = array_column($data, 1);
 
         $parser = new FilterParser();
-        $iterator = $parser->prepare($filter);
+        $iterator = $parser->compose($acc, $filter);
         $result = i\iterable_to_array($iterator);
 
         $this->assertEquals($expected, $result);
@@ -79,6 +85,8 @@ class FilterParserTest extends TestCase
 
     public function testSkipFilterItem()
     {
+        $acc = (object)[];
+        
         $filter = [
             new FilterItem('a', '', null),
             new FilterItem('b', '', null),
@@ -86,7 +94,7 @@ class FilterParserTest extends TestCase
         ];
 
         $parser = new FilterParser();
-        $iterator = $parser->prepare($filter);
+        $iterator = $parser->compose($acc, $filter);
         $result = i\iterable_to_array($iterator);
 
         $this->assertIsArray($result);
