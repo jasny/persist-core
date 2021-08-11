@@ -20,7 +20,7 @@ trait ProxyTrait
      * @param OptionInterface[] $opts
      * @return static&MapInterface
      */
-    public function withOpts(array $opts)
+    public function withOpts(array $opts): MapInterface
     {
         $inner = $this->inner->withOpts($opts);
 
