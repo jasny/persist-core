@@ -27,7 +27,7 @@ final class Composer implements ComposerInterface
         $this->steps = Pipeline::with($steps)
             ->map(fn(ComposerInterface $step) => $step instanceof self ? $step->steps : $step)
             ->flatten()
-            ->sort(fn(ComposerInterface $step) => $step->getPriority())
+            ->sort(fn(ComposerInterface $a, ComposerInterface $b) => $a->getPriority() <=> $b->getPriority(), false)
             ->toArray();
     }
 

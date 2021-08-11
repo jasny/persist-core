@@ -29,14 +29,9 @@ class FilterParser implements ComposerInterface
     /**
      * Apply items to given query.
      *
-     * @param object            $accumulator
-     * @param iterable          $filter
-     * @param OptionInterface[] $opts
-     * @return iterable
-     *
-     * @param TQuery&object     $accumulator
-     * @param iterable<mixed>   $filter
-     * @param OptionInterface[] $opts
+     * @param TQuery&object                               $accumulator
+     * @param iterable<FilterItem>|iterable<string,mixed> $filter
+     * @param OptionInterface[]                           $opts
      * @return iterable<FilterItem>
      */
     public function compose(object $accumulator, iterable $filter, array &$opts = []): iterable
