@@ -54,8 +54,7 @@ class SetMap implements ComposerInterface
         $hasMap = false;
 
         foreach ($opts as &$opt) {
-            if (
-                $opt instanceof SettingOption &&
+            if ($opt instanceof SettingOption &&
                 $opt->getName() === 'map' &&
                 $opt->getValue() instanceof MapInterface
             ) {

@@ -58,19 +58,19 @@ class Result extends Pipeline
         if (method_exists($class, '__unserialize')) {
             $refl = new \ReflectionClass($class);
 
-            $fn = static function(array|object $doc) use ($refl): object {
+            $fn = static function (array|object $doc) use ($refl): object {
                 $item = $refl->newInstanceWithoutConstructor();
                 $item->__unserialize(is_object($doc) ? object_get_properties($doc, true) : $doc);
                 return $item;
             };
         } elseif (method_exists($class, '__wakeup')) {
-            $fn = static function(array|object $doc) use ($class): object {
+            $fn = static function (array|object $doc) use ($class): object {
                 return $class::__wakeup(is_object($doc) ? object_get_properties($doc, true) : $doc);
             };
         } else {
             $refl = new \ReflectionClass($class);
 
-            $fn = static function(array|object $doc) use ($refl): object {
+            $fn = static function (array|object $doc) use ($refl): object {
                 $item = $refl->newInstanceWithoutConstructor();
                 object_set_properties($item, (array)$doc, $item instanceof \stdClass);
                 return $item;
