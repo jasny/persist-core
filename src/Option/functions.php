@@ -114,12 +114,8 @@ function flag(string $name): FlagOption
 
 /**
  * Generic setting for a query.
- *
- * @param string $name
- * @param mixed  $value
- * @return SettingOption
  */
-function setting(string $name, $value): SettingOption
+function setting(string $name, mixed $value): SettingOption
 {
     return new SettingOption($name, $value);
 }

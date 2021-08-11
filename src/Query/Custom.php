@@ -20,8 +20,8 @@ class Custom implements ComposerInterface
     protected \Closure $callback;
 
     /**
-     * @phpstan-param int                                                             $priority
-     * @phpstan-param callable(TQuery,iterable<TIn>,OptionInterface[]):iterable<TOut> $callback
+     * @param int                                                             $priority
+     * @param callable(TQuery,iterable<TIn>,OptionInterface[]):iterable<TOut> $callback
      */
     public function __construct(int $priority, callable $callback)
     {

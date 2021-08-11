@@ -31,10 +31,8 @@ class HydrateOption implements OptionInterface
 
     /**
      * Use an alternative name in the result.
-     *
-     * @return static
      */
-    public function as(string $name): self
+    public function as(string $name): static
     {
         return $this->withProperty('name', $name);
     }
@@ -42,44 +40,32 @@ class HydrateOption implements OptionInterface
     /**
      * Specify the field that the lookup applies to.
      * Null for the main collection of the query.
-     *
-     * @param string|null $field
-     * @return static
      */
-    public function for(?string $field): self
+    public function for(?string $field): static
     {
         return $this->withProperty('target', $field);
     }
 
     /**
      * Specify which fields to include in the hydrated data.
-     *
-     * @param string ...$fields
-     * @return static
      */
-    public function fields(string ...$fields): self
+    public function fields(string ...$fields): static
     {
         return $this->withPropertyItem('opts', new FieldsOption($fields));
     }
 
     /**
      * Specify which field to exclude from the hydrated data.
-     *
-     * @param string ...$fields
-     * @return static
      */
-    public function omit(string ...$fields): self
+    public function omit(string ...$fields): static
     {
         return $this->withPropertyItem('opts', new FieldsOption($fields, true /* negate */));
     }
 
     /**
      * Add custom option(s).
-     *
-     * @param OptionInterface ...$opts
-     * @return static
      */
-    public function with(OptionInterface ...$opts): self
+    public function with(OptionInterface ...$opts): static
     {
         return $this->withProperty('opts', array_merge($this->opts, $opts));
     }
@@ -88,8 +74,6 @@ class HydrateOption implements OptionInterface
     /**
      * Get the field this lookup applies to.
      * Null for the main collection of the query.
-     *
-     * @return string|null
      */
     public function getTarget(): ?string
     {
@@ -105,7 +89,7 @@ class HydrateOption implements OptionInterface
     }
 
     /**
-     * The the field name for the result.
+     * The field name for the result.
      */
     public function getName(): string
     {

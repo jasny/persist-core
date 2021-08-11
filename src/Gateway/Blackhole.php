@@ -6,6 +6,7 @@ namespace Jasny\Persist\Gateway;
 
 use Jasny\Persist\Option\OptionInterface;
 use Jasny\Persist\Result\Result;
+use Jasny\Persist\Update\UpdateInstruction;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -18,10 +19,9 @@ final class Blackhole implements GatewayInterface
     /**
      * Does nothing.
      *
-     * @param LoggerInterface $logger
      * @return $this
      */
-    public function withLogging(LoggerInterface $logger)
+    public function withLogging(LoggerInterface $logger): self
     {
         return $this;
     }
@@ -45,7 +45,7 @@ final class Blackhole implements GatewayInterface
     /**
      * @inheritDoc
      */
-    public function update(array $filter, $instruction, OptionInterface ...$opts): Result
+    public function update(array $filter, UpdateInstruction|array $instructions, OptionInterface ...$opts): Result
     {
         return new Result();
     }
@@ -53,7 +53,7 @@ final class Blackhole implements GatewayInterface
     /**
      * @inheritDoc
      */
-    public function save($item, OptionInterface ...$opts): Result
+    public function save(array|object $item, OptionInterface ...$opts): Result
     {
         return new Result([$item]);
     }

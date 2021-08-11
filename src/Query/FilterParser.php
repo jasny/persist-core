@@ -34,10 +34,10 @@ class FilterParser implements ComposerInterface
      * @param OptionInterface[] $opts
      * @return iterable
      *
-     * @phpstan-param TQuery&object     $accumulator
-     * @phpstan-param iterable<mixed>   $filter
-     * @phpstan-param OptionInterface[] $opts
-     * @phpstan-return iterable<FilterItem>
+     * @param TQuery&object     $accumulator
+     * @param iterable<mixed>   $filter
+     * @param OptionInterface[] $opts
+     * @return iterable<FilterItem>
      */
     public function compose(object $accumulator, iterable $filter, array &$opts = []): iterable
     {
@@ -54,13 +54,13 @@ class FilterParser implements ComposerInterface
     /**
      * Parse the key into field and operator.
      *
+     * @param string $key
      * @return array{field:string,operator:string}
-     * @throws \UnexpectedValueException
      */
     protected function parse(string $key): array
     {
         // Quick return for field without an operator
-        if (strpos($key, '(') === false && strpos($key, ')') === false) {
+        if (!str_contains($key, '(') && !str_contains($key, ')')) {
             return ['field' => trim($key), 'operator' => ''];
         }
 

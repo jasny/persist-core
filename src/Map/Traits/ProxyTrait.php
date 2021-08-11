@@ -20,7 +20,7 @@ trait ProxyTrait
      * @param OptionInterface[] $opts
      * @return static&MapInterface
      */
-    public function withOpts(array $opts): MapInterface
+    public function withOpts(array $opts): static
     {
         $inner = $this->inner->withOpts($opts);
 
@@ -45,11 +45,8 @@ trait ProxyTrait
     /**
      * Map App field to DB field.
      * Returns null if field isn't mapped and false if field is omitted.
-     *
-     * @param string $field
-     * @return string|false|null
      */
-    public function applyToField(string $field)
+    public function applyToField(string $field): string|false|null
     {
         return $this->inner->applyToField($field);
     }
@@ -57,14 +54,11 @@ trait ProxyTrait
     /**
      * Get function to apply mapping to items, so the data can be used by the DB.
      *
-     * @param array|object $item
-     * @return array|object
-     *
      * @template TItem
-     * @phpstan-param TItem&(array|object) $item
-     * @phpstan-return TItem
+     * @phpstan-param TItem&(array<string,mixed>|object) $item
+     * @phpstan-return TItem&(array<string,mixed>|object)
      */
-    public function apply($item)
+    public function apply(array|object $item): array|object
     {
         return $this->inner->apply($item);
     }
@@ -72,14 +66,11 @@ trait ProxyTrait
     /**
      * Get function to apply mapping to items of query result.
      *
-     * @param array|object $item
-     * @return array|object
-     *
      * @template TItem
-     * @phpstan-param TItem&(array|object) $item
-     * @phpstan-return TItem
+     * @phpstan-param TItem&(array<string,mixed>|object) $item
+     * @phpstan-return TItem&(array<string,mixed>|object)
      */
-    public function applyInverse($item)
+    public function applyInverse(array|object $item): array|object
     {
         return $this->inner->applyInverse($item);
     }

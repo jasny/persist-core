@@ -27,10 +27,10 @@ class ComposedGateway implements GatewayInterface
     /**
      * MultiWrite constructor.
      *
-     * @phpstan-param GatewayInterface<TItem>|GatewayInterface<null> $read
-     * @phpstan-param GatewayInterface<TItem>|GatewayInterface<null> $update
-     * @phpstan-param GatewayInterface<TItem>|GatewayInterface<null> $save
-     * @phpstan-param GatewayInterface<TItem>|GatewayInterface<null> $delete
+     * @param GatewayInterface<TItem>|GatewayInterface<null> $read
+     * @param GatewayInterface<TItem>|GatewayInterface<null> $update
+     * @param GatewayInterface<TItem>|GatewayInterface<null> $save
+     * @param GatewayInterface<TItem>|GatewayInterface<null> $delete
      */
     public function __construct(
         GatewayInterface $read,
@@ -48,7 +48,7 @@ class ComposedGateway implements GatewayInterface
     /**
      * @inheritDoc
      */
-    public function withLogging(LoggerInterface $logger)
+    public function withLogging(LoggerInterface $logger): static
     {
         return $this
             ->withProperty('read', $this->read->withLogging($logger))
@@ -76,7 +76,7 @@ class ComposedGateway implements GatewayInterface
     /**
      * @inheritDoc
      */
-    public function save($item, OptionInterface ...$opts): Result
+    public function save(array|object $item, OptionInterface ...$opts): Result
     {
         return $this->save->save($item, ...$opts);
     }

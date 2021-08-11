@@ -97,8 +97,12 @@ class NestLookup implements ComposerInterface
      * @param OptionInterface[]          $opts
      * @return bool
      */
-    protected function injectLookupForTarget(string $target, string $field, $lookup, array &$opts): bool
-    {
+    protected function injectLookupForTarget(
+        string $target,
+        string $field,
+        LookupOption|HydrateOption $lookup,
+        array &$opts
+    ): bool {
         foreach ($opts as &$opt) {
             $found = ($opt instanceof LookupOption || $opt instanceof HydrateOption)
                 && $opt !== $lookup

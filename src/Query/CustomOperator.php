@@ -25,8 +25,8 @@ class CustomOperator implements ComposerInterface
     protected \Closure $callback;
 
     /**
-     * @phpstan-param string                                                  $operator
-     * @phpstan-param callable(TQuery,TQueryItem,array<OptionInterface>):void $callback
+     * @param string                                                  $operator
+     * @param callable(TQuery,TQueryItem,array<OptionInterface>):void $callback
      */
     public function __construct(string $operator, callable $callback)
     {
@@ -40,7 +40,7 @@ class CustomOperator implements ComposerInterface
      * @param int $priority  Priority between 500 and 999
      * @return static
      */
-    public function withPriority(int $priority): self
+    public function withPriority(int $priority): static
     {
         if ($priority < 500 || $priority >= 1000) {
             throw new \InvalidArgumentException("Priority should be between 800 and 999");
@@ -60,15 +60,10 @@ class CustomOperator implements ComposerInterface
     /**
      * Apply items to given query.
      *
-     * @param object                                           $accumulator
-     * @param iterable<FilterItem>|iterable<UpdateInstruction> $items
-     * @param OptionInterface[]                                $opts
-     * @return iterable<FilterItem>|iterable<UpdateInstruction>
-     *
-     * @phpstan-param TQuery&object        $accumulator
-     * @phpstan-param iterable<TQueryItem> $items
-     * @phpstan-param OptionInterface[]    $opts
-     * @phpstan-return iterable<TQueryItem>
+     * @param TQuery&object        $accumulator
+     * @param iterable<TQueryItem> $items
+     * @param OptionInterface[]    $opts
+     * @return iterable<TQueryItem>
      */
     public function compose(object $accumulator, iterable $items, array &$opts = []): iterable
     {

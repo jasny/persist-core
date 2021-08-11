@@ -72,7 +72,7 @@ final class ChildMap implements MapInterface
     /**
      * @inheritDoc
      */
-    public function applyToField(string $field)
+    public function applyToField(string $field): string|false|null
     {
         if (!str_starts_with($field, $this->field . '.')) {
             return null;
@@ -86,7 +86,7 @@ final class ChildMap implements MapInterface
     /**
      * @inheritDoc
      */
-    public function apply($item)
+    public function apply(array|object $item): array|object
     {
         return $this->applyToItem(
             $item,
@@ -97,7 +97,7 @@ final class ChildMap implements MapInterface
     /**
      * @inheritDoc
      */
-    public function applyInverse($item)
+    public function applyInverse(array|object $item): array|object
     {
         return $this->applyToItem(
             $item,
@@ -108,11 +108,12 @@ final class ChildMap implements MapInterface
     /**
      * Apply map or inverse map to item.
      *
-     * @param array|object                 $item
-     * @param callable(mixed $value):mixed $apply
-     * @return array|object
+     * @template TItem
+     * @phpstan-param TItem&(array<string,object>|object) $item
+     * @phpstan-param callable(mixed $value):mixed        $apply
+     * @phpstan-return TItem&(array<string,object>|object)
      */
-    protected function applyToItem($item, callable $apply)
+    protected function applyToItem(array|object $item, callable $apply): array|object
     {
         if (!DotKey::on($item)->exists($this->field)) {
             return $item;
@@ -131,12 +132,13 @@ final class ChildMap implements MapInterface
     /**
      * Set new value for item, if value has changed.
      *
-     * @param array|object $item
-     * @param mixed        $value
-     * @param mixed        $newValue
-     * @return array|object
+     * @template TItem
+     * @phpstan-param TItem&(array<string,object>|object) $item
+     * @phpstan-param mixed                               $value
+     * @phpstan-param mixed                               $newValue
+     * @phpstan-return TItem&(array<string,object>|object)
      */
-    protected function updateItem($item, $value, $newValue)
+    protected function updateItem(array|object $item, mixed $value, mixed $newValue): array|object
     {
         // Not changed or same object
         if ($value === $newValue) {

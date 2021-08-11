@@ -49,8 +49,6 @@ final class Relationship
 
     /**
      * Swap left and right sides.
-     *
-     * @return static
      */
     public function swapped(): self
     {

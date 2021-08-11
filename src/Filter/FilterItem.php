@@ -11,19 +11,12 @@ class FilterItem
 {
     protected string $field;
     protected string $operator;
-
-    /** @var mixed */
-    protected $value;
-
+    protected mixed $value;
 
     /**
      * FilterItem constructor.
-     *
-     * @param string $field
-     * @param string $operator
-     * @param mixed $value
      */
-    public function __construct(string $field, string $operator, $value)
+    public function __construct(string $field, string $operator, mixed $value)
     {
         $this->field = $field;
         $this->operator = $operator;
@@ -48,10 +41,8 @@ class FilterItem
 
     /**
      * Get the filter value.
-     *
-     * @return mixed
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }

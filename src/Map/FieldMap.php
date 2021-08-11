@@ -38,7 +38,7 @@ final class FieldMap implements MapInterface
     /**
      * @inheritDoc
      */
-    public function applyToField(string $field)
+    public function applyToField(string $field): string|false|null
     {
         [$top, $rest] = explode('.', $field, 2) + [1 => null];
 
@@ -54,7 +54,7 @@ final class FieldMap implements MapInterface
     /**
      * @inheritDoc
      */
-    public function apply($item)
+    public function apply(array|object $item): array|object
     {
         return $this->applyMap($this->map, $item);
     }
@@ -62,25 +62,20 @@ final class FieldMap implements MapInterface
     /**
      * @inheritDoc
      */
-    public function applyInverse($item)
+    public function applyInverse(array|object $item): array|object
     {
         return $this->applyMap($this->inverse, $item);
     }
 
     /**
      * Apply mapping to item.
-     * Returns `null` if there are no changes.
-     *
-     * @param array<string,string|false> $map
-     * @param array|object               $item
-     * @return array|object
      *
      * @template TItem
-     * @phpstan-param array<string,string|false> $map
-     * @phpstan-param TItem&(array|object)       $item
-     * @phpstan-return TItem
+     * @phpstan-param array<string,string|false>         $map
+     * @phpstan-param TItem&(array<string,mixed>|object) $item
+     * @phpstan-return TItem&(array<string,mixed>|object)
      */
-    protected function applyMap(array $map, $item)
+    protected function applyMap(array $map, array|object $item): array|object
     {
         $set = [];
         $remove = [];

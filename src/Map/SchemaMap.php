@@ -39,13 +39,8 @@ final class SchemaMap implements MapInterface
 
     /**
      * Add a map for a nested field (without a predefined relationship).
-     *
-     * @param string       $name          Field name
-     * @param string       $target
-     * @param Relationship $relationship  Related collection name
-     * @return static
      */
-    protected function withNested(string $name, string $target, Relationship $relationship): self
+    protected function withNested(string $name, string $target, Relationship $relationship): static
     {
         $relatedMap = $this->schema->getMapOf($relationship->getRelatedCollection());
 
@@ -69,9 +64,11 @@ final class SchemaMap implements MapInterface
     }
 
     /**
-     * @param MapInterface $map
-     * @param array $levels
-     * @param callable $callback
+     * Recursively set nested map
+     *
+     * @param MapInterface                  $map
+     * @param string[]                      $levels
+     * @param callable(NestedMap):NestedMap $callback
      * @return MapInterface
      */
     private function traverseNested(MapInterface $map, array $levels, callable $callback): MapInterface
@@ -105,7 +102,7 @@ final class SchemaMap implements MapInterface
      * @param OptionInterface[] $opts
      * @return static
      */
-    public function withOpts(array $opts): self
+    public function withOpts(array $opts): static
     {
         return $this
             ->withInnerOpts($opts)
@@ -138,7 +135,7 @@ final class SchemaMap implements MapInterface
      * @param OptionInterface[]    $opts
      * @return static
      */
-    protected function applyOpts(?string $baseTarget, array $cols, array $opts): self
+    protected function applyOpts(?string $baseTarget, array $cols, array $opts): static
     {
         $map = $this;
 
@@ -172,11 +169,9 @@ final class SchemaMap implements MapInterface
     }
 
     /**
-     * @param LookupOption|HydrateOption $opt
-     * @param string                     $target
-     * @return LookupException
+     * Create a lookup exception
      */
-    private function lookupException($opt, string $target): LookupException
+    private function lookupException(LookupOption|HydrateOption $opt, string $target): LookupException
     {
         $type = $opt instanceof HydrateOption ? "hydrate" : "lookup";
         $rel = $opt instanceof HydrateOption ? $opt->getField() : $opt->getRelated();

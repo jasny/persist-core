@@ -20,16 +20,15 @@ class MultiWrite implements GatewayInterface
     use Immutable\With;
 
     /**
-     * @var GatewayInterface[]
-     * @phpstan-var array<GatewayInterface<TItem>>
+     * @var array<GatewayInterface<TItem>>
      */
     protected array $inner = [];
 
     /**
      * MultiWrite constructor.
      *
-     * @phpstan-param GatewayInterface<TItem> $main
-     * @phpstan-param GatewayInterface<TItem> ...$additional
+     * @param GatewayInterface<TItem> $main
+     * @param GatewayInterface<TItem> ...$additional
      */
     public function __construct(GatewayInterface $main, GatewayInterface ...$additional)
     {
@@ -41,7 +40,7 @@ class MultiWrite implements GatewayInterface
      *
      * @return GatewayInterface[]
      *
-     * @phpstan-return array<GatewayInterface<TItem>>
+     * @return array<GatewayInterface<TItem>>
      */
     public function getInner(): array
     {
@@ -49,12 +48,9 @@ class MultiWrite implements GatewayInterface
     }
 
     /**
-     * Enable logging for each underlying writer.
-     *
-     * @param LoggerInterface $logger
-     * @return static
+     * @inheritDoc
      */
-    public function withLogging(LoggerInterface $logger)
+    public function withLogging(LoggerInterface $logger): static
     {
         $inner = [];
 

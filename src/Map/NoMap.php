@@ -20,7 +20,7 @@ final class NoMap implements MapInterface
     /**
      * @inheritDoc
      */
-    public function applyToField(string $field)
+    public function applyToField(string $field): string|null|false
     {
         return null;
     }
@@ -28,7 +28,7 @@ final class NoMap implements MapInterface
     /**
      * @inheritDoc
      */
-    public function applyInverse($item)
+    public function applyInverse(array|object $item): array|object
     {
         return $item;
     }
@@ -36,7 +36,7 @@ final class NoMap implements MapInterface
     /**
      * @inheritDoc
      */
-    public function apply($item)
+    public function apply(array|object $item): array|object
     {
         return $item;
     }

@@ -2,15 +2,22 @@ parameters:
     level: 7
     paths:
         - src
+    excludePaths:
+        analyse:
+            - src/Gateway/Blackhole.php
+            - src/Gateway/Unsupported.php
     reportUnmatchedIgnoredErrors: false
     ignoreErrors:
         - /^Variable property access/
         - "/^Call to function is_callable\\(\\) with array\\(.+, '__unserialize'\\) will always evaluate to true/"
-        -
-            message: "/^Parameter #\\d+ \\$\\w+ \\(iterable<TValue>\\) of method .*::with\\(\\) should be contravariant with parameter \\$\\w+ \\(iterable\\) of method .*PipelineBuilder::with\\(\\)/"
-            path: src/Result/ResultBuilder.php
-        -
-            message: "/^Return type \\(.+Result<TItem>\\) of method .+::\\w+\\(\\) should be compatible with return type \\(.+Result<stdClass\\|TItem>\\)/"
-            path: src/Writer/MultiWrite.php
+        - "/should return array<string, (\\w+)>\\|\\(object&T\\w*\\) but returns array(<string, \\1>)?\\|object/"
+        - message: "/^Parameter #\\d+ \\$\\w+ \\(iterable<TValue>\\) of method .*::with\\(\\) should be contravariant with parameter \\$\\w+ \\(iterable\\) of method .*PipelineBuilder::with\\(\\)/"
+          path: src/Result/ResultBuilder.php
+        - message: "/^Return type \\(.+Result<TItem>\\) of method .+::\\w+\\(\\) should be compatible with return type \\(.+Result<stdClass\\|TItem>\\)/"
+          path: src/Writer/MultiWrite.php
+        - message: "/^Property Jasny\\\\Persist\\\\Gateway\\\\ComposedGateway::(\\S++) with generic interface Jasny\\\\Persist\\\\Gateway\\\\GatewayInterface does not specify its types: TItem/"
+          path: src/Gateway/ComposedGateway.php
+        - message: "/^Call to an undefined method object::__unserialize/"
+          path: src/Result/Result.php
 includes:
   	- vendor/phpstan/phpstan-strict-rules/rules.neon

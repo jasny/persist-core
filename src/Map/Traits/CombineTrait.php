@@ -27,11 +27,8 @@ trait CombineTrait
     /**
      * Map App field to DB field.
      * Returns null if field isn't mapped and false if field is omitted.
-     *
-     * @param string $appField
-     * @return string|false|null
      */
-    public function applyToField(string $appField)
+    public function applyToField(string $appField): string|false|null
     {
         $field = $appField;
 
@@ -49,14 +46,11 @@ trait CombineTrait
     /**
      * Get function to apply mapping to items, so the data can be used by the DB.
      *
-     * @param array|object $item
-     * @return array|object
-     *
      * @template TItem
-     * @phpstan-param TItem&(array|object) $item
-     * @phpstan-return TItem
+     * @phpstan-param TItem&(array<string,mixed>|object) $item
+     * @phpstan-return TItem&(array<string,mixed>|object)
      */
-    public function apply($item)
+    public function apply(array|object $item): array|object
     {
         foreach ($this->maps as $map) {
             $item = $map->apply($item);
@@ -68,14 +62,11 @@ trait CombineTrait
     /**
      * Get function to apply mapping to items of query result.
      *
-     * @param array|object $item
-     * @return array|object
-     *
      * @template TItem
-     * @phpstan-param TItem&(array|object) $item
-     * @phpstan-return TItem
+     * @phpstan-param TItem&(array<string,mixed>|object) $item
+     * @phpstan-return TItem&(array<string,mixed>|object)
      */
-    public function applyInverse($item)
+    public function applyInverse(array|object $item): array|object
     {
         foreach (array_reverse($this->maps) as $map) {
             $item = $map->applyInverse($item);

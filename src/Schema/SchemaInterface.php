@@ -34,8 +34,8 @@ interface SchemaInterface
     /**
      * Get a single relationship between two collections / tables.
      *
-     * @param string                    $collection  Name of left hand table / collection
-     * @param string                    $related     Name of right hand table / collection
+     * @param string                    $collection  Name of left-hand table / collection
+     * @param string                    $related     Name of right-hand table / collection
      * @param array<string,string>|null $match       Field pairs as ON in JOIN statement
      * @return Relationship
      * @throws NoRelationshipException  If no or more than one relationship matches

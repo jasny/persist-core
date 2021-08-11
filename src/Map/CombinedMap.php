@@ -18,7 +18,7 @@ final class CombinedMap implements MapInterface
     /**
      * StructuredFieldMap constructor.
      *
-     * @param MapInterface[] $maps
+     * @param MapInterface ...$maps
      */
     public function __construct(MapInterface ...$maps)
     {

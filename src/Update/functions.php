@@ -14,7 +14,7 @@ use Jasny\Persist\Update\UpdateInstruction;
  * @param mixed                      $value          Omit when using an array
  * @return UpdateInstruction
  */
-function set($fieldOrPairs, $value = null)
+function set(string|array $fieldOrPairs, mixed $value = null): UpdateInstruction
 {
     if (func_num_args() === 1) {
         $pairs = i\type_check($fieldOrPairs, 'array');
@@ -28,11 +28,8 @@ function set($fieldOrPairs, $value = null)
 
 /**
  * Unset a field.
- *
- * @param string ...$fields
- * @return UpdateInstruction
  */
-function clear(string ...$fields)
+function clear(string ...$fields): UpdateInstruction
 {
     $pairs = array_fill_keys($fields, null);
 
@@ -46,99 +43,64 @@ function clear(string ...$fields)
  * @param array<string,mixed>|object $value
  * @return UpdateInstruction
  */
-function patch(string $field, $value)
+function patch(string $field, array|object $value): UpdateInstruction
 {
-    i\type_check($value, ['array', 'object']);
-
     return new UpdateInstruction('patch', [$field => $value]);
 }
 
 /**
  * Increment a field by a specific value.
- *
- * @param string    $field
- * @param int|float $value
- * @return UpdateInstruction
  */
-function inc(string $field, $value = 1)
+function inc(string $field, int|float $value = 1): UpdateInstruction
 {
-    i\type_check($value, ['int', 'float']);
     return new UpdateInstruction('inc', [$field => $value]);
 }
 
 /**
  * Decrement a field by a specific value.
- *
- * @param string    $field
- * @param int|float $value
- * @return UpdateInstruction
  */
-function dec(string $field, $value = 1)
+function dec(string $field, int|float $value = 1): UpdateInstruction
 {
-    i\type_check($value, ['int', 'float']);
     return new UpdateInstruction('inc', [$field => -1 * $value]);
 }
 
 /**
  * Multiply a field by a specific value.
- *
- * @param string    $field
- * @param int|float $value
- * @return UpdateInstruction
  */
-function mul(string $field, $value)
+function mul(string $field, int|float $value): UpdateInstruction
 {
-    i\type_check($value, ['int', 'float']);
     return new UpdateInstruction('mul', [$field => $value]);
 }
 
 /**
  * Divide a field by a specific value.
- *
- * @param string    $field
- * @param int|float $value
- * @return UpdateInstruction
  */
-function div(string $field, $value)
+function div(string $field, int|float $value): UpdateInstruction
 {
-    i\type_check($value, ['int', 'float']);
     return new UpdateInstruction('div', [$field => $value]);
 }
 
 /**
  * Get modulo a field.
- *
- * @param string    $field
- * @param int|float $value
- * @return UpdateInstruction
  */
-function mod(string $field, $value)
+function mod(string $field, int|float $value): UpdateInstruction
 {
-    i\type_check($value, ['int', 'float']);
     return new UpdateInstruction('mod', [$field => $value]);
 }
 
 
 /**
  * Add a value / values to an array field.
- *
- * @param string $field
- * @param mixed  ...$value
- * @return UpdateInstruction
  */
-function push(string $field, ...$value)
+function push(string $field, mixed ...$value): UpdateInstruction
 {
     return new UpdateInstruction('push', [$field => $value]);
 }
 
 /**
  * Remove a value / values from an array field.
- *
- * @param string $field
- * @param mixed  ...$value
- * @return UpdateInstruction
  */
-function pull(string $field, ...$value)
+function pull(string $field, mixed ...$value): UpdateInstruction
 {
     return new UpdateInstruction('pull', [$field => $value]);
 }

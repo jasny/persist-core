@@ -23,15 +23,10 @@ interface ComposerInterface
     /**
      * Apply items to given query.
      *
-     * @param object            $accumulator
-     * @param iterable          $items
+     * @param TQuery&object     $accumulator
+     * @param iterable<TIn>     $items
      * @param OptionInterface[] $opts
-     * @return iterable
-     *
-     * @phpstan-param TQuery&object     $accumulator
-     * @phpstan-param iterable<TIn>     $items
-     * @phpstan-param OptionInterface[] $opts
-     * @phpstan-return iterable<TOut>
+     * @return iterable<TOut>
      */
     public function compose(object $accumulator, iterable $items, array &$opts = []): iterable;
 }

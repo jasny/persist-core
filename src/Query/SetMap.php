@@ -12,10 +12,12 @@ use Jasny\Persist\Option\SettingOption;
 
 /**
  * Set/change map as query composer step.
+ *
+ * @implements ComposerInterface<object,mixed,mixed>
  */
 class SetMap implements ComposerInterface
 {
-    /** @phpstan-var callable(MapInterface,OptionInterface[]):MapInterface */
+    /** @var \Closure&callable(MapInterface,OptionInterface[]):MapInterface */
     protected \Closure $callback;
 
     /**
@@ -23,7 +25,7 @@ class SetMap implements ComposerInterface
      *
      * @param MapInterface|callable(MapInterface,OptionInterface[]):MapInterface $map
      */
-    public function __construct($map)
+    public function __construct(MapInterface|callable $map)
     {
         $this->callback = $map instanceof MapInterface
             ? fn() => $map
@@ -41,16 +43,11 @@ class SetMap implements ComposerInterface
     /**
      * Apply the callback to each map in opts.
      *
-     * @param object            $accumulator
-     * @param iterable          $items
-     * @param OptionInterface[] $opts
-     * @return iterable
-     *
      * @template TItem
-     * @phpstan-param TQuery&object     $accumulator
-     * @phpstan-param iterable<TItem>   $items
-     * @phpstan-param OptionInterface[] $opts
-     * @phpstan-return iterable<TItem>
+     * @param object            $accumulator
+     * @param iterable<TItem>   $items
+     * @param OptionInterface[] $opts
+     * @return iterable<TItem>
      */
     public function compose(object $accumulator, iterable $items, array &$opts = []): iterable
     {

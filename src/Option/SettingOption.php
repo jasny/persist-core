@@ -22,12 +22,9 @@ class SettingOption implements OptionInterface
     protected $value;
 
     /**
-     * FlagOption constructor.
-     *
-     * @param string $name
-     * @param mixed  $value
+     * Class constructor.
      */
-    public function __construct(string $name, $value)
+    public function __construct(string $name, mixed $value)
     {
         $this->name = $name;
         $this->value = $value;
@@ -43,10 +40,8 @@ class SettingOption implements OptionInterface
 
     /**
      * Get the setting name.
-     *
-     * @return mixed
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
@@ -63,7 +58,7 @@ class SettingOption implements OptionInterface
      * @param string|null       $type  Value must be of this (internal) type or class name.
      * @return mixed
      */
-    public function findIn(array $opts, ?string $type = null)
+    public function findIn(array $opts, ?string $type = null): mixed
     {
         foreach (array_reverse($opts) as $opt) {
             $found = $opt instanceof self &&

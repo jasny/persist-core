@@ -17,10 +17,13 @@ use Jasny\Persist\Option\OptionInterface;
  */
 class ResultBuilder extends PipelineBuilder
 {
+    /** @var class-string */
     protected string $class;
 
     /**
      * Class constructor.
+     *
+     * @param class-string $class
      */
     public function __construct(string $class = Result::class)
     {
@@ -37,7 +40,7 @@ class ResultBuilder extends PipelineBuilder
      * @param OptionInterface[] $opts
      * @return static
      */
-    public function withOpts(array $opts): self
+    public function withOpts(array $opts): static
     {
         /** @var MapInterface $map */
         $map = opt\setting('map', new NoMap())->findIn($opts, MapInterface::class);
@@ -50,15 +53,15 @@ class ResultBuilder extends PipelineBuilder
     /**
      * Create a result.
      *
-     * @phpstan-param iterable<TValue>    $iterable
-     * @phpstan-param array<string,mixed> $meta
-     * @phpstan-return Result<TValue>
+     * @param iterable<TValue>    $iterable
+     * @param array<string,mixed> $meta
+     * @return Result<TValue>
      */
     public function with(iterable $iterable, array $meta = []): Result
     {
         $class = $this->class;
 
-        /** @var Result $result */
+        /** @var Result<TValue> $result */
         $result = new $class($iterable, $meta);
 
         foreach ($this->steps as [$callback, $args]) {

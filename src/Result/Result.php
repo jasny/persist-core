@@ -36,24 +36,57 @@ class Result extends Pipeline
      * Get the metadata of the result.
      *
      * @param null|string $key  Omit the key to get all metadata.
-     * @return array|mixed
+     * @return mixed
      */
-    public function getMeta(?string $key = null)
+    public function getMeta(?string $key = null): mixed
     {
         return !isset($key) ? $this->meta : ($this->meta[$key] ?? null);
     }
 
+    /**
+     * Cast all return items to an object of given class.
+     *
+     * The class constructor is never called.
+     * Uses `__unserialize` or `__wakeup` if defined by the class.
+     *
+     * @param class-string $class
+     * @return static
+     * @throws \ReflectionException
+     */
+    public function as(string $class): static
+    {
+        if (method_exists($class, '__unserialize')) {
+            $refl = new \ReflectionClass($class);
+
+            $fn = static function(array|object $doc) use ($refl): object {
+                $item = $refl->newInstanceWithoutConstructor();
+                $item->__unserialize(is_object($doc) ? object_get_properties($doc, true) : $doc);
+                return $item;
+            };
+        } elseif (method_exists($class, '__wakeup')) {
+            $fn = static function(array|object $doc) use ($class): object {
+                return $class::__wakeup(is_object($doc) ? object_get_properties($doc, true) : $doc);
+            };
+        } else {
+            $refl = new \ReflectionClass($class);
+
+            $fn = static function(array|object $doc) use ($refl): object {
+                $item = $refl->newInstanceWithoutConstructor();
+                object_set_properties($item, (array)$doc, $item instanceof \stdClass);
+                return $item;
+            };
+        }
+
+        return $this->map($fn);
+    }
 
     /**
      * Apply result to given items.
      *
-     * @param array|\ArrayAccess $items
+     * @param array<mixed,TValue>|\ArrayAccess<mixed,TValue> $items
      * @return $this
-     *
-     * @phpstan-param array<mixed,TValue>|\ArrayAccess<mixed,TValue> $items
-     * @phpstan-return $this
      */
-    public function applyTo($items): self
+    public function applyTo(array|\ArrayAccess $items): static
     {
         i\type_check(
             $items,
@@ -84,6 +117,8 @@ class Result extends Pipeline
 
     /**
      * Factory method for ResultBuilder
+     *
+     * @return ResultBuilder<TValue>
      */
     public static function build(): ResultBuilder
     {

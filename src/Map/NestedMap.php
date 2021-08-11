@@ -16,11 +16,11 @@ final class NestedMap implements MapInterface
     use Traits\CombineTrait;
 
     /**
-     * StructuredFieldMap constructor.
+     * Class constructor.
      *
      * @param MapInterface|array<string,mixed> $map  Base map
      */
-    public function __construct($map)
+    public function __construct(MapInterface|array $map)
     {
         $this->maps[''] = $map instanceof MapInterface ? $map : new FieldMap($map);
     }
@@ -38,9 +38,9 @@ final class NestedMap implements MapInterface
      *
      * @param string                                  $field
      * @param MapInterface|array<string,string|false> $map
-     * @return static
+     * @return self
      */
-    public function withMappedField(string $field, $map): self
+    public function withMappedField(string $field, MapInterface|array $map): self
     {
         $childMap = new ChildMap($field, $map);
 

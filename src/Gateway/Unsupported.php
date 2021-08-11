@@ -19,10 +19,9 @@ final class Unsupported implements GatewayInterface
     /**
      * Does nothing.
      *
-     * @param LoggerInterface $logger
      * @return $this
      */
-    public function withLogging(LoggerInterface $logger)
+    public function withLogging(LoggerInterface $logger): self
     {
         return $this;
     }

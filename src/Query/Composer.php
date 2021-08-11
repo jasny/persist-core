@@ -15,12 +15,12 @@ use Improved\IteratorPipeline\Pipeline;
 final class Composer implements ComposerInterface
 {
     /**
-     * @phpstan-var array<ComposerInterface<TQuery,mixed,mixed>>
+     * @var array<ComposerInterface<TQuery,mixed,mixed>>
      */
     protected array $steps = [];
 
     /**
-     * @phpstan-param ComposerInterface<TQuery,mixed,mixed> ...$steps
+     * @param ComposerInterface<TQuery,mixed,mixed> ...$steps
      */
     public function __construct(ComposerInterface ...$steps)
     {

@@ -47,10 +47,8 @@ class LookupOption implements OptionInterface
 
     /**
      * Get a copy with a different field name.
-     *
-     * @return static
      */
-    public function as(string $name): self
+    public function as(string $name): static
     {
         return $this->withProperty('name', $name);
     }
@@ -58,11 +56,8 @@ class LookupOption implements OptionInterface
     /**
      * Specify the field that the lookup applies to.
      * Null for the main collection of the query.
-     *
-     * @param string|null $field
-     * @return static
      */
-    public function for(?string $field): self
+    public function for(?string $field): static
     {
         return $this->withProperty('target', $field);
     }
@@ -74,7 +69,7 @@ class LookupOption implements OptionInterface
      * @param array<string,string> $match  Field pairs as ON in a JOIN statement
      * @return static
      */
-    public function on(int $type, array $match): self
+    public function on(int $type, array $match): static
     {
         if ($type < 0 || $type > 0b11) {
             throw new \InvalidArgumentException("Invalid relationship type '$type'; use one of the constants");
@@ -88,76 +83,58 @@ class LookupOption implements OptionInterface
     /**
      * Filter the items from the related collection.
      *
-     * @param array<string,string>|FilterItem[]
+     * @param array<string,string>|FilterItem[] $filter
      * @return static
      */
-    public function having(array $filter): self
+    public function having(array $filter): static
     {
         return $this->withProperty('filter', array_merge($this->filter, $filter));
     }
 
     /**
      * Only lookup a count of the number of items.
-     *
-     * @return static
      */
-    public function count(): self
+    public function count(): static
     {
         return $this->withProperty('isCount', true);
     }
 
     /**
      * Specify which fields to include in the related data.
-     *
-     * @param string ...$fields
-     * @return static
      */
-    public function fields(string ...$fields): self
+    public function fields(string ...$fields): static
     {
         return $this->withPropertyItem('opts', new FieldsOption($fields));
     }
 
     /**
      * Specify which field to exclude from the related data.
-     *
-     * @param string ...$fields
-     * @return static
      */
-    public function omit(string ...$fields): self
+    public function omit(string ...$fields): static
     {
         return $this->withPropertyItem('opts', new FieldsOption($fields, true /* negate */));
     }
 
     /**
      * Specify which field to exclude from the related data.
-     *
-     * @param string ...$fields
-     * @return static
      */
-    public function sort(string ...$fields): self
+    public function sort(string ...$fields): static
     {
         return $this->withPropertyItem('opts', new SortOption($fields));
     }
 
     /**
      * Specify which field to exclude from hydrated data.
-     *
-     * @param int $limit
-     * @param int $offset
-     * @return static
      */
-    public function limit(int $limit, int $offset = 0): self
+    public function limit(int $limit, int $offset = 0): static
     {
         return $this->withPropertyItem('opts', new LimitOption($limit, $offset));
     }
 
     /**
      * Add custom option(s).
-     *
-     * @param OptionInterface ...$opts
-     * @return static
      */
-    public function with(OptionInterface ...$opts): self
+    public function with(OptionInterface ...$opts): static
     {
         return $this->withProperty('opts', array_merge($this->opts, $opts));
     }
@@ -166,8 +143,6 @@ class LookupOption implements OptionInterface
     /**
      * Get the field this lookup applies to.
      * Null for the main collection of the query.
-     *
-     * @return string|null
      */
     public function getTarget(): ?string
     {

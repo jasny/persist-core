@@ -21,7 +21,7 @@ class Preparation implements ComposerInterface
     protected \Closure $callback;
 
     /**
-     * @phpstan-param callable(TQuery,OptionInterface[]):void $callback
+     * @param callable(TQuery,OptionInterface[]):void $callback
      */
     public function __construct(callable $callback)
     {
@@ -34,7 +34,7 @@ class Preparation implements ComposerInterface
      * @param int $priority  Priority between 100 and 499
      * @return static
      */
-    public function withPriority(int $priority): self
+    public function withPriority(int $priority): static
     {
         if ($priority < 100 || $priority >= 500) {
             throw new \InvalidArgumentException("Priority should be between 100 and 499");
@@ -54,16 +54,11 @@ class Preparation implements ComposerInterface
     /**
      * Apply step to given query.
      *
-     * @param object            $accumulator
-     * @param iterable          $items
-     * @param OptionInterface[] $opts
-     * @return iterable
-     *
      * @template TItem
-     * @phpstan-param TQuery&object     $accumulator
-     * @phpstan-param iterable<TItem>   $items
-     * @phpstan-param OptionInterface[] $opts
-     * @phpstan-return iterable<TItem>
+     * @param TQuery&object     $accumulator
+     * @param iterable<TItem>   $items
+     * @param OptionInterface[] $opts
+     * @return iterable<TItem>
      */
     public function compose(object $accumulator, iterable $items, array &$opts = []): iterable
     {

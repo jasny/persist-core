@@ -23,8 +23,8 @@ class CustomFilter implements ComposerInterface
     protected \Closure $callback;
 
     /**
-     * @phpstan-param string                                                  $field
-     * @phpstan-param callable(TQuery,FilterItem,array<OptionInterface>):void $callback
+     * @param string                                                  $field
+     * @param callable(TQuery,FilterItem,array<OptionInterface>):void $callback
      */
     public function __construct(string $field, callable $callback)
     {
@@ -38,7 +38,7 @@ class CustomFilter implements ComposerInterface
      * @param int $priority  Priority between 500 and 999
      * @return static
      */
-    public function withPriority(int $priority): self
+    public function withPriority(int $priority): static
     {
         if ($priority < 500 || $priority >= 1000) {
             throw new \InvalidArgumentException("Priority should be between 800 and 999");
@@ -58,14 +58,10 @@ class CustomFilter implements ComposerInterface
     /**
      * Apply custom filter to given query.
      *
-     * @param object            $accumulator
-     * @param iterable          $filter
-     * @param OptionInterface[] $opts
-     *
-     * @phpstan-param TQuery&object        $accumulator
-     * @phpstan-param iterable<FilterItem> $filter
-     * @phpstan-param OptionInterface[]    $opts
-     * @phpstan-return iterable<FilterItem>
+     * @param TQuery&object        $accumulator
+     * @param iterable<FilterItem> $filter
+     * @param OptionInterface[]    $opts
+     * @return iterable<FilterItem>
      */
     public function compose(object $accumulator, iterable $filter, array &$opts = []): iterable
     {

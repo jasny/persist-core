@@ -24,15 +24,12 @@ interface GatewayInterface
      */
     public function withLogging(LoggerInterface $logger);
 
-
     /**
      * Query and fetch data.
      *
      * @param array<string,mixed>|FilterItem[] $filter
      * @param OptionInterface                  ...$opts
-     * @return Result
-     *
-     * @phpstan-return Result<TItem>
+     * @return Result<TItem>
      */
     public function fetch(array $filter = [], OptionInterface ...$opts): Result;
 
@@ -49,27 +46,23 @@ interface GatewayInterface
      * Save the one item.
      * Result contains generated properties for the item.
      *
-     * @param array|object      $item
+     * @param TItem             $item
      * @param OptionInterface   ...$opts
-     * @return Result
+     * @return Result<TItem>
      *
-     * @phpstan-param TItem             $item
-     * @phpstan-param OptionInterface   ...$opts
+     * @phpstan-param TItem&(array<string,mixed>|object) $item
+     * @phpstan-param OptionInterface                    ...$opts
      * @phpstan-return Result<TItem>
      */
-    public function save($item, OptionInterface ...$opts): Result;
+    public function save(array|object $item, OptionInterface ...$opts): Result;
 
     /**
      * Save the multiple items.
      * Result contains generated properties for each item.
      *
-     * @param iterable<array|object> $items
-     * @param OptionInterface        ...$opts
-     * @return Result
-     *
-     * @phpstan-param iterable<TItem>   $items
-     * @phpstan-param OptionInterface   ...$opts
-     * @phpstan-return Result<TItem>
+     * @param iterable<TItem>   $items
+     * @param OptionInterface   ...$opts
+     * @return Result<TItem>
      */
     public function saveAll(iterable $items, OptionInterface ...$opts): Result;
 
@@ -79,20 +72,16 @@ interface GatewayInterface
      * @param array<string,mixed>|FilterItem[]      $filter
      * @param UpdateInstruction|UpdateInstruction[] $instructions
      * @param OptionInterface                       ...$opts
-     * @return Result
-     *
-     * @phpstan-return Result<TItem>
+     * @return Result<TItem>
      */
-    public function update(array $filter, $instructions, OptionInterface ...$opts): Result;
+    public function update(array $filter, UpdateInstruction|array $instructions, OptionInterface ...$opts): Result;
 
     /**
      * Query and delete records.
      *
      * @param array<string,mixed>|FilterItem[] $filter
      * @param OptionInterface                  ...$opts
-     * @return Result
-     *
-     * @phpstan-return Result<TItem>
+     * @return Result<TItem>
      */
     public function delete(array $filter, OptionInterface ...$opts): Result;
 }

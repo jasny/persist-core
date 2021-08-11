@@ -46,7 +46,7 @@ class Schema implements SchemaInterface
      * @param MapInterface|array<string,string|false> $map
      * @return static
      */
-    public function withDefaultMap($map): self
+    public function withDefaultMap(MapInterface|array $map): static
     {
         return $this->withProperty('defaultMap', $this->createMap($map));
     }
@@ -58,7 +58,7 @@ class Schema implements SchemaInterface
      * @param MapInterface|array<string,string|false> $map
      * @return static
      */
-    public function withMap(string $collection, $map): self
+    public function withMap(string $collection, MapInterface|array $map): static
     {
         return $this->withPropertyKey('maps', $collection, $this->createMap($map));
     }
@@ -69,7 +69,7 @@ class Schema implements SchemaInterface
      * @param MapInterface|array<string,string|false> $map
      * @return MapInterface
      */
-    protected function createMap($map): MapInterface
+    protected function createMap(MapInterface|array $map): MapInterface
     {
         return $map instanceof MapInterface ? $map : new FieldMap($map);
     }
@@ -77,11 +77,8 @@ class Schema implements SchemaInterface
 
     /**
      * Get a copy with a new relationship between two collections / tables.
-     *
-     * @param Relationship $relationship
-     * @return static
      */
-    public function withRelationship(Relationship $relationship): self
+    public function withRelationship(Relationship $relationship): static
     {
         $clone = clone $this;
 
@@ -94,12 +91,12 @@ class Schema implements SchemaInterface
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string               $collection1  Name of left hand table / collection
-     * @param string               $collection2  Name of right hand table / collection
+     * @param string               $collection1  Name of left-hand table / collection
+     * @param string               $collection2  Name of right-hand table / collection
      * @param array<string,string> $match        Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withOneToOne(string $collection1, string $collection2, array $match): self
+    final public function withOneToOne(string $collection1, string $collection2, array $match): static
     {
         return $this->withRelationship(
             new Relationship(Relationship::ONE_TO_ONE, $collection1, $collection2, $match)
@@ -109,12 +106,12 @@ class Schema implements SchemaInterface
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string               $collection1  Name of left hand table / collection
-     * @param string               $collection2  Name of right hand table / collection
+     * @param string               $collection1  Name of left-hand table / collection
+     * @param string               $collection2  Name of right-hand table / collection
      * @param array<string,string> $match        Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withOneToMany(string $collection1, string $collection2, array $match): self
+    final public function withOneToMany(string $collection1, string $collection2, array $match): static
     {
         return $this->withRelationship(
             new Relationship(Relationship::ONE_TO_MANY, $collection1, $collection2, $match)
@@ -124,12 +121,12 @@ class Schema implements SchemaInterface
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string               $collection1  Name of left hand table / collection
-     * @param string               $collection2  Name of right hand table / collection
+     * @param string               $collection1  Name of left-hand table / collection
+     * @param string               $collection2  Name of right-hand table / collection
      * @param array<string,string> $match        Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withManyToOne(string $collection1, string $collection2, array $match): self
+    final public function withManyToOne(string $collection1, string $collection2, array $match): static
     {
         return $this->withRelationship(
             new Relationship(Relationship::MANY_TO_ONE, $collection1, $collection2, $match)
@@ -139,12 +136,12 @@ class Schema implements SchemaInterface
     /**
      * Get a copy with a one to one relationship between two collections / tables.
      *
-     * @param string               $collection1  Name of left hand table / collection
-     * @param string               $collection2  Name of right hand table / collection
+     * @param string               $collection1  Name of left-hand table / collection
+     * @param string               $collection2  Name of right-hand table / collection
      * @param array<string,string> $match        Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withManyToMany(string $collection1, string $collection2, array $match): self
+    final public function withManyToMany(string $collection1, string $collection2, array $match): static
     {
         return $this->withRelationship(
             new Relationship(Relationship::MANY_TO_MANY, $collection1, $collection2, $match)
@@ -154,11 +151,8 @@ class Schema implements SchemaInterface
 
     /**
      * Get a copy with a new embedded relationship for a collection.
-     *
-     * @param Embedded $embedded
-     * @return static
      */
-    public function withEmbedded(Embedded $embedded): self
+    public function withEmbedded(Embedded $embedded): static
     {
         $clone = clone $this;
         $clone->embedded[$embedded->getCollection()][$embedded->getField()] = $embedded;
@@ -168,24 +162,16 @@ class Schema implements SchemaInterface
 
     /**
      * Get a copy with an one to one embedded relationship for a collection.
-     *
-     * @param string $collection
-     * @param string $field
-     * @return static
      */
-    final public function withOneEmbedded(string $collection, string $field): self
+    final public function withOneEmbedded(string $collection, string $field): static
     {
         return $this->withEmbedded(new Embedded(Embedded::ONE_TO_ONE, $collection, $field));
     }
 
     /**
      * Get a copy with an one to many embedded relationship for a collection.
-     *
-     * @param string $collection
-     * @param string $field
-     * @return static
      */
-    final public function withManyEmbedded(string $collection, string $field): self
+    final public function withManyEmbedded(string $collection, string $field): static
     {
         return $this->withEmbedded(new Embedded(Embedded::ONE_TO_MANY, $collection, $field));
     }
