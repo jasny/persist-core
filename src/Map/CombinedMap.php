@@ -28,7 +28,7 @@ final class CombinedMap implements MapInterface
     /**
      * @inheritDoc
      */
-    public function withOpts(array $opts): MapInterface
+    public function withOpts(array $opts): self
     {
         return $this;
     }

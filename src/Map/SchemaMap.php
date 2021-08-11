@@ -100,9 +100,9 @@ final class SchemaMap implements MapInterface
      * Apply `lookup` and `hydrate` query options to the map.
      *
      * @param OptionInterface[] $opts
-     * @return static
+     * @return self
      */
-    public function withOpts(array $opts): static
+    public function withOpts(array $opts): self
     {
         return $this
             ->withInnerOpts($opts)
