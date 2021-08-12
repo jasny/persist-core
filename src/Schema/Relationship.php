@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\Persist\Schema;
 
+use Jasny\Immutable;
 use function Jasny\str_before;
 
 /**
@@ -11,6 +12,8 @@ use function Jasny\str_before;
  */
 final class Relationship
 {
+    use Immutable\With;
+
     public const ONE_TO_ONE = 0b00;
     public const ONE_TO_MANY = 0b01;
     public const MANY_TO_ONE = 0b10;
@@ -22,6 +25,7 @@ final class Relationship
     protected string $relatedCollection;
     protected string $alias;
     protected string $relatedAlias;
+    protected string $fieldName;
 
     /** @var array<string,string> */
     protected array $match;
@@ -151,5 +155,26 @@ final class Relationship
     public function getMatch(): array
     {
         return $this->match;
+    }
+
+
+    /**
+     * Set the field name.
+     */
+    public function withFieldName(string $fieldName): self
+    {
+        return $this->withProperty('fieldName', $fieldName);
+    }
+
+    /**
+     * Get the field name.
+     */
+    public function getFieldName(): string
+    {
+        if (!isset($this->fieldName)) {
+            throw new \BadMethodCallException("Field name not set");
+        }
+
+        return $this->fieldName;
     }
 }

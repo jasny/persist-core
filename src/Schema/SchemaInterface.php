@@ -51,6 +51,22 @@ interface SchemaInterface
 
 
     /**
+     * Get child relationships of a collection / table.
+     *
+     * @param string $collection
+     * @return Relationship[]
+     */
+    public function getChildren(string $collection): array;
+
+    /**
+     * Get a child relationship by field name.
+     *
+     * @throws NoRelationshipException  If there is no child relationship with the given field name.
+     */
+    public function getChildForField(string $collection, string $field): Relationship;
+
+
+    /**
      * Get the embedded relationship for a field of a collection.
      *
      * @param string $collection

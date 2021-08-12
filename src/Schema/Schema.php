@@ -28,6 +28,9 @@ class Schema implements SchemaInterface
     /** @var array<string,array<int,Relationship>> */
     protected array $relationships = [];
 
+    /** @var array<string,array<int,Relationship>> */
+    protected array $children = [];
+
     /** @var array<string,array<string,Embedded>> */
     protected array $embedded = [];
 
@@ -41,7 +44,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get a copy with a default field map.
+     * Add a default field map.
      *
      * @param MapInterface|array<string,string|false> $map
      * @return static
@@ -52,7 +55,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get a copy with a field map for a collection.
+     * Add a field map for a collection.
      *
      * @param string                                  $collection  Collection or table name
      * @param MapInterface|array<string,string|false> $map
@@ -76,7 +79,7 @@ class Schema implements SchemaInterface
 
 
     /**
-     * Get a copy with a new relationship between two collections / tables.
+     * Add a new relationship between two collections / tables.
      */
     public function withRelationship(Relationship $relationship): static
     {
@@ -89,7 +92,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get a copy with a one to one relationship between two collections / tables.
+     * Add a one to one relationship between two collections / tables.
      *
      * @param string               $collection1  Name of left-hand table / collection
      * @param string               $collection2  Name of right-hand table / collection
@@ -104,7 +107,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get a copy with a one to one relationship between two collections / tables.
+     * Add a one to one relationship between two collections / tables.
      *
      * @param string               $collection1  Name of left-hand table / collection
      * @param string               $collection2  Name of right-hand table / collection
@@ -119,7 +122,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get a copy with a one to one relationship between two collections / tables.
+     * Add a one to one relationship between two collections / tables.
      *
      * @param string               $collection1  Name of left-hand table / collection
      * @param string               $collection2  Name of right-hand table / collection
@@ -134,7 +137,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get a copy with a one to one relationship between two collections / tables.
+     * Add a one to one relationship between two collections / tables.
      *
      * @param string               $collection1  Name of left-hand table / collection
      * @param string               $collection2  Name of right-hand table / collection
@@ -150,7 +153,35 @@ class Schema implements SchemaInterface
 
 
     /**
-     * Get a copy with a new embedded relationship for a collection.
+     * Add a new parent-child relationship.
+     */
+    public function withParentChildRelationship(Relationship $relationship): static
+    {
+        $clone = clone $this;
+        $clone->children[$relationship->getCollection()][$relationship->getFieldName()] = $relationship;
+
+        return $clone;
+    }
+
+    /**
+     * Add a parent-child relationship between two collections / tables.
+     *
+     * @param string               $parent  Name of parent table / collection
+     * @param string               $field   Name of the field added in the result
+     * @param string               $child   Name of child table / collection
+     * @param array<string,string> $match   Field pairs as ON in JOIN statement
+     * @return static
+     */
+    final public function withParentChild(string $parent, string $field, string $child, array $match): static
+    {
+        return $this->withParentChildRelationship(
+            (new Relationship(Relationship::ONE_TO_MANY, $parent, $child, $match))->withFieldName($field)
+        );
+    }
+
+
+    /**
+     * Add a new embedded relationship for a collection.
      */
     public function withEmbedded(Embedded $embedded): static
     {
@@ -161,7 +192,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get a copy with an one to one embedded relationship for a collection.
+     * Add an one to one embedded relationship for a collection.
      */
     final public function withOneEmbedded(string $collection, string $field): static
     {
@@ -169,7 +200,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Get a copy with an one to many embedded relationship for a collection.
+     * Add an one to many embedded relationship for a collection.
      */
     final public function withManyEmbedded(string $collection, string $field): static
     {
@@ -273,6 +304,27 @@ class Schema implements SchemaInterface
         }
 
         return $relationships[0];
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function getChildren(string $collection): array
+    {
+        return array_values($this->children[$collection] ?? []);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getChildForField(string $collection, string $field): Relationship
+    {
+        if (!isset($this->children[$collection][$field])) {
+            throw new NoRelationshipException("No parent-child relationship found for field '{$field}' of '{$collection}'");
+        }
+
+        return $this->children[$collection][$field];
     }
 
 
