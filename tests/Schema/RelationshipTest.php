@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jasny\Tests\Persist\Schema;
 
+use Jasny\Persist\Schema\Join;
 use Jasny\Persist\Schema\Relationship;
 use PHPUnit\Framework\TestCase;
 
@@ -56,7 +57,7 @@ class RelationshipTest extends TestCase
 
         $this->assertEquals('foo', $relationship->getCollection());
         $this->assertEquals('bar', $relationship->getRelatedCollection());
-        $this->assertEquals(['x' => 'y'], $relationship->getMatch());
+        $this->assertEquals(new Join(['x' => 'y']), $relationship->getJoin());
     }
 
     public function swappedProvider()
@@ -81,16 +82,13 @@ class RelationshipTest extends TestCase
 
         $this->assertEquals('bar', $swapped->getCollection());
         $this->assertEquals('foo', $swapped->getRelatedCollection());
-        $this->assertEquals(['y' => 'x'], $swapped->getMatch());
+        $this->assertEquals(new Join(['y' => 'x']), $swapped->getJoin());
     }
 
     public function testMatches()
     {
-        $this->assertTrue($this->oneToOne->matches('foo', 'bar', null));
-        $this->assertTrue($this->oneToOne->matches('foo', 'bar', ['x' => 'y']));
-
-        $this->assertFalse($this->oneToOne->matches('foo', 'qux', null));
-        $this->assertFalse($this->oneToOne->matches('foo', 'bar', ['a' => 'b']));
+        $this->assertTrue($this->oneToOne->matches('foo', 'bar'));
+        $this->assertFalse($this->oneToOne->matches('foo', 'qux'));
     }
 
     public function testInvalidTypeInConstructor()

@@ -133,9 +133,9 @@ final class SchemaMap implements MapInterface
      * @param string|null          $baseTarget
      * @param array<string,string> $cols        Field to collection mapping
      * @param OptionInterface[]    $opts
-     * @return static
+     * @return self
      */
-    protected function applyOpts(?string $baseTarget, array $cols, array $opts): static
+    protected function applyOpts(?string $baseTarget, array $cols, array $opts): self
     {
         $map = $this;
 

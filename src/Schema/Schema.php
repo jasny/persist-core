@@ -94,60 +94,60 @@ class Schema implements SchemaInterface
     /**
      * Add a one to one relationship between two collections / tables.
      *
-     * @param string               $collection1  Name of left-hand table / collection
-     * @param string               $collection2  Name of right-hand table / collection
-     * @param array<string,string> $match        Field pairs as ON in JOIN statement
+     * @param string               $collection1         Name of left-hand table / collection
+     * @param string               $collection2         Name of right-hand table / collection
+     * @param array<string,string>|JoinInterface $join  Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withOneToOne(string $collection1, string $collection2, array $match): static
+    final public function withOneToOne(string $collection1, string $collection2, array|JoinInterface $join): static
     {
         return $this->withRelationship(
-            new Relationship(Relationship::ONE_TO_ONE, $collection1, $collection2, $match)
+            new Relationship(Relationship::ONE_TO_ONE, $collection1, $collection2, $join)
         );
     }
 
     /**
      * Add a one to one relationship between two collections / tables.
      *
-     * @param string               $collection1  Name of left-hand table / collection
-     * @param string               $collection2  Name of right-hand table / collection
-     * @param array<string,string> $match        Field pairs as ON in JOIN statement
+     * @param string               $collection1         Name of left-hand table / collection
+     * @param string               $collection2         Name of right-hand table / collection
+     * @param array<string,string>|JoinInterface $join  Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withOneToMany(string $collection1, string $collection2, array $match): static
+    final public function withOneToMany(string $collection1, string $collection2, array|JoinInterface $join): static
     {
         return $this->withRelationship(
-            new Relationship(Relationship::ONE_TO_MANY, $collection1, $collection2, $match)
+            new Relationship(Relationship::ONE_TO_MANY, $collection1, $collection2, $join)
         );
     }
 
     /**
      * Add a one to one relationship between two collections / tables.
      *
-     * @param string               $collection1  Name of left-hand table / collection
-     * @param string               $collection2  Name of right-hand table / collection
-     * @param array<string,string> $match        Field pairs as ON in JOIN statement
+     * @param string               $collection1         Name of left-hand table / collection
+     * @param string               $collection2         Name of right-hand table / collection
+     * @param array<string,string>|JoinInterface $join  Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withManyToOne(string $collection1, string $collection2, array $match): static
+    final public function withManyToOne(string $collection1, string $collection2, array|JoinInterface $join): static
     {
         return $this->withRelationship(
-            new Relationship(Relationship::MANY_TO_ONE, $collection1, $collection2, $match)
+            new Relationship(Relationship::MANY_TO_ONE, $collection1, $collection2, $join)
         );
     }
 
     /**
      * Add a one to one relationship between two collections / tables.
      *
-     * @param string               $collection1  Name of left-hand table / collection
-     * @param string               $collection2  Name of right-hand table / collection
-     * @param array<string,string> $match        Field pairs as ON in JOIN statement
+     * @param string               $collection1         Name of left-hand table / collection
+     * @param string               $collection2         Name of right-hand table / collection
+     * @param array<string,string>|JoinInterface $join  Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withManyToMany(string $collection1, string $collection2, array $match): static
+    final public function withManyToMany(string $collection1, string $collection2, array|JoinInterface $join): static
     {
         return $this->withRelationship(
-            new Relationship(Relationship::MANY_TO_MANY, $collection1, $collection2, $match)
+            new Relationship(Relationship::MANY_TO_MANY, $collection1, $collection2, $join)
         );
     }
 
@@ -159,6 +159,7 @@ class Schema implements SchemaInterface
     {
         $clone = clone $this;
         $clone->children[$relationship->getCollection()][$relationship->getFieldName()] = $relationship;
+        $clone->relationships[$relationship->getRelatedCollection()][] = $relationship->swapped();
 
         return $clone;
     }
@@ -166,16 +167,20 @@ class Schema implements SchemaInterface
     /**
      * Add a parent-child relationship between two collections / tables.
      *
-     * @param string               $parent  Name of parent table / collection
-     * @param string               $field   Name of the field added in the result
-     * @param string               $child   Name of child table / collection
-     * @param array<string,string> $match   Field pairs as ON in JOIN statement
+     * @param string                             $parent  Name of parent table / collection
+     * @param string                             $field   Name of the field added in the result
+     * @param string                             $child   Name of child table / collection
+     * @param array<string,string>|JoinInterface $join    Field pairs as ON in JOIN statement
      * @return static
      */
-    final public function withParentChild(string $parent, string $field, string $child, array $match): static
-    {
+    final public function withParentChild(
+        string $parent,
+        string $field,
+        string $child,
+        array|JoinInterface $join
+    ): static {
         return $this->withParentChildRelationship(
-            (new Relationship(Relationship::ONE_TO_MANY, $parent, $child, $match))->withFieldName($field)
+            (new Relationship(Relationship::ONE_TO_MANY, $parent, $child, $join))->withFieldName($field)
         );
     }
 
@@ -192,7 +197,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Add an one to one embedded relationship for a collection.
+     * Add a one to one embedded relationship for a collection.
      */
     final public function withOneEmbedded(string $collection, string $field): static
     {
@@ -200,7 +205,7 @@ class Schema implements SchemaInterface
     }
 
     /**
-     * Add an one to many embedded relationship for a collection.
+     * Add a one to many embedded relationship for a collection.
      */
     final public function withManyEmbedded(string $collection, string $field): static
     {
@@ -260,25 +265,18 @@ class Schema implements SchemaInterface
     /**
      * @inheritDoc
      */
-    public function getRelationship(string $collection, string $related, ?array $match = null): Relationship
+    public function getRelationship(string $collection, string $related): Relationship
     {
         /** @var Relationship[] $relationships */
         $relationships = Pipeline::with($this->relationships[$collection] ?? [])
-            ->filter(fn(Relationship $rel) => $rel->matches($collection, $related, $match))
+            ->filter(fn(Relationship $rel) => $rel->matches($collection, $related))
             ->values()
             ->toArray();
 
         if (count($relationships) !== 1) {
-            $matching = is_array($match)
-                ? Pipeline::with($match)
-                    ->map(fn($right, $left) => "{$collection}.{$left} = {$related}.{$right}")
-                    ->concat(' and ')
-                : null;
-
             throw new NoRelationshipException(
                 (count($relationships) === 0 ? "No relationship" : "Multiple relationships") .
-                " found between {$collection} and {$related}" .
-                ($matching !== null ? " with ({$matching})" : '')
+                " found between $collection and $related"
             );
         }
 
@@ -292,14 +290,14 @@ class Schema implements SchemaInterface
     {
         /** @var Relationship[] $relationships */
         $relationships = Pipeline::with($this->relationships[$collection] ?? [])
-            ->filter(fn(Relationship $rel) => array_keys($rel->getMatch()) === [$field])
+            ->filter(fn(Relationship $rel) => $rel->getJoin()->isOnField($field))
             ->values()
             ->toArray();
 
         if (count($relationships) !== 1) {
             throw new NoRelationshipException(
                 (count($relationships) === 0 ? "No relationship" : "Multiple relationships") .
-                " found for field '$field' of '{$collection}'"
+                " found for field '$field' of '$collection'"
             );
         }
 
@@ -321,7 +319,9 @@ class Schema implements SchemaInterface
     public function getChildForField(string $collection, string $field): Relationship
     {
         if (!isset($this->children[$collection][$field])) {
-            throw new NoRelationshipException("No parent-child relationship found for field '{$field}' of '{$collection}'");
+            throw new NoRelationshipException(
+                "No parent-child relationship found for field '$field' of '$collection'"
+            );
         }
 
         return $this->children[$collection][$field];
@@ -342,7 +342,7 @@ class Schema implements SchemaInterface
     public function getEmbeddedForField(string $collection, string $field): Embedded
     {
         if (!isset($this->embedded[$collection][$field])) {
-            throw new NoRelationshipException("No embedded relationship found for field '{$field}' of '{$collection}'");
+            throw new NoRelationshipException("No embedded relationship found for field '$field' of '$collection'");
         }
 
         return $this->embedded[$collection][$field];

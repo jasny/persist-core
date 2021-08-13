@@ -188,14 +188,6 @@ class SchemaTest extends TestCase
                 ['bar', 'foo'],
                 new Relationship(Relationship::MANY_TO_ONE, 'bar', 'foo', ['fooId' => 'id']),
             ],
-            'foo - qux (id = inFoo)' => [
-                ['foo', 'qux', ['id' => 'inFoo']],
-                new Relationship(Relationship::ONE_TO_MANY, 'foo', 'qux', ['id' => 'inFoo']),
-            ],
-            'foo - qux (id = outFoo)' => [
-                ['foo', 'qux', ['id' => 'outFoo']],
-                new Relationship(Relationship::ONE_TO_MANY, 'foo', 'qux', ['id' => 'outFoo']),
-            ],
             'foo.wos - qux' => [
                 ['foo.wos', 'qux'],
                 new Relationship(Relationship::MANY_TO_ONE, 'foo.wos', 'qux', ['quxId' => 'id']),
@@ -224,10 +216,6 @@ class SchemaTest extends TestCase
             'foo - qux' => [
                 ['foo', 'qux'],
                 'Multiple relationships found between foo and qux',
-            ],
-            'foo - bar (id = x)' => [
-                ['foo', 'bar', ['id' => 'x']],
-                'No relationship found between foo and bar with (foo.id = bar.x)',
             ],
         ];
     }

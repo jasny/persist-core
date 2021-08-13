@@ -36,16 +36,15 @@ interface SchemaInterface
      *
      * @param string                    $collection  Name of left-hand table / collection
      * @param string                    $related     Name of right-hand table / collection
-     * @param array<string,string>|null $match       Field pairs as ON in JOIN statement
      * @return Relationship
-     * @throws NoRelationshipException  If no or more than one relationship matches
+     * @throws NoRelationshipException  If none or if more than one relationship matches
      */
-    public function getRelationship(string $collection, string $related, ?array $match = null): Relationship;
+    public function getRelationship(string $collection, string $related): Relationship;
 
     /**
      * Get the relationship for a field of a collection.
      *
-     * @throws NoRelationshipException  If no or more than one relationship matches.
+     * @throws NoRelationshipException  If none or if more than one relationship matches.
      */
     public function getRelationshipForField(string $collection, string $field): Relationship;
 

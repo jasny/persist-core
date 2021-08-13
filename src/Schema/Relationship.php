@@ -26,17 +26,15 @@ final class Relationship
     protected string $alias;
     protected string $relatedAlias;
     protected string $fieldName;
-
-    /** @var array<string,string> */
-    protected array $match;
+    protected JoinInterface $join;
 
     /**
-     * @param int                  $type        One of the relationship constants
-     * @param string               $collection  Name of left hand table / collection
-     * @param string               $related     Name of right hand table / collection
-     * @param array<string,string> $match       Field pairs as ON in a JOIN statement
+     * @param int                                 $type        One of the relationship constants
+     * @param string                              $collection  Name of left-hand table / collection
+     * @param string                              $related     Name of right-hand table / collection
+     * @param array<string,string>|JoinInterface  $join
      */
-    public function __construct(int $type, string $collection, string $related, array $match)
+    public function __construct(int $type, string $collection, string $related, array|JoinInterface $join)
     {
         if ($type < 0 || $type > 0b11) {
             throw new \InvalidArgumentException("Invalid relationship type '$type'; use one of the constants");
@@ -48,7 +46,7 @@ final class Relationship
         $this->relatedCollection = str_before($related, ':');
         $this->alias = $collection;
         $this->relatedAlias = $related;
-        $this->match = $match;
+        $this->join = $join instanceof JoinInterface ? $join : new Join($join);
     }
 
     /**
@@ -64,28 +62,18 @@ final class Relationship
         $copy->alias = $this->relatedAlias;
         $copy->relatedAlias = $this->alias;
 
-        $copy->match = array_flip($this->match);
+        unset($copy->fieldName);
+        $copy->join = $this->join->swapped();
 
         return $copy;
     }
 
     /**
      * See if the relationship matches the search criteria.
-     *
-     * @param string                    $collection  Local name or alias.
-     * @param string                    $related     Foreign name or alias.
-     * @param array<string,string>|null $match       Field pairs. Null means "don't care".
-     * @return bool
      */
-    public function matches(string $collection, string $related, ?array $match = null): bool
+    public function matches(string $collection, string $related): bool
     {
-        return
-            $this->alias === $collection &&
-            $this->relatedAlias === $related &&
-            (
-                $match === null ||
-                (count($match) === count($this->match) && array_diff_assoc($this->match, $match) === [])
-            );
+        return $this->alias === $collection && $this->relatedAlias === $related;
     }
 
     /**
@@ -149,12 +137,10 @@ final class Relationship
 
     /**
      * Field pairs as ON in a JOIN statement
-     *
-     * @return array<string,string>
      */
-    public function getMatch(): array
+    public function getJoin(): JoinInterface
     {
-        return $this->match;
+        return $this->join;
     }
 
 
