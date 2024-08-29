@@ -95,10 +95,10 @@ loading related data, sorting, etc. These options are passed to the query builde
 
 ```php
 $list = $gateway->fetch(
-    opt\where(['active' => true]),
     opt\fields('name', 'role', 'age'),
-    opt\limit(10),
+    opt\where(['active' => true]),
     opt\sort('~activation_date', 'name'),
+    opt\limit(10),
 );
 ```
 
