@@ -38,11 +38,11 @@ $gateway = new Gateway($collection);
 
 $list = $gateway
     ->fetch(
-        [
+        opt\where([
             'invite.group' => 'the A-Team',
             'activation_date (min)' => new DateTime(),
             'role (any)' => ['user', 'admin', 'super']
-        ],
+        ]),
         opt\fields('name', 'role', 'age'),
         opt\limit(10),
     )
@@ -59,7 +59,7 @@ use Persist\Mongo\Gateway\Gateway;
 $collection = (new MongoDB\Client())->test->users;
 $gateway = new Gateway($collection);
 
-$user = $gateway->fetch(['id' => '12345'])->first();
+$user = $gateway->fetch(opt\where(['id' => '12345']))->first();
 $user->count = "bar";
 
 $gateway->save($user);
@@ -68,6 +68,7 @@ $gateway->save($user);
 ### Update multiple
 
 ```php
+use Persist\Option\Functions as opt;
 use Persist\Update\Functions as update;
 use Persist\Mongo\Gateway;
 
@@ -75,11 +76,9 @@ $collection = (new MongoDB\Client())->test->users;
 $gateway = new Gateway($collection);
 
 $gateway->update(
-    ['type' => 'admin'],
-    [
-        update\inc('reward', 100),
-        update\set('rewarded', new DateTime()),
-    ],
+    opt\where(['type' => 'admin']),
+    update\inc('reward', 100),
+    update\set('rewarded', new DateTime()),
 );
 ```
 
@@ -89,9 +88,36 @@ Persist uses PHP iterators and generators. It's important to understand what the
 not familiar with this concept, first read
 "[What are iterators?](https://github.com/improved-php-library/iterable#what-are-iterators)".
 
-## Filters
+## Options
 
-The reader and writer methods accept a `$filter` argument. The filter is an associated array with field key and
+Database-specific options can be passed. Such options include limiting the number of results,
+loading related data, sorting, etc. These options are passed to the query builder.
+
+```php
+$list = $gateway->fetch(
+    opt\where(['active' => true]),
+    opt\fields('name', 'role', 'age'),
+    opt\limit(10),
+    opt\sort('~activation_date', 'name'),
+);
+```
+
+This library defines the concept of options, and a number of common options.
+
+* `where(array $filter)`
+* `fields(string ...$fields)`
+* `omit(string ...$fields)`
+* `sort(string ...$fields)`
+* `limit(int limit, int offset = 0)`
+* `page(int pageNr, int pageSize)` _(pagination is 1-indexed)_
+
+For sorting, add a `~` in front of the field to sort in descending order.
+
+Persist implementations may define additional options.
+
+### Filter
+
+The `where` option accepts a `$filter` argument. The filter is an associated array with a field key and
 corresponding value.
 
 A filter SHOULD always result in the same or a subset of the records you'd get when calling the method without a
@@ -130,40 +156,14 @@ For data stores that support structured data (as MongoDB) the field may use the 
 properties.
 
 _The filter is a simple associative array, rather than an array of objects, making it easier to pass (part of) the
-HTTP query parameters as filter._
-
-## Options
-
-In additions to a filter, database specific options can be passed. Such options include limiting the number of results,
-loading related data, sorting, etc. These options are passed to the query builder.
-
-```php
-$list = $gateway->fetch(
-    ['active' => true],
-    opt\fields('name', 'role', 'age'),
-    opt\limit(10),
-    opt\sort('~activation_date', 'name'),
-);
-```
-
-This library defines the concept of options, and a number of common options.
-
-* `fields(string ...$fields)`
-* `omit(string ...$fields)`
-* `sort(string ...$fields)`
-* `limit(int limit, int offset = 0)`
-* `page(int pageNr, int pageSize)` _(pagination is 1-indexed)_
-
-For sorting, add a `~` in front of the field to sort in descending order.
-
-Persist implementations may define additional options.
+HTTP query parameters as a filter._
 
 ## Gateway
 
 A storage reader can be used to fetch from a persistent data storage (DB table, collection, etc). The storage is not
 embedded to the service, but instead passed to it when calling a method.
 
-Each implementation has its own Gateway service that converts the [generic filter](#filters) into a DB specific query and
+Each implementation has its own Gateway service that converts the [generic filter](#filters) into a DB-specific query and
 wraps the query result in an iterator pipeline.
 
 The `fetch` and `count` methods accept a filter and options (`$opts`). The available options differ per implementation.
@@ -174,13 +174,13 @@ The `save`, `update` and `delete` methods accept options (`$opts`).
 
 ### fetch
 
-    Result fetch(array $filter, OptionInterface ...$opts)
+    Result fetch(OptionInterface ...$opts)
 
 Query and fetch data.
 
 ### count
 
-    int count(array $filter, OptionInterface ...$opts)
+    int count(OptionInterface ...$opts)
     
 Query and count result.
 
@@ -202,7 +202,7 @@ The method returns a result with the items, possibly modified with generated val
 
 ### update
 
-    Result update($storage, array $filter, UpdateInstruction|UpdateInstruction[] $update, OptionInterface ...$opts)
+    Result update(UpdateInstruction|UpdateInstruction|OptionInterface ...$opts)
     
 Query and update records.
 
@@ -213,7 +213,7 @@ use Persist\Mongo\Gateway as Gateway;
 $userCollection = (MongoDB\Client())->tests->users;
 $gateway = Gateway::basic()->forCollection($userCollection);
 
-$gateway->update(['id' => 10], [update\set('last_login', new DateTime()), update\inc('logins')]);
+$gateway->update(opt\where(['id' => 10]), update\set('last_login', new DateTime()), update\inc('logins'));
 ```
 
 The `$changes` argument must be one or more `UpdateOperation` objects. Rather than creating such an object by hand, the
@@ -240,7 +240,7 @@ The method returns a result without any items, but it may contain metadata.
 
 ### delete
 
-    Result delete($storage, array $filter, array $opts = [])
+    Result delete(OptionInterface ...$opts)
     
 Query and delete records.
 
@@ -253,7 +253,7 @@ The `Gateway::fetch()` method returns a `Result` object which extends
 to further process the result.
 
 ```php
-$employees = $gateway->fetch(['type' => 'admin'])
+$employees = $gateway->fetch(opt\where(['type' => 'admin']))
     ->map(fn(array $user) => $user + ['fullname' => $user['firstname'] . ' ' . $user['lastname']])
     ->group(fn(array $user) => $user['organization_id']);
 ```
@@ -282,9 +282,7 @@ use Persist\Result\Result;
 use Persist\Mongo\Gateway\Gateway;
 
 $resultBuilder = Result::build()
-    ->filter(function($value) {
-        return $value !== null;
-    });
+    ->filter(fn ($value) => $value !== null);
 
 $gateway = (new Gateway())->withResultBuilder($resultBuilder);
 ```
@@ -336,3 +334,4 @@ $resultBuilder = $gateway->getResultBuilder()->then($fieldMap->flip());
 $gateway = $gateway
     ->withQueryBuilder($queryBuilder)
     ->withResultBuilder($resultBuilder);
+```
